@@ -20,6 +20,7 @@ export function SidebarNav() {
   const [isOpen, setIsOpen] = useState(false)
 
   const navItems = [
+    { href: "/chat", label: "Chat", icon: MessageSquare },
     { href: "/docs", label: "Docs", icon: BookOpen },
     { href: "/documents", label: "Documents", icon: FileText },
     { href: "/forum", label: "Forum", icon: MessageSquare },
