@@ -2,10 +2,12 @@ export interface Product {
   id: string
   name: string
   description: string
+  price: number // Added price field
   stripeLink: string
   category: "ai-modules" | "bundles" | "mms" | "books" | "sops" | "templates"
   features: string[]
   popular?: boolean
+  taskType?: string // Added to determine what animation the logo performs
 }
 
 export const PRODUCTS: Product[] = [
@@ -14,8 +16,10 @@ export const PRODUCTS: Product[] = [
     id: "crowe-logic-ai-core",
     name: "Crowe Logic AI - Core",
     description: "Foundation AI module for mushroom cultivation intelligence and automation",
+    price: 497,
     stripeLink: "https://buy.stripe.com/7sY8wP2hrgwjd8kbJ0",
     category: "ai-modules",
+    taskType: "analyzing-data",
     features: [
       "AI-powered cultivation insights",
       "Real-time monitoring",
@@ -29,8 +33,10 @@ export const PRODUCTS: Product[] = [
     id: "crowe-logic-spawn-master",
     name: "Crowe Logic Spawn Master",
     description: "Advanced AI for spawn production optimization and quality control",
+    price: 297,
     stripeLink: "https://buy.stripe.com/fZu00jbS193R7O0fZg",
     category: "ai-modules",
+    taskType: "monitoring-growth",
     features: [
       "Spawn run optimization",
       "Colonization tracking",
@@ -43,8 +49,10 @@ export const PRODUCTS: Product[] = [
     id: "crowe-logic-substrate-tech",
     name: "Crowe Logic Substrate Tech",
     description: "Substrate formulation and preparation AI for optimal yields",
+    price: 297,
     stripeLink: "https://buy.stripe.com/4gM9ATaNX93R9W8cN4",
     category: "ai-modules",
+    taskType: "mixing-substrate",
     features: [
       "Substrate recipe optimization",
       "Moisture content analysis",
@@ -57,8 +65,10 @@ export const PRODUCTS: Product[] = [
     id: "crowe-logic-inoculation-ai",
     name: "Crowe Logic Inoculation AI",
     description: "Precision inoculation guidance and contamination prevention",
+    price: 297,
     stripeLink: "https://buy.stripe.com/eVqeVdf4d2Ftc4g28q",
     category: "ai-modules",
+    taskType: "sterile-inoculation",
     features: [
       "Inoculation timing optimization",
       "Sterile technique guidance",
@@ -73,8 +83,10 @@ export const PRODUCTS: Product[] = [
     id: "crowe-logic-full-access",
     name: "Crowe Logic AI - Full Access",
     description: "Complete access to all AI modules with priority support (Best Value)",
+    price: 997,
     stripeLink: "https://buy.stripe.com/7sYeVd4pzeobfgs6oG",
     category: "bundles",
+    taskType: "orchestrating-systems",
     features: [
       "All 4 AI modules included",
       "Priority support",
@@ -89,8 +101,10 @@ export const PRODUCTS: Product[] = [
     id: "crowe-logic-ultimate-access",
     name: "Crowe Logic AI - Ultimate Access",
     description: "Premium package with all modules plus dedicated support",
+    price: 1997,
     stripeLink: "https://buy.stripe.com/eVq00j6xHfsffgs4gy",
     category: "bundles",
+    taskType: "command-center",
     features: [
       "All 4 AI modules",
       "Dedicated account manager",
@@ -104,8 +118,10 @@ export const PRODUCTS: Product[] = [
     id: "crowe-logic-lab-bundle",
     name: "Crowe Logic AI - Lab Bundle",
     description: "Specialized bundle for laboratory and research facilities",
+    price: 697,
     stripeLink: "https://buy.stripe.com/9B600j2hr2Ft7O028q",
     category: "bundles",
+    taskType: "conducting-research",
     features: [
       "3 specialty modules",
       "Research-focused features",
@@ -118,8 +134,10 @@ export const PRODUCTS: Product[] = [
     id: "crowe-logic-updates-support",
     name: "Crowe Logic AI - Updates & Support",
     description: "Continued updates and support for Year 2+ customers",
+    price: 297,
     stripeLink: "https://buy.stripe.com/bJeeVdg8h0xl7O06oG",
     category: "bundles",
+    taskType: "providing-support",
     features: [
       "All software updates",
       "Technical support",
@@ -134,8 +152,10 @@ export const PRODUCTS: Product[] = [
     id: "crowe-logic-mms-founders-year1",
     name: "Crowe Logic MMS - Founders Year 1",
     description: "First year access to the complete Mushroom Management System",
+    price: 997,
     stripeLink: "https://buy.stripe.com/00w3cv2hra7Vb0caEW",
     category: "mms",
+    taskType: "managing-facility",
     features: [
       "Complete facility management",
       "Production tracking",
@@ -150,8 +170,10 @@ export const PRODUCTS: Product[] = [
     id: "crowe-logic-mms-lifetime",
     name: "Crowe Logic MMS - Founders Lifetime Access",
     description: "Lifetime access to MMS with all future updates included",
+    price: 4997,
     stripeLink: "https://buy.stripe.com/9B63cve090xl5FS00i",
     category: "mms",
+    taskType: "lifetime-access",
     features: [
       "Lifetime software access",
       "All future updates",
@@ -165,8 +187,10 @@ export const PRODUCTS: Product[] = [
     id: "crowe-logic-mms-pilot-canada",
     name: "Crowe Logic MMS - Pilot License (Canada)",
     description: "Special pilot program pricing for Canadian facilities",
+    price: 497,
     stripeLink: "https://buy.stripe.com/dRm9ATcW56VJ0lyaEW",
     category: "mms",
+    taskType: "pilot-license",
     features: [
       "Full MMS access",
       "Canadian compliance",
@@ -179,8 +203,10 @@ export const PRODUCTS: Product[] = [
     id: "crowe-logic-advisory-retainer",
     name: "Crowe Logic Advisory Retainer",
     description: "Monthly advisory services for Canadian pilot farms",
+    price: 297,
     stripeLink: "https://buy.stripe.com/8x26oH3lvfsf4BOcN4",
     category: "mms",
+    taskType: "consulting-meeting",
     features: [
       "Monthly consulting hours",
       "Strategic planning",
@@ -195,8 +221,10 @@ export const PRODUCTS: Product[] = [
     id: "mushroom-business-starter-blueprint",
     name: "The Mushroom Business Starter Blueprint",
     description: "Complete guide to starting and scaling your mushroom business",
+    price: 97,
     stripeLink: "https://buy.stripe.com/fZuaEXe095RF3xKbJ0",
     category: "books",
+    taskType: "writing-business-plan",
     features: [
       "Business planning guide",
       "Market analysis",
@@ -210,8 +238,10 @@ export const PRODUCTS: Product[] = [
     id: "southwest-mushrooms-playbook",
     name: "Southwest Mushrooms Playbook",
     description: "Proven strategies from a successful commercial operation",
+    price: 197,
     stripeLink: "https://buy.stripe.com/fZudR9g8h3Jx8S4cN4",
     category: "books",
+    taskType: "presenting-case-studies",
     features: [
       "Real-world case studies",
       "Operational insights",
@@ -224,16 +254,20 @@ export const PRODUCTS: Product[] = [
     id: "journey-into-mycology-ebook",
     name: "Journey Into Mycology - Complete Ebook",
     description: "Comprehensive digital guide to mushroom cultivation",
+    price: 47,
     stripeLink: "https://buy.stripe.com/fZubJ15tD0xlc4g4gy",
     category: "books",
+    taskType: "reading-digital-book",
     features: ["300+ pages", "Full-color photos", "Step-by-step guides", "Species profiles", "Troubleshooting"],
   },
   {
     id: "journey-into-mycology-audiobook",
     name: "Journey Into Mycology - Audiobook",
     description: "Audio version for learning on the go",
+    price: 37,
     stripeLink: "https://buy.stripe.com/fZudR9g8h3Jx8S4cN4",
     category: "books",
+    taskType: "listening-audio",
     features: [
       "Professional narration",
       "10+ hours content",
@@ -246,8 +280,10 @@ export const PRODUCTS: Product[] = [
     id: "power-of-mindset-mycology",
     name: "Power of Mindset in Mycology - Premium Guide",
     description: "Mental frameworks for success in mushroom cultivation",
+    price: 67,
     stripeLink: "https://buy.stripe.com/28E3cve097ZNd8kbJ0",
     category: "books",
+    taskType: "mindset-strategies",
     features: [
       "Mindset strategies",
       "Problem-solving frameworks",
@@ -260,8 +296,10 @@ export const PRODUCTS: Product[] = [
     id: "ultimate-mushroom-quickstart",
     name: "Ultimate Mushroom Quickstart Guide",
     description: "Fast-track guide to getting started with mushroom cultivation",
+    price: 27,
     stripeLink: "https://buy.stripe.com/7sY14n4pz0xl2tGaEW",
     category: "books",
+    taskType: "quickstart-guide",
     features: [
       "Quick-start protocols",
       "Essential equipment",
@@ -276,8 +314,10 @@ export const PRODUCTS: Product[] = [
     id: "lions-mane-cultivation-sop",
     name: "Lion's Mane Complete Cultivation SOP",
     description: "Detailed standard operating procedure for Lion's Mane production",
+    price: 97,
     stripeLink: "https://buy.stripe.com/14AaEXbS193R7O0fZg",
     category: "sops",
+    taskType: "cultivation-protocol",
     features: [
       "Complete cultivation protocol",
       "Substrate recipes",
@@ -291,8 +331,10 @@ export const PRODUCTS: Product[] = [
     id: "quality-control-protocol",
     name: "Quality Control Protocol & Standards Manual",
     description: "Comprehensive QC procedures for commercial operations",
+    price: 147,
     stripeLink: "https://buy.stripe.com/8x28wP9JTa7V9W8dR8",
     category: "sops",
+    taskType: "qc-procedures",
     features: [
       "QC procedures",
       "Testing protocols",
@@ -305,8 +347,10 @@ export const PRODUCTS: Product[] = [
     id: "master-sanitation-schedule",
     name: "Master Sanitation Schedule & Protocols",
     description: "Complete sanitation program for mushroom facilities",
+    price: 97,
     stripeLink: "https://buy.stripe.com/9B6cN55tDfsf1pCcN4",
     category: "sops",
+    taskType: "sanitation-schedule",
     features: [
       "Daily cleaning schedules",
       "Deep cleaning protocols",
@@ -319,8 +363,10 @@ export const PRODUCTS: Product[] = [
     id: "post-harvest-handling-sops",
     name: "Post-Harvest Handling & Packaging SOPs",
     description: "Professional procedures for harvest and packaging",
+    price: 97,
     stripeLink: "https://buy.stripe.com/00waEXcW56VJ3xK7sK",
     category: "sops",
+    taskType: "handling-sops",
     features: [
       "Harvest timing",
       "Handling procedures",
@@ -333,16 +379,20 @@ export const PRODUCTS: Product[] = [
     id: "daily-qc-checklist",
     name: "Daily QC Checklist - Printable",
     description: "Ready-to-use daily quality control checklist",
+    price: 27,
     stripeLink: "https://buy.stripe.com/dRmaEX5tD1Bp1pC4gy",
     category: "templates",
+    taskType: "qc-checklist",
     features: ["Printable PDF", "Daily inspection items", "Sign-off sections", "Issue tracking", "Customizable"],
   },
   {
     id: "hardwood-sawdust-blocks-guide",
     name: "Making Hardwood Sawdust Blocks - Complete Guide",
     description: "Step-by-step guide to producing hardwood substrate blocks",
+    price: 67,
     stripeLink: "https://buy.stripe.com/bJe3cv8FPeob1pCdR8",
     category: "sops",
+    taskType: "substrate-guide",
     features: [
       "Recipe formulations",
       "Equipment requirements",
@@ -355,8 +405,10 @@ export const PRODUCTS: Product[] = [
     id: "contamination-emergency-response",
     name: "Contamination Emergency Response Kit",
     description: "Rapid response protocols for contamination events",
+    price: 97,
     stripeLink: "https://buy.stripe.com/dRm28r8FPfsfb0ccN4",
     category: "sops",
+    taskType: "emergency-response",
     features: [
       "Emergency protocols",
       "Containment procedures",

@@ -6,6 +6,7 @@ import { Check, Star, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Checkout from "@/components/checkout"
+import { AnimatedProductCard } from "@/components/animated-product-card"
 
 export default function ProductPage({ params }: { params: { productId: string } }) {
   const product = PRODUCTS.find((p) => p.id === params.productId)
@@ -26,6 +27,10 @@ export default function ProductPage({ params }: { params: { productId: string } 
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
           <div>
+            <div className="mb-6 rounded-lg overflow-hidden">
+              <AnimatedProductCard taskType={product.taskType} productName={product.name} />
+            </div>
+
             <div className="flex items-start gap-3 mb-4">
               <h1 className="text-4xl font-bold text-foreground">{product.name}</h1>
               {product.popular && (
@@ -38,8 +43,10 @@ export default function ProductPage({ params }: { params: { productId: string } 
             <p className="text-lg text-foreground/70 mb-6">{product.description}</p>
 
             <div className="text-4xl font-bold text-foreground mb-8">
-              ${(product.priceInCents / 100).toFixed(2)}
-              {product.category === "mms" && <span className="text-lg font-normal text-foreground/60">/month</span>}
+              ${product.price}
+              {product.category === "mms" && product.id.includes("advisory") && (
+                <span className="text-lg font-normal text-foreground/60">/month</span>
+              )}
             </div>
 
             <Card className="bg-card border-border/50">

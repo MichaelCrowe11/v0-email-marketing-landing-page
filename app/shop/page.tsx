@@ -4,13 +4,16 @@ import { Button } from "@/components/ui/button"
 import { PRODUCTS } from "@/lib/products"
 import Link from "next/link"
 import { Check, Star } from "lucide-react"
+import { AnimatedProductCard } from "@/components/animated-product-card"
 
 export default function ShopPage() {
   const categories = [
+    { id: "ai-modules", name: "AI Modules", description: "Intelligent cultivation systems" },
+    { id: "bundles", name: "Bundle Packages", description: "Complete solution bundles" },
     { id: "mms", name: "MMS Systems", description: "Complete management solutions" },
     { id: "books", name: "Books", description: "Expert cultivation guides" },
-    { id: "templates", name: "Templates", description: "Farm management tools" },
     { id: "sops", name: "SOPs", description: "Standard operating procedures" },
+    { id: "templates", name: "Templates", description: "Farm management tools" },
   ]
 
   return (
@@ -24,6 +27,8 @@ export default function ShopPage() {
         {categories.map((category) => {
           const categoryProducts = PRODUCTS.filter((p) => p.category === category.id)
 
+          if (categoryProducts.length === 0) return null
+
           return (
             <div key={category.id} className="mb-16">
               <div className="mb-8">
@@ -35,8 +40,10 @@ export default function ShopPage() {
                 {categoryProducts.map((product) => (
                   <Card
                     key={product.id}
-                    className="bg-card border-border/50 hover:border-border transition-all duration-200 flex flex-col"
+                    className="bg-card border-border/50 hover:border-border transition-all duration-200 flex flex-col overflow-hidden"
                   >
+                    <AnimatedProductCard taskType={product.taskType} productName={product.name} />
+
                     <CardHeader>
                       <div className="flex items-start justify-between mb-2">
                         <CardTitle className="text-xl text-foreground">{product.name}</CardTitle>
@@ -49,8 +56,8 @@ export default function ShopPage() {
                       </div>
                       <CardDescription className="text-foreground/60">{product.description}</CardDescription>
                       <div className="text-3xl font-bold text-foreground mt-4">
-                        ${(product.priceInCents / 100).toFixed(2)}
-                        {category.id === "mms" && (
+                        ${product.price}
+                        {category.id === "mms" && product.id.includes("advisory") && (
                           <span className="text-base font-normal text-foreground/60">/month</span>
                         )}
                       </div>
