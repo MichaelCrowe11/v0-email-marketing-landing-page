@@ -3,7 +3,18 @@
 import { useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { User, FileText, MessageSquare, Sparkles, DollarSign, BookOpen, Menu, X } from "lucide-react"
+import {
+  User,
+  FileText,
+  MessageSquare,
+  Sparkles,
+  DollarSign,
+  BookOpen,
+  Menu,
+  X,
+  ShoppingBag,
+  ExternalLink,
+} from "lucide-react"
 
 export function SidebarNav() {
   const [isOpen, setIsOpen] = useState(false)
@@ -14,6 +25,7 @@ export function SidebarNav() {
     { href: "/forum", label: "Forum", icon: MessageSquare },
     { href: "#features", label: "Features", icon: Sparkles },
     { href: "#pricing", label: "Pricing", icon: DollarSign },
+    { href: "/shop", label: "Shop", icon: ShoppingBag },
   ]
 
   return (
@@ -71,6 +83,13 @@ export function SidebarNav() {
           {/* Bottom Actions */}
           <div className="p-4 border-t border-border/50 space-y-2">
             <Button size="sm" variant="ghost" className="w-full justify-start gap-3" asChild>
+              <a href="mailto:michael@crowelogic.com">
+                <ExternalLink className="w-5 h-5" />
+                Contact Michael
+              </a>
+            </Button>
+
+            <Button size="sm" variant="ghost" className="w-full justify-start gap-3" asChild>
               <Link href="/profile">
                 <User className="w-5 h-5" />
                 Profile
@@ -78,9 +97,7 @@ export function SidebarNav() {
             </Button>
 
             <Button size="sm" className="w-full bg-foreground text-background hover:bg-foreground/90" asChild>
-              <a href="https://buy.stripe.com/9B69AT09jfsf4BOfZgao817" target="_blank" rel="noopener noreferrer">
-                Get Access
-              </a>
+              <Link href="/shop">Get Started</Link>
             </Button>
           </div>
         </div>
