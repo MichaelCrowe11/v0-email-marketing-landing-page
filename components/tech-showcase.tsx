@@ -59,7 +59,7 @@ export function TechShowcase() {
   }, [])
 
   return (
-    <div className="relative w-full h-full min-h-[400px] flex items-center justify-center">
+    <div className="relative w-full h-full min-h-[400px] flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-accent/5 via-background to-accent/10 rounded-2xl overflow-hidden">
         <div className="absolute inset-0 opacity-20">
           <div
@@ -91,35 +91,7 @@ export function TechShowcase() {
         ))}
       </div>
 
-      <div className="relative z-10 flex flex-col lg:flex-row items-center gap-8 p-8 w-full max-w-6xl">
-        {/* Code output panel - left side */}
-        <div className="flex-1 w-full lg:w-auto">
-          <div className="bg-background/95 backdrop-blur-sm border border-accent/30 rounded-lg p-4 shadow-2xl">
-            <div className="flex items-center gap-2 mb-3 pb-2 border-b border-accent/30">
-              <div className="w-3 h-3 rounded-full bg-red-500" />
-              <div className="w-3 h-3 rounded-full bg-yellow-500" />
-              <div className="w-3 h-3 rounded-full bg-green-500" />
-              <span className="text-xs text-foreground/90 ml-2 font-mono font-semibold">mycology-ai.ts</span>
-              <div className="ml-auto flex items-center gap-1">
-                <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-xs text-foreground/70">Running</span>
-              </div>
-            </div>
-            <div className="font-mono text-xs space-y-1 h-40 overflow-hidden">
-              {codeLines.slice(-8).map((line, i) => (
-                <div
-                  key={i}
-                  className="text-foreground animate-fade-in leading-relaxed"
-                  style={{ animationDelay: `${i * 0.1}s` }}
-                >
-                  {line || "\u00A0"}
-                </div>
-              ))}
-              <div className="inline-block w-2 h-4 bg-accent animate-pulse" />
-            </div>
-          </div>
-        </div>
-
+      <div className="relative z-10 flex flex-col items-center gap-6 p-4 md:p-8 w-full max-w-full">
         <div className="relative flex-shrink-0">
           <div className="absolute inset-0 bg-gradient-to-r from-accent/40 to-accent/20 blur-3xl animate-pulse" />
           <div className="relative bg-background/90 backdrop-blur-sm p-8 rounded-2xl border-2 border-accent/30 shadow-2xl">
@@ -157,27 +129,56 @@ export function TechShowcase() {
           />
         </div>
 
-        <div className="flex-1 w-full lg:w-auto">
-          <div className="bg-background/95 backdrop-blur-sm border border-accent/30 rounded-lg p-4 shadow-2xl">
-            <div className="flex items-center gap-2 mb-3 pb-2 border-b border-accent/30">
-              <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-              <span className="text-xs text-foreground font-bold">AI Processing Pipeline</span>
-            </div>
-            <div className="space-y-2">
-              {problems.map((problem, i) => (
-                <div
-                  key={i}
-                  className={`flex items-center gap-2 p-2.5 rounded transition-all duration-500 ${
-                    i === activeIndex
-                      ? "bg-accent/20 border border-accent/50 shadow-lg"
-                      : "opacity-70 border border-transparent"
-                  }`}
-                >
-                  <span className="text-sm font-semibold">{problem.status}</span>
-                  <span className="text-xs text-foreground flex-1 font-medium">{problem.title}</span>
-                  <span className="text-xs text-foreground/60 font-mono">{problem.time}</span>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full max-w-4xl">
+          <div className="w-full">
+            <div className="bg-background/95 backdrop-blur-sm border border-accent/30 rounded-lg p-4 shadow-2xl">
+              <div className="flex items-center gap-2 mb-3 pb-2 border-b border-accent/30">
+                <div className="w-3 h-3 rounded-full bg-red-500" />
+                <div className="w-3 h-3 rounded-full bg-yellow-500" />
+                <div className="w-3 h-3 rounded-full bg-green-500" />
+                <span className="text-xs text-foreground/90 ml-2 font-mono font-semibold">mycology-ai.ts</span>
+                <div className="ml-auto flex items-center gap-1">
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                  <span className="text-xs text-foreground/70">Running</span>
                 </div>
-              ))}
+              </div>
+              <div className="font-mono text-xs space-y-1 h-40 overflow-hidden">
+                {codeLines.slice(-8).map((line, i) => (
+                  <div
+                    key={i}
+                    className="text-foreground animate-fade-in leading-relaxed"
+                    style={{ animationDelay: `${i * 0.1}s` }}
+                  >
+                    {line || "\u00A0"}
+                  </div>
+                ))}
+                <div className="inline-block w-2 h-4 bg-accent animate-pulse" />
+              </div>
+            </div>
+          </div>
+
+          <div className="w-full">
+            <div className="bg-background/95 backdrop-blur-sm border border-accent/30 rounded-lg p-4 shadow-2xl">
+              <div className="flex items-center gap-2 mb-3 pb-2 border-b border-accent/30">
+                <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+                <span className="text-xs text-foreground font-bold">AI Processing Pipeline</span>
+              </div>
+              <div className="space-y-2">
+                {problems.map((problem, i) => (
+                  <div
+                    key={i}
+                    className={`flex items-center gap-2 p-2.5 rounded transition-all duration-500 ${
+                      i === activeIndex
+                        ? "bg-accent/20 border border-accent/50 shadow-lg"
+                        : "opacity-70 border border-transparent"
+                    }`}
+                  >
+                    <span className="text-sm font-semibold">{problem.status}</span>
+                    <span className="text-xs text-foreground flex-1 font-medium">{problem.title}</span>
+                    <span className="text-xs text-foreground/60 font-mono">{problem.time}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
