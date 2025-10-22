@@ -2,132 +2,367 @@ export interface Product {
   id: string
   name: string
   description: string
-  priceInCents: number
-  category: "mms" | "books" | "templates" | "sops"
+  stripeLink: string
+  category: "ai-modules" | "bundles" | "mms" | "books" | "sops" | "templates"
   features: string[]
   popular?: boolean
 }
 
 export const PRODUCTS: Product[] = [
-  // MMS Products
+  // Core AI Modules
   {
-    id: "crowe-logic-mms-pro",
-    name: "Crowe Logic MMS Pro",
-    description:
-      "Complete Mushroom Management System with AI-powered insights, real-time monitoring, and automated SOPs",
-    priceInCents: 29900, // $299/month
-    category: "mms",
+    id: "crowe-logic-ai-core",
+    name: "Crowe Logic AI - Core",
+    description: "Foundation AI module for mushroom cultivation intelligence and automation",
+    stripeLink: "https://buy.stripe.com/7sY8wP2hrgwjd8kbJ0",
+    category: "ai-modules",
     features: [
       "AI-powered cultivation insights",
-      "Real-time environmental monitoring",
-      "Automated SOP generation",
-      "Contamination detection & alerts",
-      "Yield optimization recommendations",
-      "Multi-facility management",
-    ],
-    popular: true,
-  },
-  {
-    id: "crowe-logic-mms-starter",
-    name: "Crowe Logic MMS Starter",
-    description: "Essential mushroom management tools for small-scale growers",
-    priceInCents: 9900, // $99/month
-    category: "mms",
-    features: [
-      "Basic cultivation tracking",
-      "SOP templates",
-      "Environmental logging",
-      "Yield tracking",
+      "Real-time monitoring",
+      "Automated recommendations",
+      "Data analytics dashboard",
       "Email support",
     ],
-  },
-
-  // Books
-  {
-    id: "mycology-mastery-guide",
-    name: "Mycology Mastery: The Complete Guide",
-    description: "500+ page comprehensive guide to commercial mushroom cultivation",
-    priceInCents: 4900, // $49
-    category: "books",
-    features: [
-      "500+ pages of expert knowledge",
-      "Full-color illustrations",
-      "Species-specific protocols",
-      "Troubleshooting guides",
-      "Digital + Print versions",
-    ],
     popular: true,
   },
   {
-    id: "contamination-handbook",
-    name: "Contamination Prevention Handbook",
-    description: "Master contamination identification, prevention, and remediation",
-    priceInCents: 2900, // $29
-    category: "books",
-    features: ["Visual ID guide", "Prevention protocols", "Root cause analysis", "CAPA procedures", "Case studies"],
-  },
-
-  // Templates
-  {
-    id: "farm-management-templates",
-    name: "Farm Management Template Pack",
-    description: "Complete set of spreadsheets and documents for running your mushroom farm",
-    priceInCents: 9900, // $99
-    category: "templates",
+    id: "crowe-logic-spawn-master",
+    name: "Crowe Logic Spawn Master",
+    description: "Advanced AI for spawn production optimization and quality control",
+    stripeLink: "https://buy.stripe.com/fZu00jbS193R7O0fZg",
+    category: "ai-modules",
     features: [
-      "Production tracking sheets",
-      "Inventory management",
-      "Cost analysis templates",
-      "Employee schedules",
-      "Quality control checklists",
-      "Financial projections",
+      "Spawn run optimization",
+      "Colonization tracking",
+      "Quality prediction",
+      "Contamination detection",
+      "Production scheduling",
     ],
   },
   {
-    id: "cultivation-logs-bundle",
-    name: "Cultivation Logs Bundle",
-    description: "Professional logging templates for every stage of cultivation",
-    priceInCents: 4900, // $49
-    category: "templates",
+    id: "crowe-logic-substrate-tech",
+    name: "Crowe Logic Substrate Tech",
+    description: "Substrate formulation and preparation AI for optimal yields",
+    stripeLink: "https://buy.stripe.com/4gM9ATaNX93R9W8cN4",
+    category: "ai-modules",
     features: [
-      "Spawn run logs",
-      "Fruiting room logs",
-      "Harvest tracking",
-      "Environmental data sheets",
-      "QC inspection forms",
-    ],
-  },
-
-  // SOPs
-  {
-    id: "complete-sop-library",
-    name: "Complete SOP Library",
-    description: "Industry-standard SOPs for commercial mushroom production",
-    priceInCents: 19900, // $199
-    category: "sops",
-    features: [
-      "50+ detailed SOPs",
-      "Substrate preparation",
+      "Substrate recipe optimization",
+      "Moisture content analysis",
       "Sterilization protocols",
-      "Inoculation procedures",
-      "Fruiting management",
-      "Harvest & packaging",
-      "Sanitation protocols",
+      "Ingredient sourcing",
+      "Cost optimization",
+    ],
+  },
+  {
+    id: "crowe-logic-inoculation-ai",
+    name: "Crowe Logic Inoculation AI",
+    description: "Precision inoculation guidance and contamination prevention",
+    stripeLink: "https://buy.stripe.com/eVqeVdf4d2Ftc4g28q",
+    category: "ai-modules",
+    features: [
+      "Inoculation timing optimization",
+      "Sterile technique guidance",
+      "Environmental controls",
+      "Success rate tracking",
+      "Contamination prevention",
+    ],
+  },
+
+  // Bundle Packages
+  {
+    id: "crowe-logic-full-access",
+    name: "Crowe Logic AI - Full Access",
+    description: "Complete access to all AI modules with priority support (Best Value)",
+    stripeLink: "https://buy.stripe.com/7sYeVd4pzeobfgs6oG",
+    category: "bundles",
+    features: [
+      "All 4 AI modules included",
+      "Priority support",
+      "Advanced analytics",
+      "Custom integrations",
+      "Quarterly strategy calls",
+      "Lifetime updates",
     ],
     popular: true,
   },
   {
-    id: "specialty-species-sops",
-    name: "Specialty Species SOPs",
-    description: "Detailed protocols for gourmet and medicinal mushrooms",
-    priceInCents: 9900, // $99
+    id: "crowe-logic-ultimate-access",
+    name: "Crowe Logic AI - Ultimate Access",
+    description: "Premium package with all modules plus dedicated support",
+    stripeLink: "https://buy.stripe.com/eVq00j6xHfsffgs4gy",
+    category: "bundles",
+    features: [
+      "All 4 AI modules",
+      "Dedicated account manager",
+      "Custom AI training",
+      "White-label options",
+      "24/7 priority support",
+      "On-site consulting",
+    ],
+  },
+  {
+    id: "crowe-logic-lab-bundle",
+    name: "Crowe Logic AI - Lab Bundle",
+    description: "Specialized bundle for laboratory and research facilities",
+    stripeLink: "https://buy.stripe.com/9B600j2hr2Ft7O028q",
+    category: "bundles",
+    features: [
+      "3 specialty modules",
+      "Research-focused features",
+      "Data export tools",
+      "Collaboration features",
+      "Academic pricing",
+    ],
+  },
+  {
+    id: "crowe-logic-updates-support",
+    name: "Crowe Logic AI - Updates & Support",
+    description: "Continued updates and support for Year 2+ customers",
+    stripeLink: "https://buy.stripe.com/bJeeVdg8h0xl7O06oG",
+    category: "bundles",
+    features: [
+      "All software updates",
+      "Technical support",
+      "New feature access",
+      "Training materials",
+      "Community access",
+    ],
+  },
+
+  // Mycology Management System
+  {
+    id: "crowe-logic-mms-founders-year1",
+    name: "Crowe Logic MMS - Founders Year 1",
+    description: "First year access to the complete Mushroom Management System",
+    stripeLink: "https://buy.stripe.com/00w3cv2hra7Vb0caEW",
+    category: "mms",
+    features: [
+      "Complete facility management",
+      "Production tracking",
+      "Inventory management",
+      "Employee scheduling",
+      "Financial reporting",
+      "Founders pricing",
+    ],
+    popular: true,
+  },
+  {
+    id: "crowe-logic-mms-lifetime",
+    name: "Crowe Logic MMS - Founders Lifetime Access",
+    description: "Lifetime access to MMS with all future updates included",
+    stripeLink: "https://buy.stripe.com/9B63cve090xl5FS00i",
+    category: "mms",
+    features: [
+      "Lifetime software access",
+      "All future updates",
+      "Priority support",
+      "No recurring fees",
+      "Transferable license",
+      "Best long-term value",
+    ],
+  },
+  {
+    id: "crowe-logic-mms-pilot-canada",
+    name: "Crowe Logic MMS - Pilot License (Canada)",
+    description: "Special pilot program pricing for Canadian facilities",
+    stripeLink: "https://buy.stripe.com/dRm9ATcW56VJ0lyaEW",
+    category: "mms",
+    features: [
+      "Full MMS access",
+      "Canadian compliance",
+      "Pilot program benefits",
+      "Direct feedback channel",
+      "Discounted pricing",
+    ],
+  },
+  {
+    id: "crowe-logic-advisory-retainer",
+    name: "Crowe Logic Advisory Retainer",
+    description: "Monthly advisory services for Canadian pilot farms",
+    stripeLink: "https://buy.stripe.com/8x26oH3lvfsf4BOcN4",
+    category: "mms",
+    features: [
+      "Monthly consulting hours",
+      "Strategic planning",
+      "Operational optimization",
+      "Troubleshooting support",
+      "Growth planning",
+    ],
+  },
+
+  // Books & Educational Products
+  {
+    id: "mushroom-business-starter-blueprint",
+    name: "The Mushroom Business Starter Blueprint",
+    description: "Complete guide to starting and scaling your mushroom business",
+    stripeLink: "https://buy.stripe.com/fZuaEXe095RF3xKbJ0",
+    category: "books",
+    features: [
+      "Business planning guide",
+      "Market analysis",
+      "Financial projections",
+      "Marketing strategies",
+      "Scaling roadmap",
+    ],
+    popular: true,
+  },
+  {
+    id: "southwest-mushrooms-playbook",
+    name: "Southwest Mushrooms Playbook",
+    description: "Proven strategies from a successful commercial operation",
+    stripeLink: "https://buy.stripe.com/fZudR9g8h3Jx8S4cN4",
+    category: "books",
+    features: [
+      "Real-world case studies",
+      "Operational insights",
+      "Lessons learned",
+      "Best practices",
+      "Growth strategies",
+    ],
+  },
+  {
+    id: "journey-into-mycology-ebook",
+    name: "Journey Into Mycology - Complete Ebook",
+    description: "Comprehensive digital guide to mushroom cultivation",
+    stripeLink: "https://buy.stripe.com/fZubJ15tD0xlc4g4gy",
+    category: "books",
+    features: ["300+ pages", "Full-color photos", "Step-by-step guides", "Species profiles", "Troubleshooting"],
+  },
+  {
+    id: "journey-into-mycology-audiobook",
+    name: "Journey Into Mycology - Audiobook",
+    description: "Audio version for learning on the go",
+    stripeLink: "https://buy.stripe.com/fZudR9g8h3Jx8S4cN4",
+    category: "books",
+    features: [
+      "Professional narration",
+      "10+ hours content",
+      "Downloadable MP3s",
+      "Mobile-friendly",
+      "Lifetime access",
+    ],
+  },
+  {
+    id: "power-of-mindset-mycology",
+    name: "Power of Mindset in Mycology - Premium Guide",
+    description: "Mental frameworks for success in mushroom cultivation",
+    stripeLink: "https://buy.stripe.com/28E3cve097ZNd8kbJ0",
+    category: "books",
+    features: [
+      "Mindset strategies",
+      "Problem-solving frameworks",
+      "Success principles",
+      "Case studies",
+      "Action plans",
+    ],
+  },
+  {
+    id: "ultimate-mushroom-quickstart",
+    name: "Ultimate Mushroom Quickstart Guide",
+    description: "Fast-track guide to getting started with mushroom cultivation",
+    stripeLink: "https://buy.stripe.com/7sY14n4pz0xl2tGaEW",
+    category: "books",
+    features: [
+      "Quick-start protocols",
+      "Essential equipment",
+      "First harvest guide",
+      "Common mistakes",
+      "Resource list",
+    ],
+  },
+
+  // SOPs & Templates
+  {
+    id: "lions-mane-cultivation-sop",
+    name: "Lion's Mane Complete Cultivation SOP",
+    description: "Detailed standard operating procedure for Lion's Mane production",
+    stripeLink: "https://buy.stripe.com/14AaEXbS193R7O0fZg",
     category: "sops",
     features: [
-      "Lion's Mane protocols",
-      "Reishi cultivation",
-      "Cordyceps procedures",
-      "Turkey Tail methods",
-      "Shiitake techniques",
+      "Complete cultivation protocol",
+      "Substrate recipes",
+      "Environmental parameters",
+      "Harvest guidelines",
+      "Quality standards",
+    ],
+    popular: true,
+  },
+  {
+    id: "quality-control-protocol",
+    name: "Quality Control Protocol & Standards Manual",
+    description: "Comprehensive QC procedures for commercial operations",
+    stripeLink: "https://buy.stripe.com/8x28wP9JTa7V9W8dR8",
+    category: "sops",
+    features: [
+      "QC procedures",
+      "Testing protocols",
+      "Documentation forms",
+      "Compliance checklists",
+      "Corrective actions",
+    ],
+  },
+  {
+    id: "master-sanitation-schedule",
+    name: "Master Sanitation Schedule & Protocols",
+    description: "Complete sanitation program for mushroom facilities",
+    stripeLink: "https://buy.stripe.com/9B6cN55tDfsf1pCcN4",
+    category: "sops",
+    features: [
+      "Daily cleaning schedules",
+      "Deep cleaning protocols",
+      "Chemical safety",
+      "Verification procedures",
+      "Record keeping",
+    ],
+  },
+  {
+    id: "post-harvest-handling-sops",
+    name: "Post-Harvest Handling & Packaging SOPs",
+    description: "Professional procedures for harvest and packaging",
+    stripeLink: "https://buy.stripe.com/00waEXcW56VJ3xK7sK",
+    category: "sops",
+    features: [
+      "Harvest timing",
+      "Handling procedures",
+      "Packaging standards",
+      "Storage guidelines",
+      "Shelf-life optimization",
+    ],
+  },
+  {
+    id: "daily-qc-checklist",
+    name: "Daily QC Checklist - Printable",
+    description: "Ready-to-use daily quality control checklist",
+    stripeLink: "https://buy.stripe.com/dRmaEX5tD1Bp1pC4gy",
+    category: "templates",
+    features: ["Printable PDF", "Daily inspection items", "Sign-off sections", "Issue tracking", "Customizable"],
+  },
+  {
+    id: "hardwood-sawdust-blocks-guide",
+    name: "Making Hardwood Sawdust Blocks - Complete Guide",
+    description: "Step-by-step guide to producing hardwood substrate blocks",
+    stripeLink: "https://buy.stripe.com/bJe3cv8FPeob1pCdR8",
+    category: "sops",
+    features: [
+      "Recipe formulations",
+      "Equipment requirements",
+      "Production workflow",
+      "Quality testing",
+      "Troubleshooting",
+    ],
+  },
+  {
+    id: "contamination-emergency-response",
+    name: "Contamination Emergency Response Kit",
+    description: "Rapid response protocols for contamination events",
+    stripeLink: "https://buy.stripe.com/dRm28r8FPfsfb0ccN4",
+    category: "sops",
+    features: [
+      "Emergency protocols",
+      "Containment procedures",
+      "Root cause analysis",
+      "Corrective actions",
+      "Prevention strategies",
     ],
   },
 ]
