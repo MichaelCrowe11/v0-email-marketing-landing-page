@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Inter, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 import { Suspense } from "react"
+import { SidebarNav } from "@/components/sidebar-nav"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -31,7 +32,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans ${inter.variable} ${jetbrainsMono.variable} antialiased`}>
-        <Suspense fallback={null}>{children}</Suspense>
+        <SidebarNav />
+        <div className="md:ml-64">
+          <Suspense fallback={null}>{children}</Suspense>
+        </div>
       </body>
     </html>
   )

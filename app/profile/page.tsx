@@ -36,8 +36,8 @@ export default async function ProfilePage() {
     .limit(5)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50">
-      <div className="container mx-auto px-4 py-12 max-w-6xl">
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-8 md:py-12 max-w-6xl">
         <Card className="glass shadow-2xl mb-8">
           <CardContent className="p-8">
             <div className="flex flex-col md:flex-row items-start md:items-center gap-6">

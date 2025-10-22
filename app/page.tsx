@@ -10,7 +10,6 @@ import { Pricing } from "@/components/pricing"
 import { FAQ } from "@/components/faq"
 import { StickyBar } from "@/components/sticky-bar"
 import { AIGeneratedIntro } from "@/components/ai-generated-intro"
-import { PremiumNav } from "@/components/premium-nav"
 import { ScrollReveal } from "@/components/scroll-reveal"
 
 export default function Home() {
@@ -19,8 +18,7 @@ export default function Home() {
   return (
     <>
       {showIntro && <AIGeneratedIntro onComplete={() => setShowIntro(false)} />}
-      <PremiumNav />
-      <main className="min-h-screen pt-16 md:pt-20">
+      <main className="min-h-screen">
         <Hero />
         <ScrollReveal>
           <BenefitsBand />

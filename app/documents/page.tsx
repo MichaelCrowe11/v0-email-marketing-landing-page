@@ -26,8 +26,8 @@ export default async function DocumentsPage() {
   const categories = ["Cultivation Guides", "Troubleshooting", "Species Info", "Equipment", "Recipes", "General"]
 
   return (
-    <div className="min-h-screen bg-black">
-      <div className="container mx-auto px-4 py-16 max-w-7xl">
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-8 md:py-16 max-w-7xl">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
           <div>
             <h1 className="text-5xl font-bold text-white mb-3">Knowledge Base</h1>
