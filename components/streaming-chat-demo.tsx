@@ -56,6 +56,7 @@ export function StreamingChatDemo() {
     }
 
     setMessages((prev) => [...prev, userMessage])
+    const currentInput = input
     setInput("")
     setUploadedImage(null)
     setIsStreaming(true)
@@ -70,18 +71,26 @@ export function StreamingChatDemo() {
     setMessages((prev) => [...prev, assistantMessage])
 
     try {
+      console.log("[v0] Sending message to API...")
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          messages: [...messages.map((m) => ({ role: m.role, content: m.content })), { role: "user", content: input }],
+          messages: [
+            ...messages.map((m) => ({ role: m.role, content: m.content })),
+            { role: "user", content: currentInput },
+          ],
         }),
       })
 
+      console.log("[v0] API response status:", response.status)
+
       if (!response.ok) {
-        throw new Error("Failed to get response")
+        const errorData = await response.json()
+        console.error("[v0] API error:", errorData)
+        throw new Error(errorData.error || "Failed to get response")
       }
 
       const reader = response.body?.getReader()
@@ -89,17 +98,24 @@ export function StreamingChatDemo() {
       let accumulatedText = ""
 
       if (reader) {
+        console.log("[v0] Starting to read stream...")
         while (true) {
           const { done, value } = await reader.read()
-          if (done) break
+          if (done) {
+            console.log("[v0] Stream complete")
+            break
+          }
 
-          const chunk = decoder.decode(value)
+          const chunk = decoder.decode(value, { stream: true })
           const lines = chunk.split("\n")
 
           for (const line of lines) {
             if (line.startsWith("data: ")) {
-              const data = line.slice(6)
-              if (data === "[DONE]") continue
+              const data = line.slice(6).trim()
+              if (data === "[DONE]") {
+                console.log("[v0] Received [DONE] signal")
+                continue
+              }
 
               try {
                 const parsed = JSON.parse(data)
@@ -117,11 +133,24 @@ export function StreamingChatDemo() {
                   })
                 }
               } catch (e) {
-                // Skip invalid JSON
+                // Skip invalid JSON or non-JSON lines
+                console.log("[v0] Skipping line:", line)
               }
             }
           }
         }
+      }
+
+      if (!accumulatedText) {
+        console.log("[v0] No content received, using fallback")
+        setMessages((prev) => {
+          const newMessages = [...prev]
+          newMessages[newMessages.length - 1] = {
+            ...newMessages[newMessages.length - 1],
+            content: "I'm ready to help! Please make sure your Azure AI agent is properly configured.",
+          }
+          return newMessages
+        })
       }
     } catch (error) {
       console.error("[v0] Error sending message:", error)
@@ -129,7 +158,7 @@ export function StreamingChatDemo() {
         const newMessages = [...prev]
         newMessages[newMessages.length - 1] = {
           ...newMessages[newMessages.length - 1],
-          content: "Sorry, I encountered an error. Please try again.",
+          content: `Error: ${error instanceof Error ? error.message : "Unknown error"}. Please check your Azure AI configuration.`,
         }
         return newMessages
       })
@@ -184,7 +213,7 @@ export function StreamingChatDemo() {
             <div className="bg-gradient-to-b from-gray-50 to-white border-b border-gray-200 px-4 py-3 flex items-center gap-3">
               <div className="relative">
                 <img
-                  src="/crowe-logic-logo.png"
+                  src="/crowe-logic-mushroom-logo.jpg"
                   alt="Crowe Logic"
                   className="w-10 h-10 rounded-full ring-2 ring-primary/30 shadow-md"
                 />
@@ -220,7 +249,7 @@ export function StreamingChatDemo() {
                   >
                     {message.role === "assistant" && (
                       <img
-                        src="/crowe-logic-logo.png"
+                        src="/crowe-logic-mushroom-logo.jpg"
                         alt="Crowe Logic"
                         className="w-8 h-8 rounded-full flex-shrink-0 shadow-sm mt-1"
                       />

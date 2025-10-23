@@ -14,6 +14,9 @@ export async function POST(req: NextRequest) {
     const endpoint = process.env.AZURE_AI_ENDPOINT
     const apiKey = process.env.AZURE_AI_API_KEY
 
+    console.log("[v0] Azure AI endpoint:", endpoint ? "configured" : "missing")
+    console.log("[v0] Azure AI key:", apiKey ? "configured" : "missing")
+
     if (!endpoint || !apiKey) {
       return new Response(JSON.stringify({ error: "Azure AI credentials not configured" }), {
         status: 500,
@@ -21,7 +24,6 @@ export async function POST(req: NextRequest) {
       })
     }
 
-    // Call Azure AI agent
     const response = await fetch(endpoint, {
       method: "POST",
       headers: {
@@ -36,17 +38,49 @@ export async function POST(req: NextRequest) {
       }),
     })
 
+    console.log("[v0] Azure AI response status:", response.status)
+
     if (!response.ok) {
       const error = await response.text()
       console.error("[v0] Azure AI error:", error)
-      return new Response(JSON.stringify({ error: "Failed to get response from Azure AI" }), {
+      return new Response(JSON.stringify({ error: `Azure AI error: ${error}` }), {
         status: response.status,
         headers: { "Content-Type": "application/json" },
       })
     }
 
-    // Stream the response back to the client
-    return new Response(response.body, {
+    const encoder = new TextEncoder()
+    const stream = new ReadableStream({
+      async start(controller) {
+        const reader = response.body?.getReader()
+        const decoder = new TextDecoder()
+
+        if (!reader) {
+          controller.close()
+          return
+        }
+
+        try {
+          while (true) {
+            const { done, value } = await reader.read()
+            if (done) {
+              controller.enqueue(encoder.encode("data: [DONE]\n\n"))
+              controller.close()
+              break
+            }
+
+            const chunk = decoder.decode(value, { stream: true })
+            // Forward the SSE chunks directly
+            controller.enqueue(encoder.encode(chunk))
+          }
+        } catch (error) {
+          console.error("[v0] Stream error:", error)
+          controller.error(error)
+        }
+      },
+    })
+
+    return new Response(stream, {
       headers: {
         "Content-Type": "text/event-stream",
         "Cache-Control": "no-cache",
@@ -55,7 +89,7 @@ export async function POST(req: NextRequest) {
     })
   } catch (error) {
     console.error("[v0] Chat API error:", error)
-    return new Response(JSON.stringify({ error: "Internal server error" }), {
+    return new Response(JSON.stringify({ error: `Internal server error: ${error}` }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     })
