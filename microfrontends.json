@@ -1,0 +1,33 @@
+{
+  "$schema": "https://openapi.vercel.sh/microfrontends.json",
+  "applications": {
+    "v0-email-marketing-landing-page": {
+      "routing": [
+        {
+          "paths": ["/", "/thanks", "/shop", "/shop/*"]
+        }
+      ],
+      "development": {
+        "fallback": "michaelcrowemycology.com"
+      }
+    },
+    "v0-mushroom-cultivation-app": {
+      "routing": [
+        {
+          "paths": [
+            "/chat",
+            "/chat/*",
+            "/forum",
+            "/forum/*",
+            "/documents",
+            "/documents/*",
+            "/docs",
+            "/profile",
+            "/auth/*",
+            "/admin/*"
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -90,20 +90,20 @@ export function ChainOfThought({ steps }: ChainOfThoughtProps) {
     <div className="mb-3">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="flex items-center gap-2 text-xs text-foreground/60 hover:text-foreground/80 transition-colors group"
+        className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors group"
       >
         <ChevronRight className={`w-3 h-3 transition-transform ${isExpanded ? "rotate-90" : ""}`} />
         <span>Reasoning process ({steps.length} steps)</span>
       </button>
 
       {isExpanded && (
-        <div className="mt-3 space-y-2 pl-5 border-l-2 border-border/30">
+        <div className="mt-3 space-y-2 pl-5 border-l-2 border-border">
           {steps.map((step, index) => (
             <div key={index} className="flex gap-3 text-xs">
-              <div className="flex-shrink-0 mt-0.5 text-foreground/50">{stepIcons[step.type]}</div>
+              <div className="flex-shrink-0 mt-0.5 text-amber-600">{stepIcons[step.type]}</div>
               <div className="flex-1">
-                <div className="font-medium text-foreground/70 mb-1">{stepLabels[step.type]}</div>
-                <div className="text-foreground/60 leading-relaxed">{step.content}</div>
+                <div className="font-medium text-foreground mb-1">{stepLabels[step.type]}</div>
+                <div className="text-muted-foreground leading-relaxed">{step.content}</div>
               </div>
             </div>
           ))}
