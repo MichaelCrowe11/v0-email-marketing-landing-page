@@ -220,7 +220,7 @@ export function StreamingChatDemo() {
         </div>
 
         <div className="mx-auto max-w-md md:max-w-lg">
-          <div className="glass-ultra rounded-[3rem] border-8 border-gray-900 shadow-2xl overflow-hidden animate-slide-up hover:scale-[1.02] transition-all duration-500 bg-black">
+          <div className="glass-ultra rounded-[3rem] border-8 border-gray-900 shadow-2xl overflow-hidden bg-black transition-shadow duration-300 hover:shadow-3xl">
             {/* Phone notch and status bar */}
             <div className="relative bg-black h-8 flex items-center justify-center">
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-black rounded-b-2xl" />

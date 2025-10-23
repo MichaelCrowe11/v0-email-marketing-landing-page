@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useCallback } from "react"
 
 export function AIGeneratedIntro({ onComplete }: { onComplete: () => void }) {
   const [progress, setProgress] = useState(0)
@@ -54,6 +54,16 @@ export function AIGeneratedIntro({ onComplete }: { onComplete: () => void }) {
     [],
   )
 
+  const updateStatus = useCallback(
+    (newProgress: number) => {
+      const statusIndex = Math.floor((newProgress / 100) * statusMessages.length)
+      if (statusIndex < statusMessages.length) {
+        setStatusText(statusMessages[statusIndex])
+      }
+    },
+    [statusMessages],
+  )
+
   useEffect(() => {
     const streamInterval = setInterval(() => {
       const randomSnippet = codeSnippets[Math.floor(Math.random() * codeSnippets.length)]
@@ -64,18 +74,13 @@ export function AIGeneratedIntro({ onComplete }: { onComplete: () => void }) {
         x: Math.random() * 95,
         delay: Math.random() * 0.3,
       }
-      setCodeStreams((prev) => [...prev.slice(-40), newStream])
-    }, 80)
+      setCodeStreams((prev) => [...prev.slice(-30), newStream])
+    }, 100)
 
     const progressInterval = setInterval(() => {
       setProgress((prev) => {
         const newProgress = prev + 1
-
-        // Update status text based on progress
-        const statusIndex = Math.floor((newProgress / 100) * statusMessages.length)
-        if (statusIndex < statusMessages.length) {
-          setStatusText(statusMessages[statusIndex])
-        }
+        updateStatus(newProgress)
 
         if (newProgress >= 100) {
           clearInterval(progressInterval)
@@ -91,7 +96,7 @@ export function AIGeneratedIntro({ onComplete }: { onComplete: () => void }) {
       clearInterval(streamInterval)
       clearInterval(progressInterval)
     }
-  }, [onComplete, codeSnippets, statusMessages])
+  }, [onComplete, codeSnippets, updateStatus])
 
   if (progress >= 100) return null
 
@@ -120,7 +125,7 @@ export function AIGeneratedIntro({ onComplete }: { onComplete: () => void }) {
 
       <div className="relative z-10 flex flex-col items-center justify-center h-full px-4">
         <div
-          className="relative mb-8"
+          className="relative mb-8 will-change-transform"
           style={{
             filter: `drop-shadow(0 0 ${30 + progress / 3}px rgba(139,92,246,${0.5 + progress / 200})) drop-shadow(0 0 ${20 + progress / 5}px rgba(59,130,246,${0.3 + progress / 200}))`,
           }}
@@ -135,16 +140,16 @@ export function AIGeneratedIntro({ onComplete }: { onComplete: () => void }) {
             }}
           />
 
-          {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => (
+          {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
             <div
               key={i}
-              className="absolute h-2 w-2 rounded-full"
+              className="absolute h-2 w-2 rounded-full will-change-transform"
               style={{
-                background: `hsl(${(i * 30 + progress * 2) % 360}, 80%, 60%)`,
+                background: `hsl(${(i * 45 + progress * 2) % 360}, 80%, 60%)`,
                 top: "50%",
                 left: "50%",
-                transform: `translate(-50%, -50%) rotate(${i * 30 + progress * 4}deg) translateY(-${80 + (i % 3) * 10}px)`,
-                opacity: 0.7 + Math.sin((progress + i * 30) * 0.1) * 0.3,
+                transform: `translate(-50%, -50%) rotate(${i * 45 + progress * 4}deg) translateY(-${80 + (i % 3) * 10}px)`,
+                opacity: 0.7 + Math.sin((progress + i * 45) * 0.1) * 0.3,
                 boxShadow: `0 0 10px currentColor`,
                 transition: "all 0.1s linear",
               }}
@@ -169,7 +174,7 @@ export function AIGeneratedIntro({ onComplete }: { onComplete: () => void }) {
           </div>
           <div className="h-3 bg-white/10 rounded-full overflow-hidden backdrop-blur-sm border border-white/30 shadow-lg">
             <div
-              className="h-full bg-gradient-to-r from-blue-500 via-purple-500 via-pink-500 to-cyan-500 transition-all duration-300 ease-out relative"
+              className="h-full bg-gradient-to-r from-blue-500 via-purple-500 via-pink-500 to-cyan-500 transition-all duration-300 ease-out relative will-change-transform"
               style={{
                 width: `${progress}%`,
                 boxShadow: `0 0 30px rgba(139, 92, 246, ${progress / 80}), 0 0 50px rgba(59, 130, 246, ${progress / 100})`,
@@ -185,7 +190,7 @@ export function AIGeneratedIntro({ onComplete }: { onComplete: () => void }) {
           {[0, 1, 2].map((i) => (
             <div
               key={i}
-              className="h-3 w-3 rounded-full"
+              className="h-3 w-3 rounded-full will-change-transform"
               style={{
                 background: `hsl(${(progress * 3 + i * 120) % 360}, 80%, 60%)`,
                 opacity: 0.4 + (Math.sin(progress * 0.15 + i * 1.2) + 1) * 0.3,

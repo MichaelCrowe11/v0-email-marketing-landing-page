@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useMemo } from "react"
+import { useEffect, useState, useMemo, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 
@@ -66,6 +66,15 @@ export function OrchestratedHero() {
     [],
   )
 
+  const updateParticles = useCallback(() => {
+    setParticles((prev) =>
+      prev.map((p) => ({
+        ...p,
+        angle: p.angle + p.speed * 0.01,
+      })),
+    )
+  }, [])
+
   // Initialize code particles
   useEffect(() => {
     const newParticles: CodeParticle[] = Array.from({ length: 20 }, (_, i) => ({
@@ -81,18 +90,13 @@ export function OrchestratedHero() {
     let animationFrame: number
 
     const animate = () => {
-      setParticles((prev) =>
-        prev.map((p) => ({
-          ...p,
-          angle: p.angle + p.speed * 0.01,
-        })),
-      )
+      updateParticles()
       animationFrame = requestAnimationFrame(animate)
     }
 
     animate()
     return () => cancelAnimationFrame(animationFrame)
-  }, [codeSnippets, colors])
+  }, [codeSnippets, colors, updateParticles])
 
   // Terminal animation
   useEffect(() => {
@@ -161,7 +165,7 @@ export function OrchestratedHero() {
             return (
               <div
                 key={particle.id}
-                className={`absolute font-mono text-sm font-bold ${particle.color} whitespace-nowrap`}
+                className={`absolute font-mono text-sm font-bold ${particle.color} whitespace-nowrap will-change-transform`}
                 style={{
                   transform: `translate(${x}px, ${y}px)`,
                   textShadow: "0 0 10px currentColor",
