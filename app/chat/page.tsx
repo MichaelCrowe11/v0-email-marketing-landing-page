@@ -17,6 +17,9 @@ import { Canvas } from "@/components/chat/canvas"
 import { EnvironmentMonitor } from "@/components/chat/environment-monitor"
 import { YieldCalculator } from "@/components/chat/yield-calculator"
 import { IntegrationsPanel } from "@/components/chat/integrations-panel"
+import { createClient } from "@/lib/supabase/client"
+import { createConversation, saveMessage, getMessages } from "@/lib/supabase/chat-queries"
+import { ConversationHistory } from "@/components/chat/conversation-history"
 
 export default function ChatPage() {
   return (
@@ -100,7 +103,7 @@ function MagicalStreamingText({ text, isStreaming }: { text: string; isStreaming
 }
 
 function ChatContainer() {
-  const { messages, sendMessage, status } = useChat({
+  const { messages, sendMessage, status, setMessages } = useChat({
     transport: new DefaultChatTransport({ api: "/api/chat" }),
   })
 
@@ -114,6 +117,63 @@ function ChatContainer() {
   const [isCanvasOpen, setIsCanvasOpen] = useState(false)
   const [canvasContent, setCanvasContent] = useState("")
   const [isIntegrationsOpen, setIsIntegrationsOpen] = useState(false)
+  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null)
+  const [userId, setUserId] = useState<string | null>(null)
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false)
+
+  useEffect(() => {
+    async function loadUser() {
+      const supabase = createClient()
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      if (user) {
+        setUserId(user.id)
+      }
+    }
+    loadUser()
+  }, [])
+
+  useEffect(() => {
+    async function persistMessage() {
+      if (!userId || !currentConversationId || messages.length === 0) return
+
+      const lastMessage = messages[messages.length - 1]
+      const textContent = lastMessage.parts
+        .filter((part) => part.type === "text")
+        .map((part) => part.text)
+        .join("")
+
+      await saveMessage(currentConversationId, lastMessage.role as "user" | "assistant", textContent)
+    }
+
+    if (status === "awaiting_message") {
+      persistMessage()
+    }
+  }, [messages, status, userId, currentConversationId])
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!input.trim() || status === "in_progress") return
+
+    if (!currentConversationId && userId) {
+      const title = input.slice(0, 50) + (input.length > 50 ? "..." : "")
+      const conversation = await createConversation(userId, title)
+      if (conversation) {
+        setCurrentConversationId(conversation.id)
+      }
+    }
+
+    const requestData = {
+      text: input,
+      timestamp: new Date().toISOString(),
+      messageCount: messages.length,
+    }
+    setLastRequest(requestData)
+
+    sendMessage({ text: input })
+    setInput("")
+  }
 
   useEffect(() => {
     if (status === "awaiting_message" && messages.length > 0) {
@@ -131,40 +191,50 @@ function ChatContainer() {
     }
   }, [status, messages, completedMessages])
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!input.trim() || status === "in_progress") return
-
-    const requestData = {
-      text: input,
-      timestamp: new Date().toISOString(),
-      messageCount: messages.length,
-    }
-    setLastRequest(requestData)
-
-    sendMessage({ text: input })
-    setInput("")
-  }
-
-  useEffect(() => {
-    if (messages.length > 0) {
-      const lastMessage = messages[messages.length - 1]
-      if (lastMessage.role === "assistant") {
-        setLastResponse({
-          message: lastMessage,
-          timestamp: new Date().toISOString(),
-        })
-      }
-    }
-  }, [messages])
-
   const isLoading = status === "in_progress"
   const isEmpty = messages.length === 0
+
+  async function handleSelectConversation(conversationId: string) {
+    const dbMessages = await getMessages(conversationId)
+    const formattedMessages = dbMessages.map((msg) => ({
+      id: msg.id,
+      role: msg.role,
+      parts: [{ type: "text" as const, text: msg.content }],
+    }))
+    setMessages(formattedMessages)
+    setCurrentConversationId(conversationId)
+    setIsHistoryOpen(false)
+  }
+
+  function handleNewConversation() {
+    setMessages([])
+    setCurrentConversationId(null)
+    setIsHistoryOpen(false)
+  }
 
   return (
     <div className="h-full flex flex-col">
       <div className="px-6 py-4 flex items-center justify-between border-b border-border bg-card">
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => setIsHistoryOpen(!isHistoryOpen)}
+            className="h-10 w-10 flex items-center justify-center rounded-lg hover:bg-muted transition-colors"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="w-5 h-5"
+            >
+              <line x1="3" x2="21" y1="6" y2="6" />
+              <line x1="3" x2="21" y1="12" y2="12" />
+              <line x1="3" x2="21" y1="18" y2="18" />
+            </svg>
+          </button>
           <div className="h-10 w-10 rounded-full overflow-hidden flex-shrink-0">
             <Image
               src="/crowe-logic-logo.png"
@@ -240,6 +310,16 @@ function ChatContainer() {
           </Link>
         </div>
       </div>
+
+      {isHistoryOpen && (
+        <div className="absolute left-0 top-[73px] bottom-0 w-64 bg-card border-r border-border z-50 shadow-lg">
+          <ConversationHistory
+            currentConversationId={currentConversationId}
+            onSelectConversation={handleSelectConversation}
+            onNewConversation={handleNewConversation}
+          />
+        </div>
+      )}
 
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-4xl mx-auto px-6 py-12">
