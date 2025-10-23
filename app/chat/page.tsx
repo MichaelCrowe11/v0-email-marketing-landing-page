@@ -20,6 +20,7 @@ import { IntegrationsPanel } from "@/components/chat/integrations-panel"
 import { createClient } from "@/lib/supabase/client"
 import { createConversation, saveMessage, getMessages } from "@/lib/supabase/chat-queries"
 import { ConversationHistory } from "@/components/chat/conversation-history"
+import { ModelSelector } from "@/components/chat/model-selector"
 
 export default function ChatPage() {
   return (
@@ -103,8 +104,10 @@ function MagicalStreamingText({ text, isStreaming }: { text: string; isStreaming
 }
 
 function ChatContainer() {
+  const [selectedModel, setSelectedModel] = useState("azure-agent")
   const { messages, sendMessage, status, setMessages } = useChat({
     transport: new DefaultChatTransport({ api: "/api/chat" }),
+    body: { model: selectedModel },
   })
 
   const [input, setInput] = useState("")
@@ -250,6 +253,7 @@ function ChatContainer() {
           </div>
         </div>
         <div className="flex items-center gap-3">
+          <ModelSelector selectedModel={selectedModel} onModelChange={setSelectedModel} />
           <button
             onClick={() => setIsIntegrationsOpen(true)}
             className="flex items-center gap-2 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
