@@ -1,4 +1,4 @@
-import { streamText } from "ai"
+import { streamText, convertToCoreMessages } from "ai"
 
 export const maxDuration = 60
 
@@ -25,6 +25,8 @@ export async function POST(req: Request) {
 
       console.log("[v0] Using Azure AI agent:", azureEndpoint)
 
+      const coreMessages = convertToCoreMessages(messages)
+
       // Call Azure AI endpoint directly
       const azureResponse = await fetch(azureEndpoint, {
         method: "POST",
@@ -33,9 +35,9 @@ export async function POST(req: Request) {
           "api-key": azureApiKey,
         },
         body: JSON.stringify({
-          messages: messages.map((msg: any) => ({
+          messages: coreMessages.map((msg: any) => ({
             role: msg.role,
-            content: msg.parts?.map((p: any) => p.text).join("") || msg.content,
+            content: typeof msg.content === "string" ? msg.content : msg.content.map((p: any) => p.text || p).join(""),
           })),
           max_tokens: 8000,
           temperature: 0.7,
@@ -63,7 +65,7 @@ export async function POST(req: Request) {
 
     const result = streamText({
       model: model || "anthropic/claude-sonnet-4.5",
-      messages,
+      messages: convertToCoreMessages(messages),
       system: `You are Crowe Logic AI, an expert mycology cultivation assistant with 20+ years of commercial growing experience.
 
 EXPERTISE AREAS:
