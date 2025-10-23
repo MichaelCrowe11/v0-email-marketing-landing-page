@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 
 interface Message {
@@ -119,25 +119,18 @@ export function StreamingChatDemo() {
   const [streamingText, setStreamingText] = useState("")
   const [isStreaming, setIsStreaming] = useState(false)
 
-  useEffect(() => {
-    startConversation()
-    return () => {
-      // Cleanup code here if needed
-    }
-  }, [currentConvo])
-
-  const formatTime = () => {
+  const formatTime = useCallback(() => {
     const now = new Date()
     return now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true })
-  }
+  }, [])
 
-  const startConversation = async () => {
+  const convo = useMemo(() => DEMO_CONVERSATIONS[currentConvo], [currentConvo])
+
+  const startConversation = useCallback(async () => {
     setMessages([])
     setIsThinking(false)
     setStreamingText("")
     setIsStreaming(false)
-
-    const convo = DEMO_CONVERSATIONS[currentConvo]
 
     // Show user message
     await new Promise((resolve) => setTimeout(resolve, 500))
@@ -199,7 +192,15 @@ export function StreamingChatDemo() {
     // Wait before next conversation
     await new Promise((resolve) => setTimeout(resolve, 6000))
     setCurrentConvo((prev) => (prev + 1) % DEMO_CONVERSATIONS.length)
-  }
+  }, [convo, formatTime])
+
+  useEffect(() => {
+    startConversation()
+  }, [startConversation])
+
+  const handleNextConvo = useCallback(() => {
+    setCurrentConvo((prev) => (prev + 1) % DEMO_CONVERSATIONS.length)
+  }, [])
 
   return (
     <section className="relative px-4 py-16 bg-gradient-to-b from-background via-muted/10 to-background overflow-hidden">
@@ -235,7 +236,9 @@ export function StreamingChatDemo() {
 
             {/* Chat Header - iOS style */}
             <div className="bg-gradient-to-b from-gray-50 to-white border-b border-gray-200 px-4 py-3 flex items-center gap-3">
-              <button className="text-primary text-lg">‹</button>
+              <button className="text-primary text-lg" aria-label="Back">
+                ‹
+              </button>
               <div className="relative">
                 <img
                   src="/crowe-logic-logo.png"
@@ -248,10 +251,7 @@ export function StreamingChatDemo() {
                 <h3 className="font-semibold text-gray-900 text-sm">Crowe Logic AI</h3>
                 <p className="text-xs text-green-600">Active now</p>
               </div>
-              <button
-                onClick={() => setCurrentConvo((prev) => (prev + 1) % DEMO_CONVERSATIONS.length)}
-                className="text-primary text-sm font-medium"
-              >
+              <button onClick={handleNextConvo} className="text-primary text-sm font-medium">
                 Next →
               </button>
             </div>
@@ -389,11 +389,15 @@ export function StreamingChatDemo() {
 
             {/* Input bar - iOS style */}
             <div className="border-t border-gray-200 bg-gray-50 px-4 py-2 flex items-center gap-2">
-              <button className="text-gray-400 text-xl">📷</button>
+              <button className="text-gray-400 text-xl" aria-label="Camera">
+                📷
+              </button>
               <div className="flex-1 bg-white rounded-full px-4 py-2 text-sm text-gray-400 border border-gray-200">
                 Message Crowe Logic...
               </div>
-              <button className="text-primary text-xl">🎤</button>
+              <button className="text-primary text-xl" aria-label="Voice">
+                🎤
+              </button>
             </div>
 
             {/* Home indicator */}
@@ -408,6 +412,7 @@ export function StreamingChatDemo() {
               <button
                 key={idx}
                 onClick={() => setCurrentConvo(idx)}
+                aria-label={`Go to conversation ${idx + 1}`}
                 className={`h-2 rounded-full transition-all ${
                   idx === currentConvo ? "w-8 bg-primary" : "w-2 bg-gray-300"
                 }`}

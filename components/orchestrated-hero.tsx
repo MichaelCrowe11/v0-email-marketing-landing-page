@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 
@@ -35,27 +35,36 @@ export function OrchestratedHero() {
     { id: "4", title: "Genetic Algorithm", status: "pending", progress: 0 },
   ])
 
-  const codeSnippets = [
-    "genome.sequence()",
-    "species.classify()",
-    "neural.predict()",
-    "genetic.optimize()",
-    "dna.analyze()",
-    "quantum.compute()",
-    "ai.process()",
-    "model.train()",
-  ]
+  const codeSnippets = useMemo(
+    () => [
+      "genome.sequence()",
+      "species.classify()",
+      "neural.predict()",
+      "genetic.optimize()",
+      "dna.analyze()",
+      "quantum.compute()",
+      "ai.process()",
+      "model.train()",
+    ],
+    [],
+  )
 
-  const colors = ["text-cyan-400", "text-purple-400", "text-pink-400", "text-green-400", "text-yellow-400"]
+  const colors = useMemo(
+    () => ["text-cyan-400", "text-purple-400", "text-pink-400", "text-green-400", "text-yellow-400"],
+    [],
+  )
 
-  const terminalMessages: TerminalLine[] = [
-    { text: "[AI] Initializing Crowe Logic Engine...", type: "info" },
-    { text: "[DNA] Sequencing genome: 10,847 base pairs", type: "info" },
-    { text: "[NEURAL] Model loaded: 98.47% accuracy", type: "success" },
-    { text: "[GENETIC] Optimization complete", type: "success" },
-    { text: "[QUANTUM] Qubits entangled: 256", type: "info" },
-    { text: "[SYSTEM] All systems operational", type: "success" },
-  ]
+  const terminalMessages: TerminalLine[] = useMemo(
+    () => [
+      { text: "[AI] Initializing Crowe Logic Engine...", type: "info" },
+      { text: "[DNA] Sequencing genome: 10,847 base pairs", type: "info" },
+      { text: "[NEURAL] Model loaded: 98.47% accuracy", type: "success" },
+      { text: "[GENETIC] Optimization complete", type: "success" },
+      { text: "[QUANTUM] Qubits entangled: 256", type: "info" },
+      { text: "[SYSTEM] All systems operational", type: "success" },
+    ],
+    [],
+  )
 
   // Initialize code particles
   useEffect(() => {
@@ -69,11 +78,9 @@ export function OrchestratedHero() {
     }))
     setParticles(newParticles)
 
-    let time = 0
     let animationFrame: number
 
     const animate = () => {
-      time += 0.01
       setParticles((prev) =>
         prev.map((p) => ({
           ...p,
@@ -85,7 +92,7 @@ export function OrchestratedHero() {
 
     animate()
     return () => cancelAnimationFrame(animationFrame)
-  }, [])
+  }, [codeSnippets, colors])
 
   // Terminal animation
   useEffect(() => {
@@ -103,7 +110,7 @@ export function OrchestratedHero() {
     }, 800)
 
     return () => clearInterval(interval)
-  }, [])
+  }, [terminalMessages])
 
   // Code blocks animation
   useEffect(() => {
