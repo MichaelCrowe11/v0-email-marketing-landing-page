@@ -12,6 +12,11 @@ import { StrainDatabase } from "@/components/chat/strain-database"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import Link from "next/link"
 import Image from "next/image"
+import { DebugPanel } from "@/components/chat/debug-panel"
+import { Canvas } from "@/components/chat/canvas"
+import { EnvironmentMonitor } from "@/components/chat/environment-monitor"
+import { YieldCalculator } from "@/components/chat/yield-calculator"
+import { IntegrationsPanel } from "@/components/chat/integrations-panel"
 
 export default function ChatPage() {
   return (
@@ -48,6 +53,52 @@ function parseReasoning(text: string): { reasoning: ReasoningStep[]; content: st
   return { reasoning: steps, content }
 }
 
+function MagicalStreamingText({ text, isStreaming }: { text: string; isStreaming: boolean }) {
+  const [displayedText, setDisplayedText] = useState("")
+  const [currentIndex, setCurrentIndex] = useState(0)
+
+  useEffect(() => {
+    if (!isStreaming) {
+      setDisplayedText(text)
+      return
+    }
+
+    if (currentIndex < text.length) {
+      const timeout = setTimeout(() => {
+        setDisplayedText(text.slice(0, currentIndex + 1))
+        setCurrentIndex(currentIndex + 1)
+      }, 15) // Fast, magical typing speed
+
+      return () => clearTimeout(timeout)
+    }
+  }, [text, currentIndex, isStreaming])
+
+  useEffect(() => {
+    setCurrentIndex(0)
+    setDisplayedText("")
+  }, [text])
+
+  return (
+    <>
+      {displayedText.split("").map((char, i) => (
+        <span
+          key={i}
+          className="inline-block animate-char-appear"
+          style={{
+            animationDelay: `${i * 15}ms`,
+            animationFillMode: "backwards",
+          }}
+        >
+          {char === " " ? "\u00A0" : char}
+        </span>
+      ))}
+      {isStreaming && currentIndex < text.length && (
+        <span className="inline-block w-0.5 h-5 bg-amber-500 ml-0.5 animate-magical-cursor shadow-lg shadow-amber-500/70" />
+      )}
+    </>
+  )
+}
+
 function ChatContainer() {
   const { messages, sendMessage, status } = useChat({
     transport: new DefaultChatTransport({ api: "/api/chat" }),
@@ -55,8 +106,14 @@ function ChatContainer() {
 
   const [input, setInput] = useState("")
   const [completedMessages, setCompletedMessages] = useState<Set<string>>(new Set())
-  const [activeToolDialog, setActiveToolDialog] = useState<"substrate" | "strain" | null>(null)
-  const [streamingText, setStreamingText] = useState<string>("")
+  const [activeToolDialog, setActiveToolDialog] = useState<"substrate" | "strain" | "environment" | "yield" | null>(
+    null,
+  )
+  const [lastRequest, setLastRequest] = useState<any>(null)
+  const [lastResponse, setLastResponse] = useState<any>(null)
+  const [isCanvasOpen, setIsCanvasOpen] = useState(false)
+  const [canvasContent, setCanvasContent] = useState("")
+  const [isIntegrationsOpen, setIsIntegrationsOpen] = useState(false)
 
   useEffect(() => {
     if (status === "awaiting_message" && messages.length > 0) {
@@ -78,9 +135,28 @@ function ChatContainer() {
     e.preventDefault()
     if (!input.trim() || status === "in_progress") return
 
+    const requestData = {
+      text: input,
+      timestamp: new Date().toISOString(),
+      messageCount: messages.length,
+    }
+    setLastRequest(requestData)
+
     sendMessage({ text: input })
     setInput("")
   }
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      const lastMessage = messages[messages.length - 1]
+      if (lastMessage.role === "assistant") {
+        setLastResponse({
+          message: lastMessage,
+          timestamp: new Date().toISOString(),
+        })
+      }
+    }
+  }, [messages])
 
   const isLoading = status === "in_progress"
   const isEmpty = messages.length === 0
@@ -103,25 +179,66 @@ function ChatContainer() {
             <p className="text-xs text-muted-foreground">Expert Cultivation Assistant</p>
           </div>
         </div>
-        <Link
-          href="/"
-          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="w-4 h-4"
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setIsIntegrationsOpen(true)}
+            className="flex items-center gap-2 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
           >
-            <path d="m12 19-7-7 7-7" />
-            <path d="M19 12H5" />
-          </svg>
-          Back to Home
-        </Link>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="w-4 h-4"
+            >
+              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+              <polyline points="16 6 12 2 8 6" />
+              <line x1="12" x2="12" y1="2" y2="15" />
+            </svg>
+            Integrations
+          </button>
+          <button
+            onClick={() => setIsCanvasOpen(true)}
+            className="flex items-center gap-2 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="w-4 h-4"
+            >
+              <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+              <path d="M18.375 2.625a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4Z" />
+            </svg>
+            Canvas
+          </button>
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="w-4 h-4"
+            >
+              <path d="m12 19-7-7 7-7" />
+              <path d="M19 12H5" />
+            </svg>
+            Back to Home
+          </Link>
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto">
@@ -220,11 +337,20 @@ function ChatContainer() {
                     </div>
                     <div className="flex-1 space-y-3">
                       {isAssistant && reasoning.length > 0 && <ChainOfThought steps={reasoning} />}
-                      <div className="text-sm text-foreground leading-relaxed whitespace-pre-wrap relative">
-                        <span className={isStreaming ? "animate-text-materialize" : ""}>{content}</span>
-                        {isStreaming && (
-                          <span className="inline-block w-1 h-5 bg-amber-500 ml-1 animate-cursor-breathe shadow-lg shadow-amber-500/50" />
-                        )}
+                      <div
+                        className={`rounded-2xl px-5 py-4 shadow-sm ${
+                          isAssistant
+                            ? "bg-card border border-border"
+                            : "bg-gradient-to-br from-amber-50 to-amber-100/50 dark:from-amber-950/30 dark:to-amber-900/20 border border-amber-200/50 dark:border-amber-800/50"
+                        }`}
+                      >
+                        <div className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
+                          {isStreaming ? (
+                            <MagicalStreamingText text={content} isStreaming={true} />
+                          ) : (
+                            <span>{content}</span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -260,6 +386,84 @@ function ChatContainer() {
       </div>
 
       <div className="border-t border-border bg-card/50 backdrop-blur-xl">
+        <div className="max-w-4xl mx-auto px-6 py-3">
+          <div className="flex gap-2 overflow-x-auto pb-2">
+            <button
+              onClick={() => setActiveToolDialog("substrate")}
+              className="flex items-center gap-2 px-3 py-1.5 text-xs bg-muted hover:bg-muted/80 rounded-lg transition-colors whitespace-nowrap"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="w-3.5 h-3.5"
+              >
+                <path d="M3 3v18h18" />
+                <path d="m19 9-5 5-4-4-3 3" />
+              </svg>
+              Substrate Calculator
+            </button>
+            <button
+              onClick={() => setActiveToolDialog("strain")}
+              className="flex items-center gap-2 px-3 py-1.5 text-xs bg-muted hover:bg-muted/80 rounded-lg transition-colors whitespace-nowrap"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="w-3.5 h-3.5"
+              >
+                <path d="M12 2v20M2 12h20" />
+              </svg>
+              Strain Database
+            </button>
+            <button
+              onClick={() => setActiveToolDialog("environment")}
+              className="flex items-center gap-2 px-3 py-1.5 text-xs bg-muted hover:bg-muted/80 rounded-lg transition-colors whitespace-nowrap"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="w-3.5 h-3.5"
+              >
+                <path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z" />
+              </svg>
+              Environment Monitor
+            </button>
+            <button
+              onClick={() => setActiveToolDialog("yield")}
+              className="flex items-center gap-2 px-3 py-1.5 text-xs bg-muted hover:bg-muted/80 rounded-lg transition-colors whitespace-nowrap"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="w-3.5 h-3.5"
+              >
+                <path d="M16 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg>
+              Yield Calculator
+            </button>
+          </div>
+        </div>
+
         <div className="max-w-4xl mx-auto px-6 py-6">
           <form onSubmit={handleSubmit} className="relative">
             <textarea
@@ -319,6 +523,28 @@ function ChatContainer() {
           <StrainDatabase />
         </DialogContent>
       </Dialog>
+
+      <Dialog open={activeToolDialog === "environment"} onOpenChange={() => setActiveToolDialog(null)}>
+        <DialogContent className="max-w-md bg-card border-border">
+          <DialogHeader>
+            <DialogTitle className="text-base text-foreground">Environment Monitor</DialogTitle>
+          </DialogHeader>
+          <EnvironmentMonitor />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={activeToolDialog === "yield"} onOpenChange={() => setActiveToolDialog(null)}>
+        <DialogContent className="max-w-md bg-card border-border">
+          <DialogHeader>
+            <DialogTitle className="text-base text-foreground">Yield Calculator</DialogTitle>
+          </DialogHeader>
+          <YieldCalculator />
+        </DialogContent>
+      </Dialog>
+
+      <DebugPanel messages={messages} status={status} lastRequest={lastRequest} lastResponse={lastResponse} />
+      <Canvas isOpen={isCanvasOpen} onClose={() => setIsCanvasOpen(false)} initialContent={canvasContent} />
+      <IntegrationsPanel isOpen={isIntegrationsOpen} onClose={() => setIsIntegrationsOpen(false)} />
     </div>
   )
 }
