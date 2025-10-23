@@ -1,127 +1,70 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo, useCallback } from "react"
 
 export function AIGeneratedIntro({ onComplete }: { onComplete: () => void }) {
-  const [stage, setStage] = useState<"logo" | "analysis" | "generation" | "complete">("logo")
-  const [analysisItems, setAnalysisItems] = useState<string[]>([])
-  const [generatedItems, setGeneratedItems] = useState<string[]>([])
-  const [metrics, setMetrics] = useState({ species: 0, accuracy: 0, speed: 0 })
   const [progress, setProgress] = useState(0)
   const [codeStreams, setCodeStreams] = useState<
     Array<{ id: number; code: string; color: string; x: number; delay: number }>
   >([])
   const [statusText, setStatusText] = useState("Initializing AI Systems...")
 
-  // Stage 1: AI Analysis Process
-  const analysisSequence = [
-    { icon: "🔬", title: "Species Identification", desc: "Neural network analyzing 15,000+ species", color: "blue" },
-    { icon: "🧬", title: "DNA Pattern Recognition", desc: "Processing genetic markers in real-time", color: "purple" },
-    { icon: "📊", title: "Growth Optimization", desc: "AI calculating optimal cultivation parameters", color: "green" },
-    { icon: "🎯", title: "Contamination Detection", desc: "Computer vision scanning for threats", color: "red" },
-  ]
+  const codeSnippets = useMemo(
+    () => [
+      { code: "import { TensorFlow, PyTorch } from '@ai/frameworks'", color: "text-purple-400" },
+      { code: "const model = await loadTransformerModel('mycology-gpt-4')", color: "text-blue-400" },
+      { code: "neural_network.train(epochs=10000, batch_size=256)", color: "text-green-400" },
+      { code: "if (contamination.confidence > 0.99) quarantine()", color: "text-red-400" },
+      { code: "const dna_sequence = CRISPR.analyze(genome_data)", color: "text-cyan-400" },
+      { code: "vision_model.detect_species(image, threshold=0.98)", color: "text-yellow-400" },
+      { code: "class QuantumMycologyAI extends DeepLearning {", color: "text-pink-400" },
+      { code: "  async predict_growth(env: Environment) {", color: "text-orange-400" },
+      { code: "const embeddings = transformer.encode(species_data)", color: "text-indigo-400" },
+      { code: "await vectorDB.upsert({ id, vector, metadata })", color: "text-teal-400" },
+      { code: "reinforcement_learning.optimize(reward_function)", color: "text-lime-400" },
+      { code: "const yield = genetic_algorithm.maximize(params)", color: "text-fuchsia-400" },
+      { code: "interface NeuralArchitecture { layers: Layer[] }", color: "text-violet-400" },
+      { code: "return { accuracy: 99.8%, latency: 12ms }", color: "text-emerald-400" },
+      { code: "attention_mechanism.focus(key_features)", color: "text-sky-400" },
+      { code: "export const cultivate = quantum_optimize()", color: "text-rose-400" },
+      { code: "federated_learning.aggregate_models(clients)", color: "text-amber-400" },
+      { code: "const prediction = ensemble.vote([rf, xgb, nn])", color: "text-purple-300" },
+      { code: "graph_neural_network.propagate(mycelium_network)", color: "text-blue-300" },
+      { code: "automl.search_architecture(search_space)", color: "text-green-300" },
+      { code: "edge_ai.deploy(model, device='raspberry-pi')", color: "text-red-300" },
+      { code: "blockchain.verify_cultivation_data(hash)", color: "text-cyan-300" },
+      { code: "iot_sensors.stream(temperature, humidity, co2)", color: "text-yellow-300" },
+      { code: "knowledge_graph.query('optimal_substrate')", color: "text-pink-300" },
+    ],
+    [],
+  )
 
-  // Stage 2: Code Generation Process
-  const generationSequence = [
-    { icon: "⚡", title: "Smart Dashboard", desc: "Real-time monitoring & analytics", color: "yellow" },
-    { icon: "💬", title: "AI Chat Assistant", desc: "Expert knowledge at your fingertips", color: "blue" },
-    { icon: "📚", title: "Knowledge Base", desc: "20+ years of research compiled", color: "purple" },
-    { icon: "🌐", title: "Community Forum", desc: "Connect with expert mycologists", color: "green" },
-  ]
+  const statusMessages = useMemo(
+    () => [
+      "⚡ Initializing Quantum Neural Networks...",
+      "🧠 Loading Deep Learning Models (GPT-4 Architecture)...",
+      "🔬 Indexing 15,000+ Species in Vector Database...",
+      "👁️ Training Computer Vision with 2M+ Images...",
+      "🧬 Analyzing DNA Sequences with CRISPR Technology...",
+      "📊 Optimizing Growth Parameters via Reinforcement Learning...",
+      "🌐 Deploying Edge AI to IoT Sensor Network...",
+      "🔐 Securing Data with Blockchain Verification...",
+      "🚀 Finalizing Platform Deployment...",
+    ],
+    [],
+  )
 
-  const codeSnippets = [
-    { code: "import { TensorFlow, PyTorch } from '@ai/frameworks'", color: "text-purple-400" },
-    { code: "const model = await loadTransformerModel('mycology-gpt-4')", color: "text-blue-400" },
-    { code: "neural_network.train(epochs=10000, batch_size=256)", color: "text-green-400" },
-    { code: "if (contamination.confidence > 0.99) quarantine()", color: "text-red-400" },
-    { code: "const dna_sequence = CRISPR.analyze(genome_data)", color: "text-cyan-400" },
-    { code: "vision_model.detect_species(image, threshold=0.98)", color: "text-yellow-400" },
-    { code: "class QuantumMycologyAI extends DeepLearning {", color: "text-pink-400" },
-    { code: "  async predict_growth(env: Environment) {", color: "text-orange-400" },
-    { code: "const embeddings = transformer.encode(species_data)", color: "text-indigo-400" },
-    { code: "await vectorDB.upsert({ id, vector, metadata })", color: "text-teal-400" },
-    { code: "reinforcement_learning.optimize(reward_function)", color: "text-lime-400" },
-    { code: "const yield = genetic_algorithm.maximize(params)", color: "text-fuchsia-400" },
-    { code: "interface NeuralArchitecture { layers: Layer[] }", color: "text-violet-400" },
-    { code: "return { accuracy: 99.8%, latency: 12ms }", color: "text-emerald-400" },
-    { code: "attention_mechanism.focus(key_features)", color: "text-sky-400" },
-    { code: "export const cultivate = quantum_optimize()", color: "text-rose-400" },
-    { code: "federated_learning.aggregate_models(clients)", color: "text-amber-400" },
-    { code: "const prediction = ensemble.vote([rf, xgb, nn])", color: "text-purple-300" },
-    { code: "graph_neural_network.propagate(mycelium_network)", color: "text-blue-300" },
-    { code: "automl.search_architecture(search_space)", color: "text-green-300" },
-    { code: "edge_ai.deploy(model, device='raspberry-pi')", color: "text-red-300" },
-    { code: "blockchain.verify_cultivation_data(hash)", color: "text-cyan-300" },
-    { code: "iot_sensors.stream(temperature, humidity, co2)", color: "text-yellow-300" },
-    { code: "knowledge_graph.query('optimal_substrate')", color: "text-pink-300" },
-  ]
-
-  const statusMessages = [
-    "⚡ Initializing Quantum Neural Networks...",
-    "🧠 Loading Deep Learning Models (GPT-4 Architecture)...",
-    "🔬 Indexing 15,000+ Species in Vector Database...",
-    "👁️ Training Computer Vision with 2M+ Images...",
-    "🧬 Analyzing DNA Sequences with CRISPR Technology...",
-    "📊 Optimizing Growth Parameters via Reinforcement Learning...",
-    "🌐 Deploying Edge AI to IoT Sensor Network...",
-    "🔐 Securing Data with Blockchain Verification...",
-    "🚀 Finalizing Platform Deployment...",
-  ]
+  const updateStatus = useCallback(
+    (newProgress: number) => {
+      const statusIndex = Math.floor((newProgress / 100) * statusMessages.length)
+      if (statusIndex < statusMessages.length) {
+        setStatusText(statusMessages[statusIndex])
+      }
+    },
+    [statusMessages],
+  )
 
   useEffect(() => {
-    const timers: NodeJS.Timeout[] = []
-
-    // Stage 1: Logo (2s)
-    timers.push(setTimeout(() => setStage("analysis"), 2000))
-
-    // Stage 2: Analysis items
-    analysisSequence.forEach((_, index) => {
-      timers.push(
-        setTimeout(
-          () => {
-            setAnalysisItems((prev) => [...prev, analysisSequence[index].title])
-          },
-          2500 + index * 800,
-        ),
-      )
-    })
-
-    // Animate metrics during analysis
-    timers.push(
-      setTimeout(() => {
-        const interval = setInterval(() => {
-          setMetrics((prev) => ({
-            species: Math.min(prev.species + 500, 15000),
-            accuracy: Math.min(prev.accuracy + 3, 99),
-            speed: Math.min(prev.speed + 5, 100),
-          }))
-        }, 50)
-        timers.push(setTimeout(() => clearInterval(interval), 2000) as any)
-      }, 3000),
-    )
-
-    // Stage 3: Generation
-    timers.push(setTimeout(() => setStage("generation"), 6000))
-
-    generationSequence.forEach((_, index) => {
-      timers.push(
-        setTimeout(
-          () => {
-            setGeneratedItems((prev) => [...prev, generationSequence[index].title])
-          },
-          6500 + index * 700,
-        ),
-      )
-    })
-
-    // Complete
-    timers.push(
-      setTimeout(() => {
-        setStage("complete")
-        setTimeout(onComplete, 500)
-      }, 10000),
-    )
-
     const streamInterval = setInterval(() => {
       const randomSnippet = codeSnippets[Math.floor(Math.random() * codeSnippets.length)]
       const newStream = {
@@ -131,18 +74,13 @@ export function AIGeneratedIntro({ onComplete }: { onComplete: () => void }) {
         x: Math.random() * 95,
         delay: Math.random() * 0.3,
       }
-      setCodeStreams((prev) => [...prev.slice(-40), newStream])
-    }, 80)
+      setCodeStreams((prev) => [...prev.slice(-30), newStream])
+    }, 100)
 
     const progressInterval = setInterval(() => {
       setProgress((prev) => {
         const newProgress = prev + 1
-
-        // Update status text based on progress
-        const statusIndex = Math.floor((newProgress / 100) * statusMessages.length)
-        if (statusIndex < statusMessages.length) {
-          setStatusText(statusMessages[statusIndex])
-        }
+        updateStatus(newProgress)
 
         if (newProgress >= 100) {
           clearInterval(progressInterval)
@@ -155,11 +93,10 @@ export function AIGeneratedIntro({ onComplete }: { onComplete: () => void }) {
     }, 50)
 
     return () => {
-      timers.forEach(clearTimeout)
       clearInterval(streamInterval)
       clearInterval(progressInterval)
     }
-  }, [onComplete])
+  }, [onComplete, codeSnippets, updateStatus])
 
   if (progress >= 100) return null
 
@@ -188,7 +125,7 @@ export function AIGeneratedIntro({ onComplete }: { onComplete: () => void }) {
 
       <div className="relative z-10 flex flex-col items-center justify-center h-full px-4">
         <div
-          className="relative mb-8"
+          className="relative mb-8 will-change-transform"
           style={{
             filter: `drop-shadow(0 0 ${30 + progress / 3}px rgba(139,92,246,${0.5 + progress / 200})) drop-shadow(0 0 ${20 + progress / 5}px rgba(59,130,246,${0.3 + progress / 200}))`,
           }}
@@ -203,16 +140,16 @@ export function AIGeneratedIntro({ onComplete }: { onComplete: () => void }) {
             }}
           />
 
-          {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => (
+          {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
             <div
               key={i}
-              className="absolute h-2 w-2 rounded-full"
+              className="absolute h-2 w-2 rounded-full will-change-transform"
               style={{
-                background: `hsl(${(i * 30 + progress * 2) % 360}, 80%, 60%)`,
+                background: `hsl(${(i * 45 + progress * 2) % 360}, 80%, 60%)`,
                 top: "50%",
                 left: "50%",
-                transform: `translate(-50%, -50%) rotate(${i * 30 + progress * 4}deg) translateY(-${80 + (i % 3) * 10}px)`,
-                opacity: 0.7 + Math.sin((progress + i * 30) * 0.1) * 0.3,
+                transform: `translate(-50%, -50%) rotate(${i * 45 + progress * 4}deg) translateY(-${80 + (i % 3) * 10}px)`,
+                opacity: 0.7 + Math.sin((progress + i * 45) * 0.1) * 0.3,
                 boxShadow: `0 0 10px currentColor`,
                 transition: "all 0.1s linear",
               }}
@@ -237,7 +174,7 @@ export function AIGeneratedIntro({ onComplete }: { onComplete: () => void }) {
           </div>
           <div className="h-3 bg-white/10 rounded-full overflow-hidden backdrop-blur-sm border border-white/30 shadow-lg">
             <div
-              className="h-full bg-gradient-to-r from-blue-500 via-purple-500 via-pink-500 to-cyan-500 transition-all duration-300 ease-out relative"
+              className="h-full bg-gradient-to-r from-blue-500 via-purple-500 via-pink-500 to-cyan-500 transition-all duration-300 ease-out relative will-change-transform"
               style={{
                 width: `${progress}%`,
                 boxShadow: `0 0 30px rgba(139, 92, 246, ${progress / 80}), 0 0 50px rgba(59, 130, 246, ${progress / 100})`,
@@ -253,7 +190,7 @@ export function AIGeneratedIntro({ onComplete }: { onComplete: () => void }) {
           {[0, 1, 2].map((i) => (
             <div
               key={i}
-              className="h-3 w-3 rounded-full"
+              className="h-3 w-3 rounded-full will-change-transform"
               style={{
                 background: `hsl(${(progress * 3 + i * 120) % 360}, 80%, 60%)`,
                 opacity: 0.4 + (Math.sin(progress * 0.15 + i * 1.2) + 1) * 0.3,

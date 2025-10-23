@@ -11,7 +11,6 @@ import { SubstrateCalculator } from "@/components/chat/substrate-calculator"
 import { StrainDatabase } from "@/components/chat/strain-database"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import Link from "next/link"
-import Image from "next/image"
 import { DebugPanel } from "@/components/chat/debug-panel"
 import { Canvas } from "@/components/chat/canvas"
 import { EnvironmentMonitor } from "@/components/chat/environment-monitor"
@@ -20,6 +19,8 @@ import { IntegrationsPanel } from "@/components/chat/integrations-panel"
 import { createClient } from "@/lib/supabase/client"
 import { createConversation, saveMessage, getMessages } from "@/lib/supabase/chat-queries"
 import { ConversationHistory } from "@/components/chat/conversation-history"
+import { ModelSelector } from "@/components/chat/model-selector"
+import { AIAvatarSwirl } from "@/components/chat/ai-avatar-swirl"
 
 export default function ChatPage() {
   return (
@@ -103,8 +104,10 @@ function MagicalStreamingText({ text, isStreaming }: { text: string; isStreaming
 }
 
 function ChatContainer() {
+  const [selectedModel, setSelectedModel] = useState("azure-agent")
   const { messages, sendMessage, status, setMessages } = useChat({
     transport: new DefaultChatTransport({ api: "/api/chat" }),
+    body: { model: selectedModel },
   })
 
   const [input, setInput] = useState("")
@@ -235,21 +238,14 @@ function ChatContainer() {
               <line x1="3" x2="21" y1="18" y2="18" />
             </svg>
           </button>
-          <div className="h-10 w-10 rounded-full overflow-hidden flex-shrink-0">
-            <Image
-              src="/crowe-logic-logo.png"
-              alt="Crowe Logic"
-              width={40}
-              height={40}
-              className="w-full h-full object-cover"
-            />
-          </div>
+          <AIAvatarSwirl state={isLoading ? "thinking" : "idle"} size={40} />
           <div>
             <h1 className="text-base font-semibold text-foreground">CROWELOGIC AI</h1>
             <p className="text-xs text-muted-foreground">Expert Cultivation Assistant</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
+          <ModelSelector selectedModel={selectedModel} onModelChange={setSelectedModel} />
           <button
             onClick={() => setIsIntegrationsOpen(true)}
             className="flex items-center gap-2 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
@@ -325,19 +321,7 @@ function ChatContainer() {
         <div className="max-w-4xl mx-auto px-6 py-12">
           {isEmpty && (
             <div className="flex flex-col items-center justify-center min-h-[calc(100vh-300px)] space-y-8">
-              <div className="relative">
-                <div className="h-32 w-32 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 p-1 shadow-xl">
-                  <div className="h-full w-full rounded-full bg-background flex items-center justify-center overflow-hidden">
-                    <Image
-                      src="/crowe-logic-logo.png"
-                      alt="Crowe Logic AI"
-                      width={120}
-                      height={120}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </div>
-              </div>
+              <AIAvatarSwirl state="idle" size={128} />
 
               <div className="text-center space-y-3 max-w-2xl">
                 <h2 className="text-3xl font-bold text-foreground">Welcome to CROWELOGIC AI</h2>
@@ -386,29 +370,14 @@ function ChatContainer() {
                 const isCompleted = completedMessages.has(message.id)
                 const isStreaming = isLastMessage && isLoading
 
+                const avatarState: "idle" | "thinking" | "responding" =
+                  isStreaming && reasoning.length > 0 ? "thinking" : isStreaming ? "responding" : "idle"
+
                 return (
                   <div key={message.id} className="flex gap-4">
                     <div className="flex-shrink-0">
                       {isAssistant ? (
-                        <div
-                          className={`h-10 w-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 p-0.5 shadow-lg transition-all duration-500 ${
-                            isStreaming ? "animate-profound-glow scale-110" : ""
-                          } ${isCompleted ? "animate-logo-success" : ""} ${
-                            !isStreaming && !isCompleted ? "animate-consciousness-glow" : ""
-                          }`}
-                        >
-                          <div className="h-full w-full rounded-full bg-background flex items-center justify-center overflow-hidden">
-                            <Image
-                              src="/crowe-logic-logo.png"
-                              alt="Crowe Logic AI"
-                              width={40}
-                              height={40}
-                              className={`w-full h-full object-cover transition-all duration-500 ${
-                                isStreaming ? "animate-consciousness-pulse" : ""
-                              }`}
-                            />
-                          </div>
-                        </div>
+                        <AIAvatarSwirl state={avatarState} size={40} />
                       ) : (
                         <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center text-sm font-medium text-muted-foreground">
                           You
@@ -440,17 +409,7 @@ function ChatContainer() {
               {isLoading && messages.length > 0 && messages[messages.length - 1].role === "user" && (
                 <div className="flex gap-4">
                   <div className="flex-shrink-0">
-                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 p-0.5 shadow-lg animate-profound-glow scale-110">
-                      <div className="h-full w-full rounded-full bg-background flex items-center justify-center overflow-hidden animate-consciousness-pulse">
-                        <Image
-                          src="/crowe-logic-logo.png"
-                          alt="Crowe Logic AI"
-                          width={40}
-                          height={40}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    </div>
+                    <AIAvatarSwirl state="thinking" size={40} />
                   </div>
                   <div className="flex-1">
                     <div className="text-sm text-muted-foreground relative inline-block">

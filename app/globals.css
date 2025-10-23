@@ -222,6 +222,16 @@
   }
 }
 
+/* Adding slow spin animation for thinking state */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* Adding profound consciousness-like animations for reasoning and streaming */
 /* Making animations MUCH more dramatic and noticeable */
 @keyframes thought-emerge {
@@ -386,6 +396,11 @@
 
 .animate-logo-success {
   animation: logo-success 0.4s ease-out;
+}
+
+/* Adding utility class for slow spin */
+.animate-spin-slow {
+  animation: spin-slow 3s linear infinite;
 }
 
 /* Consciousness animation utility classes */
