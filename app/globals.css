@@ -222,6 +222,119 @@
   }
 }
 
+/* Adding profound consciousness-like animations for reasoning and streaming */
+/* Making animations MUCH more dramatic and noticeable */
+@keyframes thought-emerge {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes thought-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes consciousness-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(251, 191, 36, 0), 0 0 0 0 rgba(251, 191, 36, 0);
+  }
+  50% {
+    box-shadow: 0 0 40px 8px rgba(251, 191, 36, 0.4), 0 0 80px 16px rgba(251, 191, 36, 0.2);
+  }
+}
+
+@keyframes text-materialize {
+  from {
+    opacity: 0;
+    filter: blur(3px);
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes cursor-breathe {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scaleY(1);
+    background-color: rgb(251, 191, 36);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scaleY(0.8);
+    background-color: rgb(245, 158, 11);
+  }
+}
+
+@keyframes neural-connection {
+  from {
+    stroke-dashoffset: 100;
+    opacity: 0;
+  }
+  to {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes wisdom-shimmer {
+  0% {
+    background-position: -200% center;
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    background-position: 200% center;
+    opacity: 0.3;
+  }
+}
+
+@keyframes consciousness-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.15);
+    filter: brightness(1.3);
+  }
+}
+
+@keyframes profound-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.3), 0 0 40px rgba(251, 191, 36, 0.2), inset 0 0 20px
+      rgba(251, 191, 36, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(251, 191, 36, 0.6), 0 0 80px rgba(251, 191, 36, 0.4), inset 0 0 30px
+      rgba(251, 191, 36, 0.2);
+  }
+}
+
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }
@@ -245,4 +358,50 @@
 
 .animate-logo-success {
   animation: logo-success 0.4s ease-out;
+}
+
+/* Consciousness animation utility classes */
+.animate-thought-emerge {
+  animation: thought-emerge 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-thought-pulse {
+  animation: thought-pulse 2.5s ease-in-out infinite;
+}
+
+/* Adding more dramatic utility classes */
+.animate-consciousness-glow {
+  animation: consciousness-glow 2s ease-in-out infinite;
+}
+
+.animate-text-materialize {
+  animation: text-materialize 0.4s ease-out forwards;
+}
+
+.animate-cursor-breathe {
+  animation: cursor-breathe 0.8s ease-in-out infinite;
+}
+
+.animate-neural-connection {
+  animation: neural-connection 0.8s ease-out forwards;
+}
+
+.animate-wisdom-shimmer {
+  animation: wisdom-shimmer 2s linear infinite;
+  background-size: 200% 100%;
+}
+
+.animate-consciousness-pulse {
+  animation: consciousness-pulse 2s ease-in-out infinite;
+}
+
+.animate-profound-glow {
+  animation: profound-glow 2.5s ease-in-out infinite;
+}
+
+/* Streaming text effect with staggered delays */
+.streaming-char {
+  display: inline-block;
+  animation: text-materialize 0.2s ease-out forwards;
+  animation-delay: calc(var(--char-index) * 0.02s);
 }

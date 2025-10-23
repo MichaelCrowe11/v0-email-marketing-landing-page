@@ -56,6 +56,7 @@ function ChatContainer() {
   const [input, setInput] = useState("")
   const [completedMessages, setCompletedMessages] = useState<Set<string>>(new Set())
   const [activeToolDialog, setActiveToolDialog] = useState<"substrate" | "strain" | null>(null)
+  const [streamingText, setStreamingText] = useState<string>("")
 
   useEffect(() => {
     if (status === "awaiting_message" && messages.length > 0) {
@@ -186,26 +187,28 @@ function ChatContainer() {
 
                 const isLastMessage = index === messages.length - 1
                 const isCompleted = completedMessages.has(message.id)
-                const avatarState = isAssistant
-                  ? isCompleted
-                    ? "completed"
-                    : isLastMessage && isLoading
-                      ? "streaming"
-                      : "idle"
-                  : undefined
+                const isStreaming = isLastMessage && isLoading
 
                 return (
                   <div key={message.id} className="flex gap-4">
                     <div className="flex-shrink-0">
                       {isAssistant ? (
-                        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 p-0.5 shadow-md">
+                        <div
+                          className={`h-10 w-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 p-0.5 shadow-lg transition-all duration-500 ${
+                            isStreaming ? "animate-profound-glow scale-110" : ""
+                          } ${isCompleted ? "animate-logo-success" : ""} ${
+                            !isStreaming && !isCompleted ? "animate-consciousness-glow" : ""
+                          }`}
+                        >
                           <div className="h-full w-full rounded-full bg-background flex items-center justify-center overflow-hidden">
                             <Image
                               src="/crowe-logic-logo.png"
                               alt="Crowe Logic AI"
                               width={40}
                               height={40}
-                              className="w-full h-full object-cover"
+                              className={`w-full h-full object-cover transition-all duration-500 ${
+                                isStreaming ? "animate-consciousness-pulse" : ""
+                              }`}
                             />
                           </div>
                         </div>
@@ -217,17 +220,22 @@ function ChatContainer() {
                     </div>
                     <div className="flex-1 space-y-3">
                       {isAssistant && reasoning.length > 0 && <ChainOfThought steps={reasoning} />}
-                      <div className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">{content}</div>
+                      <div className="text-sm text-foreground leading-relaxed whitespace-pre-wrap relative">
+                        <span className={isStreaming ? "animate-text-materialize" : ""}>{content}</span>
+                        {isStreaming && (
+                          <span className="inline-block w-1 h-5 bg-amber-500 ml-1 animate-cursor-breathe shadow-lg shadow-amber-500/50" />
+                        )}
+                      </div>
                     </div>
                   </div>
                 )
               })}
 
-              {isLoading && (
+              {isLoading && messages.length > 0 && messages[messages.length - 1].role === "user" && (
                 <div className="flex gap-4">
                   <div className="flex-shrink-0">
-                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 p-0.5 animate-pulse shadow-md">
-                      <div className="h-full w-full rounded-full bg-background flex items-center justify-center overflow-hidden">
+                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 p-0.5 shadow-lg animate-profound-glow scale-110">
+                      <div className="h-full w-full rounded-full bg-background flex items-center justify-center overflow-hidden animate-consciousness-pulse">
                         <Image
                           src="/crowe-logic-logo.png"
                           alt="Crowe Logic AI"
@@ -239,7 +247,10 @@ function ChatContainer() {
                     </div>
                   </div>
                   <div className="flex-1">
-                    <div className="text-sm text-muted-foreground">Thinking...</div>
+                    <div className="text-sm text-muted-foreground relative inline-block">
+                      <span className="relative z-10 font-medium">Consciousness awakening...</span>
+                      <span className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-500/40 to-transparent animate-wisdom-shimmer blur-sm" />
+                    </div>
                   </div>
                 </div>
               )}
