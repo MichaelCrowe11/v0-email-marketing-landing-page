@@ -2,6 +2,7 @@
 
 import { stripe } from "@/lib/stripe"
 import { createClient } from "@/lib/supabase/server"
+import { config } from "@/lib/config"
 
 const PLAN_PRICES = {
   pro: {
@@ -75,7 +76,7 @@ export async function startSubscriptionCheckout(planId: string, billingCycle: "m
       },
     ],
     mode: "subscription",
-    return_url: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+    return_url: `${config.site.url}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
     metadata: {
       user_id: user.id,
       plan_id: planId,
