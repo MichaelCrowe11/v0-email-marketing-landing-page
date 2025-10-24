@@ -21,6 +21,7 @@ import { createConversation, saveMessage, getMessages } from "@/lib/supabase/cha
 import { ConversationHistory } from "@/components/chat/conversation-history"
 import { ModelSelector } from "@/components/chat/model-selector"
 import { AIAvatarSwirl } from "@/components/chat/ai-avatar-swirl"
+import { WorkflowTerminal } from "@/components/chat/workflow-terminal"
 
 export default function ChatPage() {
   return (
@@ -123,6 +124,8 @@ function ChatContainer() {
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null)
   const [userId, setUserId] = useState<string | null>(null)
   const [isHistoryOpen, setIsHistoryOpen] = useState(false)
+  const [isWorkflowTerminalOpen, setIsWorkflowTerminalOpen] = useState(false)
+  const [workflowLogs, setWorkflowLogs] = useState<string[]>([])
 
   useEffect(() => {
     async function loadUser() {
@@ -238,7 +241,6 @@ function ChatContainer() {
               <line x1="3" x2="21" y1="18" y2="18" />
             </svg>
           </button>
-          <AIAvatarSwirl state={isLoading ? "thinking" : "idle"} size={40} />
           <div>
             <h1 className="text-base font-semibold text-foreground">CROWELOGIC AI</h1>
             <p className="text-xs text-muted-foreground">Expert Cultivation Assistant</p>
@@ -324,8 +326,10 @@ function ChatContainer() {
               <AIAvatarSwirl state="idle" size={128} />
 
               <div className="text-center space-y-3 max-w-2xl">
-                <h2 className="text-3xl font-bold text-foreground">Welcome to CROWELOGIC AI</h2>
-                <p className="text-base text-muted-foreground leading-relaxed">
+                <h2 className="text-4xl font-light tracking-tight text-foreground">
+                  Welcome to <span className="font-semibold">CROWELOGIC AI</span>
+                </h2>
+                <p className="text-lg text-muted-foreground leading-relaxed font-light">
                   Your expert cultivation assistant powered by years of commercial growing experience. Ask me anything
                   about mushroom cultivation, contamination, yields, or scaling operations.
                 </p>
@@ -372,6 +376,17 @@ function ChatContainer() {
 
                 const avatarState: "idle" | "thinking" | "responding" =
                   isStreaming && reasoning.length > 0 ? "thinking" : isStreaming ? "responding" : "idle"
+
+                if (isStreaming && (content.includes("SOP") || content.includes("batch") || content.includes("log"))) {
+                  if (!isWorkflowTerminalOpen) {
+                    setIsWorkflowTerminalOpen(true)
+                    setWorkflowLogs([
+                      "[v0] Initializing workflow engine...",
+                      "[v0] Loading cultivation protocols...",
+                      "[v0] Analyzing request parameters...",
+                    ])
+                  }
+                }
 
                 return (
                   <div key={message.id} className="flex gap-4">
@@ -584,6 +599,11 @@ function ChatContainer() {
       <DebugPanel messages={messages} status={status} lastRequest={lastRequest} lastResponse={lastResponse} />
       <Canvas isOpen={isCanvasOpen} onClose={() => setIsCanvasOpen(false)} initialContent={canvasContent} />
       <IntegrationsPanel isOpen={isIntegrationsOpen} onClose={() => setIsIntegrationsOpen(false)} />
+      <WorkflowTerminal
+        isOpen={isWorkflowTerminalOpen}
+        onClose={() => setIsWorkflowTerminalOpen(false)}
+        logs={workflowLogs}
+      />
     </div>
   )
 }
