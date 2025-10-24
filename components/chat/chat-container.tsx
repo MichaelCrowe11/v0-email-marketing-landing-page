@@ -21,6 +21,7 @@ import { ConversationHistory } from "@/components/chat/conversation-history"
 import { ModelSelector } from "@/components/chat/model-selector"
 import { AIAvatarSwirl } from "@/components/chat/ai-avatar-swirl"
 import { WorkflowTerminal } from "@/components/chat/workflow-terminal"
+import { BrowserResearchPanel } from "@/components/chat/browser-research-panel"
 
 function parseReasoning(text: string): { reasoning: ReasoningStep[]; content: string } {
   const reasoningMatch = text.match(/<reasoning>([\s\S]*?)<\/reasoning>/)
@@ -116,6 +117,8 @@ export function ChatContainer() {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false)
   const [isWorkflowTerminalOpen, setIsWorkflowTerminalOpen] = useState(false)
   const [workflowLogs, setWorkflowLogs] = useState<string[]>([])
+  const [isBrowserResearchActive, setIsBrowserResearchActive] = useState(false)
+  const [researchQuery, setResearchQuery] = useState("")
 
   useEffect(() => {
     async function loadUser() {
@@ -320,6 +323,22 @@ export function ChatContainer() {
                 const avatarState: "idle" | "thinking" | "responding" =
                   isStreaming && reasoning.length > 0 ? "thinking" : isStreaming ? "responding" : "idle"
 
+                if (
+                  isStreaming &&
+                  (content.toLowerCase().includes("research") ||
+                    content.toLowerCase().includes("look up") ||
+                    content.toLowerCase().includes("find information") ||
+                    content.toLowerCase().includes("search for"))
+                ) {
+                  if (!isBrowserResearchActive) {
+                    const queryMatch = content.match(/research|look up|find information about|search for\s+(.+?)[.,?]/i)
+                    if (queryMatch) {
+                      setResearchQuery(queryMatch[1] || textContent.slice(0, 100))
+                      setIsBrowserResearchActive(true)
+                    }
+                  }
+                }
+
                 if (isStreaming && (content.includes("SOP") || content.includes("batch") || content.includes("log"))) {
                   if (!isWorkflowTerminalOpen) {
                     setIsWorkflowTerminalOpen(true)
@@ -363,6 +382,17 @@ export function ChatContainer() {
                   </div>
                 )
               })}
+
+              {isBrowserResearchActive && (
+                <BrowserResearchPanel
+                  isActive={isBrowserResearchActive}
+                  query={researchQuery}
+                  onComplete={(result) => {
+                    setIsBrowserResearchActive(false)
+                    console.log("[v0] Research complete:", result)
+                  }}
+                />
+              )}
 
               {isLoading && messages.length > 0 && messages[messages.length - 1].role === "user" && (
                 <div className="flex gap-4">
