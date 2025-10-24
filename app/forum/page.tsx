@@ -2,9 +2,10 @@ import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import Link from "next/link"
-import { MessageSquare, Plus, Eye, ThumbsUp, Clock, Search, TrendingUp, Users } from "lucide-react"
+import { MessageSquare, Plus, Eye, ThumbsUp, Clock, TrendingUp, Users, Sparkles } from "lucide-react"
+import ForumSearch from "@/components/forum-search"
+import AIMentionBadge from "@/components/ai-mention-badge"
 
 export default async function ForumPage() {
   const supabase = await createClient()
@@ -25,6 +26,20 @@ export default async function ForumPage() {
   const totalReplies = posts?.reduce((sum, post) => sum + (post.reply_count || 0), 0) || 0
   const totalViews = posts?.reduce((sum, post) => sum + (post.view_count || 0), 0) || 0
 
+  const postsWithAI = new Set<string>()
+  for (const post of posts || []) {
+    const { data: aiReplies } = await supabase
+      .from("forum_replies")
+      .select("id")
+      .eq("post_id", post.id)
+      .eq("author_id", "ai-crowe-logic")
+      .limit(1)
+
+    if (aiReplies && aiReplies.length > 0) {
+      postsWithAI.add(post.id)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-950/20 via-background to-emerald-950/20">
       <div className="container mx-auto px-4 py-8 md:py-16 max-w-7xl">
@@ -36,6 +51,10 @@ export default async function ForumPage() {
             <p className="text-muted-foreground text-lg">
               Share tips, ask questions, and connect with fellow cultivators
             </p>
+            <div className="flex items-center gap-2 mt-2 text-sm text-purple-400">
+              <Sparkles className="w-4 h-4" />
+              <span>Mention @CroweLogic for expert AI assistance</span>
+            </div>
           </div>
           {user && (
             <Button
@@ -88,13 +107,7 @@ export default async function ForumPage() {
         </div>
 
         <div className="mb-8">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-            <Input
-              placeholder="Search discussions, topics, or species..."
-              className="pl-10 h-12 bg-card/50 backdrop-blur-sm border-border/50"
-            />
-          </div>
+          <ForumSearch />
         </div>
 
         <div className="mb-12">
@@ -135,6 +148,7 @@ export default async function ForumPage() {
                           <Badge variant="outline" className="border-border/50 bg-background/50">
                             {post.category_icon} {post.category_name}
                           </Badge>
+                          {postsWithAI.has(post.id) && <AIMentionBadge />}
                         </div>
                         <h3 className="text-xl font-semibold mb-2 group-hover:text-amber-200 transition-colors line-clamp-1">
                           {post.title}

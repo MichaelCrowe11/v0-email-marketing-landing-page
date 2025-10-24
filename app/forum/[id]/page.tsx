@@ -8,6 +8,7 @@ import { ArrowLeft, Eye, Clock, MessageSquare, Award } from "lucide-react"
 import { notFound } from "next/navigation"
 import ReplyForm from "@/components/reply-form"
 import LikeButton from "@/components/like-button"
+import AIAvatar from "@/components/ai-avatar"
 
 export default async function ForumPostPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -99,46 +100,60 @@ export default async function ForumPostPage({ params }: { params: Promise<{ id: 
             Replies ({post.reply_count || 0})
           </h2>
 
-          {replies?.map((reply) => (
-            <Card
-              key={reply.id}
-              className="bg-card/50 backdrop-blur-sm border-border/50 hover:border-emerald-500/30 transition-all"
-            >
-              <CardContent className="p-6">
-                <div className="flex items-start gap-4">
-                  <Avatar className="ring-2 ring-emerald-500/20">
-                    <AvatarImage src={reply.author_avatar || "/placeholder.svg"} />
-                    <AvatarFallback className="bg-gradient-to-br from-emerald-600 to-emerald-500 text-white">
-                      {reply.author_name?.[0] || "A"}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-2">
-                      <div>
-                        <p className="font-medium text-foreground">{reply.author_name || "Anonymous"}</p>
-                        <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                          <Clock className="w-3 h-3" />
-                          <span>{new Date(reply.created_at).toLocaleDateString()}</span>
+          {replies?.map((reply) => {
+            const isAIReply = reply.author_id === "ai-crowe-logic"
+
+            return (
+              <Card
+                key={reply.id}
+                className={`backdrop-blur-sm transition-all ${
+                  isAIReply
+                    ? "bg-gradient-to-br from-purple-950/40 to-pink-950/20 border-purple-500/30"
+                    : "bg-card/50 border-border/50 hover:border-emerald-500/30"
+                }`}
+              >
+                <CardContent className="p-6">
+                  <div className="flex items-start gap-4">
+                    {isAIReply ? (
+                      <AIAvatar status="idle" size="md" />
+                    ) : (
+                      <Avatar className="ring-2 ring-emerald-500/20">
+                        <AvatarImage src={reply.author_avatar || "/placeholder.svg"} />
+                        <AvatarFallback className="bg-gradient-to-br from-emerald-600 to-emerald-500 text-white">
+                          {reply.author_name?.[0] || "A"}
+                        </AvatarFallback>
+                      </Avatar>
+                    )}
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-2">
+                        <div>
+                          <p className={`font-medium ${isAIReply ? "text-purple-200" : "text-foreground"}`}>
+                            {reply.author_name || "Anonymous"}
+                          </p>
+                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                            <Clock className="w-3 h-3" />
+                            <span>{new Date(reply.created_at).toLocaleDateString()}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {reply.is_solution && (
+                            <Badge className="bg-gradient-to-r from-emerald-600 to-emerald-500 text-white border-0">
+                              <Award className="w-3 h-3 mr-1" />
+                              Solution
+                            </Badge>
+                          )}
+                          <LikeButton replyId={reply.id} initialLikes={reply.like_count || 0} userId={user?.id} />
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        {reply.is_solution && (
-                          <Badge className="bg-gradient-to-r from-emerald-600 to-emerald-500 text-white border-0">
-                            <Award className="w-3 h-3 mr-1" />
-                            Solution
-                          </Badge>
-                        )}
-                        <LikeButton replyId={reply.id} initialLikes={reply.like_count || 0} userId={user?.id} />
+                      <div className="whitespace-pre-wrap text-pretty leading-relaxed text-foreground">
+                        {reply.content}
                       </div>
                     </div>
-                    <div className="whitespace-pre-wrap text-pretty leading-relaxed text-foreground">
-                      {reply.content}
-                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            )
+          })}
         </div>
 
         {user ? (
