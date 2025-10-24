@@ -23,6 +23,13 @@ export const metadata: Metadata = {
   description:
     "AI-powered mushroom cultivation guidance. Optimize yields, prevent contamination, and grow with confidence.",
   generator: "v0.app",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.jpg", type: "image/png", sizes: "32x32" },
+    ],
+    apple: [{ url: "/apple-icon.jpg", sizes: "180x180", type: "image/png" }],
+  },
 }
 
 export default function RootLayout({
