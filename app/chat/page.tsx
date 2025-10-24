@@ -48,7 +48,7 @@ function parseReasoning(text: string): { reasoning: ReasoningStep[]; content: st
   while ((match = stepRegex.exec(reasoningXml)) !== null) {
     steps.push({
       type: match[1] as ReasoningStep["type"],
-      content: match[2].trim(),
+      content: match[2] ? match[2].trim() : "",
     })
   }
 
@@ -174,7 +174,7 @@ function ChatContainer() {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!input.trim() || status === "in_progress") return
+    if (!input || !input.trim() || status === "in_progress") return
 
     console.log("[v0] Submitting message:", input)
     console.log("[v0] Current conversation ID:", currentConversationId)
@@ -430,7 +430,7 @@ function ChatContainer() {
             <button
               type="submit"
               className="absolute right-2 sm:right-3 bottom-2 sm:bottom-3 h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-xl bg-accent text-accent-foreground hover:bg-accent/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
-              disabled={isLoading || !input.trim()}
+              disabled={isLoading || !input || !input.trim()}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
