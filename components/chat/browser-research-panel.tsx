@@ -13,6 +13,7 @@ interface BrowserAction {
   query?: string
   count?: number
   sources?: number
+  liveViewUrl?: string
 }
 
 interface ResearchPanelProps {
@@ -26,6 +27,7 @@ export function BrowserResearchPanel({ isActive, query, onComplete }: ResearchPa
   const [currentAction, setCurrentAction] = useState<BrowserAction | null>(null)
   const [researchContent, setResearchContent] = useState<string>("")
   const [error, setError] = useState<string | null>(null)
+  const [liveViewUrl, setLiveViewUrl] = useState<string | null>(null)
 
   useEffect(() => {
     if (!isActive || !query) return
@@ -41,6 +43,9 @@ export function BrowserResearchPanel({ isActive, query, onComplete }: ResearchPa
           break
         case "browser_action":
           setCurrentAction(data)
+          if (data.liveViewUrl) {
+            setLiveViewUrl(data.liveViewUrl)
+          }
           break
         case "content":
           setResearchContent((prev) => prev + data.content)
@@ -84,6 +89,24 @@ export function BrowserResearchPanel({ isActive, query, onComplete }: ResearchPa
         <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-lg mb-4">
           <AlertCircle className="w-4 h-4 text-red-500" />
           <span className="text-sm text-red-400">{error}</span>
+        </div>
+      )}
+
+      {liveViewUrl && status !== "complete" && (
+        <div className="mb-4 rounded-lg overflow-hidden border border-amber-500/20">
+          <div className="bg-gray-900/50 px-3 py-2 border-b border-gray-800 flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+            <span className="text-xs text-gray-400">Live Browser View</span>
+            <Badge variant="outline" className="text-amber-500 border-amber-500/30 ml-auto text-xs">
+              Real-time
+            </Badge>
+          </div>
+          <iframe
+            src={`${liveViewUrl}?readOnly=true`}
+            className="w-full h-96 bg-gray-950"
+            title="Browser Live View"
+            sandbox="allow-same-origin allow-scripts"
+          />
         </div>
       )}
 
