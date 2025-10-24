@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
+import Link from "next/link"
 
 interface CodeParticle {
   id: number
@@ -267,15 +268,15 @@ export function OrchestratedHero() {
 
         {/* CTA Section */}
         <div className="text-center mt-12 space-y-6">
-          <p className="text-xl text-foreground/90 max-w-2xl mx-auto">
-            Experience the power of AI-driven mycology research with 20+ years of expertise
+          <p className="text-xl text-foreground/90 max-w-2xl mx-auto leading-relaxed">
+            Twenty years of professional mycology expertise, distilled into AI-powered cultivation intelligence
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Button size="lg" className="text-lg px-8">
-              Get Started
+            <Button size="lg" className="text-lg px-8" asChild>
+              <Link href="/chat">Start Chatting</Link>
             </Button>
-            <Button size="lg" variant="outline" className="text-lg px-8 bg-transparent">
-              Learn More
+            <Button size="lg" variant="outline" className="text-lg px-8 bg-transparent" asChild>
+              <Link href="/gpts">View AI Modules</Link>
             </Button>
           </div>
         </div>

@@ -41,15 +41,15 @@ export function AIGeneratedIntro({ onComplete }: { onComplete: () => void }) {
 
   const statusMessages = useMemo(
     () => [
-      "⚡ Initializing Quantum Neural Networks...",
-      "🧠 Loading Deep Learning Models (GPT-4 Architecture)...",
-      "🔬 Indexing 15,000+ Species in Vector Database...",
-      "👁️ Training Computer Vision with 2M+ Images...",
-      "🧬 Analyzing DNA Sequences with CRISPR Technology...",
-      "📊 Optimizing Growth Parameters via Reinforcement Learning...",
-      "🌐 Deploying Edge AI to IoT Sensor Network...",
-      "🔐 Securing Data with Blockchain Verification...",
-      "🚀 Finalizing Platform Deployment...",
+      "Initializing Quantum Neural Networks",
+      "Loading Deep Learning Models",
+      "Indexing Species Database",
+      "Training Computer Vision System",
+      "Analyzing Genetic Sequences",
+      "Optimizing Growth Parameters",
+      "Deploying Edge AI Network",
+      "Securing Data Infrastructure",
+      "Finalizing Platform Deployment",
     ],
     [],
   )

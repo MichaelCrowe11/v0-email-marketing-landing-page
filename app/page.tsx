@@ -6,7 +6,6 @@ import { BenefitsBand } from "@/components/benefits-band"
 import { ProofSection } from "@/components/proof-section"
 import { StreamingChatDemo } from "@/components/streaming-chat-demo"
 import { Features } from "@/components/features"
-import { Pricing } from "@/components/pricing"
 import { FAQ } from "@/components/faq"
 import { StickyBar } from "@/components/sticky-bar"
 import { AIGeneratedIntro } from "@/components/ai-generated-intro"
@@ -31,9 +30,6 @@ export default function Home() {
         </ScrollReveal>
         <ScrollReveal delay={100}>
           <Features />
-        </ScrollReveal>
-        <ScrollReveal delay={200}>
-          <Pricing />
         </ScrollReveal>
         <ScrollReveal delay={100}>
           <FAQ />
