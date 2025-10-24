@@ -51,7 +51,7 @@ def run_research(task: str):
     """Run browser research using Kernel + Browser Use"""
     
     # Initialize Kernel client
-    kernel = Kernel(api_key=os.getenv("KERNEL_API_KEY"))
+    kernel = Kernel(api_key=os.getenv("ONKERNEL_API_KEY"))
     
     # Create a Kernel browser session
     print(json.dumps({"type": "status", "message": "Creating browser session...", "progress": 10}))
@@ -159,7 +159,7 @@ export async function POST(request: NextRequest) {
 Add to your `.env.local`:
 
 \`\`\`bash
-KERNEL_API_KEY=your_kernel_api_key
+ONKERNEL_API_KEY=your_kernel_api_key
 ANTHROPIC_API_KEY=your_anthropic_api_key
 \`\`\`
 

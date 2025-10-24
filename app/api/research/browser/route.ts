@@ -13,6 +13,10 @@ export async function POST(req: Request) {
   try {
     const { query, depth = "thorough" } = await req.json()
 
+    if (!process.env.ONKERNEL_API_KEY) {
+      console.log("[v0] ONKERNEL_API_KEY not configured - using simulated research")
+    }
+
     console.log("[v0] Browser research request:", { query, depth })
 
     // Create SSE stream for real-time updates

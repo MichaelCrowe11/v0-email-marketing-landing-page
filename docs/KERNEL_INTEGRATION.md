@@ -13,13 +13,13 @@ Visit [onkernel.com](https://onkernel.com) and create an account.
 1. Go to your Kernel dashboard
 2. Navigate to Settings → API Keys
 3. Create a new API key
-4. Add it to your Vercel project environment variables as `KERNEL_API_KEY`
+4. Add it to your Vercel project environment variables as `ONKERNEL_API_KEY`
 
 ### 3. Add Environment Variable
 
 In your Vercel project settings, add:
 \`\`\`
-KERNEL_API_KEY=your_kernel_api_key_here
+ONKERNEL_API_KEY=your_kernel_api_key_here
 \`\`\`
 
 ### 4. Install Kernel SDK (Python Backend)
@@ -35,9 +35,10 @@ uv add kernel-sdk
 
 \`\`\`python
 from kernel import Kernel
+import os
 
 # Initialize client
-kernel = Kernel(api_key=os.environ["KERNEL_API_KEY"])
+kernel = Kernel(api_key=os.environ["ONKERNEL_API_KEY"])
 
 # Create browser with live view enabled
 browser = kernel.browsers.create(
@@ -232,7 +233,7 @@ Check [onkernel.com/pricing](https://onkernel.com/pricing) for current rates.
 
 ### Connection Issues
 
-1. Verify KERNEL_API_KEY is set correctly
+1. Verify ONKERNEL_API_KEY is set correctly
 2. Check network connectivity
 3. Ensure Kernel service is operational
 4. Review browser timeout settings
