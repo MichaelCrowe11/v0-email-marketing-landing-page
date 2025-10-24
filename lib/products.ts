@@ -2,12 +2,16 @@ export interface Product {
   id: string
   name: string
   description: string
-  price: number // Added price field
+  price: number // Price in dollars
   stripeLink: string
   category: "ai-modules" | "bundles" | "mms" | "books" | "sops" | "templates"
   features: string[]
   popular?: boolean
-  taskType?: string // Added to determine what animation the logo performs
+  taskType?: string
+}
+
+export function getPriceInCents(product: Product): number {
+  return Math.round(product.price * 100)
 }
 
 export const PRODUCTS: Product[] = [
