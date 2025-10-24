@@ -42,7 +42,7 @@ export function SidebarNav() {
     { href: "/analytics", label: "Analytics", icon: BarChart3 },
     { href: "/forum", label: "Community", icon: Users },
     { href: "/docs", label: "Documentation", icon: BookOpen },
-    { href: "#pricing", label: "Pricing", icon: DollarSign },
+    { href: "/pricing", label: "Pricing", icon: DollarSign },
     { href: "/shop", label: "Shop", icon: ShoppingBag },
   ]
 
@@ -139,7 +139,7 @@ export function SidebarNav() {
               className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-glass-strong"
               asChild
             >
-              <Link href="/gpts">View AI Modules</Link>
+              <Link href="/pricing">Upgrade Access</Link>
             </Button>
           </div>
         </div>

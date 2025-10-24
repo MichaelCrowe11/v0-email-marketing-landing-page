@@ -21,12 +21,19 @@ import { ConversationHistory } from "@/components/chat/conversation-history"
 import { ModelSelector } from "@/components/chat/model-selector"
 import { AIAvatarSwirl } from "@/components/chat/ai-avatar-swirl"
 import { WorkflowTerminal } from "@/components/chat/workflow-terminal"
+import { getUserSubscription } from "@/lib/subscription"
+import { FeatureGate } from "@/components/feature-gate"
 
-export default function ChatPage() {
+export default async function ChatPage() {
+  const subscription = await getUserSubscription()
+  const hasAccess = subscription.features.unlimited_chat
+
   return (
     <div className="h-screen flex flex-col bg-background">
       <div className="flex-1 overflow-hidden">
-        <ChatContainer />
+        <FeatureGate hasAccess={hasAccess} feature="Unlimited AI Chat" requiredTier="pro">
+          <ChatContainer />
+        </FeatureGate>
       </div>
     </div>
   )

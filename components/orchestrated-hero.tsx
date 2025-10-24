@@ -273,10 +273,10 @@ export function OrchestratedHero() {
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Button size="lg" className="text-lg px-8" asChild>
-              <Link href="/chat">Start Chatting</Link>
+              <Link href="/pricing">Get Started</Link>
             </Button>
             <Button size="lg" variant="outline" className="text-lg px-8 bg-transparent" asChild>
-              <Link href="/gpts">View AI Modules</Link>
+              <Link href="/chat">Try Free Demo</Link>
             </Button>
           </div>
         </div>

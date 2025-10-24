@@ -1,13 +1,14 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { Upload, Camera, Loader2, CheckCircle2, AlertTriangle, Info } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { getUserSubscription } from "@/lib/subscription"
+import { FeatureGate } from "@/components/feature-gate"
 
 interface AnalysisResult {
   species?: string
@@ -24,7 +25,18 @@ interface AnalysisResult {
   recommendations: string[]
 }
 
-export default function CroweVisionPage() {
+export default async function CroweVisionPage() {
+  const subscription = await getUserSubscription()
+  const hasAccess = subscription.features.crowe_vision
+
+  return (
+    <FeatureGate hasAccess={hasAccess} feature="Crowe Vision" requiredTier="pro">
+      <CroweVisionContent />
+    </FeatureGate>
+  )
+}
+
+function CroweVisionContent() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [blobUrl, setBlobUrl] = useState<string | null>(null)
   const [uploading, setUploading] = useState(false)

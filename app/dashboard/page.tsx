@@ -19,6 +19,12 @@ import {
   Plus,
   Eye,
   Calendar,
+  Crown,
+  Zap,
+  Camera,
+  MessageSquare,
+  Video,
+  Sparkles,
 } from "lucide-react"
 import Link from "next/link"
 import { createBrowserClient } from "@supabase/ssr"
@@ -26,6 +32,7 @@ import { createBrowserClient } from "@supabase/ssr"
 export default function DashboardPage() {
   const [projects, setProjects] = useState<any[]>([])
   const [recentReadings, setRecentReadings] = useState<any[]>([])
+  const [subscription, setSubscription] = useState<any>(null)
   const [stats, setStats] = useState({
     activeProjects: 0,
     totalHarvests: 0,
@@ -50,6 +57,14 @@ export default function DashboardPage() {
         data: { user },
       } = await supabase.auth.getUser()
       if (!user) return
+
+      const { data: subscriptionData } = await supabase
+        .from("subscriptions")
+        .select("*")
+        .eq("user_id", user.id)
+        .single()
+
+      setSubscription(subscriptionData)
 
       // Load active projects
       const { data: projectsData } = await supabase
@@ -210,9 +225,10 @@ export default function DashboardPage() {
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="projects" className="space-y-6">
-          <TabsList className="grid w-full max-w-md grid-cols-3">
+          <TabsList className="grid w-full max-w-2xl grid-cols-4">
             <TabsTrigger value="projects">Projects</TabsTrigger>
             <TabsTrigger value="environment">Environment</TabsTrigger>
+            <TabsTrigger value="subscription">Subscription</TabsTrigger>
             <TabsTrigger value="insights">Insights</TabsTrigger>
           </TabsList>
 
@@ -376,6 +392,193 @@ export default function DashboardPage() {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Subscription Tab */}
+          <TabsContent value="subscription" className="space-y-6">
+            <div className="grid gap-6 md:grid-cols-2">
+              {/* Current Plan Card */}
+              <Card className="border-primary/20 bg-gradient-to-br from-card to-primary/5">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center gap-2">
+                      <Crown className="w-5 h-5 text-primary" />
+                      Current Plan
+                    </CardTitle>
+                    <Badge variant={subscription?.tier === "enterprise" ? "default" : "secondary"} className="text-sm">
+                      {subscription?.tier || "free"}
+                    </Badge>
+                  </div>
+                  <CardDescription>
+                    {subscription?.status === "active" ? "Active subscription" : "Manage your subscription"}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Status</span>
+                      <Badge variant={subscription?.status === "active" ? "default" : "secondary"}>
+                        {subscription?.status || "inactive"}
+                      </Badge>
+                    </div>
+                    {subscription?.current_period_end && (
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">Renews on</span>
+                        <span className="font-medium">
+                          {new Date(subscription.current_period_end).toLocaleDateString()}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="pt-4 border-t border-border/50 space-y-2">
+                    <p className="text-sm font-semibold text-foreground mb-3">Plan Features</p>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-sm">
+                        <CheckCircle2 className="w-4 h-4 text-green-500" />
+                        <span className="text-muted-foreground">
+                          {subscription?.tier === "free" ? "5 messages/day" : "Unlimited AI chat"}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        {subscription?.tier === "free" ? (
+                          <AlertTriangle className="w-4 h-4 text-yellow-500" />
+                        ) : (
+                          <CheckCircle2 className="w-4 h-4 text-green-500" />
+                        )}
+                        <span className="text-muted-foreground">
+                          {subscription?.tier === "free" ? "Limited" : "Full"} Crowe Vision access
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        {subscription?.tier === "enterprise" ? (
+                          <CheckCircle2 className="w-4 h-4 text-green-500" />
+                        ) : (
+                          <AlertTriangle className="w-4 h-4 text-yellow-500" />
+                        )}
+                        <span className="text-muted-foreground">
+                          {subscription?.tier === "enterprise" ? "Unlimited" : "Limited"} video generation
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <CheckCircle2 className="w-4 h-4 text-green-500" />
+                        <span className="text-muted-foreground">
+                          {subscription?.tier === "free" ? "Basic" : "Advanced"} analytics
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 space-y-2">
+                    {subscription?.tier === "free" && (
+                      <Button className="w-full gap-2" asChild>
+                        <Link href="/pricing">
+                          <Zap className="w-4 h-4" />
+                          Upgrade to Pro
+                        </Link>
+                      </Button>
+                    )}
+                    {subscription?.tier === "pro" && (
+                      <Button className="w-full gap-2" asChild>
+                        <Link href="/pricing">
+                          <Crown className="w-4 h-4" />
+                          Upgrade to Enterprise
+                        </Link>
+                      </Button>
+                    )}
+                    {subscription?.stripe_customer_id && (
+                      <Button variant="outline" className="w-full bg-transparent" asChild>
+                        <a
+                          href={`https://billing.stripe.com/p/login/test_${subscription.stripe_customer_id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Manage Billing
+                        </a>
+                      </Button>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Usage Statistics Card */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BarChart3 className="w-5 h-5 text-accent" />
+                    Usage This Month
+                  </CardTitle>
+                  <CardDescription>Track your feature usage and limits</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* AI Chat Usage */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2">
+                        <MessageSquare className="w-4 h-4 text-accent" />
+                        <span className="font-medium">AI Chat Messages</span>
+                      </div>
+                      <span className="text-muted-foreground">
+                        {subscription?.tier === "free" ? "5/5 daily" : "Unlimited"}
+                      </span>
+                    </div>
+                    {subscription?.tier === "free" && <Progress value={100} className="h-2" />}
+                  </div>
+
+                  {/* Crowe Vision Usage */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2">
+                        <Camera className="w-4 h-4 text-blue-500" />
+                        <span className="font-medium">Image Analysis</span>
+                      </div>
+                      <span className="text-muted-foreground">
+                        {subscription?.tier === "free" ? "0/10 monthly" : "Unlimited"}
+                      </span>
+                    </div>
+                    {subscription?.tier === "free" && <Progress value={0} className="h-2" />}
+                  </div>
+
+                  {/* Video Studio Usage */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2">
+                        <Video className="w-4 h-4 text-purple-500" />
+                        <span className="font-medium">Video Generation</span>
+                      </div>
+                      <span className="text-muted-foreground">
+                        {subscription?.tier === "enterprise" ? "Unlimited" : "0/5 monthly"}
+                      </span>
+                    </div>
+                    {subscription?.tier !== "enterprise" && <Progress value={0} className="h-2" />}
+                  </div>
+
+                  {/* AI Modules Usage */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-amber-500" />
+                        <span className="font-medium">AI Module Access</span>
+                      </div>
+                      <span className="text-muted-foreground">
+                        {subscription?.tier === "free" ? "Limited" : "Full Access"}
+                      </span>
+                    </div>
+                  </div>
+
+                  {subscription?.tier === "free" && (
+                    <div className="pt-4 border-t border-border/50">
+                      <p className="text-sm text-muted-foreground mb-3">
+                        Upgrade to unlock unlimited access to all features
+                      </p>
+                      <Button className="w-full" asChild>
+                        <Link href="/pricing">View Plans</Link>
+                      </Button>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           {/* Insights Tab */}

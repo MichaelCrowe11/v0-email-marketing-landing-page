@@ -45,14 +45,14 @@ export function StickyBar() {
             className="h-9 md:h-10 rounded-lg md:rounded-xl bg-accent px-3 md:px-4 text-xs md:text-sm font-bold text-accent-foreground shadow-lg shadow-accent/30 hover:bg-accent/90 flex-1 sm:flex-none"
             asChild
           >
-            <Link href="/gpts">View AI Modules</Link>
+            <Link href="/pricing">View Pricing</Link>
           </Button>
           <Button
             variant="outline"
             className="h-9 md:h-10 rounded-lg md:rounded-xl border-border bg-transparent px-3 md:px-4 text-xs md:text-sm font-bold text-foreground hover:bg-secondary flex-1 sm:flex-none"
             asChild
           >
-            <Link href="/chat">Try It Free</Link>
+            <Link href="/chat">Try Free Demo</Link>
           </Button>
         </div>
       </div>
