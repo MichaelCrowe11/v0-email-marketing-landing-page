@@ -105,10 +105,12 @@ function MagicalStreamingText({ text, isStreaming }: { text: string; isStreaming
 
 function ChatContainer() {
   const [selectedModel, setSelectedModel] = useState("anthropic/claude-sonnet-4.5")
+  const [userId, setUserId] = useState<string | null>(null)
+  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null)
 
   console.log("[v0] ChatContainer rendering with model:", selectedModel)
 
-  const { messages, sendMessage, status, setMessages, error } = useChat({
+  const { messages, input, handleInputChange, handleSubmit, status, setMessages, error } = useChat({
     api: "/api/chat",
     body: { model: selectedModel },
     onError: (error) => {
@@ -116,6 +118,9 @@ function ChatContainer() {
     },
     onResponse: (response) => {
       console.log("[v0] Chat response received:", response.status)
+    },
+    onFinish: (message) => {
+      console.log("[v0] Message finished:", message)
     },
   })
 
@@ -125,18 +130,13 @@ function ChatContainer() {
     console.error("[v0] Chat hook error:", error)
   }
 
-  const [input, setInput] = useState("")
   const [completedMessages, setCompletedMessages] = useState<Set<string>>(new Set())
   const [activeToolDialog, setActiveToolDialog] = useState<"substrate" | "strain" | "environment" | "yield" | null>(
     null,
   )
-  const [lastRequest, setLastRequest] = useState<any>(null)
-  const [lastResponse, setLastResponse] = useState<any>(null)
   const [isCanvasOpen, setIsCanvasOpen] = useState(false)
   const [canvasContent, setCanvasContent] = useState("")
   const [isIntegrationsOpen, setIsIntegrationsOpen] = useState(false)
-  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null)
-  const [userId, setUserId] = useState<string | null>(null)
   const [isHistoryOpen, setIsHistoryOpen] = useState(false)
   const [isWorkflowTerminalOpen, setIsWorkflowTerminalOpen] = useState(false)
   const [workflowLogs, setWorkflowLogs] = useState<string[]>([])
@@ -172,7 +172,7 @@ function ChatContainer() {
     }
   }, [messages, status, userId, currentConversationId])
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!input.trim() || status === "in_progress") return
 
@@ -188,16 +188,7 @@ function ChatContainer() {
       }
     }
 
-    const requestData = {
-      text: input,
-      timestamp: new Date().toISOString(),
-      messageCount: messages.length,
-    }
-    setLastRequest(requestData)
-
-    console.log("[v0] Calling sendMessage with:", input)
-    sendMessage({ text: input })
-    setInput("")
+    handleSubmit(e)
   }
 
   useEffect(() => {
@@ -325,8 +316,8 @@ function ChatContainer() {
                   <button
                     key={i}
                     onClick={() => {
-                      setInput(suggestion)
-                      sendMessage({ text: suggestion })
+                      handleInputChange(suggestion)
+                      handleSubmit({ preventDefault: () => {} } as React.FormEvent)
                     }}
                     className="p-3 sm:p-4 rounded-xl bg-card border border-border hover:bg-accent hover:border-accent-foreground/20 transition-all text-left text-sm text-foreground shadow-sm"
                   >
@@ -421,14 +412,14 @@ function ChatContainer() {
 
       <div className="border-t border-border bg-card/50 backdrop-blur-xl">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
-          <form onSubmit={handleSubmit} className="relative">
+          <form onSubmit={handleFormSubmit} className="relative">
             <textarea
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={handleInputChange}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault()
-                  handleSubmit(e)
+                  handleFormSubmit(e)
                 }
               }}
               placeholder="Ask about cultivation techniques, contamination, yields..."
@@ -498,7 +489,7 @@ function ChatContainer() {
         </DialogContent>
       </Dialog>
 
-      <DebugPanel messages={messages} status={status} lastRequest={lastRequest} lastResponse={lastResponse} />
+      <DebugPanel messages={messages} status={status} lastRequest={null} lastResponse={null} />
       <Canvas isOpen={isCanvasOpen} onClose={() => setIsCanvasOpen(false)} initialContent={canvasContent} />
       <IntegrationsPanel isOpen={isIntegrationsOpen} onClose={() => setIsIntegrationsOpen(false)} />
       <WorkflowTerminal

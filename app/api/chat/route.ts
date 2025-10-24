@@ -1,4 +1,4 @@
-import { consumeStream, convertToModelMessages, streamText, type UIMessage } from "ai"
+import { streamText } from "ai"
 
 export const maxDuration = 30
 
@@ -6,19 +6,15 @@ export async function POST(req: Request) {
   console.log("[v0] Chat API route called")
 
   try {
-    const { messages, model }: { messages: UIMessage[]; model?: string } = await req.json()
+    const { messages, model } = await req.json()
 
-    console.log("[v0] Received messages:", messages.length)
+    console.log("[v0] Received messages:", messages?.length || 0)
     console.log("[v0] Selected model:", model)
 
-    // Default to GPT-5 if no model specified
-    const selectedModel = model || "openai/gpt-5"
+    const selectedModel = model || "anthropic/claude-sonnet-4.5"
 
     console.log("[v0] Using model:", selectedModel)
 
-    const prompt = convertToModelMessages(messages)
-
-    // Add system message for Crowe Logic context
     const systemMessage = {
       role: "system" as const,
       content: `You are CROWELOGIC AI, an expert mushroom cultivation assistant with 20+ years of commercial growing experience. 
@@ -41,31 +37,21 @@ When responding:
 You can use <reasoning> tags to show your thought process for complex questions.`,
     }
 
-    console.log("[v0] Starting streamText with model:", selectedModel)
+    console.log("[v0] Starting streamText")
 
     const result = streamText({
       model: selectedModel,
-      messages: [systemMessage, ...prompt],
-      abortSignal: req.signal,
-      maxOutputTokens: 4000,
+      messages: [systemMessage, ...messages],
+      maxTokens: 4000,
       temperature: 0.7,
     })
 
-    console.log("[v0] StreamText initialized, returning response")
+    console.log("[v0] Returning stream response")
 
-    return result.toUIMessageStreamResponse({
-      onFinish: async ({ isAborted }) => {
-        if (isAborted) {
-          console.log("[v0] Chat request aborted")
-        } else {
-          console.log("[v0] Chat request completed successfully")
-        }
-      },
-      consumeSseStream: consumeStream,
-    })
+    return result.toUIMessageStreamResponse()
   } catch (error) {
     console.error("[v0] Chat API error:", error)
-    return new Response(JSON.stringify({ error: "Failed to process chat request" }), {
+    return new Response(JSON.stringify({ error: "Failed to process chat request", details: String(error) }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     })
