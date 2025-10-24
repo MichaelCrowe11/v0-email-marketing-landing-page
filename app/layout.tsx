@@ -4,6 +4,7 @@ import { Inter, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 import { Suspense } from "react"
 import { SidebarNav } from "@/components/sidebar-nav"
+import { GlobalHeader } from "@/components/global-header"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -22,6 +23,13 @@ export const metadata: Metadata = {
   description:
     "AI-powered mushroom cultivation guidance. Optimize yields, prevent contamination, and grow with confidence.",
   generator: "v0.app",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.jpg", type: "image/png", sizes: "32x32" },
+    ],
+    apple: [{ url: "/apple-icon.jpg", sizes: "180x180", type: "image/png" }],
+  },
 }
 
 export default function RootLayout({
@@ -34,6 +42,7 @@ export default function RootLayout({
       <body className={`font-sans ${inter.variable} ${jetbrainsMono.variable} antialiased`}>
         <SidebarNav />
         <div className="md:ml-64">
+          <GlobalHeader />
           <Suspense fallback={null}>{children}</Suspense>
         </div>
       </body>

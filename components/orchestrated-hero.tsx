@@ -1,8 +1,9 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
+import Link from "next/link"
 
 interface CodeParticle {
   id: number
@@ -35,27 +36,45 @@ export function OrchestratedHero() {
     { id: "4", title: "Genetic Algorithm", status: "pending", progress: 0 },
   ])
 
-  const codeSnippets = [
-    "genome.sequence()",
-    "species.classify()",
-    "neural.predict()",
-    "genetic.optimize()",
-    "dna.analyze()",
-    "quantum.compute()",
-    "ai.process()",
-    "model.train()",
-  ]
+  const codeSnippets = useMemo(
+    () => [
+      "genome.sequence()",
+      "species.classify()",
+      "neural.predict()",
+      "genetic.optimize()",
+      "dna.analyze()",
+      "quantum.compute()",
+      "ai.process()",
+      "model.train()",
+    ],
+    [],
+  )
 
-  const colors = ["text-cyan-400", "text-purple-400", "text-pink-400", "text-green-400", "text-yellow-400"]
+  const colors = useMemo(
+    () => ["text-cyan-400", "text-purple-400", "text-pink-400", "text-green-400", "text-yellow-400"],
+    [],
+  )
 
-  const terminalMessages: TerminalLine[] = [
-    { text: "[AI] Initializing Crowe Logic Engine...", type: "info" },
-    { text: "[DNA] Sequencing genome: 10,847 base pairs", type: "info" },
-    { text: "[NEURAL] Model loaded: 98.47% accuracy", type: "success" },
-    { text: "[GENETIC] Optimization complete", type: "success" },
-    { text: "[QUANTUM] Qubits entangled: 256", type: "info" },
-    { text: "[SYSTEM] All systems operational", type: "success" },
-  ]
+  const terminalMessages: TerminalLine[] = useMemo(
+    () => [
+      { text: "[AI] Initializing Crowe Logic Engine...", type: "info" },
+      { text: "[DNA] Sequencing genome: 10,847 base pairs", type: "info" },
+      { text: "[NEURAL] Model loaded: 98.47% accuracy", type: "success" },
+      { text: "[GENETIC] Optimization complete", type: "success" },
+      { text: "[QUANTUM] Qubits entangled: 256", type: "info" },
+      { text: "[SYSTEM] All systems operational", type: "success" },
+    ],
+    [],
+  )
+
+  const updateParticles = useCallback(() => {
+    setParticles((prev) =>
+      prev.map((p) => ({
+        ...p,
+        angle: p.angle + p.speed * 0.01,
+      })),
+    )
+  }, [])
 
   // Initialize code particles
   useEffect(() => {
@@ -69,23 +88,16 @@ export function OrchestratedHero() {
     }))
     setParticles(newParticles)
 
-    let time = 0
     let animationFrame: number
 
     const animate = () => {
-      time += 0.01
-      setParticles((prev) =>
-        prev.map((p) => ({
-          ...p,
-          angle: p.angle + p.speed * 0.01,
-        })),
-      )
+      updateParticles()
       animationFrame = requestAnimationFrame(animate)
     }
 
     animate()
     return () => cancelAnimationFrame(animationFrame)
-  }, [])
+  }, [codeSnippets, colors, updateParticles])
 
   // Terminal animation
   useEffect(() => {
@@ -103,7 +115,7 @@ export function OrchestratedHero() {
     }, 800)
 
     return () => clearInterval(interval)
-  }, [])
+  }, [terminalMessages])
 
   // Code blocks animation
   useEffect(() => {
@@ -154,7 +166,7 @@ export function OrchestratedHero() {
             return (
               <div
                 key={particle.id}
-                className={`absolute font-mono text-sm font-bold ${particle.color} whitespace-nowrap`}
+                className={`absolute font-mono text-sm font-bold ${particle.color} whitespace-nowrap will-change-transform`}
                 style={{
                   transform: `translate(${x}px, ${y}px)`,
                   textShadow: "0 0 10px currentColor",
@@ -256,15 +268,15 @@ export function OrchestratedHero() {
 
         {/* CTA Section */}
         <div className="text-center mt-12 space-y-6">
-          <p className="text-xl text-foreground/90 max-w-2xl mx-auto">
-            Experience the power of AI-driven mycology research with 20+ years of expertise
+          <p className="text-xl text-foreground/90 max-w-2xl mx-auto leading-relaxed">
+            Twenty years of professional mycology expertise, distilled into AI-powered cultivation intelligence
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Button size="lg" className="text-lg px-8">
-              Get Started
+            <Button size="lg" className="text-lg px-8" asChild>
+              <Link href="/pricing">Get Started</Link>
             </Button>
-            <Button size="lg" variant="outline" className="text-lg px-8 bg-transparent">
-              Learn More
+            <Button size="lg" variant="outline" className="text-lg px-8 bg-transparent" asChild>
+              <Link href="/chat">Try Free Demo</Link>
             </Button>
           </div>
         </div>

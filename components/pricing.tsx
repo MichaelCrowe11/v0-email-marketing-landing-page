@@ -44,7 +44,7 @@ export function Pricing() {
   ]
 
   return (
-    <section id="pricing" className="relative px-4 py-24 md:py-32">
+    <section id="pricing" className="relative px-4 py-16 sm:py-24 md:py-32">
       <div className="relative mx-auto max-w-7xl">
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 border border-accent/20 mb-6">
@@ -60,7 +60,7 @@ export function Pricing() {
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-4">
           {products.map((product, index) => (
             <div key={index} className={`relative ${product.featured ? "md:col-span-2 lg:col-span-1" : ""}`}>
               {product.featured && (
