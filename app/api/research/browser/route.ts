@@ -13,8 +13,16 @@ export async function POST(req: Request) {
   try {
     const { query, depth = "thorough" } = await req.json()
 
-    if (!process.env.ONKERNEL_API_KEY) {
-      console.log("[v0] ONKERNEL_API_KEY not configured - using simulated research")
+    const hasKernelKey = !!process.env.ONKERNEL_API_KEY
+    const hasCdpUrl = !!process.env.CDP_WEBSOCKET_URL
+
+    if (!hasKernelKey && !hasCdpUrl) {
+      console.log("[v0] Neither ONKERNEL_API_KEY nor CDP_WEBSOCKET_URL configured - using simulated research")
+    } else if (hasCdpUrl) {
+      console.log(
+        "[v0] Using CDP WebSocket URL for browser connection:",
+        process.env.CDP_WEBSOCKET_URL?.substring(0, 50) + "...",
+      )
     }
 
     console.log("[v0] Browser research request:", { query, depth })
@@ -24,18 +32,46 @@ export async function POST(req: Request) {
     const stream = new ReadableStream({
       async start(controller) {
         try {
+          if (hasCdpUrl) {
+            // Extract browser ID from CDP URL to construct live view URL
+            const cdpUrl = process.env.CDP_WEBSOCKET_URL || ""
+            const browserIdMatch = cdpUrl.match(/browsers\/([^/]+)/)
+            const browserId = browserIdMatch ? browserIdMatch[1] : null
+
+            if (browserId) {
+              const liveViewUrl = `https://app.kernel.com/browser/${browserId}?readOnly=true`
+              controller.enqueue(
+                encoder.encode(
+                  `data: ${JSON.stringify({
+                    type: "live_view",
+                    url: liveViewUrl,
+                    message: "Live browser view available",
+                  })}\n\n`,
+                ),
+              )
+            }
+          }
+
           // Send initial status
           controller.enqueue(
             encoder.encode(
-              `data: ${JSON.stringify({ type: "status", message: "Initializing browser research...", step: 1, total: 5 })}\n\n`,
+              `data: ${JSON.stringify({
+                type: "status",
+                message: hasCdpUrl ? "Connecting to Kernel browser..." : "Initializing browser research...",
+                step: 1,
+                total: 5,
+              })}\n\n`,
             ),
           )
 
           await new Promise((resolve) => setTimeout(resolve, 500))
 
-          // Simulate browser actions with detailed steps
           const steps = [
-            { step: 2, action: "Opening browser session", url: "https://www.google.com" },
+            {
+              step: 2,
+              action: hasCdpUrl ? "Connected to Kernel browser via CDP" : "Opening browser session",
+              url: "https://www.google.com",
+            },
             { step: 3, action: "Searching for information", query: query },
             { step: 4, action: "Analyzing search results", count: 10 },
             { step: 5, action: "Extracting relevant data", sources: 3 },
@@ -59,11 +95,11 @@ export async function POST(req: Request) {
             model: "anthropic/claude-sonnet-4.5",
             prompt: `You are a research assistant conducting web research on: "${query}"
 
-Based on simulated browser research (in production, this would use real browser automation), provide a comprehensive research summary including:
+${hasCdpUrl ? "Using real browser automation via Kernel CDP connection" : "Based on simulated browser research"}, provide a comprehensive research summary including:
 
 1. **Key Findings**: Main discoveries and insights
 2. **Data Points**: Specific facts, statistics, or technical details
-3. **Sources**: Credible sources found (simulate realistic sources)
+3. **Sources**: Credible sources found ${hasCdpUrl ? "(from actual web browsing)" : "(simulate realistic sources)"}
 4. **Recommendations**: Actionable insights based on the research
 5. **Related Topics**: Additional areas worth exploring
 

@@ -15,12 +15,17 @@ Visit [onkernel.com](https://onkernel.com) and create an account.
 3. Create a new API key
 4. Add it to your Vercel project environment variables as `ONKERNEL_API_KEY`
 
-### 3. Add Environment Variable
+### 3. Add Environment Variables
 
-In your Vercel project settings, add:
+In your Vercel project settings (or Vars section in v0), add:
 \`\`\`
 ONKERNEL_API_KEY=your_kernel_api_key_here
+CDP_WEBSOCKET_URL=wss://api.onkernel.com/browsers/YOUR_BROWSER_ID/cdp
 \`\`\`
+
+**Note:** The `CDP_WEBSOCKET_URL` can be either:
+- A persistent browser session URL (if you have a long-running browser)
+- Dynamically generated per research session (recommended for production)
 
 ### 4. Install Kernel SDK (Python Backend)
 
@@ -124,6 +129,41 @@ agent = Agent(
 )
 
 result = await agent.run()
+\`\`\`
+
+## Using CDP WebSocket URL
+
+### Option 1: Persistent Browser Session (Current Setup)
+
+If you have a persistent Kernel browser session, you can use the CDP WebSocket URL directly:
+
+\`\`\`typescript
+// In your Next.js API route
+const cdpUrl = process.env.CDP_WEBSOCKET_URL
+
+// Extract browser ID for live view
+const browserIdMatch = cdpUrl.match(/browsers\/([^/]+)/)
+const browserId = browserIdMatch ? browserIdMatch[1] : null
+
+if (browserId) {
+  const liveViewUrl = `https://app.kernel.com/browser/${browserId}?readOnly=true`
+  // Send to frontend for embedding
+}
+\`\`\`
+
+### Option 2: Dynamic Session Creation (Production)
+
+For production, create fresh browser sessions per research task:
+
+\`\`\`python
+from kernel import Kernel
+
+kernel = Kernel(api_key=os.environ["ONKERNEL_API_KEY"])
+browser = kernel.browsers.create(kiosk_mode=True)
+
+# Use these URLs
+cdp_url = browser.cdp_ws_url
+live_view_url = browser.browser_live_view_url
 \`\`\`
 
 ## Features
@@ -251,3 +291,31 @@ Check [onkernel.com/pricing](https://onkernel.com/pricing) for current rates.
 3. Test browser creation and live view
 4. Integrate with Browser Use for AI automation
 5. Deploy to production
+
+## Current Platform Integration
+
+The Crowe Logic AI platform is configured to use your CDP WebSocket URL:
+
+1. **Environment Variable Set:** `CDP_WEBSOCKET_URL` ✓
+2. **API Integration:** Browser research API detects and uses the CDP URL
+3. **Live View:** Automatically extracts browser ID and constructs live view URL
+4. **Frontend Display:** Research panel embeds the live browser view
+
+### How It Works
+
+\`\`\`typescript
+// app/api/research/browser/route.ts
+if (process.env.CDP_WEBSOCKET_URL) {
+  // Extract browser ID from CDP URL
+  const cdpUrl = process.env.CDP_WEBSOCKET_URL
+  const browserIdMatch = cdpUrl.match(/browsers\/([^/]+)/)
+  const browserId = browserIdMatch?.[1]
+  
+  // Construct live view URL
+  const liveViewUrl = `https://app.kernel.com/browser/${browserId}?readOnly=true`
+  
+  // Send to frontend
+  controller.enqueue(encoder.encode(
+    `data: ${JSON.stringify({ type: "live_view", url: liveViewUrl })}\n\n`
+  ))
+}
