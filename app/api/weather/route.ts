@@ -1,16 +1,58 @@
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    // In production, this would call a real weather API
-    // For now, returning mock data
-    const mockWeather = {
-      temp: Math.floor(Math.random() * 30) + 60, // 60-90°F
-      condition: ["Sunny", "Cloudy", "Partly Cloudy", "Clear"][Math.floor(Math.random() * 4)],
-      location: "Your Location",
+    const { searchParams } = new URL(request.url)
+    const lat = searchParams.get("lat")
+    const lon = searchParams.get("lon")
+
+    // If no coordinates provided, return a prompt for location
+    if (!lat || !lon) {
+      return Response.json({
+        temp: null,
+        condition: "Unknown",
+        location: "Enable location",
+        needsLocation: true,
+      })
     }
 
-    return Response.json(mockWeather)
+    // Use OpenWeatherMap API (free tier)
+    // Note: In production, add OPENWEATHER_API_KEY to environment variables
+    const apiKey = process.env.OPENWEATHER_API_KEY || "demo"
+
+    // If no API key is set, return mock data with location
+    if (apiKey === "demo") {
+      return Response.json({
+        temp: Math.floor(Math.random() * 30) + 60,
+        condition: ["Sunny", "Cloudy", "Partly Cloudy", "Clear"][Math.floor(Math.random() * 4)],
+        location: "Demo Mode",
+        needsLocation: false,
+      })
+    }
+
+    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=imperial`
+
+    const response = await fetch(weatherUrl, {
+      next: { revalidate: 1800 }, // Cache for 30 minutes
+    })
+
+    if (!response.ok) {
+      throw new Error("Weather API request failed")
+    }
+
+    const data = await response.json()
+
+    return Response.json({
+      temp: Math.round(data.main.temp),
+      condition: data.weather[0].main,
+      location: data.name,
+      needsLocation: false,
+    })
   } catch (error) {
     console.error("[v0] Weather API error:", error)
-    return Response.json({ error: "Failed to fetch weather" }, { status: 500 })
+    return Response.json({
+      temp: 72,
+      condition: "Clear",
+      location: "Unavailable",
+      needsLocation: false,
+    })
   }
 }

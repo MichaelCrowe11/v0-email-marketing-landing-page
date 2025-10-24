@@ -26,36 +26,59 @@ interface AnalysisResult {
 
 export default function CroweVisionPage() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [blobUrl, setBlobUrl] = useState<string | null>(null)
+  const [uploading, setUploading] = useState(false)
   const [analyzing, setAnalyzing] = useState(false)
   const [result, setResult] = useState<AnalysisResult | null>(null)
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setSelectedImage(reader.result as string)
-        setResult(null)
-      }
-      reader.readAsDataURL(file)
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setSelectedImage(reader.result as string)
     }
+    reader.readAsDataURL(file)
+
+    setUploading(true)
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      })
+
+      const data = await response.json()
+      if (data.url) {
+        setBlobUrl(data.url)
+      }
+    } catch (error) {
+      console.error("[v0] Upload failed:", error)
+    } finally {
+      setUploading(false)
+    }
+
+    setResult(null)
   }
 
   const analyzeImage = async () => {
-    if (!selectedImage) return
+    if (!blobUrl) return
 
     setAnalyzing(true)
     try {
       const response = await fetch("/api/crowe-vision/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image: selectedImage }),
+        body: JSON.stringify({ imageUrl: blobUrl }),
       })
 
       const data = await response.json()
       setResult(data.analysis)
     } catch (error) {
-      console.error("Analysis failed:", error)
+      console.error("[v0] Analysis failed:", error)
     } finally {
       setAnalyzing(false)
     }
@@ -118,11 +141,19 @@ export default function CroweVisionPage() {
                       alt="Selected"
                       className="w-full h-full object-cover"
                     />
+                    {uploading && (
+                      <div className="absolute inset-0 bg-background/80 flex items-center justify-center">
+                        <div className="flex items-center gap-2 text-sm">
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <span>Uploading...</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <div className="flex gap-2">
                     <Button
                       onClick={analyzeImage}
-                      disabled={analyzing}
+                      disabled={analyzing || uploading || !blobUrl}
                       className="flex-1 bg-primary hover:bg-primary/90"
                     >
                       {analyzing ? (
@@ -141,6 +172,7 @@ export default function CroweVisionPage() {
                       variant="outline"
                       onClick={() => {
                         setSelectedImage(null)
+                        setBlobUrl(null)
                         setResult(null)
                       }}
                     >

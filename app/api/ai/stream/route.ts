@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { streamText } from "ai"
 
 export const runtime = "edge"
 export const dynamic = "force-dynamic"
@@ -42,6 +43,23 @@ export async function POST(request: Request) {
 
     const { postId, replyId, content } = await request.json()
 
+    const result = await streamText({
+      model: "anthropic/claude-sonnet-4.5",
+      system: `You are CroweLogic AI, an expert mycology assistant with 20+ years of professional mushroom cultivation experience from Michael Crowe. 
+
+Your expertise includes:
+- Species identification and cultivation techniques
+- Contamination detection and remediation
+- Substrate preparation and sterilization
+- Environmental control (temperature, humidity, FAE)
+- Troubleshooting common cultivation issues
+- Advanced techniques for gourmet and medicinal mushrooms
+
+Provide practical, actionable advice based on proven cultivation methods. Be specific with measurements, temperatures, and techniques. When discussing contamination, always identify the type and provide immediate remediation steps.`,
+      prompt: content,
+      maxTokens: 1000,
+    })
+
     // Create SSE stream
     const encoder = new TextEncoder()
     const stream = new ReadableStream({
@@ -49,19 +67,17 @@ export async function POST(request: Request) {
         // Send initial thinking state
         controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: "status", status: "thinking" })}\n\n`))
 
-        await new Promise((resolve) => setTimeout(resolve, 1000))
+        await new Promise((resolve) => setTimeout(resolve, 500))
 
         // Send streaming state
         controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: "status", status: "streaming" })}\n\n`))
 
-        // Simulate AI response generation with streaming
-        const aiResponse = generateAIResponse(content)
-        const words = aiResponse.split(" ")
+        let fullResponse = ""
 
-        for (let i = 0; i < words.length; i++) {
-          const chunk = words[i] + " "
+        // Stream AI response
+        for await (const chunk of result.textStream) {
+          fullResponse += chunk
           controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: "content", content: chunk })}\n\n`))
-          await new Promise((resolve) => setTimeout(resolve, 50))
         }
 
         // Send completion state
@@ -74,7 +90,7 @@ export async function POST(request: Request) {
             post_id: postId,
             parent_reply_id: replyId || null,
             author_id: "ai-crowe-logic", // Special AI user ID
-            content: aiResponse,
+            content: fullResponse,
           })
           .select()
           .single()
@@ -96,23 +112,4 @@ export async function POST(request: Request) {
     console.error("[v0] AI stream error:", error)
     return new Response("Internal server error", { status: 500 })
   }
-}
-
-function generateAIResponse(content: string): string {
-  // This is a placeholder - in production, integrate with AI SDK
-  const lowerContent = content.toLowerCase()
-
-  if (lowerContent.includes("contamination")) {
-    return "Based on Michael Crowe's 20+ years of experience, contamination is often caused by inadequate sterilization or poor air quality. I recommend checking your pressure cooker reaches 15 PSI for at least 90 minutes, and ensure your workspace has proper HEPA filtration. What specific contamination are you seeing - green mold (Trichoderma), black mold (Aspergillus), or bacterial slime?"
-  }
-
-  if (lowerContent.includes("substrate")) {
-    return "For substrate preparation, Michael Crowe recommends a moisture content of 60-65% - the 'field capacity' test where a handful squeezed releases only a few drops. The master's mix (50% hardwood sawdust, 50% soy hulls) works excellently for oysters and lion's mane. What species are you growing?"
-  }
-
-  if (lowerContent.includes("temperature") || lowerContent.includes("humidity")) {
-    return "Environmental control is crucial for success. Most gourmet species fruit best at 55-65°F with 85-95% humidity. Michael Crowe's pro tip: use an ultrasonic humidifier with a hygrometer controller, and maintain fresh air exchange of 4-6 times per hour. Are you seeing any specific issues with your current setup?"
-  }
-
-  return "Great question! Based on Michael Crowe's cultivation expertise, I'd recommend starting with the fundamentals: proper sterilization, maintaining optimal environmental conditions, and careful observation of your mycelium's health. Could you provide more details about your specific situation so I can give you more targeted advice?"
 }

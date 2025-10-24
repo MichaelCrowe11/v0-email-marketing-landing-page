@@ -24,20 +24,20 @@ const analysisSchema = z.object({
 
 export async function POST(req: Request) {
   try {
-    const { image } = await req.json()
+    const { imageUrl } = await req.json()
 
-    if (!image) {
-      return Response.json({ error: "No image provided" }, { status: 400 })
+    if (!imageUrl) {
+      return Response.json({ error: "No image URL provided" }, { status: 400 })
     }
 
-    // Extract base64 data and media type
-    const matches = image.match(/^data:([^;]+);base64,(.+)$/)
-    if (!matches) {
-      return Response.json({ error: "Invalid image format" }, { status: 400 })
+    const imageResponse = await fetch(imageUrl)
+    if (!imageResponse.ok) {
+      return Response.json({ error: "Failed to fetch image" }, { status: 400 })
     }
 
-    const mediaType = matches[1]
-    const base64Data = matches[2]
+    const imageBuffer = await imageResponse.arrayBuffer()
+    const base64Data = Buffer.from(imageBuffer).toString("base64")
+    const contentType = imageResponse.headers.get("content-type") || "image/jpeg"
 
     const { object } = await generateObject({
       model: "anthropic/claude-sonnet-4.5",
@@ -63,7 +63,7 @@ Be specific, practical, and focus on actionable insights. If contamination is de
             {
               type: "image",
               image: base64Data,
-              mimeType: mediaType,
+              mimeType: contentType,
             },
           ],
         },

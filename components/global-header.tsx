@@ -3,28 +3,53 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
-import { Search, Cloud, CloudRain, Sun, Wind, Snowflake, Command } from "lucide-react"
+import { Search, Cloud, CloudRain, Sun, Wind, Snowflake, Command, MapPin } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { UserMenu } from "@/components/user-menu"
 
 interface WeatherData {
-  temp: number
+  temp: number | null
   condition: string
   location: string
+  needsLocation?: boolean
 }
 
 export function GlobalHeader() {
   const [searchQuery, setSearchQuery] = useState("")
   const [weather, setWeather] = useState<WeatherData | null>(null)
   const [searchFocused, setSearchFocused] = useState(false)
+  const [locationPermission, setLocationPermission] = useState<"prompt" | "granted" | "denied">("prompt")
 
   useEffect(() => {
-    // Fetch weather data
-    fetch("/api/weather")
-      .then((res) => res.json())
-      .then((data) => setWeather(data))
-      .catch((err) => console.error("[v0] Weather fetch failed:", err))
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocationPermission("granted")
+          const { latitude, longitude } = position.coords
+          fetch(`/api/weather?lat=${latitude}&lon=${longitude}`)
+            .then((res) => res.json())
+            .then((data) => setWeather(data))
+            .catch((err) => console.error("[v0] Weather fetch failed:", err))
+        },
+        (error) => {
+          console.error("[v0] Geolocation error:", error)
+          setLocationPermission("denied")
+          // Fetch weather without location (will return demo data)
+          fetch("/api/weather")
+            .then((res) => res.json())
+            .then((data) => setWeather(data))
+            .catch((err) => console.error("[v0] Weather fetch failed:", err))
+        },
+      )
+    } else {
+      // Geolocation not supported
+      fetch("/api/weather")
+        .then((res) => res.json())
+        .then((data) => setWeather(data))
+        .catch((err) => console.error("[v0] Weather fetch failed:", err))
+    }
   }, [])
 
   const handleSearch = (e: React.FormEvent) => {
@@ -75,12 +100,21 @@ export function GlobalHeader() {
         {/* Weather Display */}
         {weather && (
           <div className="hidden md:flex items-center gap-3 ml-6 px-4 py-2 rounded-lg bg-muted/50 border border-border/50">
-            <div className="flex items-center gap-2 text-sm">
-              {getWeatherIcon(weather.condition)}
-              <span className="font-semibold">{weather.temp}°F</span>
-            </div>
-            <div className="h-4 w-px bg-border" />
-            <div className="text-sm text-muted-foreground">{weather.location}</div>
+            {weather.needsLocation ? (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <MapPin className="w-4 h-4" />
+                <span>Enable location for weather</span>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center gap-2 text-sm">
+                  {getWeatherIcon(weather.condition)}
+                  <span className="font-semibold">{weather.temp}°F</span>
+                </div>
+                <div className="h-4 w-px bg-border" />
+                <div className="text-sm text-muted-foreground">{weather.location}</div>
+              </>
+            )}
           </div>
         )}
 
@@ -95,6 +129,7 @@ export function GlobalHeader() {
           <Button size="sm" className="bg-primary hover:bg-primary/90" asChild>
             <a href="/crowe-vision">Crowe Vision</a>
           </Button>
+          <UserMenu />
         </div>
       </div>
     </header>
