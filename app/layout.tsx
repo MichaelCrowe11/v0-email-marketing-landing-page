@@ -5,6 +5,7 @@ import "./globals.css"
 import { Suspense } from "react"
 import { SidebarNav } from "@/components/sidebar-nav"
 import { GlobalHeader } from "@/components/global-header"
+import { ClerkProvider } from "@clerk/nextjs"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -38,14 +39,16 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body className={`font-sans ${inter.variable} ${jetbrainsMono.variable} antialiased`}>
-        <SidebarNav />
-        <div className="md:ml-64">
-          <GlobalHeader />
-          <Suspense fallback={null}>{children}</Suspense>
-        </div>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={`font-sans ${inter.variable} ${jetbrainsMono.variable} antialiased`}>
+          <SidebarNav />
+          <div className="md:ml-64">
+            <GlobalHeader />
+            <Suspense fallback={null}>{children}</Suspense>
+          </div>
+        </body>
+      </html>
+    </ClerkProvider>
   )
 }
