@@ -1,7 +1,7 @@
 "use server"
 
 import { stripe } from "@/lib/stripe"
-import { PRODUCTS } from "@/lib/products"
+import { PRODUCTS, getPriceInCents } from "@/lib/products"
 
 export async function startCheckoutSession(productId: string) {
   const product = PRODUCTS.find((p) => p.id === productId)
@@ -20,7 +20,7 @@ export async function startCheckoutSession(productId: string) {
             name: product.name,
             description: product.description,
           },
-          unit_amount: product.priceInCents,
+          unit_amount: getPriceInCents(product),
         },
         quantity: 1,
       },

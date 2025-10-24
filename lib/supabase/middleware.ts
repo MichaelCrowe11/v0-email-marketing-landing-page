@@ -6,39 +6,57 @@ export async function updateSession(request: NextRequest) {
     request,
   })
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll()
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-          supabaseResponse = NextResponse.next({
-            request,
-          })
-          cookiesToSet.forEach(({ name, value, options }) => supabaseResponse.cookies.set(name, value, options))
-        },
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  // If Supabase credentials are not available, skip auth check
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.warn("[v0] Supabase credentials not found in middleware, skipping auth check")
+    return supabaseResponse
+  }
+
+  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      getAll() {
+        return request.cookies.getAll()
+      },
+      setAll(cookiesToSet) {
+        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+        supabaseResponse = NextResponse.next({
+          request,
+        })
+        cookiesToSet.forEach(({ name, value, options }) => supabaseResponse.cookies.set(name, value, options))
       },
     },
-  )
+  })
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
 
-  // Protect /documents and /forum routes
-  if (
-    !user &&
-    (request.nextUrl.pathname.startsWith("/documents/new") ||
-      request.nextUrl.pathname.startsWith("/forum/new") ||
-      request.nextUrl.pathname.startsWith("/profile"))
-  ) {
-    const url = request.nextUrl.clone()
-    url.pathname = "/auth/login"
-    return NextResponse.redirect(url)
+    const protectedPaths = [
+      "/dashboard",
+      "/profile",
+      "/projects",
+      "/documents/new",
+      "/forum/new",
+      "/analytics",
+      "/crowe-vision",
+      "/video-studio",
+    ]
+
+    const isProtectedPath = protectedPaths.some((path) => request.nextUrl.pathname.startsWith(path))
+
+    if (!user && isProtectedPath) {
+      const url = request.nextUrl.clone()
+      url.pathname = "/auth/login"
+      url.searchParams.set("redirectTo", request.nextUrl.pathname)
+      return NextResponse.redirect(url)
+    }
+  } catch (error) {
+    console.error("[v0] Error in middleware auth check:", error)
+    // Continue without blocking the request
   }
 
   return supabaseResponse
