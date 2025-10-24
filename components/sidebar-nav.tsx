@@ -22,6 +22,7 @@ import {
   Camera,
   Video,
   Home,
+  Sparkles,
 } from "lucide-react"
 
 export function SidebarNav() {
@@ -34,6 +35,7 @@ export function SidebarNav() {
     { href: "/chat", label: "AI Assistant", icon: MessageSquare },
     { href: "/crowe-vision", label: "Crowe Vision", icon: Camera },
     { href: "/video-studio", label: "Video Studio", icon: Video },
+    { href: "/michaels-gpts", label: "Michael's GPTs", icon: Sparkles },
     { href: "/species-library", label: "Species Library", icon: Microscope },
     { href: "/sops", label: "SOPs & Guides", icon: ClipboardList },
     { href: "/contamination-guide", label: "Contamination ID", icon: Leaf },
