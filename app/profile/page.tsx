@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { FileText, MessageSquare, Calendar, Mail } from "lucide-react"
+import { FileText, MessageSquare, Calendar, Mail, Crown, Settings } from "lucide-react"
 import SignOutButton from "@/components/sign-out-button"
 
 export default async function ProfilePage() {
@@ -20,6 +20,8 @@ export default async function ProfilePage() {
   }
 
   const { data: userData } = await supabase.from("users").select("*").eq("id", user.id).single()
+
+  const { data: subscription } = await supabase.from("subscriptions").select("*").eq("user_id", user.id).single()
 
   const { data: documents } = await supabase
     .from("documents")
@@ -57,16 +59,76 @@ export default async function ProfilePage() {
                   <Calendar className="w-4 h-4" />
                   <span>Joined {new Date(user.created_at).toLocaleDateString()}</span>
                 </div>
-                {userData?.subscription_tier && (
-                  <Badge variant="default" className="mt-3 bg-purple-600">
-                    {userData.subscription_tier}
-                  </Badge>
+                {subscription && (
+                  <div className="flex items-center gap-2 mt-3">
+                    <Badge
+                      variant={subscription.tier === "enterprise" ? "default" : "secondary"}
+                      className="text-sm gap-1"
+                    >
+                      <Crown className="w-3 h-3" />
+                      {subscription.tier}
+                    </Badge>
+                    <Badge variant="outline" className="text-xs">
+                      {subscription.status}
+                    </Badge>
+                  </div>
                 )}
               </div>
-              <SignOutButton />
+              <div className="flex flex-col gap-2">
+                <Button variant="outline" size="sm" asChild>
+                  <Link href="/dashboard">
+                    <Settings className="w-4 h-4 mr-2" />
+                    Manage Subscription
+                  </Link>
+                </Button>
+                <SignOutButton />
+              </div>
             </div>
           </CardContent>
         </Card>
+
+        {subscription && (
+          <Card className="glass shadow-xl mb-8 border-primary/20 bg-gradient-to-br from-card to-primary/5">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Crown className="w-5 h-5 text-primary" />
+                Subscription Overview
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-3 gap-6">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Current Plan</p>
+                  <p className="text-2xl font-bold capitalize">{subscription.tier}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Status</p>
+                  <Badge variant={subscription.status === "active" ? "default" : "secondary"} className="text-base">
+                    {subscription.status}
+                  </Badge>
+                </div>
+                {subscription.current_period_end && (
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Renews On</p>
+                    <p className="text-lg font-semibold">
+                      {new Date(subscription.current_period_end).toLocaleDateString()}
+                    </p>
+                  </div>
+                )}
+              </div>
+              <div className="mt-6 flex gap-3">
+                {subscription.tier === "free" && (
+                  <Button asChild>
+                    <Link href="/pricing">Upgrade to Pro</Link>
+                  </Button>
+                )}
+                <Button variant="outline" asChild>
+                  <Link href="/dashboard?tab=subscription">View Usage</Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card className="glass shadow-xl">
