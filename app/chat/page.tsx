@@ -105,10 +105,25 @@ function MagicalStreamingText({ text, isStreaming }: { text: string; isStreaming
 
 function ChatContainer() {
   const [selectedModel, setSelectedModel] = useState("anthropic/claude-sonnet-4.5")
-  const { messages, sendMessage, status, setMessages } = useChat({
+
+  console.log("[v0] ChatContainer rendering with model:", selectedModel)
+
+  const { messages, sendMessage, status, setMessages, error } = useChat({
     api: "/api/chat",
     body: { model: selectedModel },
+    onError: (error) => {
+      console.error("[v0] Chat error:", error)
+    },
+    onResponse: (response) => {
+      console.log("[v0] Chat response received:", response.status)
+    },
   })
+
+  console.log("[v0] Chat status:", status)
+  console.log("[v0] Messages count:", messages.length)
+  if (error) {
+    console.error("[v0] Chat hook error:", error)
+  }
 
   const [input, setInput] = useState("")
   const [completedMessages, setCompletedMessages] = useState<Set<string>>(new Set())
@@ -161,10 +176,14 @@ function ChatContainer() {
     e.preventDefault()
     if (!input.trim() || status === "in_progress") return
 
+    console.log("[v0] Submitting message:", input)
+    console.log("[v0] Current conversation ID:", currentConversationId)
+
     if (!currentConversationId && userId) {
       const title = input.slice(0, 50) + (input.length > 50 ? "..." : "")
       const conversation = await createConversation(userId, title)
       if (conversation) {
+        console.log("[v0] Created new conversation:", conversation.id)
         setCurrentConversationId(conversation.id)
       }
     }
@@ -176,6 +195,7 @@ function ChatContainer() {
     }
     setLastRequest(requestData)
 
+    console.log("[v0] Calling sendMessage with:", input)
     sendMessage({ text: input })
     setInput("")
   }
