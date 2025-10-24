@@ -4,6 +4,7 @@ import { Inter, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 import { Suspense } from "react"
 import { SidebarNav } from "@/components/sidebar-nav"
+import { GlobalHeader } from "@/components/global-header"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -34,6 +35,7 @@ export default function RootLayout({
       <body className={`font-sans ${inter.variable} ${jetbrainsMono.variable} antialiased`}>
         <SidebarNav />
         <div className="md:ml-64">
+          <GlobalHeader />
           <Suspense fallback={null}>{children}</Suspense>
         </div>
       </body>

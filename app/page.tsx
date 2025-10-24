@@ -40,19 +40,19 @@ export default function Home() {
         </ScrollReveal>
         <StickyBar />
         <footer className="relative py-16 md:py-20 text-center overflow-hidden border-t border-border/50">
-          <div className="absolute inset-0 bg-gradient-to-t from-accent/10 via-accent/5 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-muted/30 via-muted/10 to-transparent" />
           <div className="relative z-10 space-y-6 px-4">
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6 mb-6 md:mb-8">
               <div className="relative group">
-                <div className="absolute inset-0 bg-accent/20 rounded-full blur-xl group-hover:blur-2xl transition-all duration-300" />
+                <div className="absolute inset-0 bg-primary/10 rounded-full blur-xl group-hover:blur-2xl transition-all duration-300" />
                 <img
                   src="/crowe-logic-logo.png"
                   alt="Crowe Logic"
-                  className="relative h-16 w-16 md:h-20 md:w-20 rounded-full ring-4 ring-accent/30 shadow-glass-strong hover:ring-accent/50 transition-all duration-300"
+                  className="relative h-16 w-16 md:h-20 md:w-20 rounded-full ring-4 ring-border shadow-glass-strong hover:ring-primary/20 transition-all duration-300"
                 />
               </div>
               <div className="text-center sm:text-left">
-                <div className="text-xl md:text-2xl font-black text-gradient-purple mb-1">Crowe Logic AI</div>
+                <div className="text-xl md:text-2xl font-black text-foreground mb-1">Crowe Logic AI</div>
                 <div className="text-sm md:text-base text-muted-foreground">Powered by Southwest Mushrooms</div>
               </div>
             </div>
@@ -66,14 +66,14 @@ export default function Home() {
                 href="https://southwestmushrooms.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm md:text-base font-semibold text-accent hover:text-accent-foreground transition-colors"
+                className="text-sm md:text-base font-semibold text-foreground hover:text-primary transition-colors"
               >
                 Southwest Mushrooms
               </a>
               <span className="hidden sm:inline text-muted-foreground">•</span>
               <a
                 href="mailto:michael@crowelogic.com"
-                className="text-sm md:text-base font-semibold text-accent hover:text-accent-foreground transition-colors"
+                className="text-sm md:text-base font-semibold text-foreground hover:text-primary transition-colors"
               >
                 Contact Michael
               </a>

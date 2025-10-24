@@ -104,7 +104,7 @@ function MagicalStreamingText({ text, isStreaming }: { text: string; isStreaming
 }
 
 function ChatContainer() {
-  const [selectedModel, setSelectedModel] = useState("azure-agent")
+  const [selectedModel, setSelectedModel] = useState("openai/gpt-5")
   const { messages, sendMessage, status, setMessages } = useChat({
     transport: new DefaultChatTransport({ api: "/api/chat" }),
     body: { model: selectedModel },
