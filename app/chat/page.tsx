@@ -4,7 +4,6 @@ import type React from "react"
 import type { ReasoningStep } from "@/components/chat/chain-of-thought"
 
 import { useChat } from "@ai-sdk/react"
-import { DefaultChatTransport } from "ai"
 import { useState, useEffect } from "react"
 import { ChainOfThought } from "@/components/chat/chain-of-thought"
 import { SubstrateCalculator } from "@/components/chat/substrate-calculator"
@@ -105,9 +104,9 @@ function MagicalStreamingText({ text, isStreaming }: { text: string; isStreaming
 }
 
 function ChatContainer() {
-  const [selectedModel, setSelectedModel] = useState("openai/gpt-5")
+  const [selectedModel, setSelectedModel] = useState("anthropic/claude-sonnet-4.5")
   const { messages, sendMessage, status, setMessages } = useChat({
-    transport: new DefaultChatTransport({ api: "/api/chat" }),
+    api: "/api/chat",
     body: { model: selectedModel },
   })
 
@@ -220,11 +219,12 @@ function ChatContainer() {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="px-6 py-4 flex items-center justify-between border-b border-border bg-card">
-        <div className="flex items-center gap-3">
+      <div className="px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between border-b border-border bg-card">
+        <div className="flex items-center gap-2 sm:gap-3">
           <button
             onClick={() => setIsHistoryOpen(!isHistoryOpen)}
-            className="h-10 w-10 flex items-center justify-center rounded-lg hover:bg-muted transition-colors"
+            className="h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-lg hover:bg-muted transition-colors"
+            aria-label="Toggle conversation history"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -234,7 +234,7 @@ function ChatContainer() {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="w-5 h-5"
+              className="w-4 h-4 sm:w-5 sm:h-5"
             >
               <line x1="3" x2="21" y1="6" y2="6" />
               <line x1="3" x2="21" y1="12" y2="12" />
@@ -242,54 +242,15 @@ function ChatContainer() {
             </svg>
           </button>
           <div>
-            <h1 className="text-base font-semibold text-foreground">CROWELOGIC AI</h1>
-            <p className="text-xs text-muted-foreground">Expert Cultivation Assistant</p>
+            <h1 className="text-sm sm:text-base font-semibold text-foreground">CROWELOGIC AI</h1>
+            <p className="text-xs text-muted-foreground hidden sm:block">Expert Cultivation Assistant</p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <ModelSelector selectedModel={selectedModel} onModelChange={setSelectedModel} />
-          <button
-            onClick={() => setIsIntegrationsOpen(true)}
-            className="flex items-center gap-2 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="w-4 h-4"
-            >
-              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-              <polyline points="16 6 12 2 8 6" />
-              <line x1="12" x2="12" y1="2" y2="15" />
-            </svg>
-            Integrations
-          </button>
-          <button
-            onClick={() => setIsCanvasOpen(true)}
-            className="flex items-center gap-2 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="w-4 h-4"
-            >
-              <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-              <path d="M18.375 2.625a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4Z" />
-            </svg>
-            Canvas
-          </button>
           <Link
             href="/"
-            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="hidden sm:flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -304,7 +265,7 @@ function ChatContainer() {
               <path d="m12 19-7-7 7-7" />
               <path d="M19 12H5" />
             </svg>
-            Back to Home
+            Back
           </Link>
         </div>
       </div>
@@ -322,25 +283,24 @@ function ChatContainer() {
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-4xl mx-auto px-6 py-12">
           {isEmpty && (
-            <div className="flex flex-col items-center justify-center min-h-[calc(100vh-300px)] space-y-8">
-              <AIAvatarSwirl state="idle" size={128} />
+            <div className="flex flex-col items-center justify-center min-h-[calc(100vh-300px)] space-y-6 sm:space-y-8 px-4">
+              <AIAvatarSwirl state="idle" size={window.innerWidth < 640 ? 96 : 128} />
 
-              <div className="text-center space-y-3 max-w-2xl">
-                <h2 className="text-4xl font-light tracking-tight text-foreground">
+              <div className="text-center space-y-2 sm:space-y-3 max-w-2xl">
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light tracking-tight text-foreground">
                   Welcome to <span className="font-semibold">CROWELOGIC AI</span>
                 </h2>
-                <p className="text-lg text-muted-foreground leading-relaxed font-light">
-                  Your expert cultivation assistant powered by years of commercial growing experience. Ask me anything
-                  about mushroom cultivation, contamination, yields, or scaling operations.
+                <p className="text-base sm:text-lg text-muted-foreground leading-relaxed font-light px-4">
+                  Your expert cultivation assistant powered by years of commercial growing experience.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-3xl mt-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 w-full max-w-3xl mt-6 sm:mt-8">
                 {[
-                  "How do I identify contamination in my cultures?",
-                  "What are optimal conditions for lion's mane?",
-                  "How can I increase my yields by 40%?",
-                  "What's the best substrate recipe for oyster mushrooms?",
+                  "How do I identify contamination?",
+                  "Optimal conditions for lion's mane?",
+                  "How to increase yields by 40%?",
+                  "Best substrate for oyster mushrooms?",
                 ].map((suggestion, i) => (
                   <button
                     key={i}
@@ -348,7 +308,7 @@ function ChatContainer() {
                       setInput(suggestion)
                       sendMessage({ text: suggestion })
                     }}
-                    className="p-4 rounded-xl bg-card border border-border hover:bg-accent hover:border-accent-foreground/20 transition-all text-left text-sm text-foreground shadow-sm"
+                    className="p-3 sm:p-4 rounded-xl bg-card border border-border hover:bg-accent hover:border-accent-foreground/20 transition-all text-left text-sm text-foreground shadow-sm"
                   >
                     {suggestion}
                   </button>
@@ -440,85 +400,7 @@ function ChatContainer() {
       </div>
 
       <div className="border-t border-border bg-card/50 backdrop-blur-xl">
-        <div className="max-w-4xl mx-auto px-6 py-3">
-          <div className="flex gap-2 overflow-x-auto pb-2">
-            <button
-              onClick={() => setActiveToolDialog("substrate")}
-              className="flex items-center gap-2 px-3 py-1.5 text-xs bg-muted hover:bg-muted/80 rounded-lg transition-colors whitespace-nowrap"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="w-3.5 h-3.5"
-              >
-                <path d="M3 3v18h18" />
-                <path d="m19 9-5 5-4-4-3 3" />
-              </svg>
-              Substrate Calculator
-            </button>
-            <button
-              onClick={() => setActiveToolDialog("strain")}
-              className="flex items-center gap-2 px-3 py-1.5 text-xs bg-muted hover:bg-muted/80 rounded-lg transition-colors whitespace-nowrap"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="w-3.5 h-3.5"
-              >
-                <path d="M12 2v20M2 12h20" />
-              </svg>
-              Strain Database
-            </button>
-            <button
-              onClick={() => setActiveToolDialog("environment")}
-              className="flex items-center gap-2 px-3 py-1.5 text-xs bg-muted hover:bg-muted/80 rounded-lg transition-colors whitespace-nowrap"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="w-3.5 h-3.5"
-              >
-                <path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z" />
-              </svg>
-              Environment Monitor
-            </button>
-            <button
-              onClick={() => setActiveToolDialog("yield")}
-              className="flex items-center gap-2 px-3 py-1.5 text-xs bg-muted hover:bg-muted/80 rounded-lg transition-colors whitespace-nowrap"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="w-3.5 h-3.5"
-              >
-                <path d="M16 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-              </svg>
-              Yield Calculator
-            </button>
-          </div>
-        </div>
-
-        <div className="max-w-4xl mx-auto px-6 py-6">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
           <form onSubmit={handleSubmit} className="relative">
             <textarea
               value={input}
@@ -529,14 +411,14 @@ function ChatContainer() {
                   handleSubmit(e)
                 }
               }}
-              placeholder="Ask about cultivation techniques, contamination, yields, or anything else..."
-              className="w-full min-h-[60px] max-h-[200px] px-5 py-4 pr-14 bg-background border border-border rounded-2xl text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 resize-none shadow-sm"
+              placeholder="Ask about cultivation techniques, contamination, yields..."
+              className="w-full min-h-[56px] sm:min-h-[60px] max-h-[200px] px-4 sm:px-5 py-3 sm:py-4 pr-12 sm:pr-14 bg-background border border-border rounded-2xl text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent/50 resize-none shadow-sm"
               rows={2}
               disabled={isLoading}
             />
             <button
               type="submit"
-              className="absolute right-3 bottom-3 h-10 w-10 flex items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 text-white hover:from-amber-500 hover:to-amber-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-amber-500/20"
+              className="absolute right-2 sm:right-3 bottom-2 sm:bottom-3 h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-xl bg-accent text-accent-foreground hover:bg-accent/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
               disabled={isLoading || !input.trim()}
             >
               <svg
@@ -547,14 +429,14 @@ function ChatContainer() {
                 strokeWidth="2.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="w-5 h-5"
+                className="w-4 h-4 sm:w-5 sm:h-5"
               >
                 <path d="m5 12 7-7 7 7" />
                 <path d="M12 19V5" />
               </svg>
             </button>
           </form>
-          <p className="text-xs text-muted-foreground mt-3 text-center">
+          <p className="text-xs text-muted-foreground mt-2 sm:mt-3 text-center">
             Press Enter to send, Shift+Enter for new line
           </p>
         </div>

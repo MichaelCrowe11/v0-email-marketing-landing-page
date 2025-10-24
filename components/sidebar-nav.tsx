@@ -35,7 +35,7 @@ export function SidebarNav() {
     { href: "/chat", label: "AI Assistant", icon: MessageSquare },
     { href: "/crowe-vision", label: "Crowe Vision", icon: Camera },
     { href: "/video-studio", label: "Video Studio", icon: Video },
-    { href: "/michaels-gpts", label: "Michael's GPTs", icon: Sparkles },
+    { href: "/gpts", label: "AI GPT Modules", icon: Sparkles },
     { href: "/species-library", label: "Species Library", icon: Microscope },
     { href: "/sops", label: "SOPs & Guides", icon: ClipboardList },
     { href: "/contamination-guide", label: "Contamination ID", icon: Leaf },
@@ -139,7 +139,7 @@ export function SidebarNav() {
               className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-glass-strong"
               asChild
             >
-              <Link href="/shop">Get Started</Link>
+              <Link href="/gpts">View AI Modules</Link>
             </Button>
           </div>
         </div>
