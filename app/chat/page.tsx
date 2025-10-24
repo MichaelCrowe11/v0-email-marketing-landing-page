@@ -1,4 +1,5 @@
 "use client"
+
 import type { ReasoningStep } from "@/components/chat/chain-of-thought"
 import { useState, useEffect } from "react"
 import { getUserSubscription } from "@/lib/subscription"
