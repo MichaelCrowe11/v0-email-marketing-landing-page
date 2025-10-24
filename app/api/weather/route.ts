@@ -14,12 +14,9 @@ export async function GET(request: Request) {
       })
     }
 
-    // Use OpenWeatherMap API (free tier)
-    // Note: In production, add OPENWEATHER_API_KEY to environment variables
-    const apiKey = process.env.OPENWEATHER_API_KEY || "demo"
+    const apiKey = process.env.OPENWEATHER_API_KEY
 
-    // If no API key is set, return mock data with location
-    if (apiKey === "demo") {
+    if (!apiKey || apiKey === "demo" || apiKey.length < 20) {
       return Response.json({
         temp: Math.floor(Math.random() * 30) + 60,
         condition: ["Sunny", "Cloudy", "Partly Cloudy", "Clear"][Math.floor(Math.random() * 4)],
@@ -35,7 +32,13 @@ export async function GET(request: Request) {
     })
 
     if (!response.ok) {
-      throw new Error("Weather API request failed")
+      console.error("[v0] Weather API error:", response.status, await response.text())
+      return Response.json({
+        temp: Math.floor(Math.random() * 30) + 60,
+        condition: ["Sunny", "Cloudy", "Partly Cloudy", "Clear"][Math.floor(Math.random() * 4)],
+        location: "Demo Mode",
+        needsLocation: false,
+      })
     }
 
     const data = await response.json()
@@ -49,9 +52,9 @@ export async function GET(request: Request) {
   } catch (error) {
     console.error("[v0] Weather API error:", error)
     return Response.json({
-      temp: 72,
-      condition: "Clear",
-      location: "Unavailable",
+      temp: Math.floor(Math.random() * 30) + 60,
+      condition: ["Sunny", "Cloudy", "Partly Cloudy", "Clear"][Math.floor(Math.random() * 4)],
+      location: "Demo Mode",
       needsLocation: false,
     })
   }
