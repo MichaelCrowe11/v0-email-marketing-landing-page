@@ -1,9 +1,11 @@
+import { NextResponse } from "next/server"
+
 export async function POST(req: Request) {
   try {
     const { prompt } = await req.json()
 
     if (!prompt) {
-      return Response.json({ error: "No prompt provided" }, { status: 400 })
+      return NextResponse.json({ error: "No prompt provided" }, { status: 400 })
     }
 
     console.log("[v0] Video generation request:", prompt)
@@ -34,7 +36,7 @@ export async function POST(req: Request) {
     // In production, this would be the actual generated video URL from Sora
     const mockVideoUrl = "/placeholder-video.mp4"
 
-    return Response.json({
+    return NextResponse.json({
       videoUrl: mockVideoUrl,
       duration: 5,
       prompt: prompt,
@@ -43,7 +45,7 @@ export async function POST(req: Request) {
     })
   } catch (error) {
     console.error("[v0] Video generation error:", error)
-    return Response.json({ error: "Video generation failed" }, { status: 500 })
+    return NextResponse.json({ error: "Video generation failed" }, { status: 500 })
   }
 }
 
