@@ -7,14 +7,8 @@ import { SidebarNav } from "@/components/sidebar-nav"
 import { GlobalHeader } from "@/components/global-header"
 import { ThemeProvider } from "@/components/theme-provider"
 
-import { Inter, JetBrains_Mono, Fira_Code, Geist as V0_Font_Geist, Geist_Mono as V0_Font_Geist_Mono, Source_Serif_4 as V0_Font_Source_Serif_4 } from 'next/font/google'
-
 // Initialize fonts
-const _geist = V0_Font_Geist({ subsets: ['latin'], weight: ["100","200","300","400","500","600","700","800","900"] })
-const _geistMono = V0_Font_Geist_Mono({ subsets: ['latin'], weight: ["100","200","300","400","500","600","700","800","900"] })
-const _sourceSerif_4 = V0_Font_Source_Serif_4({ subsets: ['latin'], weight: ["200","300","400","500","600","700","800","900"] })
-
-const _geistMono = JetBrains_Mono({ subsets: ['latin'], weight: ["100","200","300","400","500","600","700","800","900"] })
+import { Inter, JetBrains_Mono, Fira_Code } from "next/font/google"
 
 const inter = Inter({
   subsets: ["latin"],
