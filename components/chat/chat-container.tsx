@@ -1,6 +1,4 @@
 "use client"
-
-import type React from "react"
 import type { ReasoningStep } from "@/components/chat/chain-of-thought"
 
 import { useChat } from "@ai-sdk/react"
@@ -144,16 +142,33 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
   }
 
   const handleVoiceTranscript = (transcript: string) => {
-    const syntheticEvent = {
-      target: { value: transcript },
-    } as React.ChangeEvent<HTMLTextAreaElement>
-    handleInputChange(syntheticEvent)
-    setTimeout(() => {
-      if (textareaRef.current) {
-        const form = textareaRef.current.closest("form")
+    if (textareaRef.current) {
+      textareaRef.current.value = transcript
+
+      const event = new Event("input", { bubbles: true })
+      textareaRef.current.dispatchEvent(event)
+
+      setTimeout(() => {
+        const form = textareaRef.current?.closest("form")
         if (form) form.requestSubmit()
-      }
-    }, 50)
+      }, 50)
+    }
+  }
+
+  const handleSuggestionClick = (suggestion: string) => {
+    if (textareaRef.current) {
+      textareaRef.current.value = suggestion
+
+      // Create and dispatch a proper input event
+      const event = new Event("input", { bubbles: true })
+      textareaRef.current.dispatchEvent(event)
+
+      // Submit the form after a brief delay
+      setTimeout(() => {
+        const form = textareaRef.current?.closest("form")
+        if (form) form.requestSubmit()
+      }, 50)
+    }
   }
 
   useEffect(() => {
@@ -168,21 +183,6 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
     }
     loadUser()
   }, [])
-
-  const handleSuggestionClick = (suggestion: string) => {
-    const syntheticEvent = {
-      target: { value: suggestion },
-    } as React.ChangeEvent<HTMLTextAreaElement>
-
-    handleInputChange(syntheticEvent)
-
-    setTimeout(() => {
-      if (textareaRef.current) {
-        const form = textareaRef.current.closest("form")
-        if (form) form.requestSubmit()
-      }
-    }, 50)
-  }
 
   const isLoading = status === "in_progress"
   const isEmpty = messages.length === 0
