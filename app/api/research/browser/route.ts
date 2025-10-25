@@ -104,7 +104,6 @@ ${hasCdpUrl ? "Using real browser automation via Kernel CDP connection" : "Based
 5. **Related Topics**: Additional areas worth exploring
 
 Format your response in clear sections with markdown. Be specific and cite sources.`,
-            maxTokens: 2000,
           })
 
           // Stream AI response
