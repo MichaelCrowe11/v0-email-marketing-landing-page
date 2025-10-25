@@ -18,7 +18,7 @@ export default function GPTsPage() {
         "BE math calculations",
       ],
       link: "https://buy.stripe.com/7sY8wP2hrgwjd8kbJ0ao81n",
-      logo: "/crowe-logic-logo.jpg",
+      logo: "/crowe-logic-avatar-in-command-center-managing-ente.jpg",
     },
     {
       name: "Crowe Logic Spawn Master",
@@ -33,7 +33,7 @@ export default function GPTsPage() {
         "Quality control gates",
       ],
       link: "https://buy.stripe.com/fZu00jbS10xlb0c5kCao81o",
-      logo: "/crowe-logic-logo.jpg",
+      logo: "/crowe-logic-avatar-monitoring-spawn-colonization-w.jpg",
     },
     {
       name: "Crowe Logic Substrate Tech",
@@ -47,7 +47,7 @@ export default function GPTsPage() {
         "Cost per block analysis",
       ],
       link: "https://buy.stripe.com/4gM9ATaNX93R9W8cN4ao81p",
-      logo: "/crowe-logic-logo.jpg",
+      logo: "/crowe-logic-avatar-mixing-substrate-ingredients-wi.jpg",
     },
     {
       name: "Crowe Logic Inoculation AI",
@@ -64,7 +64,7 @@ export default function GPTsPage() {
         "Clean room setup",
       ],
       link: "https://buy.stripe.com/eVqeVdf4d2Ftc4g28qao81q",
-      logo: "/crowe-logic-logo.jpg",
+      logo: "/crowe-logic-avatar-performing-sterile-inoculation-.jpg",
     },
   ]
 
@@ -85,7 +85,7 @@ export default function GPTsPage() {
         "Perpetual access to all modules",
       ],
       link: "https://buy.stripe.com/7sYeVd4pzeobfgs6oGao81s",
-      logo: "/crowe-logic-logo.jpg",
+      logo: "/crowe-logic-avatar-orchestrating-multiple-ai-syste.jpg",
       featured: true,
     },
     {
@@ -106,7 +106,7 @@ export default function GPTsPage() {
         "Priority support",
       ],
       link: "https://buy.stripe.com/eVq00j6xHfsffgs4gyao81r",
-      logo: "/crowe-logic-logo.jpg",
+      logo: "/crowe-logic-avatar-with-lifetime-achievement-badge.jpg",
       featured: true,
     },
     {
@@ -125,7 +125,7 @@ export default function GPTsPage() {
         "Perpetual access",
       ],
       link: "https://buy.stripe.com/9B600j2hr2Ft7O028qao81g",
-      logo: "/crowe-logic-logo.jpg",
+      logo: "/crowe-logic-avatar-conducting-research-in-laborato.jpg",
     },
   ]
 
@@ -136,7 +136,11 @@ export default function GPTsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-3">
-              <img src="/crowe-logic-logo.jpg" alt="Crowe Logic" className="h-10 w-10 rounded-full" />
+              <img
+                src="/crowe-logic-avatar-in-command-center-managing-ente.jpg"
+                alt="Crowe Logic"
+                className="h-10 w-10 rounded-full object-cover"
+              />
               <div>
                 <h1 className="text-lg font-bold text-foreground">Crowe Logic AI</h1>
                 <p className="text-xs text-muted-foreground">Expert GPT Assistants</p>
@@ -156,7 +160,11 @@ export default function GPTsPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-accent/5 via-transparent to-transparent" />
         <div className="relative max-w-7xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 mb-6">
-            <img src="/crowe-logic-logo.jpg" alt="Crowe Logic" className="w-4 h-4 rounded-full" />
+            <img
+              src="/crowe-logic-avatar-in-command-center-managing-ente.jpg"
+              alt="Crowe Logic"
+              className="w-6 h-6 rounded-full object-cover"
+            />
             <span className="text-sm font-medium text-foreground">Michael Crowe's Expert GPT Assistants</span>
           </div>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-foreground mb-6">
@@ -193,7 +201,11 @@ export default function GPTsPage() {
               )}
 
               <div className="flex items-center gap-3 mb-6">
-                <img src={bundle.logo || "/placeholder.svg"} alt={bundle.name} className="h-12 w-12 rounded-full" />
+                <img
+                  src={bundle.logo || "/placeholder.svg"}
+                  alt={bundle.name}
+                  className="h-12 w-12 rounded-full object-cover"
+                />
                 <div>
                   <h3 className="text-xl font-bold text-foreground">{bundle.name}</h3>
                   <p className="text-sm text-muted-foreground">{bundle.subtitle}</p>
@@ -258,7 +270,11 @@ export default function GPTsPage() {
               className="rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:shadow-lg hover:border-accent/50"
             >
               <div className="flex items-center gap-3 mb-4">
-                <img src={module.logo || "/placeholder.svg"} alt={module.name} className="h-10 w-10 rounded-full" />
+                <img
+                  src={module.logo || "/placeholder.svg"}
+                  alt={module.name}
+                  className="h-10 w-10 rounded-full object-cover"
+                />
                 <h3 className="text-lg font-bold text-foreground">{module.name.split(" - ")[1]}</h3>
               </div>
 
