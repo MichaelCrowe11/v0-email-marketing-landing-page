@@ -34,7 +34,6 @@ export function GlobalHeader() {
             .catch((err) => console.error("[v0] Weather fetch failed:", err))
         },
         (error) => {
-          console.error("[v0] Geolocation error:", error)
           setLocationPermission("denied")
           // Fetch weather without location (will return demo data)
           fetch("/api/weather")
