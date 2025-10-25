@@ -760,10 +760,7 @@
   .border-subtle {
     @apply border-2;
   }
-
-  .shadow-glass {
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
-  }
+  /* Removed .shadow-glass class definition that was causing errors */
 }
 
 /* Print styles */
