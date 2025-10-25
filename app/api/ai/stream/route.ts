@@ -5,11 +5,14 @@ export const runtime = "edge"
 export const dynamic = "force-dynamic"
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || "",
+  apiKey: process.env.AZURE_AI_API_KEY || "",
+  baseURL: process.env.AZURE_AI_ENDPOINT || "",
+  defaultQuery: { "api-version": "2024-05-01-preview" },
+  defaultHeaders: { "api-key": process.env.AZURE_AI_API_KEY || "" },
 })
 
-// Your custom OpenAI Assistant
-const ASSISTANT_ID = "asst_7ycbM8XLx9HjiBfvI0tGdhtz" // Agent874
+// Your Azure AI Assistant - Agent874
+const ASSISTANT_ID = "asst_7ycbM8XLx9HjiBfvI0tGdhtz"
 
 // Rate limiting map (in production, use Redis or similar)
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
