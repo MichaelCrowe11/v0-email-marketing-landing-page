@@ -418,7 +418,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
             <button
               type="submit"
               className="absolute right-2 sm:right-3 bottom-2 sm:bottom-3 h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-xl bg-accent text-accent-foreground hover:bg-accent/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
-              disabled={isLoading || !input.trim()}
+              disabled={isLoading || !input || !input.trim()}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
