@@ -102,8 +102,8 @@ INSERT INTO cultivation_projects (
 ) VALUES (
   gen_random_uuid(),
   '00000000-0000-0000-0000-000000000001'::uuid,
-  'Lion''s Mane Premium Batch',
-  'Lion''s Mane',
+  E'Lion\'s Mane Premium Batch', -- Fixed escaping for single quote
+  E'Lion\'s Mane',
   'Supplemented hardwood sawdust',
   'completed',
   CURRENT_DATE - INTERVAL '45 days',

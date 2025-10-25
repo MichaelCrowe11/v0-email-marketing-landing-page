@@ -19,7 +19,7 @@ INSERT INTO mushroom_species_library (
   gen_random_uuid(),
   'Pleurotus ostreatus',
   'Blue Oyster Mushroom',
-  'Beginner',
+  'beginner', -- Changed from 'Beginner' to 'beginner'
   55, 75, 50, 65,
   85, 95, 800,
   7, 5, 'Indirect light 12h/day',
@@ -39,7 +39,7 @@ INSERT INTO mushroom_species_library (
   gen_random_uuid(),
   'Lentinula edodes',
   'Shiitake',
-  'Intermediate',
+  'intermediate', -- Changed from 'Intermediate' to 'intermediate'
   55, 75, 50, 60,
   80, 90, 1000,
   14, 7, 'Indirect light 12h/day',
@@ -54,12 +54,12 @@ INSERT INTO mushroom_species_library (
   '/placeholder.svg?height=400&width=600'
 ),
 
--- Lion''s Mane (Hericium erinaceus) - Intermediate
+-- Lion's Mane (Hericium erinaceus) - Intermediate
 (
   gen_random_uuid(),
   'Hericium erinaceus',
-  'Lion''s Mane',
-  'Intermediate',
+  E'Lion\'s Mane', -- Fixed escaping for single quote
+  'intermediate',
   65, 75, 55, 65,
   85, 95, 500,
   10, 7, 'Low light preferred',
@@ -79,7 +79,7 @@ INSERT INTO mushroom_species_library (
   gen_random_uuid(),
   'Ganoderma lucidum',
   'Reishi',
-  'Advanced',
+  'advanced', -- Changed from 'Advanced' to 'advanced'
   70, 80, 65, 75,
   85, 95, 5000,
   21, 14, 'Indirect light 12h/day',
@@ -99,7 +99,7 @@ INSERT INTO mushroom_species_library (
   gen_random_uuid(),
   'Pleurotus eryngii',
   'King Oyster',
-  'Intermediate',
+  'intermediate',
   55, 65, 50, 60,
   85, 95, 800,
   10, 7, 'Indirect light 12h/day',
@@ -119,7 +119,7 @@ INSERT INTO mushroom_species_library (
   gen_random_uuid(),
   'Pleurotus djamor',
   'Pink Oyster',
-  'Beginner',
+  'beginner',
   65, 85, 65, 80,
   85, 95, 800,
   5, 3, 'Indirect light 12h/day',
@@ -139,7 +139,7 @@ INSERT INTO mushroom_species_library (
   gen_random_uuid(),
   'Pholiota adiposa',
   'Chestnut Mushroom',
-  'Intermediate',
+  'intermediate',
   55, 65, 45, 55,
   85, 90, 1000,
   12, 7, 'Low light preferred',
@@ -170,7 +170,7 @@ SELECT
   yield_expectations->>'yield_per_block' as expected_yield,
   culinary_notes
 FROM mushroom_species_library
-WHERE difficulty_level = 'Beginner'
+WHERE difficulty_level = 'beginner' -- Changed from 'Beginner' to 'beginner'
 ON CONFLICT DO NOTHING;
 
 -- Update high_value_species view data
