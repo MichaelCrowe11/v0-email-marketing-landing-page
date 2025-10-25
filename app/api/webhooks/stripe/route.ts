@@ -57,7 +57,7 @@ export async function POST(req: Request) {
         const periodEnd = session.subscription
           ? await stripe.subscriptions
               .retrieve(session.subscription as string)
-              .then((sub: Stripe.Subscription) => new Date(sub.current_period_end * 1000).toISOString())
+              .then((sub: any) => new Date(sub.current_period_end * 1000).toISOString())
           : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
 
         await supabase.from("user_subscriptions").insert({
@@ -92,7 +92,7 @@ export async function POST(req: Request) {
           .from("user_subscriptions")
           .update({
             status: subscription.status,
-            current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+            current_period_end: new Date((subscription as any).current_period_end * 1000).toISOString(),
             cancel_at_period_end: subscription.cancel_at_period_end,
           })
           .eq("stripe_subscription_id", subscription.id)
@@ -109,7 +109,7 @@ export async function POST(req: Request) {
             .from("users")
             .update({
               subscription_status: subscription.status,
-              subscription_expires_at: new Date(subscription.current_period_end * 1000).toISOString(),
+              subscription_expires_at: new Date((subscription as any).current_period_end * 1000).toISOString(),
             })
             .eq("id", userSub.user_id)
         }
@@ -140,11 +140,7 @@ export async function POST(req: Request) {
         if (userSub) {
           await supabase
             .from("users")
-            .update({
-              subscription_tier: "free",
-              subscription_status: "canceled",
-              subscription_expires_at: canceledAt,
-            })
+            .update({ subscription_tier: "free", subscription_status: "canceled", subscription_expires_at: canceledAt })
             .eq("id", userSub.user_id)
         }
 
@@ -156,7 +152,7 @@ export async function POST(req: Request) {
         const invoice = event.data.object as Stripe.Invoice
 
         if (invoice.subscription) {
-          const subscription: Stripe.Subscription = await stripe.subscriptions.retrieve(invoice.subscription as string)
+          const subscription: any = await stripe.subscriptions.retrieve(invoice.subscription as string)
 
           await supabase
             .from("user_subscriptions")
