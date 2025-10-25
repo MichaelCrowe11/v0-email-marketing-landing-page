@@ -7,7 +7,6 @@ import { ProofSection } from "@/components/proof-section"
 import { StreamingChatDemo } from "@/components/streaming-chat-demo"
 import { Features } from "@/components/features"
 import { FAQ } from "@/components/faq"
-import { StickyBar } from "@/components/sticky-bar"
 import { ScrollReveal } from "@/components/scroll-reveal"
 import { ChatDemo } from "@/components/chat-demo"
 
@@ -60,7 +59,6 @@ export default function Home() {
         <ScrollReveal delay={100}>
           <FAQ />
         </ScrollReveal>
-        <StickyBar />
         <footer className="relative py-16 md:py-20 text-center overflow-hidden border-t border-border/50">
           <div className="absolute inset-0 bg-gradient-to-t from-muted/30 via-muted/10 to-transparent" />
           <div className="relative z-10 space-y-6 px-4">
