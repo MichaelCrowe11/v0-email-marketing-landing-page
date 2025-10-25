@@ -202,10 +202,12 @@ export function OrchestratedHero() {
         {/* Bottom Section: Terminal and Code Generation Side by Side */}
         <div className="grid lg:grid-cols-2 gap-6 max-w-6xl mx-auto">
           {/* Left: Advanced Terminal */}
-          <div className="bg-black/95 backdrop-blur-sm border-2 border-accent/40 rounded-xl p-5 shadow-2xl h-[350px]">
+          <div className="bg-white/95 backdrop-blur-sm border-2 border-accent/40 rounded-xl p-5 shadow-2xl h-[350px]">
             <div className="flex items-center gap-2 mb-4 pb-3 border-b border-accent/30">
-              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-sm text-green-400 font-mono font-bold">AI Processing Terminal</span>
+              <div className="w-2 h-2 rounded-full bg-gradient-to-r from-cyan-500 to-purple-500 animate-pulse" />
+              <span className="text-sm font-mono font-bold bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                AI Processing Terminal
+              </span>
             </div>
             <div className="font-mono text-xs space-y-2 overflow-y-auto h-[270px]">
               {terminalLines
@@ -213,18 +215,18 @@ export function OrchestratedHero() {
                 .map((line, i) => (
                   <div
                     key={i}
-                    className={`${
+                    className={`font-semibold ${
                       line?.type === "success"
-                        ? "text-green-400"
+                        ? "bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent"
                         : line?.type === "warning"
-                          ? "text-yellow-400"
-                          : "text-cyan-400"
+                          ? "bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent"
+                          : "bg-gradient-to-r from-cyan-500 to-blue-500 bg-clip-text text-transparent"
                     }`}
                   >
                     {line?.text || ""}
                   </div>
                 ))}
-              <div className="inline-block w-2 h-4 bg-green-400 animate-pulse" />
+              <div className="inline-block w-2 h-4 bg-gradient-to-r from-cyan-500 to-purple-500 animate-pulse" />
             </div>
           </div>
 
