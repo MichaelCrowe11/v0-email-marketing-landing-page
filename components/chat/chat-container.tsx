@@ -95,7 +95,7 @@ function MagicalStreamingText({ text, isStreaming }: { text: string; isStreaming
   )
 }
 
-export function ChatContainer() {
+export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAccess?: boolean }) {
   const [selectedModel, setSelectedModel] = useState("azure/crowelogic")
   const [userId, setUserId] = useState<string | null>(null)
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null)
