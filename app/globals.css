@@ -581,12 +581,14 @@
 
 /* Enterprise card styles */
 .enterprise-card {
-  @apply bg-card border border-border rounded-xl p-6 shadow-glass;
+  /* Removed shadow-glass references, using standard Tailwind shadows */
+  @apply bg-card border border-border rounded-xl p-6 shadow-lg;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .enterprise-card:hover {
-  @apply border-accent/50 shadow-glass-strong;
+  /* Removed shadow-glass-strong, using shadow-xl instead */
+  @apply border-accent/50 shadow-xl;
   transform: translateY(-2px);
 }
 
