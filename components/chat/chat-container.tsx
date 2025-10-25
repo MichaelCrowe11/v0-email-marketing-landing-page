@@ -147,7 +147,7 @@ export function ChatContainer() {
 
       const lastMessage = messages[messages.length - 1]
       const textContent = lastMessage.parts
-        .filter((part) => part.type === "text")
+        .filter((part): part is { type: "text"; text: string } => part.type === "text")
         .map((part) => part.text)
         .join("")
 
@@ -317,7 +317,7 @@ export function ChatContainer() {
               {messages.map((message, index) => {
                 const isAssistant = message.role === "assistant"
                 const textContent = message.parts
-                  .filter((part) => part.type === "text")
+                  .filter((part): part is { type: "text"; text: string } => part.type === "text")
                   .map((part) => part.text)
                   .join("")
 
