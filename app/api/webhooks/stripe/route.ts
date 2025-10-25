@@ -151,8 +151,8 @@ export async function POST(req: Request) {
       case "invoice.payment_succeeded": {
         const invoice = event.data.object as Stripe.Invoice
 
-        if (invoice.subscription) {
-          const subscription: any = await stripe.subscriptions.retrieve(invoice.subscription as string)
+        if ((invoice as any).subscription) {
+          const subscription: any = await stripe.subscriptions.retrieve((invoice as any).subscription as string)
 
           await supabase
             .from("user_subscriptions")
@@ -160,7 +160,7 @@ export async function POST(req: Request) {
               status: "active",
               current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
             })
-            .eq("stripe_subscription_id", invoice.subscription as string)
+            .eq("stripe_subscription_id", (invoice as any).subscription as string)
         }
 
         console.log("[v0] Payment succeeded for invoice:", invoice.id)
@@ -170,16 +170,16 @@ export async function POST(req: Request) {
       case "invoice.payment_failed": {
         const invoice = event.data.object as Stripe.Invoice
 
-        if (invoice.subscription) {
+        if ((invoice as any).subscription) {
           await supabase
             .from("user_subscriptions")
             .update({ status: "past_due" })
-            .eq("stripe_subscription_id", invoice.subscription as string)
+            .eq("stripe_subscription_id", (invoice as any).subscription as string)
 
           const { data: userSub } = await supabase
             .from("user_subscriptions")
             .select("user_id")
-            .eq("stripe_subscription_id", invoice.subscription as string)
+            .eq("stripe_subscription_id", (invoice as any).subscription as string)
             .single()
 
           if (userSub) {
