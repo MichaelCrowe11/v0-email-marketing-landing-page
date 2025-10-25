@@ -4,7 +4,7 @@ import type React from "react"
 import type { ReasoningStep } from "@/components/chat/chain-of-thought"
 
 import { useChat } from "@ai-sdk/react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { ChainOfThought } from "@/components/chat/chain-of-thought"
 import { SubstrateCalculator } from "@/components/chat/substrate-calculator"
 import { StrainDatabase } from "@/components/chat/strain-database"
@@ -16,7 +16,7 @@ import { EnvironmentMonitor } from "@/components/chat/environment-monitor"
 import { YieldCalculator } from "@/components/chat/yield-calculator"
 import { IntegrationsPanel } from "@/components/chat/integrations-panel"
 import { createClient } from "@/lib/supabase/client"
-import { createConversation, saveMessage, getMessages } from "@/lib/supabase/chat-queries"
+import { createConversation, saveMessage } from "@/lib/supabase/chat-queries"
 import { ConversationHistory } from "@/components/chat/conversation-history"
 import { ModelSelector } from "@/components/chat/model-selector"
 import { AIAvatarSwirl } from "@/components/chat/ai-avatar-swirl"
@@ -100,7 +100,7 @@ export function ChatContainer() {
   const [userId, setUserId] = useState<string | null>(null)
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null)
 
-  const { messages, input, handleSubmit, status, setMessages, error, setInput } = useChat({
+  const { messages, input, handleSubmit, status, setMessages, error } = useChat({
     api: "/api/chat",
     body: { model: selectedModel },
     onError: (error) => {
@@ -120,6 +120,22 @@ export function ChatContainer() {
   const [workflowLogs, setWorkflowLogs] = useState<string[]>([])
   const [isBrowserResearchActive, setIsBrowserResearchActive] = useState(false)
   const [researchQuery, setResearchQuery] = useState("")
+
+  const [inputValue, setInputValue] = useState("")
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  const handleSelectConversation = (conversationId: string) => {
+    setCurrentConversationId(conversationId)
+  }
+
+  const handleNewConversation = async (title: string) => {
+    if (!userId) return
+
+    const conversation = await createConversation(userId, title)
+    if (conversation) {
+      setCurrentConversationId(conversation.id)
+    }
+  }
 
   useEffect(() => {
     async function loadUser() {
@@ -154,10 +170,10 @@ export function ChatContainer() {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!input || !input.trim() || status === "in_progress") return
+    if (!inputValue || !inputValue.trim() || status === "in_progress") return
 
     if (!currentConversationId && userId) {
-      const title = input.slice(0, 50) + (input.length > 50 ? "..." : "")
+      const title = inputValue.slice(0, 50) + (inputValue.length > 50 ? "..." : "")
       const conversation = await createConversation(userId, title)
       if (conversation) {
         setCurrentConversationId(conversation.id)
@@ -186,26 +202,23 @@ export function ChatContainer() {
   const isLoading = status === "in_progress"
   const isEmpty = messages.length === 0
 
-  async function handleSelectConversation(conversationId: string) {
-    const dbMessages = await getMessages(conversationId)
-    const formattedMessages = dbMessages.map((msg) => ({
-      id: msg.id,
-      role: msg.role,
-      parts: [{ type: "text" as const, text: msg.content }],
-    }))
-    setMessages(formattedMessages)
-    setCurrentConversationId(conversationId)
-    setIsHistoryOpen(false)
-  }
-
-  function handleNewConversation() {
-    setMessages([])
-    setCurrentConversationId(null)
-    setIsHistoryOpen(false)
-  }
-
   const handleVoiceTranscript = (transcript: string) => {
-    setInput(transcript)
+    setInputValue(transcript)
+    if (textareaRef.current) {
+      textareaRef.current.focus()
+    }
+  }
+
+  const handleSuggestionClick = (suggestion: string) => {
+    setInputValue(suggestion)
+    setTimeout(() => {
+      if (textareaRef.current) {
+        const form = textareaRef.current.closest("form")
+        if (form) {
+          form.requestSubmit()
+        }
+      }
+    }, 50)
   }
 
   return (
@@ -295,12 +308,7 @@ export function ChatContainer() {
                 ].map((suggestion, i) => (
                   <button
                     key={i}
-                    onClick={() => {
-                      setInput(suggestion)
-                      setTimeout(() => {
-                        handleSubmit({ preventDefault: () => {} } as React.FormEvent)
-                      }, 0)
-                    }}
+                    onClick={() => handleSuggestionClick(suggestion)}
                     className="p-3 sm:p-4 rounded-xl bg-card border border-border hover:bg-accent hover:border-accent-foreground/20 transition-all text-left text-sm text-foreground shadow-sm"
                   >
                     {suggestion}
@@ -423,8 +431,9 @@ export function ChatContainer() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
           <form onSubmit={handleFormSubmit} className="relative">
             <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
+              ref={textareaRef}
+              value={inputValue || input}
+              onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault()
@@ -442,7 +451,7 @@ export function ChatContainer() {
             <button
               type="submit"
               className="absolute right-2 sm:right-3 bottom-2 sm:bottom-3 h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-xl bg-accent text-accent-foreground hover:bg-accent/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
-              disabled={isLoading || !input || !input.trim()}
+              disabled={isLoading || !inputValue || !inputValue.trim()}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
