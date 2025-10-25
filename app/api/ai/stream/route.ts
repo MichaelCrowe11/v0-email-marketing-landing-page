@@ -1,8 +1,14 @@
 import { createClient } from "@/lib/supabase/server"
 import { streamText } from "ai"
+import { createAzure } from "@ai-sdk/azure"
 
 export const runtime = "edge"
 export const dynamic = "force-dynamic"
+
+const azure = createAzure({
+  resourceName: process.env.AZURE_AI_ENDPOINT?.replace("https://", "").replace(".openai.azure.com", "") || "",
+  apiKey: process.env.AZURE_AI_API_KEY || "",
+})
 
 // Rate limiting map (in production, use Redis or similar)
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
@@ -44,8 +50,8 @@ export async function POST(request: Request) {
     const { postId, replyId, content } = await request.json()
 
     const result = await streamText({
-      model: "anthropic/claude-sonnet-4.5",
-      system: `You are CroweLogic AI, an expert mycology assistant with 20+ years of professional mushroom cultivation experience from Michael Crowe. 
+      model: azure(process.env.AZURE_DEPLOYMENT_NAME || "gpt-4o"),
+      system: `You are Crowe Logic AI, an expert mycology assistant with 20+ years of professional mushroom cultivation experience from Michael Crowe. 
 
 Your expertise includes:
 - Species identification and cultivation techniques
