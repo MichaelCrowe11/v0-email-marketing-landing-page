@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       '@ai-sdk/azure':
-        specifier: latest
+        specifier: 2.0.54
         version: 2.0.54(zod@3.25.76)
       '@ai-sdk/react':
         specifier: latest
@@ -158,6 +158,9 @@ importers:
       next-themes:
         specifier: latest
         version: 0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      openai:
+        specifier: latest
+        version: 6.7.0(ws@8.18.3)(zod@3.25.76)
       react:
         specifier: 19.1.0
         version: 19.1.0
@@ -194,6 +197,9 @@ importers:
       vaul:
         specifier: latest
         version: 1.1.2(@types/react-dom@18.0.0)(@types/react@18.0.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      ws:
+        specifier: latest
+        version: 8.18.3
       zod:
         specifier: 3.25.76
         version: 3.25.76
@@ -1764,6 +1770,18 @@ packages:
   object-inspect@1.13.4:
     resolution: {integrity: sha512-W67iLl4J2EXEGTbfeHCffrjDfitvLANg0UlX3wFUUSTx92KXRFegMHUVgSqE+wvhAbi4WqjGg9czysTV2Epbew==}
     engines: {node: '>= 0.4'}
+
+  openai@6.7.0:
+    resolution: {integrity: sha512-mgSQXa3O/UXTbA8qFzoa7aydbXBJR5dbLQXCRapAOtoNT+v69sLdKMZzgiakpqhclRnhPggPAXoniVGn2kMY2A==}
+    hasBin: true
+    peerDependencies:
+      ws: ^8.18.0
+      zod: ^3.25 || ^4.0
+    peerDependenciesMeta:
+      ws:
+        optional: true
+      zod:
+        optional: true
 
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
@@ -3517,6 +3535,11 @@ snapshots:
   object-assign@4.1.1: {}
 
   object-inspect@1.13.4: {}
+
+  openai@6.7.0(ws@8.18.3)(zod@3.25.76):
+    optionalDependencies:
+      ws: 8.18.3
+      zod: 3.25.76
 
   picocolors@1.1.1: {}
 

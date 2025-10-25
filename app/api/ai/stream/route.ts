@@ -1,14 +1,15 @@
 import { createClient } from "@/lib/supabase/server"
-import { streamText } from "ai"
-import { createAzure } from "@ai-sdk/azure"
+import OpenAI from "openai"
 
 export const runtime = "edge"
 export const dynamic = "force-dynamic"
 
-const azure = createAzure({
-  resourceName: process.env.AZURE_AI_ENDPOINT?.replace("https://", "").replace(".openai.azure.com", "") || "",
-  apiKey: process.env.AZURE_AI_API_KEY || "",
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY || "",
 })
+
+// Your custom OpenAI Assistant
+const ASSISTANT_ID = "asst_7ycbM8XLx9HjiBfvI0tGdhtz" // Agent874
 
 // Rate limiting map (in production, use Redis or similar)
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
@@ -49,61 +50,67 @@ export async function POST(request: Request) {
 
     const { postId, replyId, content } = await request.json()
 
-    const result = await streamText({
-      model: azure("gpt-5-pro"),
-      system: `You are Crowe Logic AI, an expert mycology assistant with 20+ years of professional mushroom cultivation experience from Michael Crowe. 
-
-Your expertise includes:
-- Species identification and cultivation techniques
-- Contamination detection and remediation
-- Substrate preparation and sterilization
-- Environmental control (temperature, humidity, FAE)
-- Troubleshooting common cultivation issues
-- Advanced techniques for gourmet and medicinal mushrooms
-
-Provide practical, actionable advice based on proven cultivation methods. Be specific with measurements, temperatures, and techniques. When discussing contamination, always identify the type and provide immediate remediation steps.`,
-      prompt: content,
-      maxTokens: 2000,
-    })
-
-    // Create SSE stream
     const encoder = new TextEncoder()
     const stream = new ReadableStream({
       async start(controller) {
-        // Send initial thinking state
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: "status", status: "thinking" })}\n\n`))
+        try {
+          // Send initial thinking state
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: "status", status: "thinking" })}\n\n`))
 
-        await new Promise((resolve) => setTimeout(resolve, 500))
+          // Create a thread
+          const thread = await openai.beta.threads.create()
 
-        // Send streaming state
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: "status", status: "streaming" })}\n\n`))
-
-        let fullResponse = ""
-
-        // Stream AI response
-        for await (const chunk of result.textStream) {
-          fullResponse += chunk
-          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: "content", content: chunk })}\n\n`))
-        }
-
-        // Send completion state
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: "status", status: "done" })}\n\n`))
-
-        // Save AI reply to database
-        const { data: aiReply } = await supabase
-          .from("forum_replies")
-          .insert({
-            post_id: postId,
-            parent_reply_id: replyId || null,
-            author_id: "ai-crowe-logic", // Special AI user ID
-            content: fullResponse,
+          // Add user message to thread
+          await openai.beta.threads.messages.create(thread.id, {
+            role: "user",
+            content: content,
           })
-          .select()
-          .single()
 
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: "complete", replyId: aiReply?.id })}\n\n`))
+          // Send streaming state
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: "status", status: "streaming" })}\n\n`))
 
-        controller.close()
+          // Run the assistant with streaming
+          const run = openai.beta.threads.runs.stream(thread.id, {
+            assistant_id: ASSISTANT_ID,
+          })
+
+          let fullResponse = ""
+
+          // Handle streaming events
+          run.on("textDelta", (textDelta) => {
+            const chunk = textDelta.value || ""
+            fullResponse += chunk
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: "content", content: chunk })}\n\n`))
+          })
+
+          // Wait for completion
+          await run.finalRun()
+
+          // Send completion state
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: "status", status: "done" })}\n\n`))
+
+          // Save AI reply to database
+          const { data: aiReply } = await supabase
+            .from("forum_replies")
+            .insert({
+              post_id: postId,
+              parent_reply_id: replyId || null,
+              author_id: "ai-crowe-logic", // Special AI user ID
+              content: fullResponse,
+            })
+            .select()
+            .single()
+
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: "complete", replyId: aiReply?.id })}\n\n`))
+
+          controller.close()
+        } catch (error) {
+          console.error("[v0] Assistant API error:", error)
+          controller.enqueue(
+            encoder.encode(`data: ${JSON.stringify({ type: "error", error: "Failed to get response" })}\n\n`),
+          )
+          controller.close()
+        }
       },
     })
 
