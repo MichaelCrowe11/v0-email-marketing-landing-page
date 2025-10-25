@@ -106,7 +106,7 @@ export function ChatContainer() {
     onError: (error) => {
       console.error("[v0] Chat error:", error)
     },
-  })
+  }) as any
 
   const handleInputChange = (value: string) => {
     setInput(value)
