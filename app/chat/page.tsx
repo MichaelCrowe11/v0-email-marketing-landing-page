@@ -1,4 +1,3 @@
-import { Suspense } from "react"
 import { getUserSubscription } from "@/lib/subscription"
 import { FeatureGate } from "@/components/feature-gate"
 import { ChatContainer } from "@/components/chat/chat-container"
@@ -14,7 +13,7 @@ function ChatLoading() {
   )
 }
 
-async function ChatContent() {
+export default async function ChatPage() {
   try {
     const subscription = await getUserSubscription()
     const hasAccess = subscription.features.unlimited_chat
@@ -38,12 +37,4 @@ async function ChatContent() {
       </div>
     )
   }
-}
-
-export default function ChatPage() {
-  return (
-    <Suspense fallback={<ChatLoading />}>
-      <ChatContent />
-    </Suspense>
-  )
 }
