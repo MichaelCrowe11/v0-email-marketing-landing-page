@@ -3,7 +3,7 @@
 -- Strain library (genetic variations within species)
 CREATE TABLE IF NOT EXISTS strains (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  species_id UUID REFERENCES species(id),
+  species_id UUID REFERENCES mushroom_species_library(id),
   name TEXT NOT NULL,
   code TEXT UNIQUE,
   origin TEXT,
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS strains (
 CREATE TABLE IF NOT EXISTS cultivation_recipes (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
-  species_id UUID REFERENCES species(id),
+  species_id UUID REFERENCES mushroom_species_library(id),
   strain_id UUID REFERENCES strains(id),
   difficulty_level TEXT CHECK (difficulty_level IN ('beginner', 'intermediate', 'advanced', 'expert')),
   substrate_recipe JSONB NOT NULL,

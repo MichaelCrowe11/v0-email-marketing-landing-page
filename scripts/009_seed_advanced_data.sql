@@ -1,14 +1,15 @@
 -- Seed Advanced Cultivation Data
 
 -- Insert strains for popular species
+-- Fixed table references from species to mushroom_species_library
 WITH oyster_species AS (
-  SELECT id FROM species WHERE common_name = 'Oyster Mushroom' LIMIT 1
+  SELECT id FROM mushroom_species_library WHERE common_name = 'Oyster Mushroom' LIMIT 1
 ),
 lions_mane_species AS (
-  SELECT id FROM species WHERE common_name = 'Lion''s Mane' LIMIT 1
+  SELECT id FROM mushroom_species_library WHERE common_name = 'Lion''s Mane' LIMIT 1
 ),
 shiitake_species AS (
-  SELECT id FROM species WHERE common_name = 'Shiitake' LIMIT 1
+  SELECT id FROM mushroom_species_library WHERE common_name = 'Shiitake' LIMIT 1
 )
 INSERT INTO strains (species_id, name, code, origin, characteristics, growth_speed, yield_potential, contamination_resistance, notes) VALUES
 -- Oyster strains
@@ -28,8 +29,9 @@ INSERT INTO strains (species_id, name, code, origin, characteristics, growth_spe
 ON CONFLICT DO NOTHING;
 
 -- Insert sample cultivation recipes
+-- Fixed table references from species to mushroom_species_library
 WITH oyster_species AS (
-  SELECT id FROM species WHERE common_name = 'Oyster Mushroom' LIMIT 1
+  SELECT id FROM mushroom_species_library WHERE common_name = 'Oyster Mushroom' LIMIT 1
 ),
 blue_oyster_strain AS (
   SELECT id FROM strains WHERE code = 'PO-BLUE-01' LIMIT 1
@@ -49,7 +51,8 @@ INSERT INTO cultivation_recipes (name, species_id, strain_id, difficulty_level, 
 ),
 (
   'Advanced Shiitake on Supplemented Sawdust',
-  (SELECT id FROM species WHERE common_name = 'Shiitake' LIMIT 1),
+  -- Fixed table reference from species to mushroom_species_library
+  (SELECT id FROM mushroom_species_library WHERE common_name = 'Shiitake' LIMIT 1),
   (SELECT id FROM strains WHERE code = 'LE-WR46-01' LIMIT 1),
   'advanced',
   '{"substrate": "hardwood sawdust", "supplementation": "10% wheat bran", "spawn_rate": "10%", "moisture": "55-60%", "preparation": "sterilization at 15 PSI for 2.5 hours"}'::jsonb,
