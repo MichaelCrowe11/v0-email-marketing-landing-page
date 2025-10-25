@@ -112,7 +112,7 @@ function SearchContent() {
           <div className="space-y-4">
             {results.map((result) => (
               <a key={result.id} href={result.url} className="block group">
-                <Card className="glass-card hover:shadow-glass-strong transition-all hover:-translate-y-0.5">
+                <Card className="glass-card hover:shadow-lg transition-all hover:-translate-y-0.5">
                   <CardHeader>
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1 space-y-2">

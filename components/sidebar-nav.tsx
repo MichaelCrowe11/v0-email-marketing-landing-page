@@ -156,7 +156,7 @@ export function SidebarNav() {
 
             <Button
               size="sm"
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-glass-strong"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg"
               asChild
             >
               <Link href="/pricing">Upgrade Access</Link>

@@ -207,18 +207,7 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* Subtle shadow system */
-.shadow-glass {
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-}
-
-.shadow-glass-strong {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
-}
-
-.shadow-glass-ultra {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-}
+/* Removed custom shadow-glass classes - using standard Tailwind shadows instead */
 
 /* Removed hover-lift class definition as it's replaced with Tailwind utilities */
 

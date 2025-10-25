@@ -48,7 +48,7 @@ export default function Home() {
                 <img
                   src="/crowe-logic-logo.png"
                   alt="Crowe Logic"
-                  className="relative h-16 w-16 md:h-20 md:w-20 rounded-full ring-4 ring-border shadow-glass-strong hover:ring-primary/20 transition-all duration-300"
+                  className="relative h-16 w-16 md:h-20 md:w-20 rounded-full ring-4 ring-border shadow-xl hover:ring-primary/20 transition-all duration-300"
                 />
               </div>
               <div className="text-center sm:text-left">

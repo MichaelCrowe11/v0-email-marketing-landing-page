@@ -23,13 +23,13 @@ export function ProofSection() {
   return (
     <section className="px-4 py-20 md:py-32 bg-gradient-to-b from-transparent to-muted/10">
       <div className="mx-auto max-w-7xl">
-        <div className="glass-panel rounded-3xl p-8 md:p-12 shadow-glass-ultra animate-slide-up-fade">
+        <div className="glass-panel rounded-3xl p-8 md:p-12 shadow-2xl animate-slide-up-fade">
           <div className="mb-12 flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
             <div className="relative">
               <img
                 src="/crowe-logic-logo.png"
                 alt="Michael Crowe"
-                className="h-24 w-24 rounded-full object-cover ring-4 ring-primary/30 shadow-glass-strong animate-glow-pulse"
+                className="h-24 w-24 rounded-full object-cover ring-4 ring-primary/30 shadow-xl animate-glow-pulse"
               />
               <div className="absolute -bottom-2 -right-2 h-8 w-8 bg-success rounded-full border-4 border-card shadow-lg flex items-center justify-center">
                 <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
