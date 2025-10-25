@@ -1,12 +1,12 @@
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { FileText, MessageSquare, Calendar, Mail, Crown, Settings } from "lucide-react"
 import SignOutButton from "@/components/sign-out-button"
+import { ProfilePictureUpload } from "@/components/profile-picture-upload"
 
 export default async function ProfilePage() {
   const supabase = await createClient()
@@ -47,12 +47,10 @@ export default async function ProfilePage() {
         <Card className="glass shadow-2xl mb-8">
           <CardContent className="p-8">
             <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-              <Avatar className="w-24 h-24">
-                <AvatarImage src={userData?.avatar_url || "/placeholder.svg"} />
-                <AvatarFallback className="text-2xl">
-                  {userData?.full_name?.[0] || user.email?.[0] || "U"}
-                </AvatarFallback>
-              </Avatar>
+              <ProfilePictureUpload
+                currentAvatarUrl={userData?.avatar_url}
+                userName={userData?.full_name || user.email || "User"}
+              />
               <div className="flex-1">
                 <h1 className="text-3xl font-bold mb-2">{userData?.full_name || "User"}</h1>
                 <div className="flex items-center gap-2 text-muted-foreground mb-3">
