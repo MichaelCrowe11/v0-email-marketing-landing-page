@@ -50,7 +50,7 @@ export async function POST(request: Request) {
     const { postId, replyId, content } = await request.json()
 
     const result = await streamText({
-      model: azure(process.env.AZURE_DEPLOYMENT_NAME || "gpt-4o"),
+      model: azure("gpt-5-pro"),
       system: `You are Crowe Logic AI, an expert mycology assistant with 20+ years of professional mushroom cultivation experience from Michael Crowe. 
 
 Your expertise includes:
@@ -63,7 +63,7 @@ Your expertise includes:
 
 Provide practical, actionable advice based on proven cultivation methods. Be specific with measurements, temperatures, and techniques. When discussing contamination, always identify the type and provide immediate remediation steps.`,
       prompt: content,
-      maxTokens: 1000,
+      maxTokens: 2000,
     })
 
     // Create SSE stream
