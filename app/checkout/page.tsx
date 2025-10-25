@@ -3,21 +3,18 @@ import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { Spinner } from "@/components/ui/spinner"
 import { CheckoutForm } from "@/components/checkout-form"
-import { loadStripe } from "@stripe/stripe-js"
-
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
 async function CheckoutContent({
   searchParams,
 }: {
-  searchParams: { plan?: string; billing?: string }
+  searchParams: Promise<{ plan?: string; billing?: string }>
 }) {
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const params = searchParams
+  const params = await searchParams
   const plan = params.plan || "pro"
   const billing = params.billing || "monthly"
 
@@ -48,7 +45,7 @@ async function CheckoutContent({
 export default async function CheckoutPage({
   searchParams,
 }: {
-  searchParams: { plan?: string; billing?: string }
+  searchParams: Promise<{ plan?: string; billing?: string }>
 }) {
   return (
     <Suspense
