@@ -30,10 +30,10 @@ export function OrchestratedHero() {
   const [particles, setParticles] = useState<CodeParticle[]>([])
   const [terminalLines, setTerminalLines] = useState<TerminalLine[]>([])
   const [codeBlocks, setCodeBlocks] = useState<CodeBlock[]>([
-    { id: "1", title: "DNA Sequencing", status: "pending", progress: 0 },
+    { id: "1", title: "Contamination Detection", status: "pending", progress: 0 },
     { id: "2", title: "Species Classification", status: "pending", progress: 0 },
-    { id: "3", title: "Neural Network", status: "pending", progress: 0 },
-    { id: "4", title: "Genetic Algorithm", status: "pending", progress: 0 },
+    { id: "3", title: "Substrate Optimization", status: "pending", progress: 0 },
+    { id: "4", title: "Yield Prediction Model", status: "pending", progress: 0 },
   ])
 
   const codeSnippets = useMemo(
@@ -57,12 +57,14 @@ export function OrchestratedHero() {
 
   const terminalMessages: TerminalLine[] = useMemo(
     () => [
-      { text: "[AI] Initializing Crowe Logic Engine...", type: "info" },
-      { text: "[DNA] Sequencing genome: 10,847 base pairs", type: "info" },
-      { text: "[NEURAL] Model loaded: 98.47% accuracy", type: "success" },
-      { text: "[GENETIC] Optimization complete", type: "success" },
-      { text: "[QUANTUM] Qubits entangled: 256", type: "info" },
-      { text: "[SYSTEM] All systems operational", type: "success" },
+      { text: "[INIT] Crowe Logic Engine v2.5.0 starting...", type: "info" },
+      { text: "[DNA] Analyzing Pleurotus ostreatus genome...", type: "info" },
+      { text: "[VISION] Processing contamination scan: 2048x2048px", type: "info" },
+      { text: "[AI] Species identified: 99.2% confidence", type: "success" },
+      { text: "[NEURAL] Substrate optimization: pH 6.5, moisture 65%", type: "success" },
+      { text: "[QUANTUM] Environmental parameters calculated", type: "info" },
+      { text: "[GENETIC] Yield prediction: 2.3kg per block", type: "success" },
+      { text: "[SYSTEM] All cultivation systems nominal", type: "success" },
     ],
     [],
   )
@@ -202,68 +204,84 @@ export function OrchestratedHero() {
         {/* Bottom Section: Terminal and Code Generation Side by Side */}
         <div className="grid lg:grid-cols-2 gap-6 max-w-6xl mx-auto">
           {/* Left: Advanced Terminal */}
-          <div className="bg-white/95 backdrop-blur-sm border-2 border-accent/40 rounded-xl p-5 shadow-2xl h-[350px]">
-            <div className="flex items-center gap-2 mb-4 pb-3 border-b border-accent/30">
-              <div className="w-2 h-2 rounded-full bg-gradient-to-r from-cyan-500 to-purple-500 animate-pulse" />
-              <span className="text-sm font-mono font-bold bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-                AI Processing Terminal
-              </span>
-            </div>
-            <div className="font-mono text-xs space-y-2 overflow-y-auto h-[270px]">
-              {terminalLines
-                .filter((line) => line)
-                .map((line, i) => (
-                  <div
-                    key={i}
-                    className={`font-semibold ${
-                      line?.type === "success"
-                        ? "bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent"
-                        : line?.type === "warning"
-                          ? "bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent"
-                          : "bg-gradient-to-r from-cyan-500 to-blue-500 bg-clip-text text-transparent"
-                    }`}
-                  >
-                    {line?.text || ""}
-                  </div>
-                ))}
-              <div className="inline-block w-2 h-4 bg-gradient-to-r from-cyan-500 to-purple-500 animate-pulse" />
+          <div className="relative group bg-white/95 backdrop-blur-sm border-2 border-accent/40 rounded-xl p-5 shadow-2xl h-[350px] hover:border-accent/60 transition-all duration-300">
+            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-purple-500/5 to-pink-500/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+            <div className="relative z-10">
+              <div className="flex items-center gap-2 mb-4 pb-3 border-b border-accent/30">
+                <div className="w-2 h-2 rounded-full bg-gradient-to-r from-cyan-500 to-purple-500 animate-pulse" />
+                <span className="text-sm font-mono font-bold bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                  AI Processing Terminal
+                </span>
+                <div className="ml-auto flex items-center gap-1">
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                  <span className="text-xs font-mono text-green-600 font-semibold">ONLINE</span>
+                </div>
+              </div>
+              <div className="font-mono text-xs space-y-2 overflow-y-auto h-[270px]">
+                {terminalLines
+                  .filter((line) => line)
+                  .map((line, i) => (
+                    <div
+                      key={i}
+                      className={`font-semibold animate-in fade-in slide-in-from-left-2 duration-300 ${
+                        line?.type === "success"
+                          ? "bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent"
+                          : line?.type === "warning"
+                            ? "bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent"
+                            : "bg-gradient-to-r from-cyan-500 to-blue-500 bg-clip-text text-transparent"
+                      }`}
+                    >
+                      {line?.text || ""}
+                    </div>
+                  ))}
+                <div className="inline-block w-2 h-4 bg-gradient-to-r from-cyan-500 to-purple-500 animate-pulse" />
+              </div>
             </div>
           </div>
 
           {/* Right: Live Code Generation */}
-          <div className="bg-background/50 backdrop-blur-sm border-2 border-accent/40 rounded-xl p-5 shadow-2xl h-[350px]">
-            <div className="flex items-center gap-2 mb-4 pb-3 border-b border-accent/30">
-              <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-              <span className="text-sm text-accent font-mono font-bold">Live Code Generation</span>
-            </div>
-            <div className="space-y-3 overflow-y-auto h-[270px]">
-              {codeBlocks.map((block) => (
-                <div
-                  key={block.id}
-                  className={`p-3 rounded-lg border-2 transition-all ${
-                    block.status === "complete"
-                      ? "border-green-500/60 bg-green-500/10"
-                      : block.status === "generating"
-                        ? "border-accent/60 bg-accent/10"
-                        : "border-foreground/20 bg-background/30"
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-semibold text-foreground">{block.title}</span>
-                    <span className="text-xs font-mono text-foreground/70">
-                      {block.status === "complete" ? "✓" : block.status === "generating" ? "⚡" : "⏳"}
-                    </span>
-                  </div>
-                  {block.status === "generating" && (
-                    <div className="h-1 bg-foreground/10 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-accent transition-all duration-200"
-                        style={{ width: `${block.progress}%` }}
-                      />
-                    </div>
-                  )}
+          <div className="relative group bg-background/50 backdrop-blur-sm border-2 border-accent/40 rounded-xl p-5 shadow-2xl h-[350px] hover:border-accent/60 transition-all duration-300">
+            <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-accent/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+            <div className="relative z-10">
+              <div className="flex items-center gap-2 mb-4 pb-3 border-b border-accent/30">
+                <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+                <span className="text-sm text-accent font-mono font-bold">Live AI Pipeline</span>
+                <div className="ml-auto flex items-center gap-1">
+                  <div className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+                  <span className="text-xs font-mono text-accent font-semibold">PROCESSING</span>
                 </div>
-              ))}
+              </div>
+              <div className="space-y-3 overflow-y-auto h-[270px]">
+                {codeBlocks.map((block) => (
+                  <div
+                    key={block.id}
+                    className={`p-3 rounded-lg border-2 transition-all duration-300 ${
+                      block.status === "complete"
+                        ? "border-green-500/60 bg-green-500/10 shadow-lg shadow-green-500/20"
+                        : block.status === "generating"
+                          ? "border-accent/60 bg-accent/10 shadow-lg shadow-accent/20"
+                          : "border-foreground/20 bg-background/30"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-semibold text-foreground">{block.title}</span>
+                      <span className="text-xs font-mono text-foreground/70">
+                        {block.status === "complete" ? "✓" : block.status === "generating" ? "⚡" : "⏳"}
+                      </span>
+                    </div>
+                    {block.status === "generating" && (
+                      <div className="h-1 bg-foreground/10 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 transition-all duration-200"
+                          style={{ width: `${block.progress}%` }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

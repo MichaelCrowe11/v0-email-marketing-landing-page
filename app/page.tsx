@@ -10,6 +10,7 @@ import { FAQ } from "@/components/faq"
 import { StickyBar } from "@/components/sticky-bar"
 import { AIGeneratedIntro } from "@/components/ai-generated-intro"
 import { ScrollReveal } from "@/components/scroll-reveal"
+import { InteractiveShowcase } from "@/components/interactive-showcase"
 
 export default function Home() {
   const [showIntro, setShowIntro] = useState(true)
@@ -21,6 +22,9 @@ export default function Home() {
         <Hero />
         <ScrollReveal>
           <BenefitsBand />
+        </ScrollReveal>
+        <ScrollReveal delay={100}>
+          <InteractiveShowcase />
         </ScrollReveal>
         <ScrollReveal delay={100}>
           <StreamingChatDemo />
