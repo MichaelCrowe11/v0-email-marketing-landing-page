@@ -241,8 +241,10 @@ export function OrchestratedHero() {
           </div>
 
           {/* Right: Enhanced Pipeline Visualization */}
-          <div className="relative group bg-white/95 backdrop-blur-sm border-2 border-accent/40 rounded-xl p-5 shadow-2xl h-[350px] hover:border-accent/60 transition-all duration-300">
-            <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-accent/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="relative group bg-white/95 backdrop-blur-sm border-2 border-accent/40 rounded-xl p-5 shadow-2xl h-[350px] hover:border-accent/60 transition-all duration-300 overflow-hidden">
+            {/* Animated background gradient */}
+            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/10 to-pink-500/10 rounded-xl animate-pulse" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.1),transparent_50%)]" />
 
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-4 pb-3 border-b border-accent/30">
@@ -254,69 +256,102 @@ export function OrchestratedHero() {
                   className="rounded-full border-2 border-accent/50 animate-pulse"
                 />
                 <span className="text-sm font-mono font-bold bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-                  AI Pipeline Visualization
+                  Neural Processing Pipeline
                 </span>
                 <div className="ml-auto flex items-center gap-1">
                   <div className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-                  <span className="text-xs font-mono text-accent font-semibold">PROCESSING</span>
+                  <span className="text-xs font-mono text-accent font-semibold">ACTIVE</span>
                 </div>
               </div>
 
-              <div className="space-y-3 overflow-y-auto h-[270px]">
+              <div className="space-y-4 overflow-y-auto h-[270px]">
                 {codeBlocks.map((block, index) => (
                   <div key={block.id} className="relative">
-                    {/* Connection line to next block */}
+                    {/* Animated connection line with data flow */}
                     {index < codeBlocks.length - 1 && (
-                      <div className="absolute left-6 top-full h-3 w-0.5 bg-gradient-to-b from-accent/50 to-transparent" />
+                      <div className="absolute left-8 top-full h-4 w-0.5 overflow-hidden">
+                        <div className="w-full h-full bg-gradient-to-b from-accent/50 to-transparent" />
+                        {block.status === "complete" && (
+                          <div className="absolute top-0 w-full h-2 bg-gradient-to-b from-accent to-transparent animate-pulse" />
+                        )}
+                      </div>
                     )}
 
                     <div
                       className={`relative p-3 rounded-lg border-2 transition-all duration-300 ${
                         block.status === "complete"
-                          ? "border-green-500/60 bg-green-500/10 shadow-lg shadow-green-500/20"
+                          ? "border-green-500/60 bg-gradient-to-br from-green-500/10 to-emerald-500/5 shadow-lg shadow-green-500/20"
                           : block.status === "generating"
-                            ? "border-accent/60 bg-accent/10 shadow-lg shadow-accent/20"
+                            ? "border-accent/60 bg-gradient-to-br from-accent/10 to-purple-500/5 shadow-lg shadow-accent/20"
                             : "border-foreground/20 bg-background/30"
                       }`}
                     >
                       <div className="flex items-center gap-3 mb-2">
                         <div className="relative flex-shrink-0">
+                          {block.status === "generating" && (
+                            <>
+                              <div className="absolute inset-0 bg-accent/30 rounded-full blur-lg animate-pulse" />
+                              <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 rounded-full opacity-50 blur-sm animate-pulse" />
+                            </>
+                          )}
                           <Image
                             src="/crowe-avatar.png"
                             alt="Processing"
-                            width={32}
-                            height={32}
-                            className={`rounded-full border-2 transition-all duration-300 ${
+                            width={36}
+                            height={36}
+                            className={`relative rounded-full border-2 transition-all duration-300 ${
                               block.status === "generating"
-                                ? "border-accent animate-spin-slow"
+                                ? "border-accent shadow-lg shadow-accent/50 animate-spin-slow"
                                 : block.status === "complete"
-                                  ? "border-green-500"
+                                  ? "border-green-500 shadow-lg shadow-green-500/50"
                                   : "border-foreground/20 opacity-50"
                             }`}
                           />
-                          {block.status === "generating" && (
-                            <div className="absolute inset-0 bg-accent/30 rounded-full blur-md animate-pulse" />
-                          )}
                         </div>
 
                         <div className="flex-1">
-                          <span className="text-sm font-semibold bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                          <div className="text-sm font-bold bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 bg-clip-text text-transparent mb-1">
                             {block.title}
-                          </span>
+                          </div>
+                          {block.status === "generating" && (
+                            <div className="text-xs font-mono text-accent/80">Processing neural pathways...</div>
+                          )}
+                          {block.status === "complete" && (
+                            <div className="text-xs font-mono text-green-600">Analysis complete ✓</div>
+                          )}
                         </div>
 
-                        <span className="text-lg">
-                          {block.status === "complete" ? "✓" : block.status === "generating" ? "⚡" : "⏳"}
-                        </span>
+                        <div className="text-2xl">
+                          {block.status === "complete" ? (
+                            <span className="text-green-500">✓</span>
+                          ) : block.status === "generating" ? (
+                            <span className="text-accent animate-pulse">⚡</span>
+                          ) : (
+                            <span className="text-foreground/30">○</span>
+                          )}
+                        </div>
                       </div>
 
                       {block.status === "generating" && (
-                        <div className="relative h-1.5 bg-foreground/10 rounded-full overflow-hidden">
+                        <div className="relative h-2 bg-foreground/10 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 transition-all duration-200 relative"
+                            className="h-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 transition-all duration-200 relative overflow-hidden"
                             style={{ width: `${block.progress}%` }}
                           >
-                            <div className="absolute inset-0 bg-white/30 animate-pulse" />
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer" />
+                          </div>
+                          {/* Floating particles */}
+                          <div className="absolute inset-0 flex items-center">
+                            {[...Array(3)].map((_, i) => (
+                              <div
+                                key={i}
+                                className="w-1 h-1 rounded-full bg-white/60 animate-pulse"
+                                style={{
+                                  marginLeft: `${(i + 1) * 25}%`,
+                                  animationDelay: `${i * 0.2}s`,
+                                }}
+                              />
+                            ))}
                           </div>
                         </div>
                       )}

@@ -7,7 +7,6 @@ import { StreamingChatDemo } from "@/components/streaming-chat-demo"
 import { Features } from "@/components/features"
 import { FAQ } from "@/components/faq"
 import { ScrollReveal } from "@/components/scroll-reveal"
-import { ChatDemo } from "@/components/chat-demo"
 
 export default function Home() {
   return (
@@ -15,11 +14,6 @@ export default function Home() {
       <Hero />
       <ScrollReveal>
         <BenefitsBand />
-      </ScrollReveal>
-      <ScrollReveal delay={100}>
-        <section className="py-16 md:py-24 px-4">
-          <ChatDemo />
-        </section>
       </ScrollReveal>
       <ScrollReveal delay={100}>
         <StreamingChatDemo />
