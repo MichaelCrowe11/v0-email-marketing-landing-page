@@ -44,7 +44,11 @@ export default async function AnalyticsPage() {
   )
 
   const topSpecies = Object.entries(speciesStats || {})
-    .sort(([, a], [, b]) => b.totalYield - a.totalYield)
+    .sort(([, a], [, b]) => {
+      const aStats = a as { count: number; totalYield: number; avgRating: number; totalRating: number }
+      const bStats = b as { count: number; totalYield: number; avgRating: number; totalRating: number }
+      return bStats.totalYield - aStats.totalYield
+    })
     .slice(0, 5)
 
   // Recent observations
