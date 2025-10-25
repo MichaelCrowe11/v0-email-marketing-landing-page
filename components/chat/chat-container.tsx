@@ -238,7 +238,7 @@ export function ChatContainer() {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between border-b border-border bg-card">
+      <div className="px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between border-b border-border glass-panel">
         <div className="flex items-center gap-2 sm:gap-3">
           <button
             onClick={() => setIsHistoryOpen(!isHistoryOpen)}
@@ -442,7 +442,7 @@ export function ChatContainer() {
         </div>
       </div>
 
-      <div className="border-t border-border bg-card/50 backdrop-blur-xl">
+      <div className="border-t border-border glass-panel">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
           <form onSubmit={handleFormSubmit} className="relative">
             <textarea
@@ -459,7 +459,7 @@ export function ChatContainer() {
                 }
               }}
               placeholder="Ask about cultivation techniques, contamination, yields..."
-              className="w-full min-h-[56px] sm:min-h-[60px] max-h-[200px] px-4 sm:px-5 py-3 sm:py-4 pr-12 sm:pr-14 bg-background border border-border rounded-2xl text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent/50 resize-none shadow-sm"
+              className="w-full min-h-[56px] sm:min-h-[60px] max-h-[200px] px-4 sm:px-5 py-3 sm:py-4 pr-12 sm:pr-14 glass-input rounded-2xl text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent/50 resize-none shadow-sm"
               rows={2}
               disabled={isLoading}
             />

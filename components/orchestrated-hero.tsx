@@ -204,7 +204,7 @@ export function OrchestratedHero() {
         {/* Bottom Section: Terminal and Enhanced Pipeline */}
         <div className="grid lg:grid-cols-2 gap-6 max-w-6xl mx-auto">
           {/* Left: Advanced Terminal */}
-          <div className="relative group bg-card/95 backdrop-blur-sm border-2 border-accent/40 rounded-xl p-5 shadow-2xl h-[350px] hover:border-accent/60 transition-all duration-300">
+          <div className="relative group glass-terminal rounded-xl p-5 shadow-2xl h-[350px] hover:border-accent/60 transition-all duration-300">
             <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-purple-500/5 to-pink-500/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
             <div className="relative z-10">
@@ -245,7 +245,7 @@ export function OrchestratedHero() {
           </div>
 
           {/* Right: Enhanced Pipeline Visualization */}
-          <div className="relative group bg-card/95 backdrop-blur-sm border-2 border-accent/40 rounded-xl p-5 shadow-2xl h-[350px] hover:border-accent/60 transition-all duration-300 overflow-hidden">
+          <div className="relative group glass-panel rounded-xl p-5 shadow-2xl h-[350px] hover:border-accent/60 transition-all duration-300 overflow-hidden">
             {/* Animated background gradient */}
             <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/10 to-pink-500/10 rounded-xl animate-pulse" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.1),transparent_50%)]" />

@@ -225,36 +225,36 @@ export function StreamingChatDemo() {
         </div>
 
         <div className="mx-auto max-w-md md:max-w-lg perspective-1000">
-          {/* 3D Phone Container with realistic depth and shadows */}
+          {/* Enhanced 3D Phone Container with realistic depth and shadows */}
           <div
-            className="relative transform-gpu transition-transform duration-500 hover:scale-105"
+            className="relative transform-gpu transition-transform duration-500 hover:scale-105 glass-reflection"
             style={{
               transformStyle: "preserve-3d",
               transform: "rotateY(-5deg) rotateX(2deg)",
             }}
           >
-            {/* Phone shadow */}
-            <div className="absolute inset-0 bg-black/40 blur-3xl transform translate-y-8 scale-95 rounded-[3rem]" />
+            {/* Enhanced phone shadow with color */}
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-black/40 to-cyan-500/20 blur-3xl transform translate-y-8 scale-95 rounded-[3rem]" />
 
-            {/* Phone body with realistic materials */}
+            {/* Phone body with premium glass materials */}
             <div
-              className={`relative rounded-[3rem] overflow-hidden transition-all duration-500 ${
+              className={`relative rounded-[3rem] overflow-hidden transition-all duration-500 glass-phone ${
                 theme === "dark"
-                  ? "bg-gradient-to-br from-gray-900 via-gray-800 to-black border-8 border-gray-900 shadow-2xl shadow-purple-500/20"
-                  : "bg-gradient-to-br from-gray-100 via-white to-gray-200 border-8 border-gray-300 shadow-2xl shadow-gray-400/40"
+                  ? "bg-gradient-to-br from-gray-900/80 via-gray-800/80 to-black/80"
+                  : "bg-gradient-to-br from-gray-100/80 via-white/80 to-gray-200/80"
               }`}
             >
-              {/* Realistic phone bezel with metallic effect */}
+              {/* Enhanced realistic phone bezel with metallic glass effect */}
               <div
                 className={`absolute inset-0 rounded-[3rem] pointer-events-none ${
                   theme === "dark"
-                    ? "bg-gradient-to-br from-gray-700/20 via-transparent to-gray-900/20"
-                    : "bg-gradient-to-br from-white/40 via-transparent to-gray-300/20"
+                    ? "bg-gradient-to-br from-white/5 via-transparent to-white/10"
+                    : "bg-gradient-to-br from-white/60 via-transparent to-white/30"
                 }`}
               />
 
-              {/* Screen reflection effect */}
-              <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none rounded-[3rem]" />
+              {/* Enhanced screen reflection with animated shimmer */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-purple-500/5 pointer-events-none rounded-[3rem] glass-reflection" />
 
               {/* Phone notch and status bar */}
               <div
