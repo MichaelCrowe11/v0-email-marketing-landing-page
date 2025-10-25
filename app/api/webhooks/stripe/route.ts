@@ -57,7 +57,7 @@ export async function POST(req: Request) {
         const periodEnd = session.subscription
           ? await stripe.subscriptions
               .retrieve(session.subscription as string)
-              .then((sub) => new Date(sub.current_period_end * 1000).toISOString())
+              .then((sub: Stripe.Subscription) => new Date(sub.current_period_end * 1000).toISOString())
           : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
 
         await supabase.from("user_subscriptions").insert({
@@ -156,7 +156,7 @@ export async function POST(req: Request) {
         const invoice = event.data.object as Stripe.Invoice
 
         if (invoice.subscription) {
-          const subscription = await stripe.subscriptions.retrieve(invoice.subscription as string)
+          const subscription: Stripe.Subscription = await stripe.subscriptions.retrieve(invoice.subscription as string)
 
           await supabase
             .from("user_subscriptions")
