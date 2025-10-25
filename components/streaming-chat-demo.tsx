@@ -225,57 +225,49 @@ export function StreamingChatDemo() {
         </div>
 
         <div className="mx-auto max-w-md md:max-w-lg perspective-1000">
-          {/* Enhanced 3D Phone Container with realistic depth and shadows */}
           <div
-            className="relative transform-gpu transition-transform duration-500 hover:scale-105 glass-reflection"
+            className="relative transform-gpu transition-transform duration-700 hover:scale-[1.02]"
             style={{
               transformStyle: "preserve-3d",
-              transform: "rotateY(-5deg) rotateX(2deg)",
+              transform: "rotateY(-8deg) rotateX(3deg)",
             }}
           >
-            {/* Enhanced phone shadow with color */}
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-black/40 to-cyan-500/20 blur-3xl transform translate-y-8 scale-95 rounded-[3rem]" />
+            {/* Multi-layer realistic shadow system */}
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-600/30 via-black/60 to-cyan-600/30 blur-[60px] transform translate-y-12 scale-95 rounded-[3.5rem] opacity-80" />
+            <div className="absolute inset-0 bg-black/40 blur-2xl transform translate-y-8 scale-98 rounded-[3.5rem]" />
 
-            {/* Phone body with premium glass materials */}
+            {/* Phone body with ultra-premium glass and metal materials */}
             <div
-              className={`relative rounded-[3rem] overflow-hidden transition-all duration-500 glass-phone ${
+              className={`relative rounded-[3.5rem] overflow-hidden transition-all duration-700 shadow-2xl ${
                 theme === "dark"
-                  ? "bg-gradient-to-br from-gray-900/80 via-gray-800/80 to-black/80"
-                  : "bg-gradient-to-br from-gray-100/80 via-white/80 to-gray-200/80"
+                  ? "bg-gradient-to-br from-gray-900 via-black to-gray-900"
+                  : "bg-gradient-to-br from-gray-200 via-white to-gray-100"
               }`}
-            >
-              {/* Enhanced realistic phone bezel with metallic glass effect */}
-              <div
-                className={`absolute inset-0 rounded-[3rem] pointer-events-none ${
+              style={{
+                boxShadow:
                   theme === "dark"
-                    ? "bg-gradient-to-br from-white/5 via-transparent to-white/10"
-                    : "bg-gradient-to-br from-white/60 via-transparent to-white/30"
+                    ? "0 0 0 1px rgba(255,255,255,0.1), 0 30px 60px -12px rgba(0,0,0,0.8), 0 50px 100px -20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1)"
+                    : "0 0 0 1px rgba(0,0,0,0.1), 0 30px 60px -12px rgba(0,0,0,0.3), 0 50px 100px -20px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.8)",
+              }}
+            >
+              {/* Realistic metallic bezel with chamfered edges */}
+              <div
+                className={`absolute inset-0 rounded-[3.5rem] pointer-events-none ${
+                  theme === "dark"
+                    ? "bg-gradient-to-br from-white/10 via-transparent to-white/5"
+                    : "bg-gradient-to-br from-white/80 via-transparent to-white/40"
                 }`}
+                style={{
+                  boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.1), inset 0 2px 4px rgba(255,255,255,0.1)",
+                }}
               />
 
-              {/* Enhanced screen reflection with animated shimmer */}
-              <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-purple-500/5 pointer-events-none rounded-[3rem] glass-reflection" />
+              {/* Premium screen reflection with realistic light refraction */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent via-40% to-purple-500/10 pointer-events-none rounded-[3.5rem] opacity-60" />
+              <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-white/10 to-transparent pointer-events-none rounded-t-[3.5rem]" />
 
-              {/* Phone notch and status bar */}
-              <div
-                className={`relative h-8 flex items-center justify-center ${theme === "dark" ? "bg-black" : "bg-gray-900"}`}
-              >
-                <div
-                  className={`absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 rounded-b-2xl ${theme === "dark" ? "bg-black" : "bg-gray-900"}`}
-                />
-                <div
-                  className={`absolute top-2 left-4 flex items-center gap-1 text-xs ${theme === "dark" ? "text-white" : "text-gray-300"}`}
-                >
-                  <span>9:41</span>
-                </div>
-                <div
-                  className={`absolute top-2 right-4 flex items-center gap-1 text-xs ${theme === "dark" ? "text-white" : "text-gray-300"}`}
-                >
-                  <span>📶</span>
-                  <span>📡</span>
-                  <span>🔋</span>
-                </div>
-              </div>
+              {/* Animated shimmer overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-transparent pointer-events-none rounded-[3.5rem] animate-shimmer-slow" />
 
               {/* Chat header with enhanced styling */}
               <div
@@ -552,6 +544,9 @@ export function StreamingChatDemo() {
               </div>
             </div>
           </div>
+
+          {/* Ambient light glow */}
+          <div className="absolute -inset-4 bg-gradient-to-br from-purple-500/20 via-transparent to-cyan-500/20 blur-3xl opacity-50 pointer-events-none rounded-[4rem] animate-pulse-slow" />
 
           {/* Demo indicators */}
           <div className="mt-6 flex items-center justify-center gap-2">
