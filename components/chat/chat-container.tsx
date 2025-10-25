@@ -183,25 +183,27 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
     }
   }, [messages, status, userId, currentConversationId])
 
-  const handleFormSubmit = async (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (!inputValue || !inputValue.trim() || status === "in_progress") return
 
+    // Check if input is empty or already processing
+    const currentInput = inputValue || input
+    if (!currentInput || !currentInput.trim() || status === "in_progress") return
+
+    // Create conversation if needed
     if (!currentConversationId && userId) {
-      const title = inputValue.slice(0, 50) + (inputValue.length > 50 ? "..." : "")
+      const title = currentInput.slice(0, 50) + (currentInput.length > 50 ? "..." : "")
       const conversation = await createConversation(userId, title)
       if (conversation) {
         setCurrentConversationId(conversation.id)
       }
     }
 
-    const syntheticEvent = {
-      ...e,
-      currentTarget: e.currentTarget,
-      target: e.target,
-    } as React.FormEvent<HTMLFormElement>
+    // Call the useChat handleSubmit directly with the event
+    handleSubmit(e)
 
-    handleSubmit(syntheticEvent)
+    // Clear local input after submission
+    setInputValue("")
   }
 
   useEffect(() => {
@@ -229,8 +231,8 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
       if (textareaRef.current) {
         const form = textareaRef.current.closest("form")
         if (form) {
-          const submitEvent = new Event("submit", { bubbles: true, cancelable: true })
-          form.dispatchEvent(submitEvent)
+          // Create a proper form submit event
+          form.requestSubmit()
         }
       }
     }, 50)
