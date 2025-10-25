@@ -1,6 +1,16 @@
 import { streamText } from "ai"
+import OpenAI from "openai"
 
 export const maxDuration = 30
+
+const azureOpenAI = new OpenAI({
+  apiKey: process.env.AZURE_AI_API_KEY || "",
+  baseURL: process.env.AZURE_AI_ENDPOINT || "",
+  defaultQuery: { "api-version": "2024-05-01-preview" },
+  defaultHeaders: { "api-key": process.env.AZURE_AI_API_KEY || "" },
+})
+
+const AZURE_ASSISTANT_ID = "asst_7ycbM8XLx9HjiBfvI0tGdhtz"
 
 export async function POST(req: Request) {
   console.log("[v0] Chat API route called")
@@ -11,13 +21,64 @@ export async function POST(req: Request) {
     console.log("[v0] Received messages:", messages?.length || 0)
     console.log("[v0] Selected model:", model)
 
-    const selectedModel = model || "anthropic/claude-sonnet-4.5"
+    const selectedModel = model || "azure/agent874"
 
     console.log("[v0] Using model:", selectedModel)
 
+    if (selectedModel === "azure/agent874") {
+      console.log("[v0] Using Azure AI Assistant")
+
+      const encoder = new TextEncoder()
+      const stream = new ReadableStream({
+        async start(controller) {
+          try {
+            // Get the last user message
+            const lastMessage = messages[messages.length - 1]
+            const userContent = lastMessage?.content || ""
+
+            // Create a thread
+            const thread = await azureOpenAI.beta.threads.create()
+
+            // Add user message to thread
+            await azureOpenAI.beta.threads.messages.create(thread.id, {
+              role: "user",
+              content: userContent,
+            })
+
+            // Run the assistant with streaming
+            const run = azureOpenAI.beta.threads.runs.stream(thread.id, {
+              assistant_id: AZURE_ASSISTANT_ID,
+            })
+
+            // Handle streaming events
+            run.on("textDelta", (textDelta) => {
+              const chunk = textDelta.value || ""
+              controller.enqueue(encoder.encode(`0:${JSON.stringify(chunk)}\n`))
+            })
+
+            // Wait for completion
+            await run.finalRun()
+
+            controller.enqueue(encoder.encode(`d:{"finishReason":"stop"}\n`))
+            controller.close()
+          } catch (error) {
+            console.error("[v0] Azure Assistant error:", error)
+            controller.close()
+          }
+        },
+      })
+
+      return new Response(stream, {
+        headers: {
+          "Content-Type": "text/plain; charset=utf-8",
+          "X-Vercel-AI-Data-Stream": "v1",
+        },
+      })
+    }
+
     const systemMessage = {
       role: "system" as const,
-      content: `You are CROWELOGIC AI, an expert mushroom cultivation assistant with 20+ years of commercial growing experience and browser research capabilities.
+      content: `You are Crowe Logic AI, an expert mushroom cultivation assistant with 20+ years of commercial growing experience and browser research capabilities.
 
 Your expertise includes:
 - Species identification and cultivation parameters
@@ -42,7 +103,7 @@ When responding:
 You can use <reasoning> tags to show your thought process for complex questions.`,
     }
 
-    console.log("[v0] Starting streamText")
+    console.log("[v0] Starting streamText with AI Gateway")
 
     const result = streamText({
       model: selectedModel,

@@ -96,7 +96,7 @@ function MagicalStreamingText({ text, isStreaming }: { text: string; isStreaming
 }
 
 export function ChatContainer() {
-  const [selectedModel, setSelectedModel] = useState("anthropic/claude-sonnet-4.5")
+  const [selectedModel, setSelectedModel] = useState("azure/crowelogic")
   const [userId, setUserId] = useState<string | null>(null)
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null)
 
