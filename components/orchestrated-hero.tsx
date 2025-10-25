@@ -210,32 +210,36 @@ export function OrchestratedHero() {
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-4 pb-3 border-b border-accent/30">
                 <div className="w-2 h-2 rounded-full bg-gradient-to-r from-cyan-500 to-purple-500 animate-pulse" />
-                <span className="text-sm font-mono font-bold bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                <span className="text-sm font-code font-bold bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
                   AI Processing Terminal
                 </span>
                 <div className="ml-auto flex items-center gap-1">
                   <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                  <span className="text-xs font-mono text-green-600 dark:text-green-400 font-semibold">ONLINE</span>
+                  <span className="text-xs font-code text-green-600 dark:text-green-400 font-semibold">ONLINE</span>
                 </div>
               </div>
-              <div className="font-mono text-xs space-y-2 overflow-y-auto h-[270px]">
+              <div className="font-code text-xs space-y-2 overflow-y-auto h-[270px] leading-relaxed">
                 {terminalLines
                   .filter((line) => line)
                   .map((line, i) => (
                     <div
                       key={i}
-                      className={`font-semibold animate-in fade-in slide-in-from-left-2 duration-300 ${
+                      className={`font-semibold animate-in fade-in slide-in-from-left-2 duration-300 flex items-start gap-2 ${
                         line?.type === "success"
-                          ? "bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent"
+                          ? "text-green-500 dark:text-green-400"
                           : line?.type === "warning"
-                            ? "bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent"
-                            : "bg-gradient-to-r from-cyan-500 to-blue-500 bg-clip-text text-transparent"
+                            ? "text-yellow-500 dark:text-yellow-400"
+                            : "text-cyan-500 dark:text-cyan-400"
                       }`}
                     >
-                      {line?.text || ""}
+                      <span className="text-purple-500 dark:text-purple-400 flex-shrink-0">$</span>
+                      <span className="flex-1">{line?.text || ""}</span>
                     </div>
                   ))}
-                <div className="inline-block w-2 h-4 bg-gradient-to-r from-cyan-500 to-purple-500 animate-pulse" />
+                <div className="flex items-center gap-2">
+                  <span className="text-purple-500 dark:text-purple-400">$</span>
+                  <div className="inline-block w-2 h-4 bg-gradient-to-r from-cyan-500 to-purple-500 animate-pulse" />
+                </div>
               </div>
             </div>
           </div>
@@ -255,12 +259,12 @@ export function OrchestratedHero() {
                   height={24}
                   className="rounded-full border-2 border-accent/50 animate-pulse"
                 />
-                <span className="text-sm font-mono font-bold bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                <span className="text-sm font-code font-bold bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
                   Neural Processing Pipeline
                 </span>
                 <div className="ml-auto flex items-center gap-1">
                   <div className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-                  <span className="text-xs font-mono text-accent font-semibold">ACTIVE</span>
+                  <span className="text-xs font-code text-accent font-semibold">ACTIVE</span>
                 </div>
               </div>
 
@@ -310,14 +314,14 @@ export function OrchestratedHero() {
                         </div>
 
                         <div className="flex-1">
-                          <div className="text-sm font-bold bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 bg-clip-text text-transparent mb-1">
+                          <div className="text-sm font-code font-bold bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 bg-clip-text text-transparent mb-1">
                             {block.title}
                           </div>
                           {block.status === "generating" && (
-                            <div className="text-xs font-mono text-accent/80">Processing neural pathways...</div>
+                            <div className="text-xs font-code text-accent/80">Processing neural pathways...</div>
                           )}
                           {block.status === "complete" && (
-                            <div className="text-xs font-mono text-green-600 dark:text-green-400">
+                            <div className="text-xs font-code text-green-600 dark:text-green-400">
                               Analysis complete ✓
                             </div>
                           )}

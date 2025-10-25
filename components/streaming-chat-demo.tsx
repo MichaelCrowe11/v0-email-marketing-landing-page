@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { useTheme } from "next-themes"
 
 interface Message {
   role: "user" | "assistant"
@@ -118,6 +119,7 @@ export function StreamingChatDemo() {
   const [isThinking, setIsThinking] = useState(false)
   const [streamingText, setStreamingText] = useState("")
   const [isStreaming, setIsStreaming] = useState(false)
+  const { theme } = useTheme()
 
   const formatTime = useCallback(() => {
     const now = new Date()
@@ -212,233 +214,342 @@ export function StreamingChatDemo() {
       <div className="relative mx-auto max-w-7xl">
         <div className="mb-12 text-center animate-fade-in">
           <h2 className="mb-4 text-4xl font-bold tracking-tight text-foreground">
-            See Crowe Logic <span className="text-gradient-purple">think</span>
+            See Crowe Logic AI{" "}
+            <span className="bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 bg-clip-text text-transparent">
+              think
+            </span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Watch the AI solve complex cultivation problems in real-time with Michael's 20 years of expertise
           </p>
         </div>
 
-        <div className="mx-auto max-w-md md:max-w-lg">
-          <div className="glass-ultra rounded-[3rem] border-8 border-gray-900 shadow-2xl overflow-hidden bg-black transition-shadow duration-300 hover:shadow-3xl">
-            {/* Phone notch and status bar */}
-            <div className="relative bg-black h-8 flex items-center justify-center">
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-black rounded-b-2xl" />
-              <div className="absolute top-2 left-4 flex items-center gap-1 text-white text-xs">
-                <span>9:41</span>
-              </div>
-              <div className="absolute top-2 right-4 flex items-center gap-1 text-white text-xs">
-                <span>📶</span>
-                <span>📡</span>
-                <span>🔋</span>
-              </div>
-            </div>
+        <div className="mx-auto max-w-md md:max-w-lg perspective-1000">
+          {/* 3D Phone Container with realistic depth and shadows */}
+          <div
+            className="relative transform-gpu transition-transform duration-500 hover:scale-105"
+            style={{
+              transformStyle: "preserve-3d",
+              transform: "rotateY(-5deg) rotateX(2deg)",
+            }}
+          >
+            {/* Phone shadow */}
+            <div className="absolute inset-0 bg-black/40 blur-3xl transform translate-y-8 scale-95 rounded-[3rem]" />
 
-            <div className="bg-gradient-to-b from-gray-900 to-gray-800 border-b border-gray-700 px-4 py-3 flex items-center gap-3">
-              <button className="text-primary text-lg" aria-label="Back">
-                ‹
-              </button>
-              <div className="relative">
-                <motion.div
-                  animate={{
-                    opacity: isThinking ? [1, 0.6, 1] : 1,
-                    scale: isThinking ? [1, 0.95, 1] : 1,
-                  }}
-                  transition={{
-                    duration: 1.5,
-                    repeat: isThinking ? Number.POSITIVE_INFINITY : 0,
-                    ease: "easeInOut",
-                  }}
-                  className="relative"
-                >
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 blur-sm opacity-75 animate-spin-slow" />
-                  <img
-                    src="/crowe-avatar.png"
-                    alt="Crowe Logic AI"
-                    className="relative w-10 h-10 rounded-full ring-2 ring-purple-500/50 shadow-lg"
-                  />
-                </motion.div>
-                <motion.div
-                  animate={{
-                    scale: isThinking ? [1, 1.2, 1] : 1,
-                    opacity: isThinking ? [1, 0.5, 1] : 1,
-                  }}
-                  transition={{
-                    duration: 1,
-                    repeat: isThinking ? Number.POSITIVE_INFINITY : 0,
-                  }}
-                  className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-gray-900"
+            {/* Phone body with realistic materials */}
+            <div
+              className={`relative rounded-[3rem] overflow-hidden transition-all duration-500 ${
+                theme === "dark"
+                  ? "bg-gradient-to-br from-gray-900 via-gray-800 to-black border-8 border-gray-900 shadow-2xl shadow-purple-500/20"
+                  : "bg-gradient-to-br from-gray-100 via-white to-gray-200 border-8 border-gray-300 shadow-2xl shadow-gray-400/40"
+              }`}
+            >
+              {/* Realistic phone bezel with metallic effect */}
+              <div
+                className={`absolute inset-0 rounded-[3rem] pointer-events-none ${
+                  theme === "dark"
+                    ? "bg-gradient-to-br from-gray-700/20 via-transparent to-gray-900/20"
+                    : "bg-gradient-to-br from-white/40 via-transparent to-gray-300/20"
+                }`}
+              />
+
+              {/* Screen reflection effect */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none rounded-[3rem]" />
+
+              {/* Phone notch and status bar */}
+              <div
+                className={`relative h-8 flex items-center justify-center ${theme === "dark" ? "bg-black" : "bg-gray-900"}`}
+              >
+                <div
+                  className={`absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 rounded-b-2xl ${theme === "dark" ? "bg-black" : "bg-gray-900"}`}
                 />
+                <div
+                  className={`absolute top-2 left-4 flex items-center gap-1 text-xs ${theme === "dark" ? "text-white" : "text-gray-300"}`}
+                >
+                  <span>9:41</span>
+                </div>
+                <div
+                  className={`absolute top-2 right-4 flex items-center gap-1 text-xs ${theme === "dark" ? "text-white" : "text-gray-300"}`}
+                >
+                  <span>📶</span>
+                  <span>📡</span>
+                  <span>🔋</span>
+                </div>
               </div>
-              <div className="flex-1">
-                <h3 className="font-semibold text-white text-sm">Crowe Logic AI</h3>
-                <p className="text-xs text-green-400">Active now</p>
-              </div>
-              <button onClick={handleNextConvo} className="text-primary text-sm font-medium">
-                Next →
-              </button>
-            </div>
 
-            <div className="p-4 space-y-3 min-h-[600px] max-h-[600px] overflow-y-auto bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
-              <AnimatePresence mode="wait">
-                {messages.map((message, index) => (
+              {/* Chat header with enhanced styling */}
+              <div
+                className={`border-b px-4 py-3 flex items-center gap-3 ${
+                  theme === "dark"
+                    ? "bg-gradient-to-b from-gray-900 to-gray-800 border-gray-700"
+                    : "bg-gradient-to-b from-gray-50 to-white border-gray-200"
+                }`}
+              >
+                <button className="text-primary text-lg" aria-label="Back">
+                  ‹
+                </button>
+                <div className="relative">
+                  {/* Enhanced Crowe avatar with blinking animation */}
                   <motion.div
-                    key={`${currentConvo}-${index}`}
-                    initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.8, y: -20 }}
-                    transition={{ duration: 0.3, type: "spring" }}
-                    className={`flex gap-2 ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                    animate={{
+                      opacity: isThinking ? [1, 0.3, 1] : 1,
+                      scale: isThinking ? [1, 0.92, 1] : 1,
+                    }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: isThinking ? Number.POSITIVE_INFINITY : 0,
+                      ease: "easeInOut",
+                    }}
+                    className="relative"
                   >
-                    {message.role === "assistant" && (
-                      <motion.div
-                        animate={{
-                          opacity: isThinking && index === messages.length - 1 ? [1, 0.5, 1] : 1,
-                          scale: isThinking && index === messages.length - 1 ? [1, 0.9, 1] : 1,
-                        }}
-                        transition={{
-                          duration: 1.5,
-                          repeat: isThinking && index === messages.length - 1 ? Number.POSITIVE_INFINITY : 0,
-                        }}
-                        className="relative"
-                      >
-                        {isThinking && index === messages.length - 1 && (
-                          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 blur-md opacity-50 animate-spin-slow" />
-                        )}
-                        <img
-                          src="/crowe-avatar.png"
-                          alt="Crowe Logic AI"
-                          className="relative w-8 h-8 rounded-full flex-shrink-0 shadow-lg ring-2 ring-purple-500/30 mt-1"
-                        />
-                      </motion.div>
-                    )}
+                    {/* Colorful code swirl effect */}
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 blur-md opacity-75 animate-spin-slow" />
+                    <img
+                      src="/crowe-avatar.png"
+                      alt="Crowe Logic AI"
+                      className="relative w-10 h-10 rounded-full ring-2 ring-purple-500/50 shadow-lg"
+                    />
+                  </motion.div>
+                  <motion.div
+                    animate={{
+                      scale: isThinking ? [1, 1.3, 1] : 1,
+                      opacity: isThinking ? [1, 0.4, 1] : 1,
+                    }}
+                    transition={{
+                      duration: 1,
+                      repeat: isThinking ? Number.POSITIVE_INFINITY : 0,
+                    }}
+                    className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 ${theme === "dark" ? "border-gray-900" : "border-white"}`}
+                  />
+                </div>
+                <div className="flex-1">
+                  <h3 className={`font-semibold text-sm ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
+                    Crowe Logic AI
+                  </h3>
+                  <p className="text-xs text-green-400">Active now</p>
+                </div>
+                <button onClick={handleNextConvo} className="text-primary text-sm font-medium">
+                  Next →
+                </button>
+              </div>
 
-                    <div className={`max-w-[75%] ${message.role === "user" ? "order-first" : ""}`}>
-                      {message.thinking && isThinking && (
+              {/* Chat messages area with theme support */}
+              <div
+                className={`p-4 space-y-3 min-h-[600px] max-h-[600px] overflow-y-auto ${
+                  theme === "dark"
+                    ? "bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900"
+                    : "bg-gradient-to-b from-gray-50 via-white to-gray-50"
+                }`}
+              >
+                <AnimatePresence mode="wait">
+                  {messages.map((message, index) => (
+                    <motion.div
+                      key={`${currentConvo}-${index}`}
+                      initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.8, y: -20 }}
+                      transition={{ duration: 0.3, type: "spring" }}
+                      className={`flex gap-2 ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                    >
+                      {message.role === "assistant" && (
                         <motion.div
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className="mb-2 px-4 py-3 rounded-2xl bg-gray-800/80 backdrop-blur-sm border border-purple-500/30 text-xs text-gray-300 whitespace-pre-line"
+                          animate={{
+                            opacity: isThinking && index === messages.length - 1 ? [1, 0.4, 1] : 1,
+                            scale: isThinking && index === messages.length - 1 ? [1, 0.85, 1] : 1,
+                          }}
+                          transition={{
+                            duration: 1.5,
+                            repeat: isThinking && index === messages.length - 1 ? Number.POSITIVE_INFINITY : 0,
+                          }}
+                          className="relative"
                         >
-                          <div className="flex items-center gap-2 mb-1">
-                            <div className="flex gap-1">
-                              <motion.div
-                                animate={{ scale: [1, 1.3, 1] }}
-                                transition={{ repeat: Number.POSITIVE_INFINITY, duration: 1, delay: 0 }}
-                                className="w-1.5 h-1.5 bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full"
-                              />
-                              <motion.div
-                                animate={{ scale: [1, 1.3, 1] }}
-                                transition={{ repeat: Number.POSITIVE_INFINITY, duration: 1, delay: 0.2 }}
-                                className="w-1.5 h-1.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"
-                              />
-                              <motion.div
-                                animate={{ scale: [1, 1.3, 1] }}
-                                transition={{ repeat: Number.POSITIVE_INFINITY, duration: 1, delay: 0.4 }}
-                                className="w-1.5 h-1.5 bg-gradient-to-r from-pink-500 to-cyan-400 rounded-full"
-                              />
-                            </div>
-                            <span className="font-medium text-gradient-purple">Analyzing...</span>
-                          </div>
-                          {message.thinking}
+                          {isThinking && index === messages.length - 1 && (
+                            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 blur-md opacity-50 animate-spin-slow" />
+                          )}
+                          <img
+                            src="/crowe-avatar.png"
+                            alt="Crowe Logic AI"
+                            className="relative w-8 h-8 rounded-full flex-shrink-0 shadow-lg ring-2 ring-purple-500/30 mt-1"
+                          />
                         </motion.div>
                       )}
 
-                      <div
-                        className={`rounded-2xl px-4 py-3 shadow-lg ${
-                          message.role === "user"
-                            ? "bg-gradient-to-br from-primary to-primary/80 text-white rounded-br-md"
-                            : "bg-gray-800/90 backdrop-blur-sm border border-purple-500/20 text-gray-100 rounded-bl-md"
-                        }`}
-                      >
-                        {message.image && message.role === "user" && (
-                          <img
-                            src={message.image || "/placeholder.svg"}
-                            alt="User uploaded"
-                            className="rounded-lg mb-2 w-full"
-                          />
+                      <div className={`max-w-[75%] ${message.role === "user" ? "order-first" : ""}`}>
+                        {message.thinking && isThinking && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className={`mb-2 px-4 py-3 rounded-2xl backdrop-blur-sm border text-xs whitespace-pre-line ${
+                              theme === "dark"
+                                ? "bg-gray-800/80 border-purple-500/30 text-gray-300"
+                                : "bg-white/80 border-purple-300 text-gray-700"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2 mb-1">
+                              <div className="flex gap-1">
+                                <motion.div
+                                  animate={{ scale: [1, 1.3, 1] }}
+                                  transition={{ repeat: Number.POSITIVE_INFINITY, duration: 1, delay: 0 }}
+                                  className="w-1.5 h-1.5 bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full"
+                                />
+                                <motion.div
+                                  animate={{ scale: [1, 1.3, 1] }}
+                                  transition={{ repeat: Number.POSITIVE_INFINITY, duration: 1, delay: 0.2 }}
+                                  className="w-1.5 h-1.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"
+                                />
+                                <motion.div
+                                  animate={{ scale: [1, 1.3, 1] }}
+                                  transition={{ repeat: Number.POSITIVE_INFINITY, duration: 1, delay: 0.4 }}
+                                  className="w-1.5 h-1.5 bg-gradient-to-r from-pink-500 to-cyan-400 rounded-full"
+                                />
+                              </div>
+                              <span className="font-medium bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
+                                Analyzing...
+                              </span>
+                            </div>
+                            {message.thinking}
+                          </motion.div>
                         )}
 
-                        <p className="text-sm leading-relaxed whitespace-pre-line">
-                          {message.content}
-                          {isStreaming && index === messages.length - 1 && (
-                            <motion.span
-                              animate={{ opacity: [1, 0] }}
-                              transition={{ repeat: Number.POSITIVE_INFINITY, duration: 0.8 }}
-                              className="inline-block w-0.5 h-4 ml-1 bg-current"
-                            />
-                          )}
-                        </p>
-
-                        {message.image && message.role === "assistant" && !isStreaming && (
-                          <motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: 0.3 }}
-                            className="mt-3"
-                          >
+                        <div
+                          className={`rounded-2xl px-4 py-3 shadow-lg ${
+                            message.role === "user"
+                              ? theme === "dark"
+                                ? "bg-gradient-to-br from-primary to-primary/80 text-white rounded-br-md"
+                                : "bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-br-md"
+                              : theme === "dark"
+                                ? "bg-gray-800/90 backdrop-blur-sm border border-purple-500/20 text-gray-100 rounded-bl-md"
+                                : "bg-white/90 backdrop-blur-sm border border-purple-200 text-gray-900 rounded-bl-md"
+                          }`}
+                        >
+                          {message.image && message.role === "user" && (
                             <img
                               src={message.image || "/placeholder.svg"}
-                              alt="Analysis result"
-                              className="rounded-lg w-full border-2 border-primary/20"
+                              alt="User uploaded"
+                              className="rounded-lg mb-2 w-full"
                             />
-                            <p className="text-xs text-gray-500 mt-2 italic">
-                              ✓ Visual analysis with marked transfer zones
-                            </p>
-                          </motion.div>
-                        )}
+                          )}
 
-                        {message.evidenceLedger && !isStreaming && (
-                          <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            transition={{ delay: 0.5 }}
-                            className="mt-3 pt-3 border-t border-gray-200 space-y-2"
-                          >
-                            <div className="text-xs font-semibold text-gray-700">📚 Evidence Ledger</div>
-                            {message.evidenceLedger.map((evidence, idx) => (
-                              <div key={idx} className="text-xs bg-white rounded-lg p-2 border border-gray-200">
-                                <div className="font-mono text-primary font-semibold">{evidence.artifact_id}</div>
-                                {evidence.species && <div className="text-gray-600 mt-1">{evidence.species}</div>}
-                                <div className="text-gray-500 text-[10px] mt-1 line-clamp-2">{evidence.symptoms}</div>
-                                <div className="flex items-center justify-between mt-2">
-                                  <span className="text-[10px] text-gray-400 uppercase">{evidence.type}</span>
-                                  <span className="text-[10px] font-semibold text-green-600">
-                                    {evidence.confidence_pct}% confidence
-                                  </span>
-                                </div>
+                          <p className="text-sm leading-relaxed whitespace-pre-line font-code">
+                            {message.content}
+                            {isStreaming && index === messages.length - 1 && (
+                              <motion.span
+                                animate={{ opacity: [1, 0] }}
+                                transition={{ repeat: Number.POSITIVE_INFINITY, duration: 0.8 }}
+                                className="inline-block w-0.5 h-4 ml-1 bg-current"
+                              />
+                            )}
+                          </p>
+
+                          {message.image && message.role === "assistant" && !isStreaming && (
+                            <motion.div
+                              initial={{ opacity: 0, scale: 0.95 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ delay: 0.3 }}
+                              className="mt-3"
+                            >
+                              <img
+                                src={message.image || "/placeholder.svg"}
+                                alt="Analysis result"
+                                className="rounded-lg w-full border-2 border-primary/20"
+                              />
+                              <p
+                                className={`text-xs mt-2 italic ${theme === "dark" ? "text-gray-500" : "text-gray-600"}`}
+                              >
+                                ✓ Visual analysis with marked transfer zones
+                              </p>
+                            </motion.div>
+                          )}
+
+                          {message.evidenceLedger && !isStreaming && (
+                            <motion.div
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: "auto" }}
+                              transition={{ delay: 0.5 }}
+                              className={`mt-3 pt-3 border-t space-y-2 ${theme === "dark" ? "border-gray-700" : "border-gray-200"}`}
+                            >
+                              <div
+                                className={`text-xs font-semibold ${theme === "dark" ? "text-gray-400" : "text-gray-700"}`}
+                              >
+                                📚 Evidence Ledger
                               </div>
-                            ))}
-                          </motion.div>
-                        )}
-                      </div>
+                              {message.evidenceLedger.map((evidence, idx) => (
+                                <div
+                                  key={idx}
+                                  className={`text-xs rounded-lg p-2 border ${
+                                    theme === "dark" ? "bg-gray-900/50 border-gray-700" : "bg-white border-gray-200"
+                                  }`}
+                                >
+                                  <div className="font-mono text-primary font-semibold">{evidence.artifact_id}</div>
+                                  {evidence.species && (
+                                    <div className={`mt-1 ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+                                      {evidence.species}
+                                    </div>
+                                  )}
+                                  <div
+                                    className={`text-[10px] mt-1 line-clamp-2 ${theme === "dark" ? "text-gray-500" : "text-gray-500"}`}
+                                  >
+                                    {evidence.symptoms}
+                                  </div>
+                                  <div className="flex items-center justify-between mt-2">
+                                    <span
+                                      className={`text-[10px] uppercase ${theme === "dark" ? "text-gray-500" : "text-gray-400"}`}
+                                    >
+                                      {evidence.type}
+                                    </span>
+                                    <span className="text-[10px] font-semibold text-green-600">
+                                      {evidence.confidence_pct}% confidence
+                                    </span>
+                                  </div>
+                                </div>
+                              ))}
+                            </motion.div>
+                          )}
+                        </div>
 
-                      <div
-                        className={`mt-1 text-[10px] text-gray-500 ${message.role === "user" ? "text-right" : "text-left"}`}
-                      >
-                        {message.timestamp}
+                        <div
+                          className={`mt-1 text-[10px] ${message.role === "user" ? "text-right" : "text-left"} ${
+                            theme === "dark" ? "text-gray-500" : "text-gray-400"
+                          }`}
+                        >
+                          {message.timestamp}
+                        </div>
                       </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
-
-            <div className="border-t border-gray-700 bg-gray-900 px-4 py-2 flex items-center gap-2">
-              <button className="text-gray-400 text-xl hover:text-gray-300 transition-colors" aria-label="Camera">
-                📷
-              </button>
-              <div className="flex-1 bg-gray-800 rounded-full px-4 py-2 text-sm text-gray-400 border border-gray-700">
-                Message Crowe Logic...
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
               </div>
-              <button className="text-primary text-xl hover:text-primary/80 transition-colors" aria-label="Voice">
-                🎤
-              </button>
-            </div>
 
-            {/* Home indicator */}
-            <div className="bg-black h-6 flex items-center justify-center">
-              <div className="w-32 h-1 bg-white/30 rounded-full" />
+              {/* Input area */}
+              <div
+                className={`border-t px-4 py-2 flex items-center gap-2 ${
+                  theme === "dark" ? "bg-gray-900 border-gray-700" : "bg-white border-gray-200"
+                }`}
+              >
+                <button
+                  className={`text-xl hover:opacity-80 transition-colors ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}
+                  aria-label="Camera"
+                >
+                  📷
+                </button>
+                <div
+                  className={`flex-1 rounded-full px-4 py-2 text-sm border ${
+                    theme === "dark"
+                      ? "bg-gray-800 text-gray-400 border-gray-700"
+                      : "bg-gray-50 text-gray-500 border-gray-300"
+                  }`}
+                >
+                  Message Crowe Logic AI...
+                </div>
+                <button className="text-primary text-xl hover:opacity-80 transition-colors" aria-label="Voice">
+                  🎤
+                </button>
+              </div>
+
+              {/* Home indicator */}
+              <div className={`h-6 flex items-center justify-center ${theme === "dark" ? "bg-black" : "bg-gray-900"}`}>
+                <div className={`w-32 h-1 rounded-full ${theme === "dark" ? "bg-white/30" : "bg-white/50"}`} />
+              </div>
             </div>
           </div>
 
@@ -450,7 +561,7 @@ export function StreamingChatDemo() {
                 onClick={() => setCurrentConvo(idx)}
                 aria-label={`Go to conversation ${idx + 1}`}
                 className={`h-2 rounded-full transition-all ${
-                  idx === currentConvo ? "w-8 bg-primary" : "w-2 bg-gray-300"
+                  idx === currentConvo ? "w-8 bg-primary" : "w-2 bg-gray-300 dark:bg-gray-600"
                 }`}
               />
             ))}
