@@ -129,26 +129,34 @@ export default async function AnalyticsPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {topSpecies.map(([species, stats], index) => (
-                  <div key={species} className="flex items-center justify-between p-4 rounded-lg bg-background/50">
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-amber-600 to-amber-500 text-white font-bold text-sm">
-                        {index + 1}
+                {topSpecies.map(([species, stats], index) => {
+                  const typedStats = stats as {
+                    count: number
+                    totalYield: number
+                    avgRating: number
+                    totalRating: number
+                  }
+                  return (
+                    <div key={species} className="flex items-center justify-between p-4 rounded-lg bg-background/50">
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-amber-600 to-amber-500 text-white font-bold text-sm">
+                          {index + 1}
+                        </div>
+                        <div>
+                          <p className="font-semibold text-foreground">{species}</p>
+                          <p className="text-sm text-muted-foreground">{typedStats.count} projects</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="font-semibold text-foreground">{species}</p>
-                        <p className="text-sm text-muted-foreground">{stats.count} projects</p>
+                      <div className="text-right">
+                        <p className="font-bold text-emerald-400">{(typedStats.totalYield / 1000).toFixed(2)} kg</p>
+                        <div className="flex items-center gap-1 text-sm text-amber-400">
+                          <Award className="w-3 h-3" />
+                          <span>{typedStats.avgRating.toFixed(1)}/5</span>
+                        </div>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="font-bold text-emerald-400">{(stats.totalYield / 1000).toFixed(2)} kg</p>
-                      <div className="flex items-center gap-1 text-sm text-amber-400">
-                        <Award className="w-3 h-3" />
-                        <span>{stats.avgRating.toFixed(1)}/5</span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                  )
+                })}
                 {topSpecies.length === 0 && (
                   <p className="text-center text-muted-foreground py-8">No species data available yet</p>
                 )}
