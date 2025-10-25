@@ -1,3 +1,5 @@
+import { NextResponse } from "next/server"
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
@@ -8,7 +10,7 @@ export async function GET(request: Request) {
     const demoConditions = ["Sunny", "Cloudy", "Partly Cloudy", "Clear", "Rainy"]
     const demoLocations = ["Phoenix", "Scottsdale", "Tempe", "Mesa", "Chandler"]
 
-    return Response.json({
+    return NextResponse.json({
       temp: Math.floor(Math.random() * 30) + 60, // 60-90°F
       condition: demoConditions[Math.floor(Math.random() * demoConditions.length)],
       location: lat && lon ? demoLocations[Math.floor(Math.random() * demoLocations.length)] : "Enable location",
@@ -16,7 +18,7 @@ export async function GET(request: Request) {
     })
   } catch (error) {
     console.error("[v0] Weather API error:", error)
-    return Response.json({
+    return NextResponse.json({
       temp: 72,
       condition: "Sunny",
       location: "Demo Mode",
