@@ -8,9 +8,7 @@ import { StreamingChatDemo } from "@/components/streaming-chat-demo"
 import { Features } from "@/components/features"
 import { FAQ } from "@/components/faq"
 import { StickyBar } from "@/components/sticky-bar"
-import { CodeGenerationIntro } from "@/components/code-generation-intro"
 import { ScrollReveal } from "@/components/scroll-reveal"
-import { InteractiveShowcase } from "@/components/interactive-showcase"
 
 export default function Home() {
   const [showIntro, setShowIntro] = useState(false)
@@ -38,14 +36,11 @@ export default function Home() {
 
   return (
     <>
-      {showIntro && <CodeGenerationIntro onComplete={handleIntroComplete} />}
+      {showIntro && <div>Code Generation Intro Component Placeholder</div>}
       <main className="min-h-screen">
         <Hero />
         <ScrollReveal>
           <BenefitsBand />
-        </ScrollReveal>
-        <ScrollReveal delay={100}>
-          <InteractiveShowcase />
         </ScrollReveal>
         <ScrollReveal delay={100}>
           <StreamingChatDemo />
@@ -67,7 +62,7 @@ export default function Home() {
               <div className="relative group">
                 <div className="absolute inset-0 bg-primary/10 rounded-full blur-xl group-hover:blur-2xl transition-all duration-300" />
                 <img
-                  src="/crowe-logic-logo.png"
+                  src="/crowe-avatar.png"
                   alt="Crowe Logic"
                   className="relative h-16 w-16 md:h-20 md:w-20 rounded-full ring-4 ring-border shadow-xl hover:ring-primary/20 transition-all duration-300"
                 />
