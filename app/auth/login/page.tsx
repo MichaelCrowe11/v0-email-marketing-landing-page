@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
 import Image from "next/image"
 
@@ -18,6 +18,8 @@ export default function Page() {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams.get("redirect")
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -31,7 +33,7 @@ export default function Page() {
         password,
       })
       if (error) throw error
-      router.push("/")
+      router.push(redirectTo || "/")
       router.refresh()
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred")
@@ -56,7 +58,11 @@ export default function Page() {
           <Card className="glass shadow-2xl border-purple-200">
             <CardHeader>
               <CardTitle className="text-2xl text-center">Welcome Back</CardTitle>
-              <CardDescription className="text-center">Sign in to access Crowe Logic</CardDescription>
+              <CardDescription className="text-center">
+                {redirectTo?.includes("checkout")
+                  ? "Sign in to complete your subscription"
+                  : "Sign in to access Crowe Logic"}
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleLogin}>
@@ -90,7 +96,7 @@ export default function Page() {
                 <div className="mt-4 text-center text-sm">
                   Don&apos;t have an account?{" "}
                   <Link
-                    href="/auth/sign-up"
+                    href={`/auth/sign-up${redirectTo ? `?redirect=${encodeURIComponent(redirectTo)}` : ""}`}
                     className="underline underline-offset-4 text-purple-600 hover:text-purple-700"
                   >
                     Sign up
