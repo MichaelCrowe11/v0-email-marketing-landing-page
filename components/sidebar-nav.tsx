@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -51,14 +51,30 @@ export function SidebarNav() {
     return pathname.startsWith(href)
   }
 
+  useEffect(() => {
+    setIsOpen(false)
+  }, [pathname])
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = ""
+    }
+    return () => {
+      document.body.style.overflow = ""
+    }
+  }, [isOpen])
+
   return (
     <>
       {/* Mobile Toggle Button */}
       <Button
         size="sm"
         variant="ghost"
-        className="fixed top-4 left-4 z-50 md:hidden h-10 w-10 p-0 bg-sidebar/80 backdrop-blur-sm border border-sidebar-border hover:bg-sidebar-accent"
+        className="fixed top-3 left-3 z-50 md:hidden h-11 w-11 p-0 bg-sidebar/95 backdrop-blur-sm border border-sidebar-border hover:bg-sidebar-accent shadow-lg"
         onClick={() => setIsOpen(!isOpen)}
+        aria-label={isOpen ? "Close menu" : "Open menu"}
       >
         {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </Button>
@@ -67,11 +83,15 @@ export function SidebarNav() {
       <aside
         className={`fixed left-0 top-0 h-screen w-64 bg-sidebar backdrop-blur-xl border-r border-sidebar-border z-40 transition-transform duration-300 ${
           isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
-        }`}
+        } safe-area-inset`}
       >
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full pb-safe">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 p-6 border-b border-sidebar-border group">
+          <Link
+            href="/"
+            className="flex items-center gap-3 p-6 border-b border-sidebar-border group"
+            onClick={() => setIsOpen(false)}
+          >
             <div className="relative">
               <img
                 src="/crowe-logic-logo.png"
@@ -86,7 +106,7 @@ export function SidebarNav() {
           </Link>
 
           {/* Navigation */}
-          <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+          <nav className="flex-1 p-4 space-y-1 overflow-y-auto overscroll-contain">
             {navItems.map((item) => {
               const Icon = item.icon
               const active = isActive(item.href)
@@ -94,10 +114,10 @@ export function SidebarNav() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-all ${
+                  className={`flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-all touch-manipulation ${
                     active
                       ? "bg-sidebar-accent text-sidebar-foreground"
-                      : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
+                      : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50 active:bg-sidebar-accent"
                   }`}
                   onClick={() => setIsOpen(false)}
                 >
@@ -147,7 +167,11 @@ export function SidebarNav() {
 
       {/* Overlay for mobile */}
       {isOpen && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 md:hidden" onClick={() => setIsOpen(false)} />
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 md:hidden touch-manipulation"
+          onClick={() => setIsOpen(false)}
+          onTouchEnd={() => setIsOpen(false)}
+        />
       )}
     </>
   )

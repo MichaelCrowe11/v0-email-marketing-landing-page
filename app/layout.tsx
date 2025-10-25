@@ -1,5 +1,5 @@
 import type React from "react"
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Inter, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 import { Suspense } from "react"
@@ -18,11 +18,31 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 })
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+  ],
+}
+
 export const metadata: Metadata = {
   title: "Crowe Logic AI - Master Mushroom Growing with AI",
   description:
     "AI-powered mushroom cultivation guidance. Optimize yields, prevent contamination, and grow with confidence.",
   generator: "v0.app",
+  applicationName: "Crowe Logic AI",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Crowe Logic AI",
+  },
+  formatDetection: {
+    telephone: false,
+  },
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
@@ -30,6 +50,7 @@ export const metadata: Metadata = {
     ],
     apple: [{ url: "/apple-icon.jpg", sizes: "180x180", type: "image/png" }],
   },
+  manifest: "/manifest.json",
 }
 
 export default function RootLayout({
