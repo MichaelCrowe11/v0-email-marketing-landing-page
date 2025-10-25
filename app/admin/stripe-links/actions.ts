@@ -30,9 +30,14 @@ export async function getStripePaymentLinks() {
 
         // Filter payment links that match this product's prices
         const priceIds = prices.data.map((p) => p.id)
-        const relevantLinks = paymentLinks.data.filter(
-          (link) => link.line_items && priceIds.includes(link.line_items.data[0]?.price as string),
-        )
+        const relevantLinks = paymentLinks.data.filter((link) => {
+          if (!link.line_items?.data[0]?.price) return false
+          const priceId =
+            typeof link.line_items.data[0].price === "string"
+              ? link.line_items.data[0].price
+              : link.line_items.data[0].price.id
+          return priceIds.includes(priceId)
+        })
 
         return {
           id: product.id,
