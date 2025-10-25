@@ -47,7 +47,6 @@ You can use <reasoning> tags to show your thought process for complex questions.
     const result = streamText({
       model: selectedModel,
       messages: [systemMessage, ...messages],
-      maxTokens: 4000,
       temperature: 0.7,
     })
 
