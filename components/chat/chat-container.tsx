@@ -100,7 +100,7 @@ export function ChatContainer() {
   const [userId, setUserId] = useState<string | null>(null)
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null)
 
-  const { messages, input, handleInputChange, handleSubmit, status, setMessages, error } = useChat({
+  const { messages, input, handleInputChange, handleSubmit, status, setMessages, error, setInput } = useChat({
     api: "/api/chat",
     body: { model: selectedModel },
     onError: (error) => {
@@ -205,7 +205,7 @@ export function ChatContainer() {
   }
 
   const handleVoiceTranscript = (transcript: string) => {
-    handleInputChange(transcript)
+    setInput(transcript)
   }
 
   return (
@@ -296,8 +296,10 @@ export function ChatContainer() {
                   <button
                     key={i}
                     onClick={() => {
-                      handleInputChange(suggestion)
-                      handleSubmit({ preventDefault: () => {} } as React.FormEvent)
+                      setInput(suggestion)
+                      setTimeout(() => {
+                        handleSubmit({ preventDefault: () => {} } as React.FormEvent)
+                      }, 0)
                     }}
                     className="p-3 sm:p-4 rounded-xl bg-card border border-border hover:bg-accent hover:border-accent-foreground/20 transition-all text-left text-sm text-foreground shadow-sm"
                   >
