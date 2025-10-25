@@ -1,4 +1,5 @@
 import { generateObject } from "ai"
+import { NextResponse } from "next/server"
 import { z } from "zod"
 
 const analysisSchema = z.object({
@@ -27,12 +28,12 @@ export async function POST(req: Request) {
     const { imageUrl } = await req.json()
 
     if (!imageUrl) {
-      return Response.json({ error: "No image URL provided" }, { status: 400 })
+      return NextResponse.json({ error: "No image URL provided" }, { status: 400 })
     }
 
     const imageResponse = await fetch(imageUrl)
     if (!imageResponse.ok) {
-      return Response.json({ error: "Failed to fetch image" }, { status: 400 })
+      return NextResponse.json({ error: "Failed to fetch image" }, { status: 400 })
     }
 
     const imageBuffer = await imageResponse.arrayBuffer()
@@ -68,13 +69,12 @@ Be specific, practical, and focus on actionable insights. If contamination is de
           ],
         },
       ],
-      maxOutputTokens: 2000,
     })
 
-    return Response.json({ analysis: object })
+    return NextResponse.json({ analysis: object })
   } catch (error) {
     console.error("[v0] Crowe Vision analysis error:", error)
-    return Response.json({ error: "Analysis failed" }, { status: 500 })
+    return NextResponse.json({ error: "Analysis failed" }, { status: 500 })
   }
 }
 
