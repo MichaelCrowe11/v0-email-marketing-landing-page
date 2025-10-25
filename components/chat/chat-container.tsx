@@ -100,13 +100,15 @@ export function ChatContainer() {
   const [userId, setUserId] = useState<string | null>(null)
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null)
 
-  const { messages, input, handleSubmit, status, setMessages, error } = useChat({
+  const chatApi = useChat({
     api: "/api/chat",
     body: { model: selectedModel },
     onError: (error) => {
       console.error("[v0] Chat error:", error)
     },
   })
+
+  const { messages, input, handleSubmit, handleInputChange, status, setMessages, error } = chatApi
 
   const [completedMessages, setCompletedMessages] = useState<Set<string>>(new Set())
   const [activeToolDialog, setActiveToolDialog] = useState<"substrate" | "strain" | "environment" | "yield" | null>(
@@ -135,6 +137,19 @@ export function ChatContainer() {
     if (conversation) {
       setCurrentConversationId(conversation.id)
     }
+  }
+
+  const handleVoiceTranscript = (transcript: string) => {
+    setInputValue(transcript)
+    setTimeout(() => {
+      if (textareaRef.current) {
+        const form = textareaRef.current.closest("form")
+        if (form) {
+          const submitEvent = new Event("submit", { bubbles: true, cancelable: true })
+          form.dispatchEvent(submitEvent)
+        }
+      }
+    }, 50)
   }
 
   useEffect(() => {
@@ -180,7 +195,13 @@ export function ChatContainer() {
       }
     }
 
-    handleSubmit(e)
+    const syntheticEvent = {
+      ...e,
+      currentTarget: e.currentTarget,
+      target: e.target,
+    } as React.FormEvent<HTMLFormElement>
+
+    handleSubmit(syntheticEvent)
   }
 
   useEffect(() => {
@@ -202,20 +223,14 @@ export function ChatContainer() {
   const isLoading = status === "in_progress"
   const isEmpty = messages.length === 0
 
-  const handleVoiceTranscript = (transcript: string) => {
-    setInputValue(transcript)
-    if (textareaRef.current) {
-      textareaRef.current.focus()
-    }
-  }
-
   const handleSuggestionClick = (suggestion: string) => {
     setInputValue(suggestion)
     setTimeout(() => {
       if (textareaRef.current) {
         const form = textareaRef.current.closest("form")
         if (form) {
-          form.requestSubmit()
+          const submitEvent = new Event("submit", { bubbles: true, cancelable: true })
+          form.dispatchEvent(submitEvent)
         }
       }
     }, 50)
@@ -433,11 +448,14 @@ export function ChatContainer() {
             <textarea
               ref={textareaRef}
               value={inputValue || input}
-              onChange={(e) => setInputValue(e.target.value)}
+              onChange={(e) => {
+                setInputValue(e.target.value)
+                handleInputChange(e)
+              }}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault()
-                  handleFormSubmit(e)
+                  handleFormSubmit(e as any)
                 }
               }}
               placeholder="Ask about cultivation techniques, contamination, yields..."
