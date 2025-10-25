@@ -54,7 +54,7 @@ export function ProofSection() {
             {proofs.map((proof, index) => (
               <div
                 key={index}
-                className="glass-card rounded-2xl overflow-hidden hover-lift animate-scale-in"
+                className="glass-card rounded-2xl overflow-hidden transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg animate-scale-in"
                 style={{ animationDelay: `${index * 0.15}s` }}
               >
                 <div className="relative overflow-hidden">
