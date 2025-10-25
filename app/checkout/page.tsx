@@ -1,10 +1,8 @@
-import { Suspense } from "react"
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
-import { Spinner } from "@/components/ui/spinner"
 import { CheckoutForm } from "@/components/checkout-form"
 
-async function CheckoutContent({
+export default async function CheckoutPage({
   searchParams,
 }: {
   searchParams: Promise<{ plan?: string; billing?: string }>
@@ -39,23 +37,5 @@ async function CheckoutContent({
         </div>
       </div>
     </div>
-  )
-}
-
-export default async function CheckoutPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ plan?: string; billing?: string }>
-}) {
-  return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen flex items-center justify-center">
-          <Spinner />
-        </div>
-      }
-    >
-      <CheckoutContent searchParams={searchParams} />
-    </Suspense>
   )
 }
