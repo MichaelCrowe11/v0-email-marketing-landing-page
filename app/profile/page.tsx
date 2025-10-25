@@ -21,7 +21,11 @@ export default async function ProfilePage() {
 
   const { data: userData } = await supabase.from("users").select("*").eq("id", user.id).single()
 
-  const { data: subscription } = await supabase.from("subscriptions").select("*").eq("user_id", user.id).single()
+  const { data: subscription } = await supabase
+    .from("user_subscriptions")
+    .select("*, subscription_plans(*)")
+    .eq("user_id", user.id)
+    .single()
 
   const { data: documents } = await supabase
     .from("documents")
@@ -62,11 +66,11 @@ export default async function ProfilePage() {
                 {subscription && (
                   <div className="flex items-center gap-2 mt-3">
                     <Badge
-                      variant={subscription.tier === "enterprise" ? "default" : "secondary"}
+                      variant={subscription.subscription_plans?.tier === "enterprise" ? "default" : "secondary"}
                       className="text-sm gap-1"
                     >
                       <Crown className="w-3 h-3" />
-                      {subscription.tier}
+                      {subscription.subscription_plans?.tier}
                     </Badge>
                     <Badge variant="outline" className="text-xs">
                       {subscription.status}
@@ -99,7 +103,7 @@ export default async function ProfilePage() {
               <div className="grid md:grid-cols-3 gap-6">
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Current Plan</p>
-                  <p className="text-2xl font-bold capitalize">{subscription.tier}</p>
+                  <p className="text-2xl font-bold capitalize">{subscription.subscription_plans?.tier}</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Status</p>
@@ -117,7 +121,7 @@ export default async function ProfilePage() {
                 )}
               </div>
               <div className="mt-6 flex gap-3">
-                {subscription.tier === "free" && (
+                {subscription.subscription_plans?.tier === "free" && (
                   <Button asChild>
                     <Link href="/pricing">Upgrade to Pro</Link>
                   </Button>

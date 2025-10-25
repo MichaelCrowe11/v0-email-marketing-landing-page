@@ -59,8 +59,8 @@ export default function DashboardPage() {
       if (!user) return
 
       const { data: subscriptionData } = await supabase
-        .from("subscriptions")
-        .select("*")
+        .from("user_subscriptions")
+        .select("*, subscription_plans(*)")
         .eq("user_id", user.id)
         .single()
 
@@ -405,8 +405,11 @@ export default function DashboardPage() {
                       <Crown className="w-5 h-5 text-primary" />
                       Current Plan
                     </CardTitle>
-                    <Badge variant={subscription?.tier === "enterprise" ? "default" : "secondary"} className="text-sm">
-                      {subscription?.tier || "free"}
+                    <Badge
+                      variant={subscription?.subscription_plans?.tier === "enterprise" ? "default" : "secondary"}
+                      className="text-sm"
+                    >
+                      {subscription?.subscription_plans?.tier || "free"}
                     </Badge>
                   </div>
                   <CardDescription>
@@ -437,40 +440,41 @@ export default function DashboardPage() {
                       <div className="flex items-center gap-2 text-sm">
                         <CheckCircle2 className="w-4 h-4 text-green-500" />
                         <span className="text-muted-foreground">
-                          {subscription?.tier === "free" ? "5 messages/day" : "Unlimited AI chat"}
+                          {subscription?.subscription_plans?.tier === "free" ? "5 messages/day" : "Unlimited AI chat"}
                         </span>
                       </div>
                       <div className="flex items-center gap-2 text-sm">
-                        {subscription?.tier === "free" ? (
+                        {subscription?.subscription_plans?.tier === "free" ? (
                           <AlertTriangle className="w-4 h-4 text-yellow-500" />
                         ) : (
                           <CheckCircle2 className="w-4 h-4 text-green-500" />
                         )}
                         <span className="text-muted-foreground">
-                          {subscription?.tier === "free" ? "Limited" : "Full"} Crowe Vision access
+                          {subscription?.subscription_plans?.tier === "free" ? "Limited" : "Full"} Crowe Vision access
                         </span>
                       </div>
                       <div className="flex items-center gap-2 text-sm">
-                        {subscription?.tier === "enterprise" ? (
+                        {subscription?.subscription_plans?.tier === "enterprise" ? (
                           <CheckCircle2 className="w-4 h-4 text-green-500" />
                         ) : (
                           <AlertTriangle className="w-4 h-4 text-yellow-500" />
                         )}
                         <span className="text-muted-foreground">
-                          {subscription?.tier === "enterprise" ? "Unlimited" : "Limited"} video generation
+                          {subscription?.subscription_plans?.tier === "enterprise" ? "Unlimited" : "Limited"} video
+                          generation
                         </span>
                       </div>
                       <div className="flex items-center gap-2 text-sm">
                         <CheckCircle2 className="w-4 h-4 text-green-500" />
                         <span className="text-muted-foreground">
-                          {subscription?.tier === "free" ? "Basic" : "Advanced"} analytics
+                          {subscription?.subscription_plans?.tier === "free" ? "Basic" : "Advanced"} analytics
                         </span>
                       </div>
                     </div>
                   </div>
 
                   <div className="pt-4 space-y-2">
-                    {subscription?.tier === "free" && (
+                    {subscription?.subscription_plans?.tier === "free" && (
                       <Button className="w-full gap-2" asChild>
                         <Link href="/pricing">
                           <Zap className="w-4 h-4" />
@@ -478,7 +482,7 @@ export default function DashboardPage() {
                         </Link>
                       </Button>
                     )}
-                    {subscription?.tier === "pro" && (
+                    {subscription?.subscription_plans?.tier === "pro" && (
                       <Button className="w-full gap-2" asChild>
                         <Link href="/pricing">
                           <Crown className="w-4 h-4" />
@@ -519,10 +523,10 @@ export default function DashboardPage() {
                         <span className="font-medium">AI Chat Messages</span>
                       </div>
                       <span className="text-muted-foreground">
-                        {subscription?.tier === "free" ? "5/5 daily" : "Unlimited"}
+                        {subscription?.subscription_plans?.tier === "free" ? "5/5 daily" : "Unlimited"}
                       </span>
                     </div>
-                    {subscription?.tier === "free" && <Progress value={100} className="h-2" />}
+                    {subscription?.subscription_plans?.tier === "free" && <Progress value={100} className="h-2" />}
                   </div>
 
                   {/* Crowe Vision Usage */}
@@ -533,10 +537,10 @@ export default function DashboardPage() {
                         <span className="font-medium">Image Analysis</span>
                       </div>
                       <span className="text-muted-foreground">
-                        {subscription?.tier === "free" ? "0/10 monthly" : "Unlimited"}
+                        {subscription?.subscription_plans?.tier === "free" ? "0/10 monthly" : "Unlimited"}
                       </span>
                     </div>
-                    {subscription?.tier === "free" && <Progress value={0} className="h-2" />}
+                    {subscription?.subscription_plans?.tier === "free" && <Progress value={0} className="h-2" />}
                   </div>
 
                   {/* Video Studio Usage */}
@@ -547,10 +551,10 @@ export default function DashboardPage() {
                         <span className="font-medium">Video Generation</span>
                       </div>
                       <span className="text-muted-foreground">
-                        {subscription?.tier === "enterprise" ? "Unlimited" : "0/5 monthly"}
+                        {subscription?.subscription_plans?.tier === "enterprise" ? "Unlimited" : "0/5 monthly"}
                       </span>
                     </div>
-                    {subscription?.tier !== "enterprise" && <Progress value={0} className="h-2" />}
+                    {subscription?.subscription_plans?.tier !== "enterprise" && <Progress value={0} className="h-2" />}
                   </div>
 
                   {/* AI Modules Usage */}
@@ -561,12 +565,12 @@ export default function DashboardPage() {
                         <span className="font-medium">AI Module Access</span>
                       </div>
                       <span className="text-muted-foreground">
-                        {subscription?.tier === "free" ? "Limited" : "Full Access"}
+                        {subscription?.subscription_plans?.tier === "free" ? "Limited" : "Full Access"}
                       </span>
                     </div>
                   </div>
 
-                  {subscription?.tier === "free" && (
+                  {subscription?.subscription_plans?.tier === "free" && (
                     <div className="pt-4 border-t border-border/50">
                       <p className="text-sm text-muted-foreground mb-3">
                         Upgrade to unlock unlimited access to all features
