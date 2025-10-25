@@ -1,5 +1,3 @@
-"use client"
-
 import { Suspense } from "react"
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
@@ -12,14 +10,14 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 async function CheckoutContent({
   searchParams,
 }: {
-  searchParams: Promise<{ plan?: string; billing?: string }>
+  searchParams: { plan?: string; billing?: string }
 }) {
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const params = await searchParams
+  const params = searchParams
   const plan = params.plan || "pro"
   const billing = params.billing || "monthly"
 
@@ -50,7 +48,7 @@ async function CheckoutContent({
 export default async function CheckoutPage({
   searchParams,
 }: {
-  searchParams: Promise<{ plan?: string; billing?: string }>
+  searchParams: { plan?: string; billing?: string }
 }) {
   return (
     <Suspense
