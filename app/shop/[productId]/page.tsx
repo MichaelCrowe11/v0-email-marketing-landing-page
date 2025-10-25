@@ -8,8 +8,9 @@ import Link from "next/link"
 import Checkout from "@/components/checkout"
 import { AnimatedProductCard } from "@/components/animated-product-card"
 
-export default function ProductPage({ params }: { params: { productId: string } }) {
-  const product = PRODUCTS.find((p) => p.id === params.productId)
+export default async function ProductPage({ params }: { params: Promise<{ productId: string }> }) {
+  const { productId } = await params
+  const product = PRODUCTS.find((p) => p.id === productId)
 
   if (!product) {
     notFound()
