@@ -21,48 +21,44 @@ export async function POST(req: Request) {
     console.log("[v0] Received messages:", messages?.length || 0)
     console.log("[v0] Selected model:", model)
 
-    const selectedModel = model || "azure/agent874"
+    const selectedModel = model || "azure/crowelogic"
 
     console.log("[v0] Using model:", selectedModel)
 
-    if (selectedModel === "azure/agent874") {
+    if (selectedModel === "azure/crowelogic" || selectedModel === "azure/agent874") {
       console.log("[v0] Using Azure AI Assistant")
 
       const encoder = new TextEncoder()
       const stream = new ReadableStream({
         async start(controller) {
           try {
-            // Get the last user message
             const lastMessage = messages[messages.length - 1]
             const userContent = lastMessage?.content || ""
 
-            // Create a thread
             const thread = await azureOpenAI.beta.threads.create()
 
-            // Add user message to thread
             await azureOpenAI.beta.threads.messages.create(thread.id, {
               role: "user",
               content: userContent,
             })
 
-            // Run the assistant with streaming
             const run = azureOpenAI.beta.threads.runs.stream(thread.id, {
               assistant_id: AZURE_ASSISTANT_ID,
             })
 
-            // Handle streaming events
             run.on("textDelta", (textDelta) => {
               const chunk = textDelta.value || ""
               controller.enqueue(encoder.encode(`0:${JSON.stringify(chunk)}\n`))
             })
 
-            // Wait for completion
             await run.finalRun()
 
             controller.enqueue(encoder.encode(`d:{"finishReason":"stop"}\n`))
             controller.close()
           } catch (error) {
             console.error("[v0] Azure Assistant error:", error)
+            const errorMessage = error instanceof Error ? error.message : "Unknown error"
+            controller.enqueue(encoder.encode(`0:${JSON.stringify(`Error: ${errorMessage}`)}\n`))
             controller.close()
           }
         },
@@ -78,7 +74,7 @@ export async function POST(req: Request) {
 
     const systemMessage = {
       role: "system" as const,
-      content: `You are Crowe Logic AI, an expert mushroom cultivation assistant with 20+ years of commercial growing experience and browser research capabilities.
+      content: `You are Crowe Logic AI, an expert mushroom cultivation assistant with 20+ years of commercial growing experience.
 
 Your expertise includes:
 - Species identification and cultivation parameters
@@ -87,10 +83,6 @@ Your expertise includes:
 - Environmental control and monitoring
 - Yield optimization and scaling operations
 - Troubleshooting common cultivation issues
-- Web research for latest cultivation techniques and scientific studies
-
-**Research Capabilities:**
-When users ask you to research, look up, or find information, you can trigger browser-based research by mentioning it in your response. The system will automatically detect research requests and show the user a live browser research panel.
 
 When responding:
 - Be specific and actionable
@@ -98,7 +90,6 @@ When responding:
 - Provide step-by-step guidance for complex procedures
 - Warn about safety concerns (pressure cookers, chemicals, etc.)
 - Suggest preventive measures to avoid future issues
-- Offer to research topics when you need current information
 
 You can use <reasoning> tags to show your thought process for complex questions.`,
     }
@@ -117,9 +108,15 @@ You can use <reasoning> tags to show your thought process for complex questions.
     return result.toUIMessageStreamResponse()
   } catch (error) {
     console.error("[v0] Chat API error:", error)
-    return new Response(JSON.stringify({ error: "Failed to process chat request", details: String(error) }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    })
+    return new Response(
+      JSON.stringify({
+        error: "Failed to process chat request",
+        details: error instanceof Error ? error.message : String(error),
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      },
+    )
   }
 }

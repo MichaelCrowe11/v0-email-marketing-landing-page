@@ -16,13 +16,14 @@ import { EnvironmentMonitor } from "@/components/chat/environment-monitor"
 import { YieldCalculator } from "@/components/chat/yield-calculator"
 import { IntegrationsPanel } from "@/components/chat/integrations-panel"
 import { createClient } from "@/lib/supabase/client"
-import { createConversation, saveMessage } from "@/lib/supabase/chat-queries"
+import { createConversation } from "@/lib/supabase/chat-queries"
 import { ConversationHistory } from "@/components/chat/conversation-history"
 import { ModelSelector } from "@/components/chat/model-selector"
 import { AIAvatarSwirl } from "@/components/chat/ai-avatar-swirl"
 import { WorkflowTerminal } from "@/components/chat/workflow-terminal"
 import { BrowserResearchPanel } from "@/components/chat/browser-research-panel"
 import { VoiceChatButton } from "@/components/chat/voice-chat-button"
+import { saveMessage } from "@/lib/supabase/chat-queries" // Declare the saveMessage function
 
 function parseReasoning(text: string): { reasoning: ReasoningStep[]; content: string } {
   const reasoningMatch = text.match(/<reasoning>([\s\S]*?)<\/reasoning>/)
@@ -100,15 +101,19 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
   const [userId, setUserId] = useState<string | null>(null)
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null)
 
-  const chatApi = useChat({
+  const { messages, input, handleSubmit, handleInputChange, status, setMessages, error } = useChat({
     api: "/api/chat",
     body: { model: selectedModel },
     onError: (error) => {
       console.error("[v0] Chat error:", error)
     },
+    onFinish: async (message) => {
+      // Save message to database after completion
+      if (userId && currentConversationId) {
+        await saveMessage(currentConversationId, "assistant", message.content)
+      }
+    },
   })
-
-  const { messages, input, handleSubmit, handleInputChange, status, setMessages, error } = chatApi
 
   const [completedMessages, setCompletedMessages] = useState<Set<string>>(new Set())
   const [activeToolDialog, setActiveToolDialog] = useState<"substrate" | "strain" | "environment" | "yield" | null>(
@@ -123,7 +128,6 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
   const [isBrowserResearchActive, setIsBrowserResearchActive] = useState(false)
   const [researchQuery, setResearchQuery] = useState("")
 
-  const [inputValue, setInputValue] = useState("")
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const handleSelectConversation = (conversationId: string) => {
@@ -140,14 +144,14 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
   }
 
   const handleVoiceTranscript = (transcript: string) => {
-    setInputValue(transcript)
+    const syntheticEvent = {
+      target: { value: transcript },
+    } as React.ChangeEvent<HTMLTextAreaElement>
+    handleInputChange(syntheticEvent)
     setTimeout(() => {
       if (textareaRef.current) {
         const form = textareaRef.current.closest("form")
-        if (form) {
-          const submitEvent = new Event("submit", { bubbles: true, cancelable: true })
-          form.dispatchEvent(submitEvent)
-        }
+        if (form) form.requestSubmit()
       }
     }, 50)
   }
@@ -165,78 +169,23 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
     loadUser()
   }, [])
 
-  useEffect(() => {
-    async function persistMessage() {
-      if (!userId || !currentConversationId || messages.length === 0) return
-
-      const lastMessage = messages[messages.length - 1]
-      const textContent = lastMessage.parts
-        .filter((part) => part.type === "text")
-        .map((part) => part.text)
-        .join("")
-
-      await saveMessage(currentConversationId, lastMessage.role as "user" | "assistant", textContent)
-    }
-
-    if (status === "awaiting_message") {
-      persistMessage()
-    }
-  }, [messages, status, userId, currentConversationId])
-
-  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-
-    // Check if input is empty or already processing
-    const currentInput = inputValue || input
-    if (!currentInput || !currentInput.trim() || status === "in_progress") return
-
-    // Create conversation if needed
-    if (!currentConversationId && userId) {
-      const title = currentInput.slice(0, 50) + (currentInput.length > 50 ? "..." : "")
-      const conversation = await createConversation(userId, title)
-      if (conversation) {
-        setCurrentConversationId(conversation.id)
-      }
-    }
-
-    // Call the useChat handleSubmit directly with the event
-    handleSubmit(e)
-
-    // Clear local input after submission
-    setInputValue("")
-  }
-
-  useEffect(() => {
-    if (status === "awaiting_message" && messages.length > 0) {
-      const lastMessage = messages[messages.length - 1]
-      if (lastMessage.role === "assistant" && !completedMessages.has(lastMessage.id)) {
-        setCompletedMessages((prev) => new Set(prev).add(lastMessage.id))
-        setTimeout(() => {
-          setCompletedMessages((prev) => {
-            const next = new Set(prev)
-            next.delete(lastMessage.id)
-            return next
-          })
-        }, 400)
-      }
-    }
-  }, [status, messages, completedMessages])
-
-  const isLoading = status === "in_progress"
-  const isEmpty = messages.length === 0
-
   const handleSuggestionClick = (suggestion: string) => {
-    setInputValue(suggestion)
+    const syntheticEvent = {
+      target: { value: suggestion },
+    } as React.ChangeEvent<HTMLTextAreaElement>
+
+    handleInputChange(syntheticEvent)
+
     setTimeout(() => {
       if (textareaRef.current) {
         const form = textareaRef.current.closest("form")
-        if (form) {
-          // Create a proper form submit event
-          form.requestSubmit()
-        }
+        if (form) form.requestSubmit()
       }
     }, 50)
   }
+
+  const isLoading = status === "in_progress"
+  const isEmpty = messages.length === 0
 
   return (
     <div className="h-full flex flex-col">
@@ -446,18 +395,16 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
 
       <div className="border-t border-border glass-panel">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
-          <form onSubmit={handleFormSubmit} className="relative">
+          <form onSubmit={handleSubmit} className="relative">
             <textarea
               ref={textareaRef}
-              value={inputValue || input}
-              onChange={(e) => {
-                setInputValue(e.target.value)
-                handleInputChange(e)
-              }}
+              value={input}
+              onChange={handleInputChange}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault()
-                  handleFormSubmit(e as any)
+                  const form = e.currentTarget.closest("form")
+                  if (form) form.requestSubmit()
                 }
               }}
               placeholder="Ask about cultivation techniques, contamination, yields..."
@@ -471,7 +418,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
             <button
               type="submit"
               className="absolute right-2 sm:right-3 bottom-2 sm:bottom-3 h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-xl bg-accent text-accent-foreground hover:bg-accent/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
-              disabled={isLoading || !inputValue || !inputValue.trim()}
+              disabled={isLoading || !input.trim()}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -484,7 +431,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                 className="w-4 h-4 sm:w-5 sm:h-5"
               >
                 <path d="m5 12 7-7 7 7" />
-                <path d="M12 19V5" />
+                <path d="M19 12V5" />
               </svg>
             </button>
           </form>
