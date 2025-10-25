@@ -4,6 +4,7 @@ import type React from "react"
 import type { ReasoningStep } from "@/components/chat/chain-of-thought"
 
 import { useChat } from "@ai-sdk/react"
+import { DefaultChatTransport } from "ai"
 import { useState, useEffect } from "react"
 import { ChainOfThought } from "@/components/chat/chain-of-thought"
 import { SubstrateCalculator } from "@/components/chat/substrate-calculator"
@@ -100,13 +101,15 @@ export function ChatContainer() {
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null)
   const [input, setInput] = useState("")
 
-  const { messages, handleSubmit, status, setMessages, error } = useChat({
-    api: "/api/chat",
-    body: { model: selectedModel },
+  const { messages, sendMessage, status, setMessages, error } = useChat({
+    transport: new DefaultChatTransport({
+      api: "/api/chat",
+      body: { model: selectedModel },
+    }),
     onError: (error) => {
       console.error("[v0] Chat error:", error)
     },
-  }) as any
+  })
 
   const handleInputChange = (value: string) => {
     setInput(value)
@@ -168,18 +171,8 @@ export function ChatContainer() {
       }
     }
 
-    const syntheticEvent = {
-      ...e,
-      currentTarget: {
-        ...e.currentTarget,
-        elements: {
-          prompt: { value: input },
-        },
-      },
-    } as any
-
-    handleSubmit(syntheticEvent)
-    setInput("") // Clear input after submission
+    sendMessage({ text: input })
+    setInput("")
   }
 
   useEffect(() => {
@@ -307,8 +300,8 @@ export function ChatContainer() {
                   <button
                     key={i}
                     onClick={() => {
-                      handleInputChange(suggestion)
-                      handleSubmit({ preventDefault: () => {} } as React.FormEvent)
+                      setInput(suggestion)
+                      sendMessage({ text: suggestion })
                     }}
                     className="p-3 sm:p-4 rounded-xl bg-card border border-border hover:bg-accent hover:border-accent-foreground/20 transition-all text-left text-sm text-foreground shadow-sm"
                   >
