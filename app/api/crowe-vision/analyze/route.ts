@@ -40,6 +40,8 @@ export async function POST(req: Request) {
     const base64Data = Buffer.from(imageBuffer).toString("base64")
     const contentType = imageResponse.headers.get("content-type") || "image/jpeg"
 
+    const dataUrl = `data:${contentType};base64,${base64Data}`
+
     const { object } = await generateObject({
       model: "anthropic/claude-sonnet-4.5",
       schema: analysisSchema,
@@ -63,8 +65,7 @@ Be specific, practical, and focus on actionable insights. If contamination is de
             },
             {
               type: "image",
-              image: base64Data,
-              mimeType: contentType,
+              image: dataUrl,
             },
           ],
         },
