@@ -37,16 +37,15 @@ async function ChatContent() {
   const subscription = await getUserSubscription()
   const hasUnlimitedAccess = subscription.features.unlimited_chat
 
-  // Get chat quota for free/basic users
   let quota = null
   if (user && !hasUnlimitedAccess) {
     quota = await getChatQuota(user.id)
   }
 
   return (
-    <div className="h-screen flex flex-col bg-background">
+    <div className="h-screen flex flex-col bg-background overflow-hidden touch-pan-y">
       {user && !hasUnlimitedAccess && quota && (
-        <div className="p-4 border-b border-border">
+        <div className="p-3 sm:p-4 border-b border-border flex-shrink-0">
           <div className="max-w-4xl mx-auto">
             <ChatMeter initialQuota={quota.quota} initialUsed={quota.used} initialResetAt={quota.resetAt} />
           </div>

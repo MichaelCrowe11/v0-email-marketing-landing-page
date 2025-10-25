@@ -139,11 +139,19 @@
     scroll-behavior: smooth;
   }
 
-  /* Mobile-specific optimizations for iOS and Android */
+  /* Enhanced mobile-specific optimizations for iOS and Android */
   @supports (-webkit-touch-callout: none) {
     /* iOS Safari specific fixes */
     body {
       min-height: -webkit-fill-available;
+    }
+
+    /* Fix iOS input zoom */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    textarea {
+      font-size: 16px;
     }
   }
 
@@ -156,6 +164,12 @@
     textarea {
       min-height: 44px;
       min-width: 44px;
+    }
+
+    /* Larger tap targets for mobile */
+    .mobile-tap-target {
+      min-height: 48px;
+      min-width: 48px;
     }
   }
 
@@ -179,6 +193,17 @@
       padding-left: max(0px, env(safe-area-inset-left));
       padding-right: max(0px, env(safe-area-inset-right));
     }
+  }
+
+  /* Prevent pull-to-refresh on mobile */
+  body {
+    overscroll-behavior-y: contain;
+  }
+
+  /* Optimize scrolling performance on mobile */
+  .mobile-scroll {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
   }
 }
 

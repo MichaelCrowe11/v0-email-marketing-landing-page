@@ -22,6 +22,7 @@ import { ModelSelector } from "@/components/chat/model-selector"
 import { AIAvatarSwirl } from "@/components/chat/ai-avatar-swirl"
 import { WorkflowTerminal } from "@/components/chat/workflow-terminal"
 import { BrowserResearchPanel } from "@/components/chat/browser-research-panel"
+import { VoiceChatButton } from "@/components/chat/voice-chat-button"
 
 function parseReasoning(text: string): { reasoning: ReasoningStep[]; content: string } {
   const reasoningMatch = text.match(/<reasoning>([\s\S]*?)<\/reasoning>/)
@@ -203,6 +204,10 @@ export function ChatContainer() {
     setIsHistoryOpen(false)
   }
 
+  const handleVoiceTranscript = (transcript: string) => {
+    handleInputChange(transcript)
+  }
+
   return (
     <div className="h-full flex flex-col">
       <div className="px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between border-b border-border bg-card">
@@ -228,7 +233,7 @@ export function ChatContainer() {
             </svg>
           </button>
           <div>
-            <h1 className="text-sm sm:text-base font-semibold text-foreground">CROWELOGIC AI</h1>
+            <h1 className="text-sm sm:text-base font-semibold text-foreground">Crowe AI</h1>
             <p className="text-xs text-muted-foreground hidden sm:block">Expert Cultivation Assistant</p>
           </div>
         </div>
@@ -274,7 +279,7 @@ export function ChatContainer() {
 
               <div className="text-center space-y-2 sm:space-y-3 max-w-2xl">
                 <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light tracking-tight text-foreground">
-                  Welcome to <span className="font-semibold">CROWELOGIC AI</span>
+                  Welcome to <span className="font-semibold">Crowe AI</span>
                 </h2>
                 <p className="text-base sm:text-lg text-muted-foreground leading-relaxed font-light px-4">
                   Your expert cultivation assistant powered by years of commercial growing experience.
@@ -429,6 +434,9 @@ export function ChatContainer() {
               rows={2}
               disabled={isLoading}
             />
+            <div className="absolute right-14 sm:right-16 bottom-2 sm:bottom-3">
+              <VoiceChatButton onTranscript={handleVoiceTranscript} disabled={isLoading} />
+            </div>
             <button
               type="submit"
               className="absolute right-2 sm:right-3 bottom-2 sm:bottom-3 h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-xl bg-accent text-accent-foreground hover:bg-accent/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
