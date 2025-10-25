@@ -95,7 +95,8 @@ function MagicalStreamingText({ text, isStreaming }: { text: string; isStreaming
 }
 
 export function ChatContainer() {
-  const [selectedModel, setSelectedModel] = useState("anthropic/claude-sonnet-4.5")
+  // Default to GPT-5 Mini for all clients (fast, efficient)
+  const [selectedModel, setSelectedModel] = useState("openai/gpt-5-mini")
   const [userId, setUserId] = useState<string | null>(null)
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null)
 

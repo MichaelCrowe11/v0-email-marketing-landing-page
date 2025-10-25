@@ -11,7 +11,8 @@ export async function POST(req: Request) {
     console.log("[v0] Received messages:", messages?.length || 0)
     console.log("[v0] Selected model:", model)
 
-    const selectedModel = model || "anthropic/claude-sonnet-4.5"
+  // Default to GPT-5 Mini when no model is specified by the client
+  const selectedModel = model || "openai/gpt-5-mini"
 
     console.log("[v0] Using model:", selectedModel)
 
@@ -47,7 +48,8 @@ You can use <reasoning> tags to show your thought process for complex questions.
     const result = streamText({
       model: selectedModel,
       messages: [systemMessage, ...messages],
-      maxTokens: 4000,
+      // use maxOutputTokens which matches other usages of the `ai` package in this repo
+      maxOutputTokens: 4000,
       temperature: 0.7,
     })
 
