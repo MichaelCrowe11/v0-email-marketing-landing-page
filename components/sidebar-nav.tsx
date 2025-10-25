@@ -23,6 +23,7 @@ import {
   Video,
   Home,
   Sparkles,
+  Calendar,
 } from "lucide-react"
 
 export function SidebarNav() {
@@ -43,6 +44,7 @@ export function SidebarNav() {
     { href: "/forum", label: "Community", icon: Users },
     { href: "/docs", label: "Documentation", icon: BookOpen },
     { href: "/pricing", label: "Pricing", icon: DollarSign },
+    { href: "/consultations", label: "Consultations", icon: Calendar },
     { href: "/shop", label: "Shop", icon: ShoppingBag },
   ]
 
@@ -136,7 +138,7 @@ export function SidebarNav() {
               className="w-full justify-start gap-3 hover:bg-sidebar-accent text-sidebar-foreground"
               asChild
             >
-              <a href="mailto:michael@crowelogic.com">
+              <a href="mailto:Michael@CroweLogic.com">
                 <ExternalLink className="w-5 h-5" />
                 Contact Michael
               </a>

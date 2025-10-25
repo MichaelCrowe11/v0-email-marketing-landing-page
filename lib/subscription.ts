@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 
-export type SubscriptionTier = "free" | "pro" | "expert"
+export type SubscriptionTier = "free" | "pro" | "expert" | "master"
 
 export interface SubscriptionFeatures {
   unlimited_chat: boolean
@@ -14,6 +14,13 @@ export interface SubscriptionFeatures {
   gpt_modules: boolean
   consulting_calls: boolean
   early_access: boolean
+  white_label: boolean
+  multi_facility: boolean
+  team_collaboration: boolean
+  api_access: boolean
+  dedicated_manager: boolean
+  custom_sop_creation: boolean
+  quarterly_consultation: boolean
 }
 
 const TIER_FEATURES: Record<SubscriptionTier, SubscriptionFeatures> = {
@@ -29,6 +36,13 @@ const TIER_FEATURES: Record<SubscriptionTier, SubscriptionFeatures> = {
     gpt_modules: false,
     consulting_calls: false,
     early_access: false,
+    white_label: false,
+    multi_facility: false,
+    team_collaboration: false,
+    api_access: false,
+    dedicated_manager: false,
+    custom_sop_creation: false,
+    quarterly_consultation: false,
   },
   pro: {
     unlimited_chat: true,
@@ -42,6 +56,13 @@ const TIER_FEATURES: Record<SubscriptionTier, SubscriptionFeatures> = {
     gpt_modules: false,
     consulting_calls: false,
     early_access: false,
+    white_label: false,
+    multi_facility: false,
+    team_collaboration: false,
+    api_access: false,
+    dedicated_manager: false,
+    custom_sop_creation: false,
+    quarterly_consultation: false,
   },
   expert: {
     unlimited_chat: true,
@@ -55,6 +76,33 @@ const TIER_FEATURES: Record<SubscriptionTier, SubscriptionFeatures> = {
     gpt_modules: true,
     consulting_calls: true,
     early_access: true,
+    white_label: false,
+    multi_facility: false,
+    team_collaboration: false,
+    api_access: false,
+    dedicated_manager: false,
+    custom_sop_creation: false,
+    quarterly_consultation: false,
+  },
+  master: {
+    unlimited_chat: true,
+    crowe_vision: true,
+    forum_access: true,
+    knowledge_base: true,
+    environmental_monitoring: true,
+    species_library: true,
+    sops_access: true,
+    priority_support: true,
+    gpt_modules: true,
+    consulting_calls: true,
+    early_access: true,
+    white_label: true,
+    multi_facility: true,
+    team_collaboration: true,
+    api_access: true,
+    dedicated_manager: true,
+    custom_sop_creation: true,
+    quarterly_consultation: true,
   },
 }
 
