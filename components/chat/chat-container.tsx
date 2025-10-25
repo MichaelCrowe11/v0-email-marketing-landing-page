@@ -100,7 +100,7 @@ export function ChatContainer() {
   const [userId, setUserId] = useState<string | null>(null)
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null)
 
-  const { messages, input, handleInputChange, handleSubmit, status, setMessages, error } = useChat({
+  const { messages, input, handleSubmit, status, setMessages, error, setInput } = useChat({
     api: "/api/chat",
     body: { model: selectedModel },
     onError: (error) => {
@@ -205,9 +205,7 @@ export function ChatContainer() {
   }
 
   const handleVoiceTranscript = (transcript: string) => {
-    handleInputChange({
-      target: { value: transcript },
-    } as React.ChangeEvent<HTMLTextAreaElement>)
+    setInput(transcript)
   }
 
   return (
@@ -298,9 +296,7 @@ export function ChatContainer() {
                   <button
                     key={i}
                     onClick={() => {
-                      handleInputChange({
-                        target: { value: suggestion },
-                      } as React.ChangeEvent<HTMLTextAreaElement>)
+                      setInput(suggestion)
                       setTimeout(() => {
                         handleSubmit({ preventDefault: () => {} } as React.FormEvent)
                       }, 0)
@@ -428,7 +424,7 @@ export function ChatContainer() {
           <form onSubmit={handleFormSubmit} className="relative">
             <textarea
               value={input}
-              onChange={handleInputChange}
+              onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault()
