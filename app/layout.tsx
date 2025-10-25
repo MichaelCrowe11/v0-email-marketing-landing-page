@@ -5,6 +5,12 @@ import "./globals.css"
 import { Suspense } from "react"
 import { SidebarNav } from "@/components/sidebar-nav"
 import { GlobalHeader } from "@/components/global-header"
+import { ThemeProvider } from "@/components/theme-provider"
+
+const _geistMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+})
 
 import { Inter, JetBrains_Mono, Geist as V0_Font_Geist, Geist_Mono as V0_Font_Geist_Mono, Source_Serif_4 as V0_Font_Source_Serif_4 } from 'next/font/google'
 
@@ -66,13 +72,15 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`font-sans ${inter.variable} ${jetbrainsMono.variable} antialiased`}>
-        <SidebarNav />
-        <div className="md:ml-64">
-          <GlobalHeader />
-          <Suspense fallback={null}>{children}</Suspense>
-        </div>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <SidebarNav />
+          <div className="md:ml-64">
+            <GlobalHeader />
+            <Suspense fallback={null}>{children}</Suspense>
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   )

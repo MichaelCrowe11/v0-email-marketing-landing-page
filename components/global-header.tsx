@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { UserMenu } from "@/components/user-menu"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 interface WeatherData {
   temp: number | null
@@ -131,6 +132,7 @@ export function GlobalHeader() {
 
         {/* Quick Actions */}
         <div className="flex items-center gap-1 sm:gap-2 ml-2 sm:ml-4">
+          <ThemeToggle />
           <Button variant="ghost" size="sm" className="hidden xl:flex h-9" asChild>
             <a href="/docs">Docs</a>
           </Button>

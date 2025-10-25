@@ -215,7 +215,7 @@ export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
         <div className="h-full w-full rounded-full bg-background flex items-center justify-center overflow-hidden">
           <Image
             src="/crowe-avatar.png"
-            alt="Crowe AI"
+            alt="Crowe Logic AI"
             width={size}
             height={size}
             className={`w-full h-full object-cover transition-all duration-300 ${

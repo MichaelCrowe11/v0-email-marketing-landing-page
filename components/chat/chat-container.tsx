@@ -233,7 +233,7 @@ export function ChatContainer() {
             </svg>
           </button>
           <div>
-            <h1 className="text-sm sm:text-base font-semibold text-foreground">Crowe AI</h1>
+            <h1 className="text-sm sm:text-base font-semibold text-foreground">Crowe Logic AI</h1>
             <p className="text-xs text-muted-foreground hidden sm:block">Expert Cultivation Assistant</p>
           </div>
         </div>
@@ -279,7 +279,7 @@ export function ChatContainer() {
 
               <div className="text-center space-y-2 sm:space-y-3 max-w-2xl">
                 <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light tracking-tight text-foreground">
-                  Welcome to <span className="font-semibold">Crowe AI</span>
+                  Welcome to <span className="font-semibold">Crowe Logic AI</span>
                 </h2>
                 <p className="text-base sm:text-lg text-muted-foreground leading-relaxed font-light px-4">
                   Your expert cultivation assistant powered by years of commercial growing experience.

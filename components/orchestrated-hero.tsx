@@ -185,7 +185,7 @@ export function OrchestratedHero() {
               <div className="absolute inset-0 bg-accent/30 rounded-full blur-xl animate-pulse" />
               <Image
                 src="/crowe-logic-logo.png"
-                alt="Crowe Logic"
+                alt="Crowe Logic AI"
                 width={120}
                 height={120}
                 className="relative rounded-full border-4 border-accent/50 shadow-2xl"
@@ -204,7 +204,7 @@ export function OrchestratedHero() {
         {/* Bottom Section: Terminal and Enhanced Pipeline */}
         <div className="grid lg:grid-cols-2 gap-6 max-w-6xl mx-auto">
           {/* Left: Advanced Terminal */}
-          <div className="relative group bg-white/95 backdrop-blur-sm border-2 border-accent/40 rounded-xl p-5 shadow-2xl h-[350px] hover:border-accent/60 transition-all duration-300">
+          <div className="relative group bg-card/95 backdrop-blur-sm border-2 border-accent/40 rounded-xl p-5 shadow-2xl h-[350px] hover:border-accent/60 transition-all duration-300">
             <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-purple-500/5 to-pink-500/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
             <div className="relative z-10">
@@ -215,7 +215,7 @@ export function OrchestratedHero() {
                 </span>
                 <div className="ml-auto flex items-center gap-1">
                   <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                  <span className="text-xs font-mono text-green-600 font-semibold">ONLINE</span>
+                  <span className="text-xs font-mono text-green-600 dark:text-green-400 font-semibold">ONLINE</span>
                 </div>
               </div>
               <div className="font-mono text-xs space-y-2 overflow-y-auto h-[270px]">
@@ -241,7 +241,7 @@ export function OrchestratedHero() {
           </div>
 
           {/* Right: Enhanced Pipeline Visualization */}
-          <div className="relative group bg-white/95 backdrop-blur-sm border-2 border-accent/40 rounded-xl p-5 shadow-2xl h-[350px] hover:border-accent/60 transition-all duration-300 overflow-hidden">
+          <div className="relative group bg-card/95 backdrop-blur-sm border-2 border-accent/40 rounded-xl p-5 shadow-2xl h-[350px] hover:border-accent/60 transition-all duration-300 overflow-hidden">
             {/* Animated background gradient */}
             <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/10 to-pink-500/10 rounded-xl animate-pulse" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.1),transparent_50%)]" />
@@ -250,7 +250,7 @@ export function OrchestratedHero() {
               <div className="flex items-center gap-3 mb-4 pb-3 border-b border-accent/30">
                 <Image
                   src="/crowe-avatar.png"
-                  alt="Crowe AI"
+                  alt="Crowe Logic AI"
                   width={24}
                   height={24}
                   className="rounded-full border-2 border-accent/50 animate-pulse"
@@ -317,7 +317,9 @@ export function OrchestratedHero() {
                             <div className="text-xs font-mono text-accent/80">Processing neural pathways...</div>
                           )}
                           {block.status === "complete" && (
-                            <div className="text-xs font-mono text-green-600">Analysis complete ✓</div>
+                            <div className="text-xs font-mono text-green-600 dark:text-green-400">
+                              Analysis complete ✓
+                            </div>
                           )}
                         </div>
 
