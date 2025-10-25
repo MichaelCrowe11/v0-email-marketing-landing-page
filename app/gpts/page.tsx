@@ -316,6 +316,66 @@ export default function GPTsPage() {
           </div>
         </div>
       </div>
+
+      {/* FAQ Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 border-t border-border">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">Frequently Asked Questions</h2>
+          <p className="text-lg text-muted-foreground">Everything you need to know about Michael's GPTs</p>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2 max-w-5xl mx-auto">
+          <div className="glass-card rounded-xl p-6 hover:border-primary/50 transition-all duration-300">
+            <h3 className="mb-3 text-lg font-semibold text-foreground">Is $97 a subscription?</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              No. $97 is a one-time founders price for Core. It includes 12 months of updates; you keep access forever.
+              After 12 months, you can optionally add Updates & Support for $49/year.
+            </p>
+          </div>
+
+          <div className="glass-card rounded-xl p-6 hover:border-primary/50 transition-all duration-300">
+            <h3 className="mb-3 text-lg font-semibold text-foreground">
+              What makes this different from a normal chatbot?
+            </h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              A behavior core compiled from a year of dataset curation and full transcription of Michael's YouTube
+              library, trained on his speech patterns and decision logic for the mycology domain.
+            </p>
+          </div>
+
+          <div className="glass-card rounded-xl p-6 hover:border-primary/50 transition-all duration-300">
+            <h3 className="mb-3 text-lg font-semibold text-foreground">Can I use multiple GPTs together?</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Yes! Each GPT is designed to work independently, but they complement each other perfectly. Bundle packages
+              give you access to multiple specialized assistants at a discounted price.
+            </p>
+          </div>
+
+          <div className="glass-card rounded-xl p-6 hover:border-primary/50 transition-all duration-300">
+            <h3 className="mb-3 text-lg font-semibold text-foreground">What happens after 12 months?</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              You keep perpetual access to your GPTs. The optional $49/year Updates & Support package gives you
+              continued feature updates, new training data, and priority support.
+            </p>
+          </div>
+
+          <div className="glass-card rounded-xl p-6 hover:border-primary/50 transition-all duration-300">
+            <h3 className="mb-3 text-lg font-semibold text-foreground">Do the GPTs work offline?</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              No, the GPTs require an internet connection to access the AI models and knowledge base. However, you can
+              save responses and SOPs for offline reference.
+            </p>
+          </div>
+
+          <div className="glass-card rounded-xl p-6 hover:border-primary/50 transition-all duration-300">
+            <h3 className="mb-3 text-lg font-semibold text-foreground">Can I get a refund?</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Yes. We offer a 30-day money-back guarantee. If you're not satisfied with your GPT purchase, contact
+              support for a full refund within 30 days of purchase.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

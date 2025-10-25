@@ -1,16 +1,6 @@
 export function FAQ() {
   const faqs = [
     {
-      question: "Is $97 a subscription?",
-      answer:
-        "No. $97 is a one-time founders price for Core. It includes 12 months of updates; you keep access forever. After 12 months, you can optionally add Updates & Support for $49/year.",
-    },
-    {
-      question: "What makes this different from a normal chatbot?",
-      answer:
-        "A behavior core compiled from a year of dataset curation and full transcription of Michael's YouTube library, trained on his speech patterns and decision logic for the mycology domain.",
-    },
-    {
       question: "Can I use this for commercial cultivation?",
       answer:
         "Absolutely. Crowe Logic AI is built from 20+ years of commercial growing experience. It includes SOPs, contamination protocols, and yield optimization strategies used in professional operations.",
