@@ -34,7 +34,7 @@ export default async function DocumentsPage() {
             <p className="text-zinc-400 text-lg">Comprehensive guides and documentation for mushroom cultivation</p>
           </div>
           {user && (
-            <Button asChild size="lg" className="bg-white text-black hover:bg-zinc-200">
+            <Button asChild size="lg" className="bg-primary text-white hover:bg-primary/90">
               <Link href="/documents/new">
                 <Plus className="w-4 h-4 mr-2" />
                 Create Document
@@ -103,7 +103,7 @@ export default async function DocumentsPage() {
               <h3 className="text-2xl font-semibold mb-2 text-white">No documents yet</h3>
               <p className="text-zinc-400 mb-6">Be the first to share your knowledge!</p>
               {user && (
-                <Button asChild size="lg" className="bg-white text-black hover:bg-zinc-200">
+                <Button asChild size="lg" className="bg-primary text-white hover:bg-primary/90">
                   <Link href="/documents/new">Create First Document</Link>
                 </Button>
               )}

@@ -234,30 +234,52 @@ export function StreamingChatDemo() {
               </div>
             </div>
 
-            {/* Chat Header - iOS style */}
-            <div className="bg-gradient-to-b from-gray-50 to-white border-b border-gray-200 px-4 py-3 flex items-center gap-3">
+            <div className="bg-gradient-to-b from-gray-900 to-gray-800 border-b border-gray-700 px-4 py-3 flex items-center gap-3">
               <button className="text-primary text-lg" aria-label="Back">
                 ‹
               </button>
               <div className="relative">
-                <img
-                  src="/crowe-logic-logo.png"
-                  alt="Crowe Logic"
-                  className="w-10 h-10 rounded-full ring-2 ring-primary/30 shadow-md"
+                <motion.div
+                  animate={{
+                    opacity: isThinking ? [1, 0.6, 1] : 1,
+                    scale: isThinking ? [1, 0.95, 1] : 1,
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: isThinking ? Number.POSITIVE_INFINITY : 0,
+                    ease: "easeInOut",
+                  }}
+                  className="relative"
+                >
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 blur-sm opacity-75 animate-spin-slow" />
+                  <img
+                    src="/crowe-avatar.png"
+                    alt="Crowe Logic AI"
+                    className="relative w-10 h-10 rounded-full ring-2 ring-purple-500/50 shadow-lg"
+                  />
+                </motion.div>
+                <motion.div
+                  animate={{
+                    scale: isThinking ? [1, 1.2, 1] : 1,
+                    opacity: isThinking ? [1, 0.5, 1] : 1,
+                  }}
+                  transition={{
+                    duration: 1,
+                    repeat: isThinking ? Number.POSITIVE_INFINITY : 0,
+                  }}
+                  className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-gray-900"
                 />
-                <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
               </div>
               <div className="flex-1">
-                <h3 className="font-semibold text-gray-900 text-sm">Crowe Logic AI</h3>
-                <p className="text-xs text-green-600">Active now</p>
+                <h3 className="font-semibold text-white text-sm">Crowe Logic AI</h3>
+                <p className="text-xs text-green-400">Active now</p>
               </div>
               <button onClick={handleNextConvo} className="text-primary text-sm font-medium">
                 Next →
               </button>
             </div>
 
-            {/* Chat Messages - iOS iMessage style */}
-            <div className="p-4 space-y-3 min-h-[600px] max-h-[600px] overflow-y-auto bg-white">
+            <div className="p-4 space-y-3 min-h-[600px] max-h-[600px] overflow-y-auto bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
               <AnimatePresence mode="wait">
                 {messages.map((message, index) => (
                   <motion.div
@@ -269,11 +291,26 @@ export function StreamingChatDemo() {
                     className={`flex gap-2 ${message.role === "user" ? "justify-end" : "justify-start"}`}
                   >
                     {message.role === "assistant" && (
-                      <img
-                        src="/crowe-logic-logo.png"
-                        alt="Crowe Logic"
-                        className="w-8 h-8 rounded-full flex-shrink-0 shadow-sm mt-1"
-                      />
+                      <motion.div
+                        animate={{
+                          opacity: isThinking && index === messages.length - 1 ? [1, 0.5, 1] : 1,
+                          scale: isThinking && index === messages.length - 1 ? [1, 0.9, 1] : 1,
+                        }}
+                        transition={{
+                          duration: 1.5,
+                          repeat: isThinking && index === messages.length - 1 ? Number.POSITIVE_INFINITY : 0,
+                        }}
+                        className="relative"
+                      >
+                        {isThinking && index === messages.length - 1 && (
+                          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 blur-md opacity-50 animate-spin-slow" />
+                        )}
+                        <img
+                          src="/crowe-avatar.png"
+                          alt="Crowe Logic AI"
+                          className="relative w-8 h-8 rounded-full flex-shrink-0 shadow-lg ring-2 ring-purple-500/30 mt-1"
+                        />
+                      </motion.div>
                     )}
 
                     <div className={`max-w-[75%] ${message.role === "user" ? "order-first" : ""}`}>
@@ -281,37 +318,37 @@ export function StreamingChatDemo() {
                         <motion.div
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
-                          className="mb-2 px-4 py-3 rounded-2xl bg-gray-100 text-xs text-gray-600 whitespace-pre-line"
+                          className="mb-2 px-4 py-3 rounded-2xl bg-gray-800/80 backdrop-blur-sm border border-purple-500/30 text-xs text-gray-300 whitespace-pre-line"
                         >
                           <div className="flex items-center gap-2 mb-1">
                             <div className="flex gap-1">
                               <motion.div
                                 animate={{ scale: [1, 1.3, 1] }}
                                 transition={{ repeat: Number.POSITIVE_INFINITY, duration: 1, delay: 0 }}
-                                className="w-1.5 h-1.5 bg-primary rounded-full"
+                                className="w-1.5 h-1.5 bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full"
                               />
                               <motion.div
                                 animate={{ scale: [1, 1.3, 1] }}
                                 transition={{ repeat: Number.POSITIVE_INFINITY, duration: 1, delay: 0.2 }}
-                                className="w-1.5 h-1.5 bg-primary rounded-full"
+                                className="w-1.5 h-1.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"
                               />
                               <motion.div
                                 animate={{ scale: [1, 1.3, 1] }}
                                 transition={{ repeat: Number.POSITIVE_INFINITY, duration: 1, delay: 0.4 }}
-                                className="w-1.5 h-1.5 bg-primary rounded-full"
+                                className="w-1.5 h-1.5 bg-gradient-to-r from-pink-500 to-cyan-400 rounded-full"
                               />
                             </div>
-                            <span className="font-medium">Analyzing...</span>
+                            <span className="font-medium text-gradient-purple">Analyzing...</span>
                           </div>
                           {message.thinking}
                         </motion.div>
                       )}
 
                       <div
-                        className={`rounded-2xl px-4 py-3 shadow-sm ${
+                        className={`rounded-2xl px-4 py-3 shadow-lg ${
                           message.role === "user"
-                            ? "bg-primary text-white rounded-br-md"
-                            : "bg-gray-100 text-gray-900 rounded-bl-md"
+                            ? "bg-gradient-to-br from-primary to-primary/80 text-white rounded-br-md"
+                            : "bg-gray-800/90 backdrop-blur-sm border border-purple-500/20 text-gray-100 rounded-bl-md"
                         }`}
                       >
                         {message.image && message.role === "user" && (
@@ -377,7 +414,7 @@ export function StreamingChatDemo() {
                       </div>
 
                       <div
-                        className={`mt-1 text-[10px] text-gray-400 ${message.role === "user" ? "text-right" : "text-left"}`}
+                        className={`mt-1 text-[10px] text-gray-500 ${message.role === "user" ? "text-right" : "text-left"}`}
                       >
                         {message.timestamp}
                       </div>
@@ -387,15 +424,14 @@ export function StreamingChatDemo() {
               </AnimatePresence>
             </div>
 
-            {/* Input bar - iOS style */}
-            <div className="border-t border-gray-200 bg-gray-50 px-4 py-2 flex items-center gap-2">
-              <button className="text-gray-400 text-xl" aria-label="Camera">
+            <div className="border-t border-gray-700 bg-gray-900 px-4 py-2 flex items-center gap-2">
+              <button className="text-gray-400 text-xl hover:text-gray-300 transition-colors" aria-label="Camera">
                 📷
               </button>
-              <div className="flex-1 bg-white rounded-full px-4 py-2 text-sm text-gray-400 border border-gray-200">
+              <div className="flex-1 bg-gray-800 rounded-full px-4 py-2 text-sm text-gray-400 border border-gray-700">
                 Message Crowe Logic...
               </div>
-              <button className="text-primary text-xl" aria-label="Voice">
+              <button className="text-primary text-xl hover:text-primary/80 transition-colors" aria-label="Voice">
                 🎤
               </button>
             </div>
