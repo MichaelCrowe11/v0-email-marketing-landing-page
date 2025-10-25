@@ -31,24 +31,35 @@ export function GlobalHeader() {
           fetch(`/api/weather?lat=${latitude}&lon=${longitude}`)
             .then((res) => res.json())
             .then((data) => setWeather(data))
-            .catch((err) => console.error("[v0] Weather fetch failed:", err))
+            .catch((err) => {
+              console.warn("[v0] Weather fetch failed, using default location:", err.message)
+              setWeather({ temp: null, condition: "Unknown", location: "Weather unavailable", needsLocation: true })
+            })
         },
         (error) => {
-          console.error("[v0] Geolocation error:", error)
+          // User denied location or error occurred - this is expected behavior, not an error
+          console.log("[v0] Location access not available:", error.message)
           setLocationPermission("denied")
-          // Fetch weather without location (will return demo data)
+          // Fetch weather with default location
           fetch("/api/weather")
             .then((res) => res.json())
-            .then((data) => setWeather(data))
-            .catch((err) => console.error("[v0] Weather fetch failed:", err))
+            .then((data) => setWeather({ ...data, needsLocation: true }))
+            .catch((err) => {
+              console.warn("[v0] Weather fetch failed:", err.message)
+              setWeather({ temp: null, condition: "Unknown", location: "Weather unavailable", needsLocation: true })
+            })
         },
       )
     } else {
-      // Geolocation not supported
+      // Geolocation not supported - use default location
+      console.log("[v0] Geolocation not supported by browser")
       fetch("/api/weather")
         .then((res) => res.json())
-        .then((data) => setWeather(data))
-        .catch((err) => console.error("[v0] Weather fetch failed:", err))
+        .then((data) => setWeather({ ...data, needsLocation: true }))
+        .catch((err) => {
+          console.warn("[v0] Weather fetch failed:", err.message)
+          setWeather({ temp: null, condition: "Unknown", location: "Weather unavailable", needsLocation: true })
+        })
     }
   }, [])
 
