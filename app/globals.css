@@ -322,6 +322,11 @@
   }
 }
 
+/* Added animate-spin-slow utility class for smooth avatar rotation */
+.animate-spin-slow {
+  animation: spin-slow 3s linear infinite;
+}
+
 /* Consciousness animations for AI thinking states */
 @keyframes thought-emerge {
   from {
@@ -450,9 +455,7 @@
 }
 
 /* Adding utility class for slow spin */
-.animate-spin-slow {
-  animation: spin-slow 3s linear infinite;
-}
+/* This section was explicitly replaced by the update. */
 
 /* Consciousness animation utility classes */
 .animate-thought-emerge {

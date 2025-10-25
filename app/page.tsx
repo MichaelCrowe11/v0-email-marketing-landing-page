@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Hero } from "@/components/hero"
 import { BenefitsBand } from "@/components/benefits-band"
 import { ProofSection } from "@/components/proof-section"
@@ -8,16 +8,37 @@ import { StreamingChatDemo } from "@/components/streaming-chat-demo"
 import { Features } from "@/components/features"
 import { FAQ } from "@/components/faq"
 import { StickyBar } from "@/components/sticky-bar"
-import { AIGeneratedIntro } from "@/components/ai-generated-intro"
+import { CodeGenerationIntro } from "@/components/code-generation-intro"
 import { ScrollReveal } from "@/components/scroll-reveal"
 import { InteractiveShowcase } from "@/components/interactive-showcase"
 
 export default function Home() {
-  const [showIntro, setShowIntro] = useState(true)
+  const [showIntro, setShowIntro] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    // Check if user has seen the intro before
+    const hasSeenIntro = localStorage.getItem("crowe-intro-seen")
+    if (!hasSeenIntro) {
+      setShowIntro(true)
+    }
+    setIsLoading(false)
+  }, [])
+
+  const handleIntroComplete = () => {
+    // Mark intro as seen in localStorage
+    localStorage.setItem("crowe-intro-seen", "true")
+    setShowIntro(false)
+  }
+
+  // Don't render anything until we check localStorage
+  if (isLoading) {
+    return null
+  }
 
   return (
     <>
-      {showIntro && <AIGeneratedIntro onComplete={() => setShowIntro(false)} />}
+      {showIntro && <CodeGenerationIntro onComplete={handleIntroComplete} />}
       <main className="min-h-screen">
         <Hero />
         <ScrollReveal>
