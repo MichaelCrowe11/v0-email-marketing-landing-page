@@ -57,7 +57,6 @@ Your expertise includes:
 
 Provide practical, actionable advice based on proven cultivation methods. Be specific with measurements, temperatures, and techniques. When discussing contamination, always identify the type and provide immediate remediation steps.`,
       prompt: content,
-      maxTokens: 1000,
     })
 
     // Create SSE stream
