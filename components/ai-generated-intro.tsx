@@ -75,22 +75,22 @@ export function AIGeneratedIntro({ onComplete }: { onComplete: () => void }) {
         delay: Math.random() * 0.3,
       }
       setCodeStreams((prev) => [...prev.slice(-30), newStream])
-    }, 100)
+    }, 80)
 
     const progressInterval = setInterval(() => {
       setProgress((prev) => {
-        const newProgress = prev + 1
+        const newProgress = prev + 4 // Faster progress: 2.5 seconds total
         updateStatus(newProgress)
 
         if (newProgress >= 100) {
           clearInterval(progressInterval)
           clearInterval(streamInterval)
-          setTimeout(onComplete, 800)
+          setTimeout(onComplete, 500)
           return 100
         }
         return newProgress
       })
-    }, 50)
+    }, 100)
 
     return () => {
       clearInterval(streamInterval)
