@@ -3,12 +3,35 @@ import OpenAI from "openai"
 
 export const maxDuration = 30
 
-const azureOpenAI = new OpenAI({
-  apiKey: process.env.AZURE_AI_API_KEY || "",
-  baseURL: process.env.AZURE_AI_ENDPOINT || "",
-  defaultQuery: { "api-version": "2024-05-01-preview" },
-  defaultHeaders: { "api-key": process.env.AZURE_AI_API_KEY || "" },
-})
+// Validate environment variables
+function validateEnv() {
+  const errors: string[] = []
+
+  if (!process.env.AZURE_AI_API_KEY) {
+    errors.push("AZURE_AI_API_KEY is not set")
+  }
+  if (!process.env.AZURE_AI_ENDPOINT) {
+    errors.push("AZURE_AI_ENDPOINT is not set")
+  }
+
+  if (errors.length > 0) {
+    console.error("[v0] Environment validation failed:", errors)
+    return { valid: false, errors }
+  }
+
+  return { valid: true, errors: [] }
+}
+
+const envCheck = validateEnv()
+
+const azureOpenAI = envCheck.valid
+  ? new OpenAI({
+      apiKey: process.env.AZURE_AI_API_KEY || "",
+      baseURL: process.env.AZURE_AI_ENDPOINT || "",
+      defaultQuery: { "api-version": "2024-05-01-preview" },
+      defaultHeaders: { "api-key": process.env.AZURE_AI_API_KEY || "" },
+    })
+  : null
 
 const AZURE_ASSISTANT_ID = "asst_7ycbM8XLx9HjiBfvI0tGdhtz"
 
@@ -17,6 +40,30 @@ export async function POST(req: Request) {
 
   try {
     const { messages, model } = await req.json()
+
+    // Check environment configuration
+    if (!envCheck.valid) {
+      console.error("[v0] Environment validation failed:", envCheck.errors)
+
+      // Return a user-friendly error message in the chat stream format
+      const errorMessage = `⚠️ **AI Service Configuration Required**\n\nThe chat service needs to be configured with API credentials.\n\n**Missing:**\n${envCheck.errors.map(err => `• ${err}`).join('\n')}\n\n**To fix this:**\n1. Copy \`.env.example\` to \`.env.local\`\n2. Add your Azure OpenAI credentials\n3. Restart the development server\n\nSee [SETUP.md](../SETUP.md) for detailed instructions.`
+
+      const encoder = new TextEncoder()
+      const stream = new ReadableStream({
+        start(controller) {
+          controller.enqueue(encoder.encode(`0:${JSON.stringify(errorMessage)}\n`))
+          controller.enqueue(encoder.encode(`d:{"finishReason":"stop"}\n`))
+          controller.close()
+        },
+      })
+
+      return new Response(stream, {
+        headers: {
+          "Content-Type": "text/plain; charset=utf-8",
+          "X-Vercel-AI-Data-Stream": "v1",
+        },
+      })
+    }
 
     console.log("[v0] Received messages:", messages?.length || 0)
     console.log("[v0] Selected model:", model)
@@ -34,6 +81,10 @@ export async function POST(req: Request) {
           try {
             const lastMessage = messages[messages.length - 1]
             const userContent = lastMessage?.content || ""
+
+            if (!azureOpenAI) {
+              throw new Error("Azure OpenAI client not initialized")
+            }
 
             const thread = await azureOpenAI.beta.threads.create()
 
@@ -99,7 +150,6 @@ You can use <reasoning> tags to show your thought process for complex questions.
     const result = streamText({
       model: selectedModel,
       messages: [systemMessage, ...messages],
-      maxTokens: 4000,
       temperature: 0.7,
     })
 

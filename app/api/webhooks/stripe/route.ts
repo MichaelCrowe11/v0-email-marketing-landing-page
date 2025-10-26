@@ -5,16 +5,26 @@ import { createClient } from "@/lib/supabase/server"
 
 export const dynamic = 'force-dynamic'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2024-11-20.acacia",
-})
+const stripe = process.env.STRIPE_SECRET_KEY
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: "2025-09-30.clover",
+    })
+  : null
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
 
 export async function POST(req: Request) {
+  if (!stripe || !webhookSecret) {
+    return NextResponse.json({ error: "Stripe not configured" }, { status: 500 })
+  }
+
   const body = await req.text()
   const headersList = await headers()
-  const signature = headersList.get("stripe-signature")!
+  const signature = headersList.get("stripe-signature")
+
+  if (!signature) {
+    return NextResponse.json({ error: "No signature" }, { status: 400 })
+  }
 
   let event: Stripe.Event
 

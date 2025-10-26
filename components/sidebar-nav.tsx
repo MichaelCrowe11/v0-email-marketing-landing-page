@@ -70,11 +70,11 @@ export function SidebarNav() {
 
   return (
     <>
-      {/* Mobile Toggle Button */}
+      {/* Mobile Toggle Button - positioned below header */}
       <Button
         size="sm"
         variant="ghost"
-        className="fixed top-3 left-3 z-50 md:hidden h-11 w-11 p-0 bg-sidebar/95 backdrop-blur-sm border border-sidebar-border hover:bg-sidebar-accent shadow-lg"
+        className="fixed top-[72px] left-3 z-50 md:hidden h-11 w-11 p-0 bg-sidebar/95 backdrop-blur-sm border border-sidebar-border hover:bg-sidebar-accent shadow-lg"
         onClick={() => setIsOpen(!isOpen)}
         aria-label={isOpen ? "Close menu" : "Open menu"}
       >

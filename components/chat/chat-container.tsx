@@ -99,19 +99,23 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
   const [userId, setUserId] = useState<string | null>(null)
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null)
 
-  const { messages, input, handleSubmit, handleInputChange, status, setMessages, error } = useChat({
-    api: "/api/chat",
-    body: { model: selectedModel },
+  const chatHelpers = useChat({
     onError: (error) => {
       console.error("[v0] Chat error:", error)
     },
-    onFinish: async (message) => {
+    onFinish: async ({ message }) => {
       // Save message to database after completion
-      if (userId && currentConversationId) {
-        await saveMessage(currentConversationId, "assistant", message.content)
+      if (userId && currentConversationId && 'content' in message) {
+        await saveMessage(currentConversationId, "assistant", String(message.content))
       }
     },
   })
+
+  const messages = chatHelpers.messages || []
+  const input = chatHelpers.input || ""
+  const handleInputChange = chatHelpers.handleInputChange || (() => {})
+  const handleSubmit = chatHelpers.handleSubmit || (() => {})
+  const status = chatHelpers.status || "idle"
 
   const [completedMessages, setCompletedMessages] = useState<Set<string>>(new Set())
   const [activeToolDialog, setActiveToolDialog] = useState<"substrate" | "strain" | "environment" | "yield" | null>(
@@ -127,6 +131,24 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
   const [researchQuery, setResearchQuery] = useState("")
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const [uploadedImage, setUploadedImage] = useState<{ url: string; file: File } | null>(null)
+  const [isAnalyzingImage, setIsAnalyzingImage] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // Auto-resize textarea
+  useEffect(() => {
+    const textarea = textareaRef.current
+    if (!textarea) return
+
+    const autoResize = () => {
+      textarea.style.height = "auto"
+      const newHeight = Math.min(textarea.scrollHeight, 200) // Max 200px
+      textarea.style.height = `${newHeight}px`
+    }
+
+    textarea.addEventListener("input", autoResize)
+    return () => textarea.removeEventListener("input", autoResize)
+  }, [])
 
   const handleSelectConversation = (conversationId: string) => {
     setCurrentConversationId(conversationId)
@@ -138,6 +160,86 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
     const conversation = await createConversation(userId, title)
     if (conversation) {
       setCurrentConversationId(conversation.id)
+    }
+  }
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      alert("Please upload an image file")
+      return
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Image must be less than 5MB")
+      return
+    }
+
+    try {
+      setIsAnalyzingImage(true)
+
+      // Upload to Vercel Blob
+      const formData = new FormData()
+      formData.append("file", file)
+
+      const uploadResponse = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      })
+
+      if (!uploadResponse.ok) throw new Error("Upload failed")
+
+      const { url } = await uploadResponse.json()
+      setUploadedImage({ url, file })
+      setIsAnalyzingImage(false)
+    } catch (error) {
+      console.error("Image upload error:", error)
+      alert("Failed to upload image")
+      setIsAnalyzingImage(false)
+    }
+  }
+
+  const handleRemoveImage = () => {
+    setUploadedImage(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""
+    }
+  }
+
+  const handleAnalyzeImage = async () => {
+    if (!uploadedImage) return
+
+    setIsAnalyzingImage(true)
+    try {
+      const response = await fetch("/api/crowe-vision/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageUrl: uploadedImage.url }),
+      })
+
+      if (!response.ok) throw new Error("Analysis failed")
+
+      const { analysis } = await response.json()
+
+      // Add analysis result to chat
+      const analysisText = `I've analyzed your image:\n\n**Species:** ${analysis.species || "Unknown"} (${analysis.confidence}% confidence)\n**Growth Stage:** ${analysis.growthStage || "N/A"}\n**Health Score:** ${analysis.healthScore}/100\n\n**Contamination:** ${analysis.contamination.detected ? `⚠️ ${analysis.contamination.type} - ${analysis.contamination.severity} severity` : "✓ None detected"}\n\n**Observations:**\n${analysis.observations.map((obs: string) => `• ${obs}`).join("\n")}\n\n**Recommendations:**\n${analysis.recommendations.map((rec: string) => `• ${rec}`).join("\n")}`
+
+      if (textareaRef.current) {
+        textareaRef.current.value = `Analyze this image: ${uploadedImage.url}\n\n${analysisText}`
+        const event = new Event("input", { bubbles: true })
+        textareaRef.current.dispatchEvent(event)
+      }
+
+      handleRemoveImage()
+    } catch (error) {
+      console.error("Analysis error:", error)
+      alert("Failed to analyze image")
+    } finally {
+      setIsAnalyzingImage(false)
     }
   }
 
@@ -187,8 +289,35 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
   const isLoading = status === "in_progress"
   const isEmpty = messages.length === 0
 
+  // Check if there's a configuration error in the messages
+  const hasConfigError = messages.some((msg) =>
+    msg.role === "assistant" && msg.content.includes("AI Service Configuration Required")
+  )
+
   return (
     <div className="h-full flex flex-col">
+      {/* Setup Banner */}
+      {hasConfigError && (
+        <div className="bg-amber-50 dark:bg-amber-950/30 border-b border-amber-200 dark:border-amber-800/50 px-4 py-3">
+          <div className="max-w-4xl mx-auto flex items-start gap-3">
+            <div className="flex-shrink-0 mt-0.5">
+              <svg className="w-5 h-5 text-amber-600 dark:text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="flex-1 text-sm">
+              <p className="font-medium text-amber-900 dark:text-amber-200 mb-1">
+                Setup Required: AI Features Not Configured
+              </p>
+              <p className="text-amber-800 dark:text-amber-300 text-xs">
+                Configure your API keys in <code className="px-1.5 py-0.5 bg-amber-100 dark:bg-amber-900/50 rounded text-amber-900 dark:text-amber-200">.env.local</code> to enable chat and vision features.
+                See <a href="/SETUP.md" className="underline hover:no-underline">SETUP.md</a> for instructions.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between border-b border-border glass-panel">
         <div className="flex items-center gap-2 sm:gap-3">
           <button
@@ -395,6 +524,51 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
 
       <div className="border-t border-border glass-panel">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+          {/* Image Preview */}
+          {uploadedImage && (
+            <div className="mb-4 relative group">
+              <div className="flex items-center gap-3 p-3 bg-card border border-border rounded-xl">
+                <div className="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                  <img src={uploadedImage.url} alt="Upload preview" className="w-full h-full object-cover" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-foreground truncate">{uploadedImage.file.name}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {(uploadedImage.file.size / 1024).toFixed(1)} KB
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleAnalyzeImage}
+                  disabled={isAnalyzingImage}
+                  className="px-4 py-2 text-xs font-medium rounded-lg bg-accent text-accent-foreground hover:bg-accent/90 transition-all disabled:opacity-50"
+                >
+                  {isAnalyzingImage ? "Analyzing..." : "Analyze"}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleRemoveImage}
+                  className="p-2 rounded-lg hover:bg-muted transition-colors"
+                  aria-label="Remove image"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-4 h-4"
+                  >
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="relative">
             <textarea
               ref={textareaRef}
@@ -408,35 +582,96 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                 }
               }}
               placeholder="Ask about cultivation techniques, contamination, yields..."
-              className="w-full min-h-[56px] sm:min-h-[60px] max-h-[200px] px-4 sm:px-5 py-3 sm:py-4 pr-12 sm:pr-14 glass-input rounded-2xl text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent/50 resize-none shadow-sm"
+              className="w-full min-h-[56px] sm:min-h-[60px] max-h-[200px] px-4 sm:px-5 py-3 sm:py-4 pr-28 sm:pr-32 glass-input rounded-2xl text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent/50 resize-none shadow-sm"
               rows={2}
-              disabled={isLoading}
+              disabled={isLoading || isAnalyzingImage}
             />
-            <div className="absolute right-14 sm:right-16 bottom-2 sm:bottom-3">
-              <VoiceChatButton onTranscript={handleVoiceTranscript} disabled={isLoading} />
-            </div>
+
+            {/* Hidden file input */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="hidden"
+            />
+
+            {/* Image upload button */}
             <button
-              type="submit"
-              className="absolute right-2 sm:right-3 bottom-2 sm:bottom-3 h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-xl bg-accent text-accent-foreground hover:bg-accent/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
-              disabled={isLoading || !input || !input.trim()}
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isLoading || isAnalyzingImage || !!uploadedImage}
+              className="absolute right-[100px] sm:right-[108px] bottom-2 sm:bottom-3 h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-xl hover:bg-muted transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Upload image"
+              title="Upload image for analysis"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="2.5"
+                strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 className="w-4 h-4 sm:w-5 sm:h-5"
               >
-                <path d="m5 12 7-7 7 7" />
-                <path d="M19 12V5" />
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                <circle cx="8.5" cy="8.5" r="1.5" />
+                <polyline points="21 15 16 10 5 21" />
               </svg>
+            </button>
+
+            {/* Voice chat button */}
+            <div className="absolute right-14 sm:right-16 bottom-2 sm:bottom-3">
+              <VoiceChatButton onTranscript={handleVoiceTranscript} disabled={isLoading || isAnalyzingImage} />
+            </div>
+
+            {/* Send button with loading state */}
+            <button
+              type="submit"
+              className="absolute right-2 sm:right-3 bottom-2 sm:bottom-3 h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-xl bg-accent text-accent-foreground hover:bg-accent/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+              disabled={isLoading || isAnalyzingImage || !input || !input.trim()}
+            >
+              {isLoading ? (
+                <svg
+                  className="w-4 h-4 sm:w-5 sm:h-5 animate-spin"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="w-4 h-4 sm:w-5 sm:h-5"
+                >
+                  <path d="m5 12 7-7 7 7" />
+                  <path d="M19 12V5" />
+                </svg>
+              )}
             </button>
           </form>
           <p className="text-xs text-muted-foreground mt-2 sm:mt-3 text-center">
-            Press Enter to send, Shift+Enter for new line
+            Press Enter to send, Shift+Enter for new line • Click 📷 to upload images
           </p>
         </div>
       </div>
