@@ -10,10 +10,10 @@ Create a `.env.local` file in the root directory and add the following variables
 
 Get these from your Azure portal:
 
-```bash
+\`\`\`bash
 AZURE_AI_API_KEY=your_azure_openai_api_key_here
 AZURE_AI_ENDPOINT=https://your-resource-name.openai.azure.com
-```
+\`\`\`
 
 **How to get Azure OpenAI credentials:**
 1. Go to [Azure Portal](https://portal.azure.com)
@@ -25,9 +25,9 @@ AZURE_AI_ENDPOINT=https://your-resource-name.openai.azure.com
 
 Get this from Anthropic Console:
 
-```bash
+\`\`\`bash
 ANTHROPIC_API_KEY=your_anthropic_api_key_here
-```
+\`\`\`
 
 **How to get Anthropic API key:**
 1. Go to [Anthropic Console](https://console.anthropic.com)
@@ -37,11 +37,11 @@ ANTHROPIC_API_KEY=your_anthropic_api_key_here
 
 ### 3. Supabase (Required for Database & Auth)
 
-```bash
+\`\`\`bash
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
-```
+\`\`\`
 
 **How to get Supabase credentials:**
 1. Go to [Supabase Dashboard](https://app.supabase.com)
@@ -51,9 +51,9 @@ SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 
 ### 4. Vercel Blob Storage (Required for Image Uploads)
 
-```bash
+\`\`\`bash
 BLOB_READ_WRITE_TOKEN=your_vercel_blob_token
-```
+\`\`\`
 
 **How to get Vercel Blob token:**
 1. Go to [Vercel Dashboard](https://vercel.com/dashboard)
@@ -64,16 +64,16 @@ BLOB_READ_WRITE_TOKEN=your_vercel_blob_token
 ## Quick Setup
 
 1. Copy the example environment file:
-   ```bash
+   \`\`\`bash
    cp .env.example .env.local
-   ```
+   \`\`\`
 
 2. Fill in all the required values in `.env.local`
 
 3. Restart your development server:
-   ```bash
+   \`\`\`bash
    npm run dev
-   ```
+   \`\`\`
 
 ## Features Enabled
 

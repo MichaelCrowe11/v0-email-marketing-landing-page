@@ -209,7 +209,7 @@ Once you have all Price IDs, come back and I'll help you:
 
 Create this document as you go:
 
-```
+\`\`\`
 MASTER_GROWER_MONTHLY_PRICE_ID=price_xxxxx
 MASTER_GROWER_YEARLY_PRICE_ID=price_xxxxx
 CONSULTATION_1HR_PRICE_ID=price_xxxxx
@@ -229,7 +229,7 @@ VIDEO_20_PRICE_ID=price_xxxxx
 MASTER_COURSE_PRICE_ID=price_xxxxx
 FACILITY_SETUP_PRICE_ID=price_xxxxx
 CUSTOM_AI_TRAINING_PRICE_ID=price_xxxxx
-```
+\`\`\`
 
 Add these to your Vercel environment variables once created.
 

@@ -16,7 +16,7 @@ This document outlines recommended enhancements to elevate the Crowe Logic AI pl
 
 Add these CSS variables to `app/globals.css`:
 
-```css
+\`\`\`css
 :root {
   /* Premium Gradient Colors */
   --glow-purple: #a855f7;
@@ -41,7 +41,7 @@ Add these CSS variables to `app/globals.css`:
   --glass-border: rgba(255, 255, 255, 0.08);
   --glass-shadow: rgba(0, 0, 0, 0.5);
 }
-```
+\`\`\`
 
 ---
 
@@ -51,7 +51,7 @@ Add these CSS variables to `app/globals.css`:
 
 Add to `app/globals.css`:
 
-```css
+\`\`\`css
 /* Premium Glass Effect */
 .glass-premium {
   background: linear-gradient(
@@ -118,7 +118,7 @@ Add to `app/globals.css`:
     inset 0 1px 0 rgba(255, 255, 255, 0.15);
   transform: translateY(-2px);
 }
-```
+\`\`\`
 
 ---
 
@@ -137,7 +137,7 @@ Add to `app/globals.css`:
 - Smoother animations
 - Better text shadows
 
-```tsx
+\`\`\`tsx
 // Enhanced particle rendering with rainbow trails
 <div
   key={particle.id}
@@ -163,10 +163,10 @@ Add to `app/globals.css`:
 >
   {particle.code}
 </div>
-```
+\`\`\`
 
 **Color Enhancements:**
-```tsx
+\`\`\`tsx
 const colors = [
   "#ec4899", // vibrant pink
   "#a855f7", // vivid purple
@@ -177,7 +177,7 @@ const colors = [
   "#ef4444", // red
   "#8b5cf6", // violet
 ]
-```
+\`\`\`
 
 ---
 
@@ -187,7 +187,7 @@ const colors = [
 
 Update `app/globals.css`:
 
-```css
+\`\`\`css
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
 
@@ -214,7 +214,7 @@ pre {
   letter-spacing: -0.02em;
   text-rendering: optimizeLegibility;
 }
-```
+\`\`\`
 
 ---
 
@@ -222,7 +222,7 @@ pre {
 
 ### Improved Code Block Styling
 
-```css
+\`\`\`css
 /* Premium Code Block */
 .code-block-premium {
   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
@@ -280,13 +280,13 @@ pre {
 .token-number {
   color: #f59e0b;
 }
-```
+\`\`\`
 
 ---
 
 ## 6. Animated Gradient Backgrounds
 
-```css
+\`\`\`css
 /* Animated Gradient Background */
 .gradient-animated {
   background: linear-gradient(
@@ -329,13 +329,13 @@ pre {
   0%, 100% { opacity: 0.5; transform: scale(1); }
   50% { opacity: 1; transform: scale(1.1); }
 }
-```
+\`\`\`
 
 ---
 
 ## 7. Premium Button Styles
 
-```css
+\`\`\`css
 /* Premium Gradient Button */
 .btn-premium {
   position: relative;
@@ -380,7 +380,7 @@ pre {
 .btn-premium:active {
   transform: translateY(0);
 }
-```
+\`\`\`
 
 ---
 
@@ -391,7 +391,7 @@ pre {
 **Current:** Black background with code streams
 **Enhanced:** Add these improvements
 
-```tsx
+\`\`\`tsx
 // Add chromatic aberration effect to logo
 <img
   src="/crowe-logic-logo.png"
@@ -455,7 +455,7 @@ pre {
     />
   </div>
 </div>
-```
+\`\`\`
 
 ---
 
@@ -465,7 +465,7 @@ pre {
 
 **Add these enhancements:**
 
-```tsx
+\`\`\`tsx
 // Larger, more visible particles
 const newParticles: CodeParticle[] = Array.from({ length: 40 }, (_, i) => ({
   id: i,
@@ -507,7 +507,7 @@ const newParticles: CodeParticle[] = Array.from({ length: 40 }, (_, i) => ({
     }}
   />
 </div>
-```
+\`\`\`
 
 ---
 
@@ -537,7 +537,7 @@ const newParticles: CodeParticle[] = Array.from({ length: 40 }, (_, i) => ({
 
 ### Enhanced Chat Container
 
-```tsx
+\`\`\`tsx
 <div className="glass-premium rounded-2xl p-6">
   <div className="glass-shiny rounded-xl p-4 mb-4">
     <AIAvatarSwirl state="thinking" size={48} />
@@ -552,7 +552,7 @@ const newParticles: CodeParticle[] = Array.from({ length: 40 }, (_, i) => ({
     </code>
   </div>
 </div>
-```
+\`\`\`
 
 ---
 
@@ -566,7 +566,7 @@ const newParticles: CodeParticle[] = Array.from({ length: 40 }, (_, i) => ({
 4. **Use** `requestAnimationFrame` for animations
 5. **Lazy load** heavy animations on mobile
 
-```css
+\`\`\`css
 /* Performance-optimized glass */
 .glass-optimized {
   will-change: transform;
@@ -574,7 +574,7 @@ const newParticles: CodeParticle[] = Array.from({ length: 40 }, (_, i) => ({
   backface-visibility: hidden;
   perspective: 1000px;
 }
-```
+\`\`\`
 
 ---
 
@@ -586,7 +586,7 @@ const newParticles: CodeParticle[] = Array.from({ length: 40 }, (_, i) => ({
 - ✅ Screen reader compatibility
 - ✅ Keyboard navigation
 
-```css
+\`\`\`css
 /* Respect reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -597,7 +597,7 @@ const newParticles: CodeParticle[] = Array.from({ length: 40 }, (_, i) => ({
     transition-duration: 0.01ms !important;
   }
 }
-```
+\`\`\`
 
 ---
 

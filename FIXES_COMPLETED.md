@@ -58,7 +58,7 @@ Replace placeholder values in `.env.local` with actual API keys. See [SETUP.md](
 - [app/api/chat/route.ts](app/api/chat/route.ts#L38-L66)
 
 **Example Error Message:**
-```
+\`\`\`
 ⚠️ **AI Service Configuration Required**
 
 The chat service needs to be configured with API credentials.
@@ -73,7 +73,7 @@ The chat service needs to be configured with API credentials.
 3. Restart the development server
 
 See SETUP.md for detailed instructions.
-```
+\`\`\`
 
 ---
 
@@ -90,7 +90,7 @@ See SETUP.md for detailed instructions.
 - [app/api/crowe-vision/analyze/route.ts](app/api/crowe-vision/analyze/route.ts#L34-L75)
 
 **Example Response:**
-```json
+\`\`\`json
 {
   "analysis": {
     "species": "Configuration Required",
@@ -108,7 +108,7 @@ See SETUP.md for detailed instructions.
     ]
   }
 }
-```
+\`\`\`
 
 ---
 
@@ -167,43 +167,43 @@ To enable all AI features, follow these steps:
 2. Navigate to your Azure OpenAI resource
 3. Copy API Key and Endpoint URL
 4. Add to `.env.local`:
-   ```
+   \`\`\`
    AZURE_AI_API_KEY=your_key_here
    AZURE_AI_ENDPOINT=https://your-resource.openai.azure.com
-   ```
+   \`\`\`
 
 ### 2. Anthropic API Setup (Required for Vision)
 1. Go to [Anthropic Console](https://console.anthropic.com)
 2. Create API key (starts with `sk-ant-`)
 3. Add to `.env.local`:
-   ```
+   \`\`\`
    ANTHROPIC_API_KEY=sk-ant-your_key_here
-   ```
+   \`\`\`
 
 ### 3. Supabase Setup (Required for Data Storage)
 1. Go to [Supabase Dashboard](https://app.supabase.com)
 2. Copy Project URL and keys from Settings > API
 3. Add to `.env.local`:
-   ```
+   \`\`\`
    NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
    SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-   ```
+   \`\`\`
 
 ### 4. Vercel Blob Setup (Required for Image Uploads)
 1. Go to [Vercel Dashboard](https://vercel.com/dashboard)
 2. Navigate to Storage > Blob
 3. Create Blob store and copy token
 4. Add to `.env.local`:
-   ```
+   \`\`\`
    BLOB_READ_WRITE_TOKEN=your_blob_token
-   ```
+   \`\`\`
 
 ### 5. Restart Development Server
-```bash
+\`\`\`bash
 # Stop current server (Ctrl+C)
 npm run dev
-```
+\`\`\`
 
 ---
 

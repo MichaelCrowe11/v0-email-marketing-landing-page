@@ -56,9 +56,9 @@ After the intro completes, users must authenticate to access the platform.
 ### Demo Mode
 Perfect for presentations, investor demos, or exclusive previews.
 
-```
+\`\`\`
 https://your-domain.com/?demo=true
-```
+\`\`\`
 
 **What it does:**
 - ✅ Shows the AI intro animation
@@ -78,9 +78,9 @@ https://your-domain.com/?demo=true
 ### Reset Intro
 Force the intro to play again (for testing or re-showing to visitors).
 
-```
+\`\`\`
 https://your-domain.com/?reset-intro=true
-```
+\`\`\`
 
 **What it does:**
 - ✅ Clears the "intro seen" flag from localStorage
@@ -97,21 +97,21 @@ https://your-domain.com/?reset-intro=true
 ## Complete URL Examples
 
 ### For Exclusive Investor Demo
-```
+\`\`\`
 https://crowelogic.com/?demo=true
-```
+\`\`\`
 Perfect for sharing with investors or potential partners who shouldn't need to create an account.
 
 ### For Testing Intro Again
-```
+\`\`\`
 https://crowelogic.com/?reset-intro=true
-```
+\`\`\`
 Great for developers testing intro modifications.
 
 ### Combine Parameters (if needed)
-```
+\`\`\`
 https://crowelogic.com/?reset-intro=true&demo=true
-```
+\`\`\`
 Reset intro AND show in demo mode (will reload after clearing, then show in demo mode).
 
 ---
@@ -119,37 +119,37 @@ Reset intro AND show in demo mode (will reload after clearing, then show in demo
 ## User Experience Flow
 
 ### First-Time Visitor (Not Authenticated)
-```
+\`\`\`
 1. Visit homepage
 2. ✨ See AI code streaming intro (2.5 seconds)
 3. Intro completes
 4. → Redirect to /auth/login
 5. User signs up/logs in
 6. → Access full platform
-```
+\`\`\`
 
 ### First-Time Visitor (Demo Mode)
-```
+\`\`\`
 1. Visit homepage?demo=true
 2. ✨ See AI code streaming intro (2.5 seconds)
 3. Intro completes
 4. → Full platform access (no login required)
-```
+\`\`\`
 
 ### Returning User (Authenticated)
-```
+\`\`\`
 1. Visit homepage
 2. → Homepage loads directly (intro skipped)
 3. Full platform access
-```
+\`\`\`
 
 ### Returning User (Not Authenticated)
-```
+\`\`\`
 1. Visit homepage
 2. → See "Authentication Required" screen
 3. Click "Sign In"
 4. → Redirect to /auth/login
-```
+\`\`\`
 
 ---
 
@@ -164,16 +164,16 @@ The homepage uses React state to manage:
 - `isDemoMode` - Whether demo mode is active
 
 ### localStorage Keys
-```javascript
+\`\`\`javascript
 "crowe-intro-seen" // Set to "true" after intro completes
-```
+\`\`\`
 
 ### Authentication Check
-```javascript
+\`\`\`javascript
 const supabase = createClient()
 const { data: { session } } = await supabase.auth.getSession()
 setIsAuthenticated(!!session)
-```
+\`\`\`
 
 ---
 
@@ -195,35 +195,35 @@ setIsAuthenticated(!!session)
 
 ### Change Intro Duration
 Edit [components/ai-generated-intro.tsx:82](components/ai-generated-intro.tsx#L82):
-```javascript
+\`\`\`javascript
 const newProgress = prev + 4 // Currently: 2.5 seconds
 // Change to prev + 2 for ~5 seconds
 // Change to prev + 8 for ~1.25 seconds
-```
+\`\`\`
 
 ### Modify Code Snippets
 Edit the `codeSnippets` array in [components/ai-generated-intro.tsx:12-38](components/ai-generated-intro.tsx#L12-L38):
-```javascript
+\`\`\`javascript
 const codeSnippets = useMemo(() => [
   { code: "Your custom code here", color: "text-purple-400" },
   // Add more snippets...
 ], [])
-```
+\`\`\`
 
 ### Change Status Messages
 Edit the `statusMessages` array in [components/ai-generated-intro.tsx:42-54](components/ai-generated-intro.tsx#L42-L54):
-```javascript
+\`\`\`javascript
 const statusMessages = useMemo(() => [
   "Your custom status message",
   // Add more messages...
 ], [])
-```
+\`\`\`
 
 ### Disable Authentication Gate
 To allow public access (not recommended for exclusive deals):
 
 Edit [app/page.tsx](app/page.tsx):
-```javascript
+\`\`\`javascript
 // Option 1: Always set demo mode
 const [isDemoMode, setIsDemoMode] = useState(true)
 
@@ -231,14 +231,14 @@ const [isDemoMode, setIsDemoMode] = useState(true)
 if (!isAuthenticated && hasSeenIntro) {
   // Comment out or remove this entire block
 }
-```
+\`\`\`
 
 ---
 
 ## Business Use Cases
 
 ### Exclusive Multi-Million Dollar Deal
-```markdown
+\`\`\`markdown
 **Scenario:** You have a potential $2M+ exclusive licensing deal
 
 **Solution:**
@@ -253,10 +253,10 @@ if (!isAuthenticated && hasSeenIntro) {
 - No authentication barrier for the specific client
 - Platform remains protected (normal URL requires login)
 - Easy to revoke access (they need the special URL)
-```
+\`\`\`
 
 ### Investor Pitch Deck
-```markdown
+\`\`\`markdown
 **Scenario:** Presenting to multiple investors
 
 **Setup:**
@@ -264,10 +264,10 @@ if (!isAuthenticated && hasSeenIntro) {
 2. Investors can explore freely during/after presentation
 3. No account creation friction
 4. Platform remains gated for general public
-```
+\`\`\`
 
 ### Sales Demo Video
-```markdown
+\`\`\`markdown
 **Scenario:** Recording a product demo video
 
 **Process:**
@@ -276,7 +276,7 @@ if (!isAuthenticated && hasSeenIntro) {
 3. Reload homepage - intro plays
 4. Capture the stunning AI animation
 5. Show platform features in demo mode
-```
+\`\`\`
 
 ---
 
