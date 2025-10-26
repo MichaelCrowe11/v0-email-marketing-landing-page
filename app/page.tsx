@@ -10,7 +10,6 @@ import { FAQ } from "@/components/faq"
 import { ScrollReveal } from "@/components/scroll-reveal"
 import { CodeGenerationIntro } from "@/components/code-generation-intro"
 import { useRouter } from "next/navigation"
-import { createClient } from "@/lib/supabase/client"
 
 export default function Home() {
   const [showIntro, setShowIntro] = useState(true)
@@ -45,13 +44,21 @@ export default function Home() {
       setHasSeenIntro(true)
     }
 
-    // Check authentication status (skip if demo mode)
-    if (!demo) {
+    if (introSeen === "true" && !demo) {
       const checkAuth = async () => {
-        const supabase = createClient()
-        const { data: { session } } = await supabase.auth.getSession()
-        setIsAuthenticated(!!session)
-        setIsCheckingAuth(false)
+        try {
+          const { createClient } = await import("@/lib/supabase/client")
+          const supabase = createClient()
+          const {
+            data: { session },
+          } = await supabase.auth.getSession()
+          setIsAuthenticated(!!session)
+        } catch (error) {
+          console.error("[v0] Auth check failed:", error)
+          setIsAuthenticated(false)
+        } finally {
+          setIsCheckingAuth(false)
+        }
       }
       checkAuth()
     } else {
@@ -100,9 +107,7 @@ export default function Home() {
             className="h-32 w-32 rounded-full mx-auto mb-6 ring-4 ring-primary/20"
           />
           <h1 className="text-3xl font-bold mb-3">Authentication Required</h1>
-          <p className="text-muted-foreground mb-6">
-            Please sign in to access Crowe Logic AI platform
-          </p>
+          <p className="text-muted-foreground mb-6">Please sign in to access Crowe Logic AI platform</p>
           <button
             onClick={() => router.push("/auth/login")}
             className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
