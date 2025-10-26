@@ -28,16 +28,22 @@ export async function getStripePaymentLinks() {
           active: true,
         })
 
-        // Get payment links for this product
+        // Get payment links for this product with expanded line_items
         const paymentLinks = await stripe.paymentLinks.list({
           limit: 10,
+          expand: ["data.line_items"],
         })
 
         // Filter payment links that match this product's prices
         const priceIds = prices.data.map((p) => p.id)
-        const relevantLinks = paymentLinks.data.filter((link) =>
-          priceIds.includes(link.line_items.data[0]?.price as string),
-        )
+        const relevantLinks = paymentLinks.data.filter((link) => {
+          // Check if line_items exists and has data
+          if (!link.line_items || !link.line_items.data || link.line_items.data.length === 0) {
+            return false
+          }
+          const firstLineItem = link.line_items.data[0]
+          return firstLineItem && priceIds.includes(firstLineItem.price as string)
+        })
 
         return {
           id: product.id,
