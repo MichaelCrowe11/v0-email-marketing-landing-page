@@ -17,6 +17,8 @@ interface WeatherData {
   needsLocation?: boolean
 }
 
+export const HEADER_HEIGHT = 72 // px
+
 export function GlobalHeader() {
   const [searchQuery, setSearchQuery] = useState("")
   const [weather, setWeather] = useState<WeatherData | null>(null)
@@ -82,8 +84,11 @@ export function GlobalHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl">
-      <div className="flex items-center justify-between h-14 sm:h-16 px-3 sm:px-4 md:px-6 max-w-screen-2xl mx-auto gap-2 sm:gap-4">
+    <header
+      className="fixed top-0 left-0 right-0 z-50 w-full border-b border-border/50 bg-background/95 backdrop-blur-xl shadow-sm"
+      style={{ height: `${HEADER_HEIGHT}px` }}
+    >
+      <div className="flex items-center justify-between h-full px-3 sm:px-4 md:px-6 md:pl-[272px] max-w-screen-2xl mx-auto gap-2 sm:gap-4">
         {/* Search Bar */}
         <form onSubmit={handleSearch} className="flex-1 max-w-2xl">
           <div

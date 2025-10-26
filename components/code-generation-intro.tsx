@@ -70,11 +70,11 @@ export function CodeGenerationIntro({ onComplete }: CodeGenerationIntroProps) {
   }, [stage, onComplete])
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black backdrop-blur-sm">
-      <div className="w-full max-w-4xl px-6">
-        {/* Header with Crowe Avatar */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black backdrop-blur-sm p-4">
+      <div className="w-full max-w-4xl">
+        {/* Header with Crowe Avatar - centered */}
         <div className="flex flex-col items-center gap-6 mb-8">
-          <div className="relative">
+          <div className="relative flex items-center justify-center">
             {/* Animated particles */}
             {stage !== "initializing" && (
               <>
@@ -90,7 +90,7 @@ export function CodeGenerationIntro({ onComplete }: CodeGenerationIntroProps) {
                       style={{
                         left: "50%",
                         top: "50%",
-                        transform: `translate(${x}px, ${y}px)`,
+                        transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
                         animationDelay: `${i * 0.1}s`,
                       }}
                     />
@@ -102,17 +102,19 @@ export function CodeGenerationIntro({ onComplete }: CodeGenerationIntroProps) {
             {/* Glow effect */}
             <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/30 via-purple-500/30 to-pink-500/30 rounded-full blur-2xl animate-pulse" />
 
-            {/* Avatar */}
-            <Image
-              src="/crowe-avatar.png"
-              alt="Crowe AI"
-              width={120}
-              height={120}
-              className={`relative rounded-full border-4 border-purple-500/50 shadow-2xl ${stage !== "initializing" ? "animate-pulse" : ""}`}
-            />
+            {/* Avatar - perfectly centered */}
+            <div className="relative">
+              <Image
+                src="/crowe-avatar.png"
+                alt="Crowe AI"
+                width={120}
+                height={120}
+                className={`relative rounded-full border-4 border-purple-500/50 shadow-2xl ${stage !== "initializing" ? "animate-pulse" : ""}`}
+              />
+            </div>
 
             {/* Status badge */}
-            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white text-xs font-bold rounded-full shadow-lg">
+            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white text-xs font-bold rounded-full shadow-lg whitespace-nowrap">
               {stage === "initializing" && "INITIALIZING"}
               {stage === "generating" && "GENERATING"}
               {stage === "building" && "BUILDING"}

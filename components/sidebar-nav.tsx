@@ -25,6 +25,7 @@ import {
   Sparkles,
   Calendar,
 } from "lucide-react"
+import { HEADER_HEIGHT } from "@/components/global-header"
 
 export function SidebarNav() {
   const [isOpen, setIsOpen] = useState(false)
@@ -75,23 +76,26 @@ export function SidebarNav() {
         size="sm"
         variant="ghost"
         className="fixed top-[72px] left-3 z-50 md:hidden h-11 w-11 p-0 bg-sidebar/95 backdrop-blur-sm border border-sidebar-border hover:bg-sidebar-accent shadow-lg"
+        style={{ top: `${HEADER_HEIGHT + 8}px` }}
         onClick={() => setIsOpen(!isOpen)}
         aria-label={isOpen ? "Close menu" : "Open menu"}
       >
         {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </Button>
 
-      {/* Sidebar */}
+      {/* Sidebar - locked to top with header height offset */}
       <aside
-        className={`fixed left-0 top-0 h-screen w-64 bg-sidebar backdrop-blur-xl border-r border-sidebar-border z-40 transition-transform duration-300 ${
+        className={`fixed left-0 h-screen w-64 bg-sidebar/95 backdrop-blur-xl border-r border-sidebar-border z-40 transition-transform duration-300 ${
           isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         } safe-area-inset`}
+        style={{ top: 0 }}
       >
         <div className="flex flex-col h-full pb-safe">
-          {/* Logo */}
+          {/* Logo - aligned with header height */}
           <Link
             href="/"
-            className="flex items-center gap-3 p-6 border-b border-sidebar-border group"
+            className="flex items-center gap-3 px-6 border-b border-sidebar-border group shrink-0"
+            style={{ height: `${HEADER_HEIGHT}px` }}
             onClick={() => setIsOpen(false)}
           >
             <div className="relative">
