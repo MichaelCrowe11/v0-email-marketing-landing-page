@@ -8,7 +8,7 @@ import { StreamingChatDemo } from "@/components/streaming-chat-demo"
 import { Features } from "@/components/features"
 import { FAQ } from "@/components/faq"
 import { ScrollReveal } from "@/components/scroll-reveal"
-import { AIGeneratedIntro } from "@/components/ai-generated-intro"
+import { CodeGenerationIntro } from "@/components/code-generation-intro"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 
@@ -74,7 +74,7 @@ export default function Home() {
 
   // Show intro if user hasn't seen it yet
   if (showIntro && !hasSeenIntro) {
-    return <AIGeneratedIntro onComplete={handleIntroComplete} />
+    return <CodeGenerationIntro onComplete={handleIntroComplete} />
   }
 
   // Show loading while checking auth (only if intro has been seen)
