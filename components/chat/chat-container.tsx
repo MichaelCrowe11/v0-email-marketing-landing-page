@@ -96,11 +96,11 @@ function MagicalStreamingText({ text, isStreaming }: { text: string; isStreaming
 }
 
 export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAccess?: boolean }) {
-  const [selectedModel, setSelectedModel] = useState("openai/gpt-4o-mini")
+  const [selectedModel, setSelectedModel] = useState("crowelogic/mini")
   const [userId, setUserId] = useState<string | null>(null)
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null)
 
-  const chatHelpers = useChat({
+  const { messages, input, handleInputChange, handleSubmit, status, setInput } = useChat({
     api: "/api/chat",
     body: {
       model: selectedModel,
@@ -108,20 +108,14 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
     onError: (error) => {
       console.error("[v0] Chat error:", error)
     },
-    onFinish: async ({ message }) => {
+    onFinish: async (message) => {
       console.log("[v0] Message finished:", message)
       // Save message to database after completion
-      if (userId && currentConversationId && "content" in message) {
-        await saveMessage(currentConversationId, "assistant", String(message.content))
+      if (userId && currentConversationId) {
+        await saveMessage(currentConversationId, "assistant", String(message.message.content))
       }
     },
   })
-
-  const messages = chatHelpers.messages || []
-  const input = chatHelpers.input || ""
-  const handleInputChange = chatHelpers.handleInputChange || (() => {})
-  const handleSubmit = chatHelpers.handleSubmit || (() => {})
-  const status = chatHelpers.status || "idle"
 
   const [completedMessages, setCompletedMessages] = useState<Set<string>>(new Set())
   const [activeToolDialog, setActiveToolDialog] = useState<"substrate" | "strain" | "environment" | "yield" | null>(
@@ -250,33 +244,22 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
   }
 
   const handleVoiceTranscript = (transcript: string) => {
-    if (textareaRef.current) {
-      textareaRef.current.value = transcript
+    setInput(transcript)
 
-      const event = new Event("input", { bubbles: true })
-      textareaRef.current.dispatchEvent(event)
-
-      setTimeout(() => {
-        const form = textareaRef.current?.closest("form")
-        if (form) form.requestSubmit()
-      }, 50)
-    }
+    setTimeout(() => {
+      const form = textareaRef.current?.closest("form")
+      if (form) form.requestSubmit()
+    }, 50)
   }
 
   const handleSuggestionClick = (suggestion: string) => {
-    if (textareaRef.current) {
-      textareaRef.current.value = suggestion
+    setInput(suggestion)
 
-      // Create and dispatch a proper input event
-      const event = new Event("input", { bubbles: true })
-      textareaRef.current.dispatchEvent(event)
-
-      // Submit the form after a brief delay
-      setTimeout(() => {
-        const form = textareaRef.current?.closest("form")
-        if (form) form.requestSubmit()
-      }, 50)
-    }
+    // Submit after a brief delay
+    setTimeout(() => {
+      const form = textareaRef.current?.closest("form")
+      if (form) form.requestSubmit()
+    }, 50)
   }
 
   useEffect(() => {

@@ -15,6 +15,10 @@ function validateEnv() {
     warnings.push("Azure AI not configured - custom assistant unavailable")
   }
 
+  if (!process.env.RUNPOD_API_KEY || !process.env.RUNPOD_ENDPOINT) {
+    warnings.push("RunPod not configured - Crowe Logic Mini unavailable")
+  }
+
   // AI Gateway is optional - falls back to direct OpenAI
   if (!process.env.AI_GATEWAY_API_KEY && !process.env.OPENAI_API_KEY) {
     errors.push("No AI provider configured - need either AI_GATEWAY_API_KEY or OPENAI_API_KEY")
@@ -41,6 +45,14 @@ const azureOpenAI =
         baseURL: process.env.AZURE_AI_ENDPOINT,
         defaultQuery: { "api-version": "2024-05-01-preview" },
         defaultHeaders: { "api-key": process.env.AZURE_AI_API_KEY },
+      })
+    : null
+
+const runpodClient =
+  process.env.RUNPOD_API_KEY && process.env.RUNPOD_ENDPOINT
+    ? new OpenAI({
+        apiKey: process.env.RUNPOD_API_KEY,
+        baseURL: process.env.RUNPOD_ENDPOINT,
       })
     : null
 
@@ -85,9 +97,84 @@ export async function POST(req: Request) {
     console.log("[v0] Received messages:", messages?.length || 0)
     console.log("[v0] Selected model:", model)
 
-    const selectedModel = model || "openai/gpt-4o-mini"
+    const selectedModel = model || "crowelogic/mini" // Default to Crowe Logic Mini
 
     console.log("[v0] Using model:", selectedModel)
+
+    if (selectedModel.startsWith("crowelogic/")) {
+      console.log("[v0] Using Crowe Logic Mini (RunPod)")
+
+      if (!runpodClient) {
+        throw new Error("RunPod not configured. Please add RUNPOD_API_KEY and RUNPOD_ENDPOINT.")
+      }
+
+      const systemMessage = {
+        role: "system" as const,
+        content: `You are Crowe Logic Mini, a specialized AI assistant trained on 20+ years of commercial mushroom cultivation expertise.
+
+Your training includes:
+- Species identification and cultivation parameters
+- Contamination detection and remediation strategies
+- Substrate formulation and optimization techniques
+- Environmental control and monitoring best practices
+- Yield optimization and scaling operations
+- Troubleshooting common cultivation issues
+- Safety protocols and industry standards
+
+Personality:
+- Direct and actionable - growers need solutions, not fluff
+- Scientific but accessible - explain the "why" behind recommendations
+- Safety-conscious - always warn about pressure cookers, chemicals, and contamination risks
+- Encouraging - cultivation has a learning curve, support growers through challenges
+
+Response format:
+- Start with the most critical information
+- Use bullet points for multi-step processes
+- Include specific parameters (temps, humidity, timing)
+- Warn about common mistakes
+- Suggest preventive measures
+
+You represent the Crowe Logic brand - professional, knowledgeable, and genuinely helpful.`,
+      }
+
+      const result = streamText({
+        model: runpodClient,
+        messages: [systemMessage, ...messages],
+        temperature: 0.7,
+        maxTokens: 2000,
+        onFinish: async (event) => {
+          if (user && event.usage) {
+            const inputTokens = event.usage.promptTokens || 0
+            const outputTokens = event.usage.completionTokens || 0
+            const totalTokens = inputTokens + outputTokens
+
+            const cost = calculateCost(inputTokens, outputTokens, selectedModel)
+
+            await supabase.from("api_usage_logs").insert({
+              user_id: user.id,
+              feature_type: "chat",
+              tokens_used: totalTokens,
+              cost_usd: cost.userCharge,
+              metadata: {
+                model: selectedModel,
+                input_tokens: inputTokens,
+                output_tokens: outputTokens,
+                provider_cost: cost.providerCost,
+                markup: cost.markup,
+                finish_reason: event.finishReason,
+                provider: "runpod",
+              },
+            })
+
+            console.log("[v0] Usage logged:", { tokens: totalTokens, cost: cost.userCharge })
+          }
+        },
+      })
+
+      console.log("[v0] Returning stream response")
+
+      return result.toUIMessageStreamResponse()
+    }
 
     if (selectedModel.startsWith("azure/")) {
       const hasAzureAccess = await canAccessAzureAI()

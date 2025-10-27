@@ -9,6 +9,7 @@ export type ModelProvider =
   | "mistral"
   | "cohere"
   | "azure"
+  | "crowelogic" // Added custom Crowe Logic provider
 
 export type ModelOption = {
   id: string
@@ -23,6 +24,18 @@ export type ModelOption = {
 }
 
 export const AVAILABLE_MODELS: ModelOption[] = [
+  {
+    id: "crowelogic/mini",
+    name: "Crowe Logic Mini",
+    provider: "crowelogic",
+    description: "Deep reasoning scientific research model - fast, powerful, and trained for complex analysis",
+    badge: "reasoning",
+    costPer1MInputTokens: 0.05, // Ultra-low cost
+    costPer1MOutputTokens: 0.1,
+    contextWindow: 8192,
+    capabilities: ["chat", "deep-reasoning", "scientific-research", "complex-analysis", "ultra-fast"],
+  },
+
   // Azure Custom Assistant
   {
     id: "azure/crowelogic",
