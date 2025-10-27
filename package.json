@@ -9,7 +9,10 @@
     "start": "next start"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "latest",
     "@ai-sdk/azure": "2.0.54",
+    "@ai-sdk/google": "latest",
+    "@ai-sdk/openai": "latest",
     "@ai-sdk/react": "latest",
     "@emotion/is-prop-valid": "latest",
     "@hookform/resolvers": "^3.10.0",

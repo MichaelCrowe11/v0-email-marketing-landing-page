@@ -99,7 +99,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
   const [userId, setUserId] = useState<string | null>(null)
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null)
 
-  const { messages, input, handleInputChange, handleSubmit, status, setInput, setMessages } = useChat({
+  const chatHelpers = useChat({
     api: "/api/chat",
     body: {
       model: selectedModel,
@@ -115,6 +115,8 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
       }
     },
   })
+
+  const { messages, input, handleInputChange, handleSubmit, status, setInput, setMessages } = chatHelpers
 
   const [completedMessages, setCompletedMessages] = useState<Set<string>>(new Set())
   const [activeToolDialog, setActiveToolDialog] = useState<"substrate" | "strain" | "environment" | "yield" | null>(
@@ -244,22 +246,24 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
   }
 
   const handleVoiceTranscript = (transcript: string) => {
-    setInput(transcript)
-
-    setTimeout(() => {
-      const form = textareaRef.current?.closest("form")
-      if (form) form.requestSubmit()
-    }, 50)
+    if (setInput) {
+      setInput(transcript)
+      setTimeout(() => {
+        const form = textareaRef.current?.closest("form")
+        if (form) form.requestSubmit()
+      }, 50)
+    }
   }
 
   const handleSuggestionClick = (suggestion: string) => {
-    setInput(suggestion)
-
-    // Submit after a brief delay
-    setTimeout(() => {
-      const form = textareaRef.current?.closest("form")
-      if (form) form.requestSubmit()
-    }, 50)
+    if (setInput) {
+      setInput(suggestion)
+      // Submit after a brief delay
+      setTimeout(() => {
+        const form = textareaRef.current?.closest("form")
+        if (form) form.requestSubmit()
+      }, 50)
+    }
   }
 
   useEffect(() => {
