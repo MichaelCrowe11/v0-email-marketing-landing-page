@@ -1,37 +1,48 @@
 import { streamText } from "ai"
 import OpenAI from "openai"
+import { createClient } from "@/lib/supabase/server"
+import { calculateCost } from "@/lib/ai-models"
+import { canAccessAzureAI } from "@/lib/subscription"
 
 export const maxDuration = 30
 
-// Validate environment variables
 function validateEnv() {
   const errors: string[] = []
+  const warnings: string[] = []
 
-  if (!process.env.AZURE_AI_API_KEY) {
-    errors.push("AZURE_AI_API_KEY is not set")
+  // Azure AI is optional - only needed for custom assistant
+  if (!process.env.AZURE_AI_API_KEY || !process.env.AZURE_AI_ENDPOINT) {
+    warnings.push("Azure AI not configured - custom assistant unavailable")
   }
-  if (!process.env.AZURE_AI_ENDPOINT) {
-    errors.push("AZURE_AI_ENDPOINT is not set")
+
+  // AI Gateway is optional - falls back to direct OpenAI
+  if (!process.env.AI_GATEWAY_API_KEY && !process.env.OPENAI_API_KEY) {
+    errors.push("No AI provider configured - need either AI_GATEWAY_API_KEY or OPENAI_API_KEY")
   }
 
   if (errors.length > 0) {
     console.error("[v0] Environment validation failed:", errors)
-    return { valid: false, errors }
+    return { valid: false, errors, warnings }
   }
 
-  return { valid: true, errors: [] }
+  if (warnings.length > 0) {
+    console.warn("[v0] Environment warnings:", warnings)
+  }
+
+  return { valid: true, errors: [], warnings }
 }
 
 const envCheck = validateEnv()
 
-const azureOpenAI = envCheck.valid
-  ? new OpenAI({
-      apiKey: process.env.AZURE_AI_API_KEY || "",
-      baseURL: process.env.AZURE_AI_ENDPOINT || "",
-      defaultQuery: { "api-version": "2024-05-01-preview" },
-      defaultHeaders: { "api-key": process.env.AZURE_AI_API_KEY || "" },
-    })
-  : null
+const azureOpenAI =
+  process.env.AZURE_AI_API_KEY && process.env.AZURE_AI_ENDPOINT
+    ? new OpenAI({
+        apiKey: process.env.AZURE_AI_API_KEY,
+        baseURL: process.env.AZURE_AI_ENDPOINT,
+        defaultQuery: { "api-version": "2024-05-01-preview" },
+        defaultHeaders: { "api-key": process.env.AZURE_AI_API_KEY },
+      })
+    : null
 
 const AZURE_ASSISTANT_ID = "asst_7ycbM8XLx9HjiBfvI0tGdhtz"
 
@@ -41,12 +52,18 @@ export async function POST(req: Request) {
   try {
     const { messages, model } = await req.json()
 
+    console.log("[v0] Request body:", { messagesCount: messages?.length, model })
+
+    const supabase = await createClient()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
     // Check environment configuration
     if (!envCheck.valid) {
       console.error("[v0] Environment validation failed:", envCheck.errors)
 
-      // Return a user-friendly error message in the chat stream format
-      const errorMessage = `⚠️ **AI Service Configuration Required**\n\nThe chat service needs to be configured with API credentials.\n\n**Missing:**\n${envCheck.errors.map(err => `• ${err}`).join('\n')}\n\n**To fix this:**\n1. Copy \`.env.example\` to \`.env.local\`\n2. Add your Azure OpenAI credentials\n3. Restart the development server\n\nSee [SETUP.md](../SETUP.md) for detailed instructions.`
+      const errorMessage = `⚠️ **AI Service Configuration Required**\n\nThe chat service needs to be configured with API credentials.\n\n**Missing:**\n${envCheck.errors.map((err) => `• ${err}`).join("\n")}\n\n**To fix this:**\nAdd your API keys to the Vercel environment variables.\n\nSee the Vars section in the sidebar to configure.`
 
       const encoder = new TextEncoder()
       const stream = new ReadableStream({
@@ -68,12 +85,38 @@ export async function POST(req: Request) {
     console.log("[v0] Received messages:", messages?.length || 0)
     console.log("[v0] Selected model:", model)
 
-    const selectedModel = model || "azure/crowelogic"
+    const selectedModel = model || "openai/gpt-4o-mini"
 
     console.log("[v0] Using model:", selectedModel)
 
-    if (selectedModel === "azure/crowelogic" || selectedModel === "azure/agent874") {
+    if (selectedModel.startsWith("azure/")) {
+      const hasAzureAccess = await canAccessAzureAI()
+
+      if (!hasAzureAccess) {
+        const errorMessage = `⚠️ **Premium Feature Required**\n\nThe Crowe Logic Custom Assistant is available for Expert and Master tier subscribers only.\n\n**To access this feature:**\n• Upgrade to Expert or Master tier\n• Enjoy unlimited access to your custom AI assistant trained on cultivation data\n\nIn the meantime, you can use our other powerful AI models like GPT-4o, Claude, and Gemini.`
+
+        const encoder = new TextEncoder()
+        const stream = new ReadableStream({
+          start(controller) {
+            controller.enqueue(encoder.encode(`0:${JSON.stringify(errorMessage)}\n`))
+            controller.enqueue(encoder.encode(`d:{"finishReason":"stop"}\n`))
+            controller.close()
+          },
+        })
+
+        return new Response(stream, {
+          headers: {
+            "Content-Type": "text/plain; charset=utf-8",
+            "X-Vercel-AI-Data-Stream": "v1",
+          },
+        })
+      }
+
       console.log("[v0] Using Azure AI Assistant")
+
+      if (!azureOpenAI) {
+        throw new Error("Azure AI not configured. Please add AZURE_AI_API_KEY and AZURE_AI_ENDPOINT.")
+      }
 
       const encoder = new TextEncoder()
       const stream = new ReadableStream({
@@ -82,27 +125,63 @@ export async function POST(req: Request) {
             const lastMessage = messages[messages.length - 1]
             const userContent = lastMessage?.content || ""
 
-            if (!azureOpenAI) {
-              throw new Error("Azure OpenAI client not initialized")
-            }
+            console.log("[v0] Creating Azure thread for message:", userContent.substring(0, 100))
 
             const thread = await azureOpenAI.beta.threads.create()
+            console.log("[v0] Thread created:", thread.id)
 
             await azureOpenAI.beta.threads.messages.create(thread.id, {
               role: "user",
               content: userContent,
             })
+            console.log("[v0] Message added to thread")
 
             const run = azureOpenAI.beta.threads.runs.stream(thread.id, {
               assistant_id: AZURE_ASSISTANT_ID,
             })
 
+            console.log("[v0] Starting Azure stream...")
+
+            let totalTokens = 0
+
             run.on("textDelta", (textDelta) => {
               const chunk = textDelta.value || ""
-              controller.enqueue(encoder.encode(`0:${JSON.stringify(chunk)}\n`))
+              if (chunk) {
+                controller.enqueue(encoder.encode(`0:${JSON.stringify(chunk)}\n`))
+              }
             })
 
-            await run.finalRun()
+            run.on("error", (error) => {
+              console.error("[v0] Azure stream error:", error)
+            })
+
+            const finalRun = await run.finalRun()
+            console.log("[v0] Azure stream completed")
+
+            if (user && finalRun.usage) {
+              const inputTokens = finalRun.usage.prompt_tokens || 0
+              const outputTokens = finalRun.usage.completion_tokens || 0
+              totalTokens = finalRun.usage.total_tokens || 0
+
+              const cost = calculateCost(inputTokens, outputTokens, selectedModel)
+
+              await supabase.from("api_usage_logs").insert({
+                user_id: user.id,
+                feature_type: "chat",
+                tokens_used: totalTokens,
+                cost_usd: cost.userCharge,
+                metadata: {
+                  model: selectedModel,
+                  input_tokens: inputTokens,
+                  output_tokens: outputTokens,
+                  provider_cost: cost.providerCost,
+                  markup: cost.markup,
+                  thread_id: thread.id,
+                },
+              })
+
+              console.log("[v0] Usage logged:", { tokens: totalTokens, cost: cost.userCharge })
+            }
 
             controller.enqueue(encoder.encode(`d:{"finishReason":"stop"}\n`))
             controller.close()
@@ -122,6 +201,8 @@ export async function POST(req: Request) {
         },
       })
     }
+
+    console.log("[v0] Using AI Gateway/Direct provider for model:", selectedModel)
 
     const systemMessage = {
       role: "system" as const,
@@ -145,12 +226,39 @@ When responding:
 You can use <reasoning> tags to show your thought process for complex questions.`,
     }
 
-    console.log("[v0] Starting streamText with AI Gateway")
+    console.log("[v0] Starting streamText with model:", selectedModel)
 
     const result = streamText({
       model: selectedModel,
       messages: [systemMessage, ...messages],
       temperature: 0.7,
+      maxTokens: 2000,
+      onFinish: async (event) => {
+        if (user && event.usage) {
+          const inputTokens = event.usage.promptTokens || 0
+          const outputTokens = event.usage.completionTokens || 0
+          const totalTokens = inputTokens + outputTokens
+
+          const cost = calculateCost(inputTokens, outputTokens, selectedModel)
+
+          await supabase.from("api_usage_logs").insert({
+            user_id: user.id,
+            feature_type: "chat",
+            tokens_used: totalTokens,
+            cost_usd: cost.userCharge,
+            metadata: {
+              model: selectedModel,
+              input_tokens: inputTokens,
+              output_tokens: outputTokens,
+              provider_cost: cost.providerCost,
+              markup: cost.markup,
+              finish_reason: event.finishReason,
+            },
+          })
+
+          console.log("[v0] Usage logged:", { tokens: totalTokens, cost: cost.userCharge })
+        }
+      },
     })
 
     console.log("[v0] Returning stream response")

@@ -144,6 +144,9 @@ export function GlobalHeader() {
           <Button variant="ghost" size="sm" className="hidden xl:flex h-9" asChild>
             <a href="/chat">AI Chat</a>
           </Button>
+          <Button variant="ghost" size="sm" className="hidden xl:flex h-9" asChild>
+            <a href="/consultations">Consult</a>
+          </Button>
           <Button size="sm" className="bg-primary hover:bg-primary/90 h-9 px-3 sm:px-4 text-xs sm:text-sm" asChild>
             <a href="/crowe-vision">Vision</a>
           </Button>

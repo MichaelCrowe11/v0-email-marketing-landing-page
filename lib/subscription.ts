@@ -151,3 +151,9 @@ export async function requireFeatureAccess(feature: keyof SubscriptionFeatures) 
 
   return true
 }
+
+export async function canAccessAzureAI(): Promise<boolean> {
+  const subscription = await getUserSubscription()
+  // Azure AI custom assistant available for Expert and Master tiers only
+  return subscription.tier === "expert" || subscription.tier === "master"
+}

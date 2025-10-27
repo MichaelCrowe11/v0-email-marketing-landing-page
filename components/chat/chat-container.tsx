@@ -1,5 +1,6 @@
 "use client"
 import type { ReasoningStep } from "@/components/chat/chain-of-thought"
+import type React from "react"
 
 import { useChat } from "@ai-sdk/react"
 import { useState, useEffect, useRef } from "react"
@@ -95,17 +96,22 @@ function MagicalStreamingText({ text, isStreaming }: { text: string; isStreaming
 }
 
 export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAccess?: boolean }) {
-  const [selectedModel, setSelectedModel] = useState("azure/crowelogic")
+  const [selectedModel, setSelectedModel] = useState("openai/gpt-4o-mini")
   const [userId, setUserId] = useState<string | null>(null)
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null)
 
   const chatHelpers = useChat({
+    api: "/api/chat",
+    body: {
+      model: selectedModel,
+    },
     onError: (error) => {
       console.error("[v0] Chat error:", error)
     },
     onFinish: async ({ message }) => {
+      console.log("[v0] Message finished:", message)
       // Save message to database after completion
-      if (userId && currentConversationId && 'content' in message) {
+      if (userId && currentConversationId && "content" in message) {
         await saveMessage(currentConversationId, "assistant", String(message.content))
       }
     },
@@ -290,8 +296,8 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
   const isEmpty = messages.length === 0
 
   // Check if there's a configuration error in the messages
-  const hasConfigError = messages.some((msg) =>
-    msg.role === "assistant" && msg.content.includes("AI Service Configuration Required")
+  const hasConfigError = messages.some(
+    (msg) => msg.role === "assistant" && msg.content.includes("AI Service Configuration Required"),
   )
 
   return (
@@ -302,7 +308,11 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
           <div className="max-w-4xl mx-auto flex items-start gap-3">
             <div className="flex-shrink-0 mt-0.5">
               <svg className="w-5 h-5 text-amber-600 dark:text-amber-500" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                <path
+                  fillRule="evenodd"
+                  d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                  clipRule="evenodd"
+                />
               </svg>
             </div>
             <div className="flex-1 text-sm">
@@ -310,8 +320,15 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                 Setup Required: AI Features Not Configured
               </p>
               <p className="text-amber-800 dark:text-amber-300 text-xs">
-                Configure your API keys in <code className="px-1.5 py-0.5 bg-amber-100 dark:bg-amber-900/50 rounded text-amber-900 dark:text-amber-200">.env.local</code> to enable chat and vision features.
-                See <a href="/SETUP.md" className="underline hover:no-underline">SETUP.md</a> for instructions.
+                Configure your API keys in{" "}
+                <code className="px-1.5 py-0.5 bg-amber-100 dark:bg-amber-900/50 rounded text-amber-900 dark:text-amber-200">
+                  .env.local
+                </code>{" "}
+                to enable chat and vision features. See{" "}
+                <a href="/SETUP.md" className="underline hover:no-underline">
+                  SETUP.md
+                </a>{" "}
+                for instructions.
               </p>
             </div>
           </div>
@@ -361,8 +378,8 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
               strokeLinejoin="round"
               className="w-4 h-4"
             >
-              <path d="m12 19-7-7 7-7" />
-              <path d="M19 12H5" />
+              <path d="m5 12 7-7 7 7" />
+              <path d="M19 12V5" />
             </svg>
             Back
           </Link>
@@ -529,13 +546,15 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
             <div className="mb-4 relative group">
               <div className="flex items-center gap-3 p-3 bg-card border border-border rounded-xl">
                 <div className="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
-                  <img src={uploadedImage.url} alt="Upload preview" className="w-full h-full object-cover" />
+                  <img
+                    src={uploadedImage.url || "/placeholder.svg"}
+                    alt="Upload preview"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-foreground truncate">{uploadedImage.file.name}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {(uploadedImage.file.size / 1024).toFixed(1)} KB
-                  </p>
+                  <p className="text-xs text-muted-foreground">{(uploadedImage.file.size / 1024).toFixed(1)} KB</p>
                 </div>
                 <button
                   type="button"
@@ -588,13 +607,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
             />
 
             {/* Hidden file input */}
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              className="hidden"
-            />
+            <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
 
             {/* Image upload button */}
             <button
@@ -639,14 +652,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                   fill="none"
                   viewBox="0 0 24 24"
                 >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path
                     className="opacity-75"
                     fill="currentColor"

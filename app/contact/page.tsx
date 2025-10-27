@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -7,17 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import {
-  Building2,
-  Mail,
-  Phone,
-  MapPin,
-  Zap,
-  CheckCircle2,
-  Briefcase,
-  Users,
-  DollarSign
-} from "lucide-react"
+import { Building2, Mail, MapPin, Zap, CheckCircle2, Briefcase, Users } from "lucide-react"
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -40,17 +32,25 @@ export default function ContactPage() {
     e.preventDefault()
     setIsSubmitting(true)
 
-    // TODO: Implement actual form submission to your backend
-    // For now, we'll simulate a submission
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      })
 
-    setIsSubmitted(true)
-    setIsSubmitting(false)
+      if (!response.ok) throw new Error("Failed to submit")
+
+      setIsSubmitted(true)
+    } catch (error) {
+      console.error("[v0] Contact form submission error:", error)
+      alert("Failed to submit form. Please try again or email Michael@CroweLogic.com directly.")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -69,9 +69,8 @@ export default function ContactPage() {
             </div>
             <h1 className="text-3xl font-bold mb-4">Request Received!</h1>
             <p className="text-muted-foreground text-lg mb-8">
-              Thank you for your interest in our enterprise facility design services.
-              Michael Crowe will review your request and contact you within 24-48 hours
-              to discuss your project.
+              Thank you for your interest in our enterprise facility design services. Michael Crowe will review your
+              request and contact you within 24-48 hours to discuss your project.
             </p>
             <div className="flex gap-4 justify-center">
               <Button asChild size="lg">
@@ -93,15 +92,13 @@ export default function ContactPage() {
       <div className="border-b border-border bg-gradient-to-b from-primary/5 to-background">
         <div className="container mx-auto px-6 py-16 max-w-6xl">
           <div className="text-center max-w-3xl mx-auto">
-            <Badge className="mb-4 bg-primary/10 text-primary border-primary/20">
-              Enterprise Solutions
-            </Badge>
+            <Badge className="mb-4 bg-primary/10 text-primary border-primary/20">Enterprise Solutions</Badge>
             <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
               Custom Facility Design & Build Services
             </h1>
             <p className="text-xl text-muted-foreground mb-8">
-              From boutique operations to multi-million dollar commercial facilities.
-              Get a custom quote for your cultivation project.
+              From boutique operations to multi-million dollar commercial facilities. Get a custom quote for your
+              cultivation project.
             </p>
           </div>
 
@@ -155,18 +152,14 @@ export default function ContactPage() {
                 <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                 <div>
                   <div className="font-semibold">Staff Training Programs</div>
-                  <p className="text-sm text-muted-foreground">
-                    Comprehensive training for your cultivation team
-                  </p>
+                  <p className="text-sm text-muted-foreground">Comprehensive training for your cultivation team</p>
                 </div>
               </div>
               <div className="flex gap-3">
                 <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                 <div>
                   <div className="font-semibold">Ongoing Support</div>
-                  <p className="text-sm text-muted-foreground">
-                    Retainer options for continuous consultation
-                  </p>
+                  <p className="text-sm text-muted-foreground">Retainer options for continuous consultation</p>
                 </div>
               </div>
             </div>
@@ -364,12 +357,7 @@ export default function ContactPage() {
                 </div>
 
                 <div className="pt-4">
-                  <Button
-                    type="submit"
-                    size="lg"
-                    className="w-full"
-                    disabled={isSubmitting}
-                  >
+                  <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
                     {isSubmitting ? (
                       <>
                         <Zap className="w-5 h-5 mr-2 animate-spin" />
@@ -397,34 +385,32 @@ export default function ContactPage() {
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">Recent Project Highlights</h2>
-            <p className="text-muted-foreground">
-              Trusted by cultivation facilities worldwide
-            </p>
+            <p className="text-muted-foreground">Trusted by cultivation facilities worldwide</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card className="p-6 border-primary/20 bg-card/50 backdrop-blur">
               <MapPin className="w-10 h-10 text-primary mb-4" />
               <h3 className="font-bold text-lg mb-2">Abu Dhabi, UAE</h3>
-              <p className="text-muted-foreground text-sm mb-3">
-                80-room commercial facility
-              </p>
-              <Badge variant="outline" className="border-primary/20">$2.25M Project</Badge>
+              <p className="text-muted-foreground text-sm mb-3">80-room commercial facility</p>
+              <Badge variant="outline" className="border-primary/20">
+                $2.25M Project
+              </Badge>
             </Card>
             <Card className="p-6 border-primary/20 bg-card/50 backdrop-blur">
               <Building2 className="w-10 h-10 text-primary mb-4" />
               <h3 className="font-bold text-lg mb-2">North America</h3>
-              <p className="text-muted-foreground text-sm mb-3">
-                Multiple boutique gourmet facilities
-              </p>
-              <Badge variant="outline" className="border-primary/20">5-15 Rooms</Badge>
+              <p className="text-muted-foreground text-sm mb-3">Multiple boutique gourmet facilities</p>
+              <Badge variant="outline" className="border-primary/20">
+                5-15 Rooms
+              </Badge>
             </Card>
             <Card className="p-6 border-primary/20 bg-card/50 backdrop-blur">
               <Users className="w-10 h-10 text-primary mb-4" />
               <h3 className="font-bold text-lg mb-2">Research Facilities</h3>
-              <p className="text-muted-foreground text-sm mb-3">
-                University and private research labs
-              </p>
-              <Badge variant="outline" className="border-primary/20">Custom Solutions</Badge>
+              <p className="text-muted-foreground text-sm mb-3">University and private research labs</p>
+              <Badge variant="outline" className="border-primary/20">
+                Custom Solutions
+              </Badge>
             </Card>
           </div>
         </div>
