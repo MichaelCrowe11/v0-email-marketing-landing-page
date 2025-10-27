@@ -39,6 +39,12 @@ export function ConversationHistory({
     loadUser()
   }, [])
 
+  useEffect(() => {
+    if (userId) {
+      loadConversations(userId)
+    }
+  }, [currentConversationId, userId])
+
   async function loadConversations(uid: string) {
     setIsLoading(true)
     const data = await getConversations(uid)

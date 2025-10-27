@@ -15,14 +15,13 @@ import { EnvironmentMonitor } from "@/components/chat/environment-monitor"
 import { YieldCalculator } from "@/components/chat/yield-calculator"
 import { IntegrationsPanel } from "@/components/chat/integrations-panel"
 import { createClient } from "@/lib/supabase/client"
-import { createConversation } from "@/lib/supabase/chat-queries"
+import { createConversation, saveMessage, getMessages } from "@/lib/supabase/chat-queries"
 import { ConversationHistory } from "@/components/chat/conversation-history"
 import { ModelSelector } from "@/components/chat/model-selector"
 import { AIAvatarSwirl } from "@/components/chat/ai-avatar-swirl"
 import { WorkflowTerminal } from "@/components/chat/workflow-terminal"
 import { BrowserResearchPanel } from "@/components/chat/browser-research-panel"
 import { VoiceChatButton } from "@/components/chat/voice-chat-button"
-import { saveMessage } from "@/lib/supabase/chat-queries" // Declare the saveMessage function
 
 function parseReasoning(text: string): { reasoning: ReasoningStep[]; content: string } {
   const reasoningMatch = text.match(/<reasoning>([\s\S]*?)<\/reasoning>/)
@@ -100,7 +99,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
   const [userId, setUserId] = useState<string | null>(null)
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null)
 
-  const { messages, input, handleInputChange, handleSubmit, status, setInput } = useChat({
+  const { messages, input, handleInputChange, handleSubmit, status, setInput, setMessages } = useChat({
     api: "/api/chat",
     body: {
       model: selectedModel,
@@ -112,7 +111,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
       console.log("[v0] Message finished:", message)
       // Save message to database after completion
       if (userId && currentConversationId) {
-        await saveMessage(currentConversationId, "assistant", String(message.message.content))
+        await saveMessage(currentConversationId, "assistant", String(message.content))
       }
     },
   })
@@ -154,12 +153,13 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
     setCurrentConversationId(conversationId)
   }
 
-  const handleNewConversation = async (title: string) => {
+  const handleNewConversation = async () => {
     if (!userId) return
 
-    const conversation = await createConversation(userId, title)
+    const conversation = await createConversation(userId, "New Chat")
     if (conversation) {
       setCurrentConversationId(conversation.id)
+      setMessages([]) // Clear current messages
     }
   }
 
@@ -270,10 +270,37 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
       } = await supabase.auth.getUser()
       if (user) {
         setUserId(user.id)
+        // Create initial conversation if none exists
+        if (!currentConversationId) {
+          const conversation = await createConversation(user.id, "New Chat")
+          if (conversation) {
+            setCurrentConversationId(conversation.id)
+          }
+        }
       }
     }
     loadUser()
   }, [])
+
+  useEffect(() => {
+    async function loadConversationMessages() {
+      if (!currentConversationId) return
+
+      const messages = await getMessages(currentConversationId)
+      if (messages.length > 0) {
+        // Convert database messages to chat format
+        const chatMessages = messages.map((msg) => ({
+          id: msg.id,
+          role: msg.role,
+          content: msg.content,
+        }))
+        setMessages(chatMessages)
+      } else {
+        setMessages([])
+      }
+    }
+    loadConversationMessages()
+  }, [currentConversationId, setMessages])
 
   const isLoading = status === "in_progress"
   const isEmpty = messages.length === 0
@@ -636,11 +663,8 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                   viewBox="0 0 24 24"
                 >
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
+                  <path className="opacity-75" fill="currentColor" d="m5 12 7-7 7 7" />
+                  <path d="M19 12V5" />
                 </svg>
               ) : (
                 <svg
