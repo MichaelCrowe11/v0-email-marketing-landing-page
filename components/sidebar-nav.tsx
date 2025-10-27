@@ -99,11 +99,13 @@ export function SidebarNav() {
             onClick={() => setIsOpen(false)}
           >
             <div className="relative">
-              <img
-                src="/crowe-logic-logo.png"
-                alt="Crowe Logic"
-                className="h-12 w-12 rounded-full object-cover ring-2 ring-sidebar-border transition-all group-hover:scale-105 group-hover:ring-primary/20"
-              />
+              <div className="h-12 w-12 rounded-full bg-gradient-to-br from-purple-500 via-cyan-500 to-pink-500 p-0.5 ring-2 ring-sidebar-border transition-all group-hover:scale-105 group-hover:ring-primary/20">
+                <div className="h-full w-full rounded-full bg-sidebar flex items-center justify-center">
+                  <span className="text-xl font-bold bg-gradient-to-br from-purple-400 via-cyan-400 to-pink-400 bg-clip-text text-transparent">
+                    CL
+                  </span>
+                </div>
+              </div>
             </div>
             <div>
               <div className="text-lg font-semibold text-sidebar-foreground">Crowe Logic</div>
