@@ -1,8 +1,8 @@
-import { createServerClient } from "@supabase/ssr"
+import { createClient } from "@supabase/supabase-js"
 import { NextResponse, type NextRequest } from "next/server"
 
 export async function updateSession(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({
+  const supabaseResponse = NextResponse.next({
     request,
   })
 
@@ -15,22 +15,23 @@ export async function updateSession(request: NextRequest) {
     return supabaseResponse
   }
 
-  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
-    cookies: {
-      getAll() {
-        return request.cookies.getAll()
-      },
-      setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-        supabaseResponse = NextResponse.next({
-          request,
-        })
-        cookiesToSet.forEach(({ name, value, options }) => supabaseResponse.cookies.set(name, value, options))
-      },
+  const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
     },
   })
 
   try {
+    const authToken = request.cookies.get("sb-access-token")?.value
+    if (authToken) {
+      const refreshToken = request.cookies.get("sb-refresh-token")?.value
+      await supabase.auth.setSession({
+        access_token: authToken,
+        refresh_token: refreshToken || "",
+      })
+    }
+
     const {
       data: { user },
     } = await supabase.auth.getUser()
@@ -44,6 +45,8 @@ export async function updateSession(request: NextRequest) {
       "/analytics",
       "/crowe-vision",
       "/video-studio",
+      "/sops", // Now protected
+      "/docs", // Now protected
     ]
 
     const isProtectedPath = protectedPaths.some((path) => request.nextUrl.pathname.startsWith(path))

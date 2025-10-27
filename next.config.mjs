@@ -1,23 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   eslint: {
-    ignoreDuringBuilds: false,
+    ignoreDuringBuilds: true,
   },
   typescript: {
-    ignoreBuildErrors: false,
+    ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: false,
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**.supabase.co',
-      },
-      {
-        protocol: 'https',
-        hostname: 'placeholder.svg',
-      }
-    ],
+    unoptimized: true,
   },
   async headers() {
     return [

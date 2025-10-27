@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Check, Sparkles, Zap } from "lucide-react"
+import { Check, Sparkles, Zap, Crown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -50,6 +50,28 @@ const plans = [
     cta: "Start Expert Access",
     popular: true,
   },
+  {
+    id: "master",
+    name: "Master Grower",
+    description: "Premium tier for commercial operations with exclusive benefits",
+    monthlyPrice: 497,
+    yearlyPrice: 4997,
+    savings: 967,
+    icon: Crown,
+    features: [
+      "Everything in Expert Access",
+      "Quarterly 30-min 1-on-1 with Michael Crowe",
+      "White-label capability (remove branding)",
+      "Multi-facility management (5 locations)",
+      "Team collaboration (up to 10 users)",
+      "API access for custom integrations",
+      "Dedicated account manager",
+      "Custom SOP creation service",
+    ],
+    cta: "Start Master Grower",
+    popular: false,
+    premium: true,
+  },
 ]
 
 export default function PricingPage() {
@@ -85,21 +107,22 @@ export default function PricingPage() {
           <span className={billingCycle === "yearly" ? "font-semibold" : "text-muted-foreground"}>
             Yearly
             <Badge variant="secondary" className="ml-2">
-              Save up to $367
+              Save up to $967
             </Badge>
           </span>
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
           {plans.map((plan) => {
             const Icon = plan.icon
             const price = billingCycle === "monthly" ? plan.monthlyPrice : plan.yearlyPrice
             const savings = billingCycle === "yearly" ? plan.savings : 0
 
             return (
-              <Card key={plan.id} className={`relative p-8 ${plan.popular ? "border-primary shadow-lg" : ""}`}>
+              <Card key={plan.id} className={`relative p-8 ${plan.popular ? "border-primary shadow-lg" : ""} ${plan.premium ? "border-amber-500 shadow-2xl bg-gradient-to-br from-amber-50/5 to-background dark:from-amber-950/10" : ""}`}>
                 {plan.popular && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">Most Popular</Badge>}
+                {plan.premium && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-amber-600">Premium</Badge>}
 
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 rounded-lg bg-primary/10">
@@ -137,6 +160,39 @@ export default function PricingPage() {
           })}
         </div>
 
+        {/* Consultation Services CTA */}
+        <div className="mt-20 max-w-4xl mx-auto">
+          <Card className="p-8 sm:p-12 bg-gradient-to-br from-primary/5 via-background to-background border-primary/20">
+            <div className="text-center">
+              <Badge variant="outline" className="mb-4">
+                Premium Consulting Services
+              </Badge>
+              <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+                Need Direct Expert Guidance?
+              </h2>
+              <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+                Book a consultation with Michael Crowe for facility design, contamination troubleshooting, or strategic guidance.
+                From 1-hour sessions to premium monthly retainers.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button size="lg" asChild>
+                  <Link href="/consultations">
+                    View Consultation Packages
+                  </Link>
+                </Button>
+                <Button size="lg" variant="outline" asChild>
+                  <Link href="/contact">
+                    Request Enterprise Quote
+                  </Link>
+                </Button>
+              </div>
+              <p className="text-sm text-muted-foreground mt-6">
+                Starting at $425/hour • Premium Retainer: $25,000/month
+              </p>
+            </div>
+          </Card>
+        </div>
+
         {/* FAQ Section */}
         <div className="mt-20 max-w-3xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-8">Frequently Asked Questions</h2>
@@ -166,6 +222,21 @@ export default function PricingPage() {
               <p className="text-muted-foreground">
                 Yes, you can change your plan at any time. Upgrades take effect immediately, and downgrades take effect
                 at the end of your billing period.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-2">What's included in Master Grower?</h3>
+              <p className="text-muted-foreground">
+                Master Grower is designed for commercial operations. It includes quarterly 1-on-1 consultations with Michael Crowe,
+                white-label capability, multi-facility management, team collaboration for up to 10 users, API access,
+                and dedicated account management.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-2">Do you offer enterprise pricing?</h3>
+              <p className="text-muted-foreground">
+                Yes! For large-scale operations (10+ grow rooms), research institutions, or custom implementations,
+                we offer enterprise pricing and custom solutions. Contact us for a quote.
               </p>
             </div>
           </div>

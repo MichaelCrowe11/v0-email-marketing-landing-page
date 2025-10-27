@@ -1,12 +1,12 @@
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { FileText, MessageSquare, Calendar, Mail, Crown, Settings } from "lucide-react"
 import SignOutButton from "@/components/sign-out-button"
+import { ProfilePictureUpload } from "@/components/profile-picture-upload"
 
 export default async function ProfilePage() {
   const supabase = await createClient()
@@ -21,7 +21,11 @@ export default async function ProfilePage() {
 
   const { data: userData } = await supabase.from("users").select("*").eq("id", user.id).single()
 
-  const { data: subscription } = await supabase.from("subscriptions").select("*").eq("user_id", user.id).single()
+  const { data: subscription } = await supabase
+    .from("user_subscriptions")
+    .select("*, subscription_plans(*)")
+    .eq("user_id", user.id)
+    .single()
 
   const { data: documents } = await supabase
     .from("documents")
@@ -43,12 +47,10 @@ export default async function ProfilePage() {
         <Card className="glass shadow-2xl mb-8">
           <CardContent className="p-8">
             <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-              <Avatar className="w-24 h-24">
-                <AvatarImage src={userData?.avatar_url || "/placeholder.svg"} />
-                <AvatarFallback className="text-2xl">
-                  {userData?.full_name?.[0] || user.email?.[0] || "U"}
-                </AvatarFallback>
-              </Avatar>
+              <ProfilePictureUpload
+                currentAvatarUrl={userData?.avatar_url}
+                userName={userData?.full_name || user.email || "User"}
+              />
               <div className="flex-1">
                 <h1 className="text-3xl font-bold mb-2">{userData?.full_name || "User"}</h1>
                 <div className="flex items-center gap-2 text-muted-foreground mb-3">
@@ -62,11 +64,11 @@ export default async function ProfilePage() {
                 {subscription && (
                   <div className="flex items-center gap-2 mt-3">
                     <Badge
-                      variant={subscription.tier === "enterprise" ? "default" : "secondary"}
+                      variant={subscription.subscription_plans?.tier === "enterprise" ? "default" : "secondary"}
                       className="text-sm gap-1"
                     >
                       <Crown className="w-3 h-3" />
-                      {subscription.tier}
+                      {subscription.subscription_plans?.tier}
                     </Badge>
                     <Badge variant="outline" className="text-xs">
                       {subscription.status}
@@ -99,7 +101,7 @@ export default async function ProfilePage() {
               <div className="grid md:grid-cols-3 gap-6">
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Current Plan</p>
-                  <p className="text-2xl font-bold capitalize">{subscription.tier}</p>
+                  <p className="text-2xl font-bold capitalize">{subscription.subscription_plans?.tier}</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Status</p>
@@ -117,7 +119,7 @@ export default async function ProfilePage() {
                 )}
               </div>
               <div className="mt-6 flex gap-3">
-                {subscription.tier === "free" && (
+                {subscription.subscription_plans?.tier === "free" && (
                   <Button asChild>
                     <Link href="/pricing">Upgrade to Pro</Link>
                   </Button>

@@ -7,7 +7,7 @@ import Link from "next/link"
 export default function GPTsPage() {
   const aiModules = [
     {
-      name: "Crowe Logic AI - Core",
+      name: "Michael's GPT - Core",
       price: 97,
       description: "Behavior core + SOP generator + BE math + contamination triage",
       features: [
@@ -17,11 +17,11 @@ export default function GPTsPage() {
         "Contamination triage",
         "BE math calculations",
       ],
-      link: "https://buy.stripe.com/7sY8wP2hrgwjd8kbJ0ao81n",
-      logo: "/crowe-logic-logo.jpg",
+      link: "https://buy.stripe.com/7sY8wP2hrgwjd8kbJ0",
+      logo: "/crowe-avatar.png",
     },
     {
-      name: "Crowe Logic Spawn Master",
+      name: "Michael's GPT - Spawn Master",
       price: 67,
       description: "Grain prep, sterilization cycles, inoculation rates, and QC gates",
       features: [
@@ -32,11 +32,11 @@ export default function GPTsPage() {
         "Inoculation rate optimization",
         "Quality control gates",
       ],
-      link: "https://buy.stripe.com/fZu00jbS10xlb0c5kCao81o",
-      logo: "/crowe-logic-logo.jpg",
+      link: "https://buy.stripe.com/fZu00jbS10xlb0c5kC",
+      logo: "/crowe-avatar.png",
     },
     {
-      name: "Crowe Logic Substrate Tech",
+      name: "Michael's GPT - Substrate Tech",
       price: 67,
       description: "Hydration calculators, supplementation formulas, and cost per block analysis",
       features: [
@@ -46,11 +46,11 @@ export default function GPTsPage() {
         "Supplementation formulas",
         "Cost per block analysis",
       ],
-      link: "https://buy.stripe.com/4gM9ATaNX93R9W8cN4ao81p",
-      logo: "/crowe-logic-logo.jpg",
+      link: "https://buy.stripe.com/4gM9ATaNX93R9W8cN4",
+      logo: "/crowe-avatar.png",
     },
     {
-      name: "Crowe Logic Inoculation AI",
+      name: "Michael's GPT - Inoculation AI",
       price: 67,
       description: "Sterile technique protocols, inoculation rates by species, agar work and culture management",
       features: [
@@ -63,14 +63,14 @@ export default function GPTsPage() {
         "Contamination prevention",
         "Clean room setup",
       ],
-      link: "https://buy.stripe.com/eVqeVdf4d2Ftc4g28qao81q",
-      logo: "/crowe-logic-logo.jpg",
+      link: "https://buy.stripe.com/eVqeVdf4d2Ftc4g28q",
+      logo: "/crowe-avatar.png",
     },
   ]
 
   const bundles = [
     {
-      name: "Crowe Logic AI - Full Access",
+      name: "Michael's GPTs - Full Access",
       subtitle: "Best Value - 3 Modules",
       price: 159,
       originalPrice: 231,
@@ -84,12 +84,12 @@ export default function GPTsPage() {
         "12 months of updates",
         "Perpetual access to all modules",
       ],
-      link: "https://buy.stripe.com/7sYeVd4pzeobfgs6oGao81s",
-      logo: "/crowe-logic-logo.jpg",
+      link: "https://buy.stripe.com/7sYeVd4pzeobfgs6oG",
+      logo: "/crowe-avatar.png",
       featured: true,
     },
     {
-      name: "Crowe Logic AI - Ultimate Access",
+      name: "Michael's GPTs - Ultimate Access",
       subtitle: "All 4 Modules",
       price: 197,
       originalPrice: 298,
@@ -105,12 +105,12 @@ export default function GPTsPage() {
         "Perpetual access to all modules",
         "Priority support",
       ],
-      link: "https://buy.stripe.com/eVq00j6xHfsffgs4gyao81r",
-      logo: "/crowe-logic-logo.jpg",
+      link: "https://buy.stripe.com/eVq00j6xHfsffgs4gy",
+      logo: "/crowe-avatar.png",
       featured: true,
     },
     {
-      name: "Crowe Logic AI - Lab Bundle",
+      name: "Michael's GPTs - Lab Bundle",
       subtitle: "3 Specialties",
       price: 149,
       originalPrice: 201,
@@ -124,8 +124,8 @@ export default function GPTsPage() {
         "12 months of updates",
         "Perpetual access",
       ],
-      link: "https://buy.stripe.com/9B600j2hr2Ft7O028qao81g",
-      logo: "/crowe-logic-logo.jpg",
+      link: "https://buy.stripe.com/9B600j2hr2Ft7O028q",
+      logo: "/crowe-avatar.png",
     },
   ]
 
@@ -136,10 +136,14 @@ export default function GPTsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-3">
-              <img src="/crowe-logic-logo.jpg" alt="Crowe Logic" className="h-10 w-10 rounded-full" />
+              <img
+                src="/crowe-avatar.png"
+                alt="Michael Crowe"
+                className="h-10 w-10 rounded-full ring-2 ring-accent/20"
+              />
               <div>
-                <h1 className="text-lg font-bold text-foreground">Crowe Logic AI</h1>
-                <p className="text-xs text-muted-foreground">Expert GPT Assistants</p>
+                <h1 className="text-lg font-bold text-foreground">Michael's GPTs</h1>
+                <p className="text-xs text-muted-foreground">Expert AI Assistants</p>
               </div>
             </Link>
             <Link href="/">
@@ -156,8 +160,8 @@ export default function GPTsPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-accent/5 via-transparent to-transparent" />
         <div className="relative max-w-7xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 mb-6">
-            <img src="/crowe-logic-logo.jpg" alt="Crowe Logic" className="w-4 h-4 rounded-full" />
-            <span className="text-sm font-medium text-foreground">Michael Crowe's Expert GPT Assistants</span>
+            <img src="/crowe-avatar.png" alt="Michael Crowe" className="w-6 h-6 rounded-full ring-1 ring-accent/30" />
+            <span className="text-sm font-medium text-foreground">Michael's Expert GPT Assistants</span>
           </div>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-foreground mb-6">
             Professional Mycology AI
@@ -296,7 +300,7 @@ export default function GPTsPage() {
         <div className="rounded-3xl border border-border bg-gradient-to-br from-accent/5 via-card to-card p-8 sm:p-12 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">Ready to Transform Your Cultivation?</h2>
           <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Join hundreds of professional cultivators using Crowe Logic AI to optimize their operations and increase
+            Join hundreds of professional cultivators using Michael's GPTs to optimize their operations and increase
             yields.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -309,6 +313,66 @@ export default function GPTsPage() {
             <Button size="lg" variant="outline" asChild>
               <Link href="/chat">Try Free Chat</Link>
             </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* FAQ Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 border-t border-border">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">Frequently Asked Questions</h2>
+          <p className="text-lg text-muted-foreground">Everything you need to know about Michael's GPTs</p>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2 max-w-5xl mx-auto">
+          <div className="glass-card rounded-xl p-6 hover:border-primary/50 transition-all duration-300">
+            <h3 className="mb-3 text-lg font-semibold text-foreground">Is $97 a subscription?</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              No. $97 is a one-time founders price for Core. It includes 12 months of updates; you keep access forever.
+              After 12 months, you can optionally add Updates & Support for $49/year.
+            </p>
+          </div>
+
+          <div className="glass-card rounded-xl p-6 hover:border-primary/50 transition-all duration-300">
+            <h3 className="mb-3 text-lg font-semibold text-foreground">
+              What makes this different from a normal chatbot?
+            </h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              A behavior core compiled from a year of dataset curation and full transcription of Michael's YouTube
+              library, trained on his speech patterns and decision logic for the mycology domain.
+            </p>
+          </div>
+
+          <div className="glass-card rounded-xl p-6 hover:border-primary/50 transition-all duration-300">
+            <h3 className="mb-3 text-lg font-semibold text-foreground">Can I use multiple GPTs together?</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Yes! Each GPT is designed to work independently, but they complement each other perfectly. Bundle packages
+              give you access to multiple specialized assistants at a discounted price.
+            </p>
+          </div>
+
+          <div className="glass-card rounded-xl p-6 hover:border-primary/50 transition-all duration-300">
+            <h3 className="mb-3 text-lg font-semibold text-foreground">What happens after 12 months?</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              You keep perpetual access to your GPTs. The optional $49/year Updates & Support package gives you
+              continued feature updates, new training data, and priority support.
+            </p>
+          </div>
+
+          <div className="glass-card rounded-xl p-6 hover:border-primary/50 transition-all duration-300">
+            <h3 className="mb-3 text-lg font-semibold text-foreground">Do the GPTs work offline?</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              No, the GPTs require an internet connection to access the AI models and knowledge base. However, you can
+              save responses and SOPs for offline reference.
+            </p>
+          </div>
+
+          <div className="glass-card rounded-xl p-6 hover:border-primary/50 transition-all duration-300">
+            <h3 className="mb-3 text-lg font-semibold text-foreground">Can I get a refund?</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Yes. We offer a 30-day money-back guarantee. If you're not satisfied with your GPT purchase, contact
+              support for a full refund within 30 days of purchase.
+            </p>
           </div>
         </div>
       </div>

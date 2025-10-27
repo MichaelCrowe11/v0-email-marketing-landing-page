@@ -62,11 +62,15 @@ export function AdvancedTerminal() {
   }, [])
 
   return (
-    <div className="bg-black/95 backdrop-blur-sm border-2 border-accent/40 rounded-xl p-5 shadow-2xl h-[400px] overflow-hidden">
+    <div className="bg-white/95 backdrop-blur-sm border-2 border-accent/40 rounded-xl p-5 shadow-2xl h-[400px] overflow-hidden">
       <div className="flex items-center gap-2 mb-4 pb-3 border-b border-accent/30">
-        <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-        <span className="text-sm text-green-400 font-mono font-bold">Crowe Logic Terminal</span>
-        <div className="ml-auto text-xs text-green-400/70 font-mono">Advanced AI Systems</div>
+        <div className="w-2 h-2 rounded-full bg-gradient-to-r from-cyan-500 to-purple-500 animate-pulse" />
+        <span className="text-sm font-mono font-bold bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+          Crowe Logic Terminal
+        </span>
+        <div className="ml-auto text-xs font-mono bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
+          Advanced AI Systems
+        </div>
       </div>
       <div className="font-mono text-xs space-y-1 overflow-y-auto h-[320px] scrollbar-thin scrollbar-thumb-accent/50">
         {lines.map((line, i) => {
@@ -75,18 +79,18 @@ export function AdvancedTerminal() {
           return (
             <div
               key={i}
-              className={`animate-fade-in leading-relaxed ${
+              className={`animate-fade-in leading-relaxed font-semibold ${
                 line.includes("✓")
-                  ? "text-green-400"
+                  ? "bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent"
                   : line.includes("[GENETIC]")
-                    ? "text-purple-400"
+                    ? "bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent"
                     : line.includes("[DNA]")
-                      ? "text-cyan-400"
+                      ? "bg-gradient-to-r from-cyan-500 to-blue-500 bg-clip-text text-transparent"
                       : line.includes("[QUANTUM]")
-                        ? "text-pink-400"
+                        ? "bg-gradient-to-r from-pink-500 to-rose-500 bg-clip-text text-transparent"
                         : line.includes("[NEURAL]")
-                          ? "text-blue-400"
-                          : "text-green-300"
+                          ? "bg-gradient-to-r from-blue-500 to-indigo-500 bg-clip-text text-transparent"
+                          : "bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent"
               }`}
               style={{ animationDelay: `${i * 0.02}s` }}
             >
@@ -94,7 +98,7 @@ export function AdvancedTerminal() {
             </div>
           )
         })}
-        <div className="inline-block w-2 h-4 bg-green-400 animate-pulse" />
+        <div className="inline-block w-2 h-4 bg-gradient-to-r from-cyan-500 to-purple-500 animate-pulse" />
       </div>
     </div>
   )

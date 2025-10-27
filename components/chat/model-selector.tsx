@@ -5,18 +5,18 @@ import { Badge } from "@/components/ui/badge"
 export type ModelOption = {
   id: string
   name: string
-  provider: "openai" | "anthropic" | "xai" | "google" | "groq" | "deepseek"
+  provider: "openai" | "anthropic" | "xai" | "google" | "groq" | "deepseek" | "azure"
   description: string
-  badge?: "fastest" | "smartest" | "balanced" | "new"
+  badge?: "fastest" | "smartest" | "balanced" | "new" | "custom"
 }
 
 export const AVAILABLE_MODELS: ModelOption[] = [
   {
-    id: "openai/gpt-5",
-    name: "GPT-5",
-    provider: "openai",
-    description: "OpenAI's most advanced model",
-    badge: "smartest",
+    id: "azure/agent874",
+    name: "Crowe Logic (Azure)",
+    provider: "azure",
+    description: "Your custom Azure AI agent",
+    badge: "custom",
   },
   {
     id: "openai/gpt-5-mini",
@@ -105,6 +105,8 @@ export function ModelSelector({ selectedModel, onModelChange }: ModelSelectorPro
         return "outline"
       case "new":
         return "default"
+      case "custom":
+        return "default"
       default:
         return "secondary"
     }
@@ -151,6 +153,12 @@ export function ModelSelector({ selectedModel, onModelChange }: ModelSelectorPro
 
 function ModelIcon({ provider }: { provider: ModelOption["provider"] }) {
   switch (provider) {
+    case "azure":
+      return (
+        <div className="w-5 h-5 rounded bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white text-[10px] font-bold shadow-sm">
+          CL
+        </div>
+      )
     case "anthropic":
       return (
         <div className="w-5 h-5 rounded bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white text-[10px] font-bold shadow-sm">

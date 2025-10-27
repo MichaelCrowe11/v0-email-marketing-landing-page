@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { UserMenu } from "@/components/user-menu"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 interface WeatherData {
   temp: number | null
@@ -15,6 +16,8 @@ interface WeatherData {
   location: string
   needsLocation?: boolean
 }
+
+export const HEADER_HEIGHT = 72 // px
 
 export function GlobalHeader() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -31,24 +34,35 @@ export function GlobalHeader() {
           fetch(`/api/weather?lat=${latitude}&lon=${longitude}`)
             .then((res) => res.json())
             .then((data) => setWeather(data))
-            .catch((err) => console.error("[v0] Weather fetch failed:", err))
+            .catch((err) => {
+              console.warn("[v0] Weather fetch failed, using default location:", err.message)
+              setWeather({ temp: null, condition: "Unknown", location: "Weather unavailable", needsLocation: true })
+            })
         },
         (error) => {
-          console.error("[v0] Geolocation error:", error)
+          // User denied location or error occurred - this is expected behavior, not an error
+          console.log("[v0] Location access not available:", error.message)
           setLocationPermission("denied")
-          // Fetch weather without location (will return demo data)
+          // Fetch weather with default location
           fetch("/api/weather")
             .then((res) => res.json())
-            .then((data) => setWeather(data))
-            .catch((err) => console.error("[v0] Weather fetch failed:", err))
+            .then((data) => setWeather({ ...data, needsLocation: true }))
+            .catch((err) => {
+              console.warn("[v0] Weather fetch failed:", err.message)
+              setWeather({ temp: null, condition: "Unknown", location: "Weather unavailable", needsLocation: true })
+            })
         },
       )
     } else {
-      // Geolocation not supported
+      // Geolocation not supported - use default location
+      console.log("[v0] Geolocation not supported by browser")
       fetch("/api/weather")
         .then((res) => res.json())
-        .then((data) => setWeather(data))
-        .catch((err) => console.error("[v0] Weather fetch failed:", err))
+        .then((data) => setWeather({ ...data, needsLocation: true }))
+        .catch((err) => {
+          console.warn("[v0] Weather fetch failed:", err.message)
+          setWeather({ temp: null, condition: "Unknown", location: "Weather unavailable", needsLocation: true })
+        })
     }
   }, [])
 
@@ -70,8 +84,11 @@ export function GlobalHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl">
-      <div className="flex items-center justify-between h-16 px-4 md:px-6 max-w-screen-2xl mx-auto">
+    <header
+      className="fixed top-0 left-0 right-0 z-50 w-full border-b border-border/50 bg-background/95 backdrop-blur-xl shadow-sm"
+      style={{ height: `${HEADER_HEIGHT}px` }}
+    >
+      <div className="flex items-center justify-between h-full px-3 sm:px-4 md:px-6 md:pl-[272px] max-w-screen-2xl mx-auto gap-2 sm:gap-4">
         {/* Search Bar */}
         <form onSubmit={handleSearch} className="flex-1 max-w-2xl">
           <div
@@ -79,17 +96,17 @@ export function GlobalHeader() {
               searchFocused ? "ring-2 ring-primary/20" : ""
             } rounded-lg`}
           >
-            <Search className="absolute left-3 w-4 h-4 text-muted-foreground pointer-events-none" />
+            <Search className="absolute left-2 sm:left-3 w-4 h-4 text-muted-foreground pointer-events-none" />
             <Input
               type="search"
-              placeholder="Search documentation, species, SOPs..."
+              placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={() => setSearchFocused(true)}
               onBlur={() => setSearchFocused(false)}
-              className="pl-10 pr-20 h-10 bg-muted/50 border-border/50 focus-visible:ring-primary/20"
+              className="pl-8 sm:pl-10 pr-2 sm:pr-20 h-9 sm:h-10 text-sm bg-muted/50 border-border/50 focus-visible:ring-primary/20"
             />
-            <div className="absolute right-2 flex items-center gap-1">
+            <div className="absolute right-2 hidden sm:flex items-center gap-1">
               <Badge variant="outline" className="text-xs font-mono h-6 px-2">
                 <Command className="w-3 h-3 mr-1" />K
               </Badge>
@@ -99,7 +116,7 @@ export function GlobalHeader() {
 
         {/* Weather Display */}
         {weather && (
-          <div className="hidden md:flex items-center gap-3 ml-6 px-4 py-2 rounded-lg bg-muted/50 border border-border/50">
+          <div className="hidden lg:flex items-center gap-3 ml-6 px-4 py-2 rounded-lg bg-muted/50 border border-border/50">
             {weather.needsLocation ? (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <MapPin className="w-4 h-4" />
@@ -119,15 +136,16 @@ export function GlobalHeader() {
         )}
 
         {/* Quick Actions */}
-        <div className="flex items-center gap-2 ml-4">
-          <Button variant="ghost" size="sm" className="hidden lg:flex" asChild>
+        <div className="flex items-center gap-1 sm:gap-2 ml-2 sm:ml-4">
+          <ThemeToggle />
+          <Button variant="ghost" size="sm" className="hidden xl:flex h-9" asChild>
             <a href="/docs">Docs</a>
           </Button>
-          <Button variant="ghost" size="sm" className="hidden lg:flex" asChild>
+          <Button variant="ghost" size="sm" className="hidden xl:flex h-9" asChild>
             <a href="/chat">AI Chat</a>
           </Button>
-          <Button size="sm" className="bg-primary hover:bg-primary/90" asChild>
-            <a href="/crowe-vision">Crowe Vision</a>
+          <Button size="sm" className="bg-primary hover:bg-primary/90 h-9 px-3 sm:px-4 text-xs sm:text-sm" asChild>
+            <a href="/crowe-vision">Vision</a>
           </Button>
           <UserMenu />
         </div>

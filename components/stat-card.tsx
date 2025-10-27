@@ -14,7 +14,9 @@ interface StatCardProps {
 
 export function StatCard({ title, value, description, icon: Icon, trend, className }: StatCardProps) {
   return (
-    <div className={`glass-card rounded-xl p-6 hover-lift ${className || ""}`}>
+    <div
+      className={`glass-card rounded-xl p-6 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg ${className || ""}`}
+    >
       <div className="flex items-start justify-between">
         <div className="space-y-2 flex-1">
           <p className="text-sm font-medium text-muted-foreground">{title}</p>
