@@ -18,9 +18,8 @@ export async function createClient() {
     },
   )
 
-  // If we have an auth token, set it
   if (authToken) {
-    supabase.auth.setSession({
+    await supabase.auth.setSession({
       access_token: authToken,
       refresh_token: cookieStore.get("sb-refresh-token")?.value || "",
     })
