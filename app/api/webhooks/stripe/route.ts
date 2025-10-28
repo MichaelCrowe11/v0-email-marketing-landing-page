@@ -2,8 +2,10 @@ import { headers } from "next/headers"
 import { NextResponse } from "next/server"
 import Stripe from "stripe"
 import { createClient } from "@/lib/supabase/server"
+import { sendEmail } from "@/lib/resend"
+import { getOrderConfirmationEmailHTML } from "@/lib/email-templates"
 
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic"
 
 const stripe = process.env.STRIPE_SECRET_KEY
   ? new Stripe(process.env.STRIPE_SECRET_KEY, {
@@ -80,6 +82,28 @@ export async function POST(req: Request) {
           })
           .eq("id", user.id)
 
+        try {
+          const planNames: Record<string, string> = {
+            pro: "Pro Access",
+            expert: "Expert Access",
+            master: "Master Grower",
+          }
+
+          await sendEmail({
+            to: session.customer_email!,
+            subject: "Order Confirmation - Crowe Logic",
+            html: getOrderConfirmationEmailHTML({
+              name: session.customer_details?.name || "Valued Customer",
+              productName: planNames[planId] || planId,
+              amount: `$${(session.amount_total! / 100).toFixed(2)}`,
+              orderId: session.id,
+            }),
+          })
+          console.log("[v0] Order confirmation email sent")
+        } catch (emailError) {
+          console.error("[v0] Failed to send order confirmation email:", emailError)
+        }
+
         console.log("[v0] Subscription created for user:", user.id)
         break
       }
@@ -135,7 +159,24 @@ export async function POST(req: Request) {
       case "invoice.payment_succeeded": {
         const invoice = event.data.object as Stripe.Invoice
 
-        // Log successful payment
+        try {
+          if (invoice.customer_email) {
+            await sendEmail({
+              to: invoice.customer_email,
+              subject: "Payment Receipt - Crowe Logic",
+              html: getOrderConfirmationEmailHTML({
+                name: invoice.customer_name || "Valued Customer",
+                productName: "Subscription Payment",
+                amount: `$${(invoice.amount_paid / 100).toFixed(2)}`,
+                orderId: invoice.id,
+              }),
+            })
+            console.log("[v0] Payment receipt email sent")
+          }
+        } catch (emailError) {
+          console.error("[v0] Failed to send payment receipt email:", emailError)
+        }
+
         console.log("[v0] Payment succeeded for invoice:", invoice.id)
         break
       }

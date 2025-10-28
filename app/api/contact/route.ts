@@ -1,5 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
+import { sendEmail } from "@/lib/resend"
+import { getContactFormEmailHTML } from "@/lib/email-templates"
 
 export async function POST(request: NextRequest) {
   try {
@@ -34,8 +36,22 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Failed to submit form" }, { status: 500 })
     }
 
-    // TODO: Send email notification to Michael@CroweLogic.com
-    // This can be implemented with Resend, SendGrid, or similar service
+    try {
+      await sendEmail({
+        to: "Michael@CroweLogic.com",
+        subject: `New Contact Form Submission from ${body.name}`,
+        html: getContactFormEmailHTML({
+          name: body.name,
+          email: body.email,
+          message: body.message,
+        }),
+        replyTo: body.email,
+      })
+      console.log("[v0] Contact form email sent successfully")
+    } catch (emailError) {
+      // Log error but don't fail the request
+      console.error("[v0] Failed to send contact form email:", emailError)
+    }
 
     return NextResponse.json({ success: true })
   } catch (error) {

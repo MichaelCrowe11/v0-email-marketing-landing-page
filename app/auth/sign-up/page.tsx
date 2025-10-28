@@ -45,6 +45,18 @@ export default function Page() {
         },
       })
       if (error) throw error
+
+      try {
+        await fetch("/api/auth/welcome-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, name: fullName }),
+        })
+      } catch (emailError) {
+        console.error("[v0] Failed to send welcome email:", emailError)
+        // Don't fail the sign-up if email fails
+      }
+
       router.push("/auth/sign-up-success")
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred")
