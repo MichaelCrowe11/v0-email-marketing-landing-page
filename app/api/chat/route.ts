@@ -1,4 +1,3 @@
-import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
 import { anthropic } from "@ai-sdk/anthropic"
 import { google } from "@ai-sdk/google"
@@ -86,22 +85,32 @@ Approach:
 - Be clear and precise`,
     }
 
-    const selectedModel = model || "openai/gpt-4o-mini"
-    const aiModel = getModel(selectedModel)
-
-    console.log("[v0] Using model:", selectedModel)
-
-    const result = await generateText({
-      model: aiModel,
-      messages: [systemMessage, ...normalizedMessages],
-      temperature: 0.7,
-      maxTokens: 2000,
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [systemMessage, ...normalizedMessages],
+        temperature: 0.7,
+        max_tokens: 2000,
+      }),
     })
 
-    console.log("[v0] Generated response length:", result.text.length)
+    if (!response.ok) {
+      const errorData = await response.json()
+      console.error("[v0] OpenAI API error:", errorData)
+      throw new Error(errorData.error?.message || "OpenAI API request failed")
+    }
 
-    // Return as JSON
-    return new Response(JSON.stringify({ text: result.text }), {
+    const data = await response.json()
+    const text = data.choices[0]?.message?.content || ""
+
+    console.log("[v0] Generated response length:", text.length)
+
+    return new Response(JSON.stringify({ text }), {
       headers: {
         "Content-Type": "application/json",
       },
