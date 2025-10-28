@@ -3,7 +3,12 @@ import { NextResponse } from "next/server"
 import Stripe from "stripe"
 import { createClient } from "@/lib/supabase/server"
 import { sendEmail } from "@/lib/resend"
-import { getOrderConfirmationEmailHTML } from "@/lib/email-templates"
+import {
+  getOrderConfirmationEmailHTML,
+  getPaymentReceiptEmailHTML,
+  getSubscriptionStatusEmailHTML,
+  getConsultationConfirmationEmailHTML,
+} from "@/lib/email-templates"
 
 export const dynamic = "force-dynamic"
 
@@ -47,14 +52,69 @@ export async function POST(req: Request) {
         const session = event.data.object as Stripe.Checkout.Session
 
         // Get user by email
-        const { data: user } = await supabase.from("users").select("id").eq("email", session.customer_email).single()
+        const { data: user } = await supabase.from("users").select("id, username").eq("email", session.customer_email).single()
 
         if (!user) {
           console.error("[v0] User not found for email:", session.customer_email)
           break
         }
 
-        // Get plan details from metadata
+        // Check if this is a consultation booking
+        const serviceType = session.metadata?.service_type
+        const consultationType = session.metadata?.consultation_type
+
+        if (serviceType === "consultation" && consultationType) {
+          // Handle consultation booking
+          const consultationNames: Record<string, { name: string; duration: string }> = {
+            "1hr": { name: "1-Hour Consultation", duration: "1 hour" },
+            "3hr": { name: "3-Hour Deep Dive", duration: "3 hours" },
+            fullday: { name: "Full-Day Consultation", duration: "8 hours" },
+            retainer: { name: "Monthly Retainer", duration: "Ongoing" },
+          }
+
+          const consultationInfo = consultationNames[consultationType] || {
+            name: "Consultation",
+            duration: "TBD",
+          }
+
+          try {
+            await sendEmail({
+              to: session.customer_email!,
+              subject: "Consultation Confirmed - Crowe Logic",
+              html: getConsultationConfirmationEmailHTML({
+                name: session.customer_details?.name || (user as any).username || "Valued Customer",
+                consultationType: consultationInfo.name,
+                duration: consultationInfo.duration,
+                amount: `$${(session.amount_total! / 100).toFixed(2)}`,
+                bookingId: session.id,
+              }),
+            })
+
+            // Also send notification to Michael
+            await sendEmail({
+              to: process.env.NEXT_PUBLIC_CONTACT_EMAIL || "Michael@CroweLogic.com",
+              subject: `New ${consultationInfo.name} Booking`,
+              html: `
+                <h2>New Consultation Booking</h2>
+                <p><strong>Customer:</strong> ${session.customer_details?.name || (user as any).username}</p>
+                <p><strong>Email:</strong> ${session.customer_email}</p>
+                <p><strong>Type:</strong> ${consultationInfo.name}</p>
+                <p><strong>Duration:</strong> ${consultationInfo.duration}</p>
+                <p><strong>Amount:</strong> $${(session.amount_total! / 100).toFixed(2)}</p>
+                <p><strong>Booking ID:</strong> ${session.id}</p>
+                <p>Please reach out to schedule the consultation.</p>
+              `,
+            })
+
+            console.log("[v0] Consultation confirmation emails sent")
+          } catch (emailError) {
+            console.error("[v0] Failed to send consultation confirmation email:", emailError)
+          }
+
+          break
+        }
+
+        // Get plan details from metadata for subscription purchases
         const planId = session.metadata?.plan_id
 
         if (!planId) {
@@ -93,7 +153,7 @@ export async function POST(req: Request) {
             to: session.customer_email!,
             subject: "Order Confirmation - Crowe Logic",
             html: getOrderConfirmationEmailHTML({
-              name: session.customer_details?.name || "Valued Customer",
+              name: session.customer_details?.name || (user as any).username || "Valued Customer",
               productName: planNames[planId] || planId,
               amount: `$${(session.amount_total! / 100).toFixed(2)}`,
               orderId: session.id,
@@ -135,14 +195,15 @@ export async function POST(req: Request) {
           })
           .eq("stripe_subscription_id", subscription.id)
 
-        // Update user status
+        // Get user info for email
         const { data: userSub } = await supabase
           .from("user_subscriptions")
-          .select("user_id")
+          .select("user_id, plan_id, users(email, username)")
           .eq("stripe_subscription_id", subscription.id)
           .single()
 
         if (userSub) {
+          // Update user status
           await supabase
             .from("users")
             .update({
@@ -150,6 +211,31 @@ export async function POST(req: Request) {
               subscription_status: "canceled",
             })
             .eq("id", userSub.user_id)
+
+          // Send cancellation email
+          try {
+            const userData = userSub.users as any
+            if (userData?.email) {
+              const planNames: Record<string, string> = {
+                pro: "Pro",
+                expert: "Expert",
+                master: "Master Grower",
+              }
+
+              await sendEmail({
+                to: userData.email,
+                subject: "Subscription Cancelled - Crowe Logic",
+                html: getSubscriptionStatusEmailHTML({
+                  name: userData.username || "Valued Customer",
+                  status: "cancelled",
+                  planName: planNames[userSub.plan_id] || userSub.plan_id,
+                }),
+              })
+              console.log("[v0] Subscription cancellation email sent")
+            }
+          } catch (emailError) {
+            console.error("[v0] Failed to send cancellation email:", emailError)
+          }
         }
 
         console.log("[v0] Subscription canceled:", subscription.id)
@@ -161,14 +247,28 @@ export async function POST(req: Request) {
 
         try {
           if (invoice.customer_email) {
+            // Build line items from invoice
+            const items = invoice.lines?.data.map((line) => ({
+              description: line.description || "Subscription",
+              amount: `$${((line.amount || 0) / 100).toFixed(2)}`,
+            })) || [{ description: "Subscription Payment", amount: `$${(invoice.amount_paid / 100).toFixed(2)}` }]
+
             await sendEmail({
               to: invoice.customer_email,
               subject: "Payment Receipt - Crowe Logic",
-              html: getOrderConfirmationEmailHTML({
-                name: invoice.customer_name || "Valued Customer",
-                productName: "Subscription Payment",
-                amount: `$${(invoice.amount_paid / 100).toFixed(2)}`,
-                orderId: invoice.id,
+              html: getPaymentReceiptEmailHTML({
+                name: (invoice.customer_name as string) || "Valued Customer",
+                receiptNumber: invoice.number || invoice.id,
+                date: new Date(invoice.created * 1000).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                }),
+                items,
+                subtotal: `$${((invoice.subtotal || 0) / 100).toFixed(2)}`,
+                tax: (invoice as any).tax ? `$${((invoice as any).tax / 100).toFixed(2)}` : undefined,
+                total: `$${(invoice.amount_paid / 100).toFixed(2)}`,
+                paymentMethod: "Card ending in ****",
               }),
             })
             console.log("[v0] Payment receipt email sent")
@@ -183,13 +283,49 @@ export async function POST(req: Request) {
 
       case "invoice.payment_failed": {
         const invoice = event.data.object as Stripe.Invoice
+        const subscriptionId = typeof (invoice as any).subscription === "string" ? (invoice as any).subscription : (invoice as any).subscription?.id
 
         // Update subscription status to past_due
-        if (invoice.subscription) {
+        if (subscriptionId) {
           await supabase
             .from("user_subscriptions")
             .update({ status: "past_due" })
-            .eq("stripe_subscription_id", invoice.subscription as string)
+            .eq("stripe_subscription_id", subscriptionId)
+
+          // Get user info for email
+          const { data: userSub } = await supabase
+            .from("user_subscriptions")
+            .select("user_id, plan_id, users(email, username)")
+            .eq("stripe_subscription_id", subscriptionId)
+            .single()
+
+          if (userSub) {
+            // Send payment failed email
+            try {
+              const userData = userSub.users as any
+              if (userData?.email) {
+                const planNames: Record<string, string> = {
+                  pro: "Pro",
+                  expert: "Expert",
+                  master: "Master Grower",
+                }
+
+                await sendEmail({
+                  to: userData.email,
+                  subject: "Payment Failed - Action Required",
+                  html: getSubscriptionStatusEmailHTML({
+                    name: userData.username || "Valued Customer",
+                    status: "payment_failed",
+                    planName: planNames[userSub.plan_id] || userSub.plan_id,
+                    reason: "We were unable to process your payment. Please update your payment method.",
+                  }),
+                })
+                console.log("[v0] Payment failed email sent")
+              }
+            } catch (emailError) {
+              console.error("[v0] Failed to send payment failed email:", emailError)
+            }
+          }
         }
 
         console.log("[v0] Payment failed for invoice:", invoice.id)
