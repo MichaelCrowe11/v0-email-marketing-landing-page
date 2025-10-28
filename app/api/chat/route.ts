@@ -1,4 +1,4 @@
-import { streamText } from "ai"
+import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
 import { anthropic } from "@ai-sdk/anthropic"
 import { google } from "@ai-sdk/google"
@@ -43,23 +43,30 @@ function getModel(modelString: string) {
 
 export async function POST(req: Request) {
   try {
+    console.log("[v0] Chat API called")
+
     const { messages, model } = await req.json()
 
-    console.log("[v0] Chat request:", {
-      messageCount: messages?.length,
-      model,
-      lastMessage: messages?.[messages.length - 1]?.content?.substring(0, 50),
-    })
+    console.log("[v0] Received messages:", messages?.length, "Model:", model)
 
     if (!messages || messages.length === 0) {
+      console.error("[v0] No messages provided")
       return new Response(JSON.stringify({ error: "No messages provided" }), {
         status: 400,
         headers: { "Content-Type": "application/json" },
       })
     }
 
-    const selectedModel = model || "openai/gpt-4o-mini"
-    const aiModel = getModel(selectedModel)
+    const normalizedMessages = messages.map((msg: any) => {
+      const content =
+        typeof msg.content === "string" ? msg.content : msg.parts?.map((p: any) => p.text).join("") || msg.text || ""
+      return {
+        role: msg.role,
+        content,
+      }
+    })
+
+    console.log("[v0] Normalized messages:", normalizedMessages.length)
 
     const systemMessage = {
       role: "system" as const,
@@ -79,17 +86,26 @@ Approach:
 - Be clear and precise`,
     }
 
-    console.log("[v0] Starting AI stream...")
+    const selectedModel = model || "openai/gpt-4o-mini"
+    const aiModel = getModel(selectedModel)
 
-    const result = streamText({
+    console.log("[v0] Using model:", selectedModel)
+
+    const result = await generateText({
       model: aiModel,
-      messages: [systemMessage, ...messages],
+      messages: [systemMessage, ...normalizedMessages],
       temperature: 0.7,
       maxTokens: 2000,
     })
 
-    console.log("[v0] Returning stream response")
-    return result.toUIMessageStreamResponse()
+    console.log("[v0] Generated response length:", result.text.length)
+
+    // Return as JSON
+    return new Response(JSON.stringify({ text: result.text }), {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
   } catch (error) {
     console.error("[v0] Chat API error:", error)
     return new Response(

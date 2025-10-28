@@ -167,20 +167,6 @@ export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
 
   return (
     <div className="relative" style={{ width: size, height: size }}>
-      <div
-        className="absolute inset-0 rounded-full blur-xl transition-all duration-300"
-        style={{
-          background:
-            state === "thinking"
-              ? "radial-gradient(circle, rgba(168, 85, 247, 0.5) 0%, rgba(236, 72, 153, 0.3) 50%, transparent 70%)"
-              : state === "responding"
-                ? "radial-gradient(circle, rgba(59, 130, 246, 0.4) 0%, rgba(168, 85, 247, 0.3) 50%, transparent 70%)"
-                : "radial-gradient(circle, rgba(168, 85, 247, 0.3) 0%, transparent 70%)",
-          transform: state === "thinking" ? "scale(1.6)" : state === "responding" ? "scale(1.3)" : "scale(1)",
-          opacity: isBlinking ? 0.5 : 1,
-        }}
-      />
-
       <div className="absolute inset-0 flex items-center justify-center">
         {particles.map((particle) => (
           <div
@@ -202,30 +188,23 @@ export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
       <div
         className={`absolute inset-0 rounded-full p-0.5 transition-all duration-300 ${
           state === "thinking"
-            ? "bg-gradient-to-br from-purple-500 via-pink-500 to-purple-600 shadow-lg shadow-purple-500/50"
+            ? "shadow-lg shadow-purple-500/50"
             : state === "responding"
-              ? "bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 shadow-lg shadow-purple-500/50"
-              : "bg-gradient-to-br from-purple-400 to-purple-600 shadow-lg shadow-purple-500/30"
+              ? "shadow-lg shadow-cyan-500/50"
+              : "shadow-lg shadow-accent/30"
         }`}
         style={{
           transform: state === "thinking" ? "scale(1.05)" : "scale(1)",
           opacity: avatarOpacity,
         }}
       >
-        <div className="h-full w-full rounded-full bg-background flex items-center justify-center overflow-hidden">
-          <Image
-            src="/crowe-avatar.png"
-            alt="Crowe Logic AI"
-            width={size}
-            height={size}
-            className={`w-full h-full object-cover transition-all duration-300 ${
-              state === "thinking" ? "brightness-110 contrast-110 saturate-110" : ""
-            }`}
-            style={{
-              opacity: avatarOpacity,
-            }}
-          />
-        </div>
+        <Image
+          src="/crowe-logic-logo.png"
+          alt="Crowe Logic AI"
+          width={size}
+          height={size}
+          className="rounded-full border-2 border-accent/50"
+        />
       </div>
     </div>
   )

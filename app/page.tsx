@@ -9,6 +9,7 @@ import { Features } from "@/components/features"
 import { FAQ } from "@/components/faq"
 import { ScrollReveal } from "@/components/scroll-reveal"
 import { CodeGenerationIntro } from "@/components/code-generation-intro"
+import { BrandFamilyBanner } from "@/components/brand-family-banner"
 
 export default function Home() {
   const [showIntro, setShowIntro] = useState(true)
@@ -51,6 +52,9 @@ export default function Home() {
     <main className="min-h-screen">
       <Hero />
       <ScrollReveal>
+        <BrandFamilyBanner />
+      </ScrollReveal>
+      <ScrollReveal>
         <BenefitsBand />
       </ScrollReveal>
       <ScrollReveal delay={100}>
@@ -64,6 +68,9 @@ export default function Home() {
       </ScrollReveal>
       <ScrollReveal delay={100}>
         <FAQ />
+      </ScrollReveal>
+      <ScrollReveal delay={100}>
+        <BrandFamilyBanner />
       </ScrollReveal>
       <footer className="relative py-16 md:py-20 text-center overflow-hidden border-t border-border/50">
         <div className="absolute inset-0 bg-gradient-to-t from-muted/30 via-muted/10 to-transparent" />
