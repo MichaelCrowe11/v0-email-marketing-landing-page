@@ -42,6 +42,16 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
     setMessages((prev) => [...prev, userMessage])
     setIsLoading(true)
 
+    const assistantMessageId = (Date.now() + 1).toString()
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: assistantMessageId,
+        role: "assistant",
+        content: "",
+      },
+    ])
+
     try {
       console.log("[v0] Sending chat request with model:", selectedModel)
 
@@ -62,36 +72,63 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
       if (!response.ok) {
         const errorText = await response.text()
         console.error("[v0] API error response:", errorText)
-        throw new Error(`Chat request failed: ${response.status} ${errorText}`)
+        throw new Error(`Chat request failed: ${response.status}`)
       }
 
-      const data = await response.json()
+      const reader = response.body?.getReader()
+      const decoder = new TextDecoder()
 
-      if (!data.text) {
-        throw new Error("No text in response")
+      if (!reader) {
+        throw new Error("No response body")
       }
 
-      // Add assistant message with full text
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: (Date.now() + 1).toString(),
-          role: "assistant",
-          content: data.text,
-        },
-      ])
+      let accumulatedText = ""
 
-      console.log("[v0] Response received, length:", data.text.length)
+      while (true) {
+        const { done, value } = await reader.read()
+
+        if (done) break
+
+        const chunk = decoder.decode(value, { stream: true })
+        const lines = chunk.split("\n").filter((line) => line.trim() !== "")
+
+        for (const line of lines) {
+          if (line.startsWith("data: ")) {
+            const data = line.slice(6)
+
+            if (data === "[DONE]") continue
+
+            try {
+              const parsed = JSON.parse(data)
+              const content = parsed.choices[0]?.delta?.content
+
+              if (content) {
+                accumulatedText += content
+
+                setMessages((prev) =>
+                  prev.map((m) => (m.id === assistantMessageId ? { ...m, content: accumulatedText } : m)),
+                )
+              }
+            } catch (e) {
+              // Skip invalid JSON
+            }
+          }
+        }
+      }
+
+      console.log("[v0] Streaming complete, total length:", accumulatedText.length)
     } catch (error) {
       console.error("[v0] Chat error:", error)
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: Date.now().toString(),
-          role: "assistant",
-          content: `Sorry, I encountered an error: ${error instanceof Error ? error.message : "Unknown error"}. Please try again.`,
-        },
-      ])
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === assistantMessageId
+            ? {
+                ...m,
+                content: `Sorry, I encountered an error: ${error instanceof Error ? error.message : "Unknown error"}. Please try again.`,
+              }
+            : m,
+        ),
+      )
     } finally {
       setIsLoading(false)
     }
@@ -273,7 +310,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                 {messages.map((message, index) => {
                   const isAssistant = message.role === "assistant"
                   const isLastMessage = index === messages.length - 1
-                  const isStreaming = isLastMessage && isLoading
+                  const isStreaming = isLastMessage && isLoading && isAssistant
 
                   // Detect if message contains code or document
                   const hasCode = message.content.includes("```")
@@ -281,15 +318,13 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
 
                   return (
                     <div key={message.id} className="flex gap-4">
-                      <div className="flex-shrink-0">
-                        {isAssistant ? (
-                          <AIAvatarSwirl state={isStreaming ? "responding" : "idle"} size={40} />
-                        ) : (
+                      {!isAssistant && (
+                        <div className="flex-shrink-0">
                           <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center text-sm font-medium text-muted-foreground">
                             You
                           </div>
-                        )}
-                      </div>
+                        </div>
+                      )}
                       <div className="flex-1">
                         <div
                           className={`rounded-2xl px-5 py-4 shadow-sm ${
@@ -300,6 +335,14 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                         >
                           <div className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
                             {message.content}
+                            {isAssistant && (
+                              <span className="inline-block align-middle ml-3">
+                                <AIAvatarSwirl state={isStreaming ? "thinking" : "idle"} size={32} />
+                              </span>
+                            )}
+                            {isStreaming && (
+                              <span className="inline-block w-1.5 h-4 ml-0.5 bg-foreground animate-pulse align-middle" />
+                            )}
                           </div>
 
                           {/* Canvas buttons for code/documents */}
@@ -339,17 +382,6 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                     </div>
                   )
                 })}
-
-                {isLoading && messages.length > 0 && messages[messages.length - 1].role === "user" && (
-                  <div className="flex gap-4">
-                    <div className="flex-shrink-0">
-                      <AIAvatarSwirl state="thinking" size={40} />
-                    </div>
-                    <div className="flex-1">
-                      <div className="text-sm text-muted-foreground">Thinking...</div>
-                    </div>
-                  </div>
-                )}
               </div>
             )}
           </div>
@@ -391,7 +423,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                     <path
                       className="opacity-75"
                       fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      d="M4 12 7-7 7 7h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     />
                   </svg>
                 ) : (
@@ -405,8 +437,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                     strokeLinejoin="round"
                     className="w-4 h-4 sm:w-5 sm:h-5"
                   >
-                    <path d="m5 12 7-7 7 7" />
-                    <path d="M12 19V5" />
+                    <path d="m5 12 7-7 7 7h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                   </svg>
                 )}
               </button>

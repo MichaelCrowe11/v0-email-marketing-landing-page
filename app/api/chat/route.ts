@@ -96,6 +96,7 @@ Approach:
         messages: [systemMessage, ...normalizedMessages],
         temperature: 0.7,
         max_tokens: 2000,
+        stream: true, // Enable streaming
       }),
     })
 
@@ -105,14 +106,11 @@ Approach:
       throw new Error(errorData.error?.message || "OpenAI API request failed")
     }
 
-    const data = await response.json()
-    const text = data.choices[0]?.message?.content || ""
-
-    console.log("[v0] Generated response length:", text.length)
-
-    return new Response(JSON.stringify({ text }), {
+    return new Response(response.body, {
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        Connection: "keep-alive",
       },
     })
   } catch (error) {
