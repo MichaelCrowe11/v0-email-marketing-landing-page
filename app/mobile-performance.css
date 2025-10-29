@@ -1,0 +1,529 @@
+/* ===== MOBILE PERFORMANCE ENHANCEMENTS - TASK 6.3 ===== */
+
+/* 1. AGGRESSIVE IMAGE OPTIMIZATION */
+
+/* Optimize all images for mobile with hardware acceleration */
+@media (max-width: 768px) {
+  img {
+    /* Enable hardware acceleration for smooth rendering */
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    
+    /* Optimize image rendering quality vs performance */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    
+    /* Prevent layout shifts */
+    height: auto;
+    max-width: 100%;
+  }
+
+  /* Lazy load images below the fold automatically */
+  img[loading="lazy"] {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 400px;
+  }
+
+  /* Optimize avatar images */
+  img[alt*="avatar"],
+  img[alt*="Avatar"],
+  img[src*="avatar"],
+  img[src*="crowe"] {
+    will-change: auto;
+    contain: layout style paint;
+  }
+
+  /* Reduce image quality on slow connections */
+  @media (prefers-reduced-data: reduce) {
+    img {
+      image-rendering: pixelated;
+    }
+  }
+}
+
+/* 2. LAZY LOAD BELOW-FOLD CONTENT */
+
+/* Critical above-the-fold content - no lazy loading */
+.critical-content {
+  contain: none;
+  content-visibility: visible;
+}
+
+/* Below-the-fold content - aggressive lazy loading */
+.below-fold {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px;
+}
+
+/* Optimize specific below-fold sections */
+.below-fold > section,
+.below-fold > div {
+  contain: layout style paint;
+  content-visibility: auto;
+}
+
+/* Lazy load heavy components */
+.lazy-component {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 600px;
+  contain: layout style paint;
+}
+
+/* Optimize scroll reveal animations for lazy loading */
+@media (max-width: 768px) {
+  .scroll-reveal {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 400px;
+  }
+}
+
+/* 3. REDUCE ANIMATION COMPLEXITY ON MOBILE */
+
+@media (max-width: 768px) {
+  /* Disable complex particle animations on mobile */
+  .code-particle-mobile {
+    animation: none !important;
+    opacity: 0.6;
+  }
+
+  /* Simplify spin animations - slower = less CPU */
+  .animate-spin-slow {
+    animation-duration: 8s !important;
+    animation-timing-function: linear;
+  }
+
+  /* Simplify pulse animations */
+  .animate-pulse {
+    animation-duration: 4s !important;
+    animation-timing-function: ease-in-out;
+  }
+
+  /* Disable shimmer animations on mobile */
+  .animate-shimmer,
+  .animate-shimmer-slow {
+    animation: none !important;
+  }
+
+  /* Simplify glow animations */
+  .animate-glow-pulse,
+  .animate-consciousness-glow {
+    animation-duration: 3s !important;
+  }
+
+  /* Disable blob animations */
+  .animate-blob {
+    animation: none !important;
+  }
+
+  /* Simplify float animations */
+  .animate-float {
+    animation-duration: 4s !important;
+  }
+
+  /* Disable scan animations */
+  .animate-scan {
+    animation: none !important;
+  }
+
+  /* Reduce backdrop blur complexity */
+  .backdrop-blur-3xl {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+  }
+
+  .backdrop-blur-2xl {
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
+  }
+
+  .backdrop-blur-xl {
+    backdrop-filter: blur(4px) !important;
+    -webkit-backdrop-filter: blur(4px) !important;
+  }
+
+  /* Simplify gradient backgrounds */
+  .bg-gradient-to-br,
+  .bg-gradient-to-r,
+  .bg-gradient-to-b,
+  .bg-gradient-to-t {
+    background-image: linear-gradient(to bottom, var(--background), var(--accent)) !important;
+  }
+
+  /* Reduce shadow complexity */
+  .shadow-2xl {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  .shadow-xl {
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12) !important;
+  }
+
+  .shadow-lg {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  }
+
+  /* Disable hover animations on mobile */
+  .hover-scale:hover,
+  .hover-glow:hover {
+    transform: none !important;
+    box-shadow: inherit !important;
+  }
+
+  /* Simplify card hover effects */
+  .enterprise-card:hover,
+  .mobile-card-interactive:hover {
+    transform: none !important;
+  }
+
+  /* Disable glass shimmer effects */
+  .glass-shiny::before {
+    animation: none !important;
+  }
+
+  /* Simplify button animations */
+  .btn-enterprise::before {
+    animation: none !important;
+  }
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Disable all will-change */
+  * {
+    will-change: auto !important;
+  }
+}
+
+/* 4. CSS CONTAINMENT FOR BETTER RENDERING */
+
+/* Layout containment - prevents layout recalculation */
+.mobile-contain-layout {
+  contain: layout;
+}
+
+/* Paint containment - isolates paint operations */
+.mobile-contain-paint {
+  contain: paint;
+}
+
+/* Size containment - prevents size recalculation */
+.mobile-contain-size {
+  contain: size;
+}
+
+/* Style containment - isolates style recalculation */
+.mobile-contain-style {
+  contain: style;
+}
+
+/* Content containment - combines layout, paint, and style */
+.mobile-contain-content {
+  contain: content;
+}
+
+/* Strict containment - maximum isolation */
+.mobile-contain-strict {
+  contain: strict;
+}
+
+/* Apply containment to major sections */
+@media (max-width: 768px) {
+  /* Hero section containment */
+  section[class*="hero"],
+  .hero-section-mobile {
+    contain: layout style;
+  }
+
+  /* Terminal containment */
+  .terminal-mobile-optimized {
+    contain: layout paint;
+  }
+
+  /* Chat demo containment */
+  .chat-demo-mobile-optimized {
+    contain: layout paint;
+  }
+
+  /* Pricing cards containment */
+  .pricing-card-mobile-optimized {
+    contain: layout style paint;
+    content-visibility: auto;
+    contain-intrinsic-size: 0 400px;
+  }
+
+  /* Feature cards containment */
+  .feature-card-mobile-optimized {
+    contain: layout style paint;
+    content-visibility: auto;
+    contain-intrinsic-size: 0 300px;
+  }
+
+  /* Navigation containment */
+  nav,
+  .sidebar-mobile-optimized,
+  .header-mobile-optimized {
+    contain: layout style;
+  }
+
+  /* Modal containment */
+  .modal-content-mobile,
+  .mobile-modal-optimized {
+    contain: layout style paint;
+  }
+
+  /* List containment */
+  .mobile-list-optimized {
+    contain: layout style;
+  }
+
+  .mobile-list-item-optimized {
+    contain: layout;
+    content-visibility: auto;
+    contain-intrinsic-size: 0 60px;
+  }
+
+  /* Grid containment */
+  .mobile-grid-optimized {
+    contain: layout style;
+  }
+
+  /* Card containment */
+  .mobile-card-optimized {
+    contain: layout style paint;
+    content-visibility: auto;
+    contain-intrinsic-size: 0 200px;
+  }
+
+  /* Carousel containment */
+  .carousel-mobile-optimized {
+    contain: layout;
+  }
+
+  .carousel-item-mobile {
+    contain: layout style paint;
+  }
+
+  /* Accordion containment */
+  .accordion-mobile-optimized {
+    contain: layout style;
+  }
+
+  .accordion-content-mobile {
+    content-visibility: auto;
+    contain: layout;
+  }
+
+  /* Tab containment */
+  .tabs-mobile-optimized {
+    contain: layout style;
+  }
+
+  .tab-content-mobile {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 300px;
+    contain: layout;
+  }
+}
+
+/* ADDITIONAL PERFORMANCE OPTIMIZATIONS */
+
+/* GPU acceleration for animated elements */
+@media (max-width: 768px) {
+  .gpu-accelerated {
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    perspective: 1000px;
+    -webkit-perspective: 1000px;
+  }
+
+  /* Apply GPU acceleration to animated elements */
+  [class*="animate-"],
+  .transition,
+  .transition-transform {
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+}
+
+/* Optimize scrolling performance */
+@media (max-width: 768px) {
+  .mobile-scroll-optimized {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+    will-change: scroll-position;
+  }
+
+  /* Optimize scroll containers */
+  .overflow-auto,
+  .overflow-y-auto,
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+}
+
+/* Optimize font rendering */
+@media (max-width: 768px) {
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeSpeed;
+  }
+
+  /* Optimize code font rendering */
+  code,
+  pre,
+  .font-mono,
+  .font-code {
+    -webkit-font-smoothing: subpixel-antialiased;
+    text-rendering: optimizeSpeed;
+  }
+}
+
+/* Optimize video rendering */
+@media (max-width: 768px) {
+  video {
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+}
+
+/* Optimize canvas rendering */
+@media (max-width: 768px) {
+  canvas {
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+}
+
+/* Optimize SVG rendering */
+@media (max-width: 768px) {
+  svg {
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+}
+
+/* Network-aware optimizations */
+@media (prefers-reduced-data: reduce) {
+  /* Disable all animations */
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Disable all backdrop filters */
+  .backdrop-blur-xl,
+  .backdrop-blur-2xl,
+  .backdrop-blur-3xl {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* Disable all gradients */
+  [class*="bg-gradient"] {
+    background-image: none !important;
+  }
+
+  /* Disable all shadows */
+  [class*="shadow"] {
+    box-shadow: none !important;
+  }
+}
+
+/* Low-end device optimizations */
+@media (max-width: 768px) and (max-resolution: 1dppx) {
+  /* Disable all backdrop filters on low-end devices */
+  .backdrop-blur-xl,
+  .backdrop-blur-2xl,
+  .backdrop-blur-3xl {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background-color: var(--background) !important;
+  }
+
+  /* Disable all animations on low-end devices */
+  * {
+    animation: none !important;
+  }
+
+  /* Simplify all shadows on low-end devices */
+  [class*="shadow"] {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  }
+
+  /* Disable all gradients on low-end devices */
+  [class*="bg-gradient"] {
+    background-image: none !important;
+    background-color: var(--background) !important;
+  }
+}
+
+/* Optimize for battery saver mode */
+@media (prefers-reduced-motion: reduce) {
+  /* Disable all will-change */
+  * {
+    will-change: auto !important;
+  }
+
+  /* Disable all transforms */
+  [class*="transform"] {
+    transform: none !important;
+  }
+
+  /* Disable all transitions */
+  [class*="transition"] {
+    transition: none !important;
+  }
+}
+
+/* Performance monitoring class */
+.perf-optimized {
+  /* Combine all performance optimizations */
+  contain: layout style paint;
+  content-visibility: auto;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Critical rendering path optimization */
+.critical-render {
+  /* Ensure critical content renders immediately */
+  contain: none;
+  content-visibility: visible;
+  will-change: auto;
+}
+
+/* Deferred rendering for non-critical content */
+.deferred-render {
+  /* Defer rendering of non-critical content */
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px;
+  contain: layout style paint;
+}

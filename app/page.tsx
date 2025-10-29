@@ -50,28 +50,47 @@ export default function Home() {
   // Users can explore the platform and sign up when ready
   return (
     <main className="min-h-screen">
-      <Hero />
-      <ScrollReveal>
-        <BrandFamilyBanner />
-      </ScrollReveal>
-      <ScrollReveal>
-        <BenefitsBand />
-      </ScrollReveal>
-      <ScrollReveal delay={100}>
-        <StreamingChatDemo />
-      </ScrollReveal>
-      <ScrollReveal delay={200}>
-        <ProofSection />
-      </ScrollReveal>
-      <ScrollReveal delay={100}>
-        <Features />
-      </ScrollReveal>
-      <ScrollReveal delay={100}>
-        <FAQ />
-      </ScrollReveal>
-      <ScrollReveal delay={100}>
-        <BrandFamilyBanner />
-      </ScrollReveal>
+      {/* Above-the-fold: Critical content loads immediately */}
+      <div className="critical-content">
+        <Hero />
+      </div>
+      
+      {/* Below-the-fold: Lazy loaded with CSS containment for performance */}
+      <div className="below-fold mobile-contain-content">
+        <ScrollReveal>
+          <BrandFamilyBanner />
+        </ScrollReveal>
+      </div>
+      <div className="below-fold mobile-contain-content">
+        <ScrollReveal>
+          <BenefitsBand />
+        </ScrollReveal>
+      </div>
+      <div className="below-fold mobile-contain-content">
+        <ScrollReveal delay={100}>
+          <StreamingChatDemo />
+        </ScrollReveal>
+      </div>
+      <div className="below-fold mobile-contain-content">
+        <ScrollReveal delay={200}>
+          <ProofSection />
+        </ScrollReveal>
+      </div>
+      <div className="below-fold mobile-contain-content">
+        <ScrollReveal delay={100}>
+          <Features />
+        </ScrollReveal>
+      </div>
+      <div className="below-fold mobile-contain-content">
+        <ScrollReveal delay={100}>
+          <FAQ />
+        </ScrollReveal>
+      </div>
+      <div className="below-fold mobile-contain-content">
+        <ScrollReveal delay={100}>
+          <BrandFamilyBanner />
+        </ScrollReveal>
+      </div>
       <footer className="relative py-16 md:py-20 text-center overflow-hidden border-t border-border/50">
         <div className="absolute inset-0 bg-gradient-to-t from-muted/30 via-muted/10 to-transparent" />
         <div className="relative z-10 space-y-6 px-4">
