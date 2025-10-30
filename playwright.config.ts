@@ -61,21 +61,47 @@ export default defineConfig({
       use: { ...devices['Desktop Safari'] },
     },
     
-    // Mobile viewports
+    // iOS Mobile devices
     {
-      name: 'Mobile Chrome',
+      name: 'iPhone 12',
+      use: { ...devices['iPhone 12'] },
+    },
+    
+    {
+      name: 'iPhone 13',
+      use: { ...devices['iPhone 13'] },
+    },
+    
+    {
+      name: 'iPhone 14',
+      use: { ...devices['iPhone 14 Pro'] },
+    },
+    
+    // Android Mobile devices
+    {
+      name: 'Pixel 5',
       use: { ...devices['Pixel 5'] },
     },
     
     {
-      name: 'Mobile Safari',
-      use: { ...devices['iPhone 12'] },
+      name: 'Galaxy S9+',
+      use: { ...devices['Galaxy S9+'] },
     },
     
     // Tablet viewports
     {
       name: 'iPad',
+      use: { ...devices['iPad (gen 7)'] },
+    },
+    
+    {
+      name: 'iPad Pro',
       use: { ...devices['iPad Pro'] },
+    },
+    
+    {
+      name: 'Galaxy Tab',
+      use: { ...devices['Galaxy Tab S4'] },
     },
   ],
   

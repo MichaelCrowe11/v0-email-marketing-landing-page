@@ -1,0 +1,99 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [active]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - navigation [ref=e7]:
+          - button "previous" [disabled] [ref=e8]:
+            - img "previous" [ref=e9]
+          - generic [ref=e11]:
+            - generic [ref=e12]: 1/
+            - text: "1"
+          - button "next" [disabled] [ref=e13]:
+            - img "next" [ref=e14]
+        - link "Next.js 15.5.4 (outdated) Webpack" [ref=e17] [cursor=pointer]:
+          - /url: https://nextjs.org/docs/messages/version-staleness
+          - img [ref=e18]
+          - generic "An outdated version detected (latest is 16.0.1), upgrade is highly recommended!" [ref=e20]: Next.js 15.5.4 (outdated)
+          - generic [ref=e21]: Webpack
+      - dialog "Runtime Error" [ref=e23]:
+        - generic [ref=e26]:
+          - generic [ref=e27]:
+            - generic [ref=e28]:
+              - generic [ref=e30]: Runtime Error
+              - generic [ref=e31]:
+                - button "Copy Error Info" [ref=e32] [cursor=pointer]:
+                  - img [ref=e33]
+                - button "No related documentation found" [disabled] [ref=e35]:
+                  - img [ref=e36]
+                - link "Learn more about enabling Node.js inspector for server code with Chrome DevTools" [ref=e38] [cursor=pointer]:
+                  - /url: https://nextjs.org/docs/app/building-your-application/configuring/debugging#server-side-code
+                  - img [ref=e39]
+            - generic [ref=e47]:
+              - paragraph [ref=e48]: "@supabase/ssr: Your project's URL and API key are required to create a Supabase client! Check your Supabase project's API settings to find these values https://supabase.com/dashboard/project/_/settings/api"
+              - button "Show More" [ref=e50] [cursor=pointer]
+          - generic [ref=e51]:
+            - generic [ref=e52]:
+              - paragraph [ref=e54]:
+                - img [ref=e56]
+                - generic [ref=e60]: lib\supabase\client.ts (8:31) @ createClient
+                - button "Open in editor" [ref=e61] [cursor=pointer]:
+                  - img [ref=e63]
+              - generic [ref=e66]:
+                - generic [ref=e67]: 6 | if (client) return client
+                - generic [ref=e68]: 7 |
+                - generic [ref=e69]: "> 8 | client = createBrowserClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)"
+                - generic [ref=e70]: "| ^"
+                - generic [ref=e71]: 9 |
+                - generic [ref=e72]: 10 | return client
+                - generic [ref=e73]: "11 | }"
+            - generic [ref=e74]:
+              - generic [ref=e75]:
+                - paragraph [ref=e76]:
+                  - text: Call Stack
+                  - generic [ref=e77]: "53"
+                - button "Show 49 ignore-listed frame(s)" [ref=e78] [cursor=pointer]:
+                  - text: Show 49 ignore-listed frame(s)
+                  - img [ref=e79]
+              - generic [ref=e81]:
+                - generic [ref=e82]:
+                  - text: createClient
+                  - button "Open createClient in editor" [ref=e83] [cursor=pointer]:
+                    - img [ref=e84]
+                - text: lib\supabase\client.ts (8:31)
+              - generic [ref=e86]:
+                - generic [ref=e87]:
+                  - text: UserMenu.useEffect
+                  - button "Open UserMenu.useEffect in editor" [ref=e88] [cursor=pointer]:
+                    - img [ref=e89]
+                - text: components\user-menu.tsx (24:34)
+              - generic [ref=e91]:
+                - generic [ref=e92]:
+                  - text: GlobalHeader
+                  - button "Open GlobalHeader in editor" [ref=e93] [cursor=pointer]:
+                    - img [ref=e94]
+                - text: components\global-header.tsx (212:11)
+              - generic [ref=e96]:
+                - generic [ref=e97]:
+                  - text: RootLayout
+                  - button "Open RootLayout in editor" [ref=e98] [cursor=pointer]:
+                    - img [ref=e99]
+                - text: app\layout.tsx (83:11)
+        - generic [ref=e101]:
+          - generic [ref=e102]: "1"
+          - generic [ref=e103]: "2"
+    - generic [ref=e108] [cursor=pointer]:
+      - button "Open Next.js Dev Tools" [ref=e109]:
+        - img [ref=e110]
+      - generic [ref=e113]:
+        - button "Open issues overlay" [ref=e114]:
+          - generic [ref=e115]:
+            - generic [ref=e116]: "0"
+            - generic [ref=e117]: "1"
+          - generic [ref=e118]: Issue
+        - button "Collapse issues badge" [ref=e119]:
+          - img [ref=e120]
+  - 'heading "Application error: a client-side exception has occurred while loading localhost (see the browser console for more information)." [level=2] [ref=e124]'
+```

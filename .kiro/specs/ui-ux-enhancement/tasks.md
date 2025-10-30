@@ -527,7 +527,24 @@
 
 
 
-- [ ] 11.4 Test mobile experience
+- [x] 11.4 Test mobile experience
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   - Test on iOS (iPhone 12, 13, 14)
   - Test on Android (various devices)
   - Test on tablets (iPad, Android tablets)

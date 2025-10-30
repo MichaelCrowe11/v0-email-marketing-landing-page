@@ -15,8 +15,6 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    // Aggressive quality reduction for mobile
-    quality: 75,
     // Enable unoptimized for development speed
     unoptimized: process.env.NODE_ENV === 'development',
   },
@@ -83,8 +81,6 @@ const nextConfig = {
   productionBrowserSourceMaps: false,
   // Enable React strict mode for better performance
   reactStrictMode: true,
-  // Optimize font loading
-  optimizeFonts: true,
   async headers() {
     return [
       {
