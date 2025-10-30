@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Check, ArrowRight, Shield, Sparkles, Zap, Database, Beaker, Calculator } from "lucide-react"
 import { useState } from "react"
+import { TrustIndicators } from "@/components/trust-indicators"
 
 export function Pricing() {
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards")
@@ -309,22 +310,8 @@ export function Pricing() {
         )}
 
         {/* Trust Indicators */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-12">
-          <div className="glass-card rounded-xl p-6 text-center hover:border-accent/50 transition-all">
-            <Shield className="w-8 h-8 text-green-500 mx-auto mb-3" />
-            <h3 className="text-sm font-bold text-foreground mb-1">Secure Payment</h3>
-            <p className="text-xs text-foreground/70">256-bit SSL encryption</p>
-          </div>
-          <div className="glass-card rounded-xl p-6 text-center hover:border-accent/50 transition-all">
-            <Check className="w-8 h-8 text-green-500 mx-auto mb-3" />
-            <h3 className="text-sm font-bold text-foreground mb-1">30-Day Guarantee</h3>
-            <p className="text-xs text-foreground/70">Full refund if not satisfied</p>
-          </div>
-          <div className="glass-card rounded-xl p-6 text-center hover:border-accent/50 transition-all sm:col-span-2 lg:col-span-1">
-            <Sparkles className="w-8 h-8 text-purple-500 mx-auto mb-3" />
-            <h3 className="text-sm font-bold text-foreground mb-1">Instant Access</h3>
-            <p className="text-xs text-foreground/70">Start using immediately</p>
-          </div>
+        <div className="mb-12">
+          <TrustIndicators showEarlyAccess={true} />
         </div>
 
         {/* Bottom Features */}

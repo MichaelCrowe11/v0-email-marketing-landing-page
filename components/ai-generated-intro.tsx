@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useMemo, useCallback } from "react"
+import Image from "next/image"
 
 export function AIGeneratedIntro({ onComplete }: { onComplete: () => void }) {
   const [progress, setProgress] = useState(0)
@@ -130,14 +131,17 @@ export function AIGeneratedIntro({ onComplete }: { onComplete: () => void }) {
             filter: `drop-shadow(0 0 ${30 + progress / 3}px rgba(139,92,246,${0.5 + progress / 200})) drop-shadow(0 0 ${20 + progress / 5}px rgba(59,130,246,${0.3 + progress / 200}))`,
           }}
         >
-          <img
+          <Image
             src="/crowe-logic-logo.png"
             alt="Crowe Logic"
+            width={160}
+            height={160}
             className="h-40 w-40 rounded-full mx-auto ring-4 ring-purple-500/30"
             style={{
               transform: `scale(${1 + progress / 800}) rotate(${progress * 0.5}deg)`,
               transition: "transform 0.3s ease-out",
             }}
+            priority
           />
 
           {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (

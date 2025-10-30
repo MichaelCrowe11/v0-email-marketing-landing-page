@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useTheme } from "next-themes"
+import Image from "next/image"
 import { Copy, Check, Play, Pause, ChevronLeft, ChevronRight, ZoomIn, X } from "lucide-react"
 
 interface Message {
@@ -389,9 +390,11 @@ export function StreamingChatDemo() {
                   >
                     {/* Colorful code swirl effect */}
                     <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 blur-md opacity-75 animate-spin-slow" aria-hidden="true" />
-                    <img
+                    <Image
                       src="/crowe-avatar.png"
                       alt=""
+                      width={40}
+                      height={40}
                       className="relative w-10 h-10 rounded-full ring-2 ring-purple-500/50 shadow-lg"
                       aria-hidden="true"
                     />
@@ -462,9 +465,11 @@ export function StreamingChatDemo() {
                           {isThinking && index === messages.length - 1 && (
                             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 blur-md opacity-50 animate-spin-slow" />
                           )}
-                          <img
+                          <Image
                             src="/crowe-avatar.png"
                             alt="Crowe Logic AI"
+                            width={32}
+                            height={32}
                             className="relative w-8 h-8 rounded-full flex-shrink-0 shadow-lg ring-2 ring-purple-500/30 mt-1"
                           />
                         </motion.div>
@@ -571,9 +576,11 @@ export function StreamingChatDemo() {
                         >
                           {message.image && message.role === "user" && (
                             <div className="relative group mb-2">
-                              <img
+                              <Image
                                 src={message.image || "/placeholder.svg"}
                                 alt="User uploaded image for analysis"
+                                width={400}
+                                height={300}
                                 className="rounded-lg w-full cursor-pointer"
                                 onClick={() => setZoomedImage(message.image || null)}
                                 onKeyDown={(e) => {
@@ -631,9 +638,11 @@ export function StreamingChatDemo() {
                               transition={{ delay: 0.3 }}
                               className="mt-3 relative group"
                             >
-                              <img
+                              <Image
                                 src={message.image || "/placeholder.svg"}
                                 alt="AI analysis result with marked transfer zones"
+                                width={400}
+                                height={300}
                                 className="rounded-lg w-full border-2 border-primary/20 cursor-pointer"
                                 onClick={() => setZoomedImage(message.image || null)}
                                 onKeyDown={(e) => {

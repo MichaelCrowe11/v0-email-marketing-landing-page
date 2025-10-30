@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Check, ArrowRight } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 
 export default function GPTsPage() {
   const aiModules = [
@@ -136,10 +137,13 @@ export default function GPTsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-3">
-              <img
+              <Image
                 src="/crowe-avatar.png"
                 alt="Michael Crowe"
+                width={40}
+                height={40}
                 className="h-10 w-10 rounded-full ring-2 ring-accent/20"
+                priority
               />
               <div>
                 <h1 className="text-lg font-bold text-foreground">Michael's GPTs</h1>
@@ -160,7 +164,7 @@ export default function GPTsPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-accent/5 via-transparent to-transparent" />
         <div className="relative max-w-7xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 mb-6">
-            <img src="/crowe-avatar.png" alt="Michael Crowe" className="w-6 h-6 rounded-full ring-1 ring-accent/30" />
+            <Image src="/crowe-avatar.png" alt="Michael Crowe" width={24} height={24} className="w-6 h-6 rounded-full ring-1 ring-accent/30" />
             <span className="text-sm font-medium text-foreground">Michael's Expert GPT Assistants</span>
           </div>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-foreground mb-6">
@@ -197,7 +201,7 @@ export default function GPTsPage() {
               )}
 
               <div className="flex items-center gap-3 mb-6">
-                <img src={bundle.logo || "/placeholder.svg"} alt={bundle.name} className="h-12 w-12 rounded-full" />
+                <Image src={bundle.logo || "/placeholder.svg"} alt={bundle.name} width={48} height={48} className="h-12 w-12 rounded-full" />
                 <div>
                   <h3 className="text-xl font-bold text-foreground">{bundle.name}</h3>
                   <p className="text-sm text-muted-foreground">{bundle.subtitle}</p>
@@ -262,7 +266,7 @@ export default function GPTsPage() {
               className="rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:shadow-lg hover:border-accent/50"
             >
               <div className="flex items-center gap-3 mb-4">
-                <img src={module.logo || "/placeholder.svg"} alt={module.name} className="h-10 w-10 rounded-full" />
+                <Image src={module.logo || "/placeholder.svg"} alt={module.name} width={40} height={40} className="h-10 w-10 rounded-full" />
                 <h3 className="text-lg font-bold text-foreground">{module.name.split(" - ")[1]}</h3>
               </div>
 

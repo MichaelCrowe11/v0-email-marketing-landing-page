@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import Image from "next/image"
 import { User, Menu, X } from "lucide-react"
 
 export function PremiumNav() {
@@ -28,10 +29,13 @@ export function PremiumNav() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
             <div className="relative">
-              <img
+              <Image
                 src="/crowe-logic-logo.png"
                 alt="Crowe Logic"
+                width={48}
+                height={48}
                 className="h-10 w-10 md:h-12 md:w-12 rounded-full object-cover ring-1 ring-border/50 transition-transform group-hover:scale-105"
+                priority
               />
             </div>
             <div className="hidden sm:block">

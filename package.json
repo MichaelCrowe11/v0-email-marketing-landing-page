@@ -6,7 +6,16 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "test": "playwright test",
+    "test:visual": "playwright test tests/visual-regression",
+    "test:visual:update": "playwright test tests/visual-regression --update-snapshots",
+    "test:a11y": "playwright test tests/accessibility",
+    "test:performance": "playwright test tests/performance",
+    "test:mobile": "playwright test tests/mobile",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:report": "playwright show-report"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "latest",

@@ -26,9 +26,56 @@ const nextConfig = {
   },
   // Enable experimental features for better performance
   experimental: {
-    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
+    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons', 'framer-motion', 'recharts'],
     // Enable optimized CSS loading
     optimizeCss: true,
+    // Enable optimized server components
+    serverActions: {
+      bodySizeLimit: '2mb',
+    },
+  },
+  // Optimize bundle splitting
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          chunks: 'all',
+          cacheGroups: {
+            default: false,
+            vendors: false,
+            // Vendor chunk for node_modules
+            vendor: {
+              name: 'vendor',
+              chunks: 'all',
+              test: /node_modules/,
+              priority: 20,
+            },
+            // Common chunk for shared code
+            common: {
+              name: 'common',
+              minChunks: 2,
+              chunks: 'all',
+              priority: 10,
+              reuseExistingChunk: true,
+              enforce: true,
+            },
+            // Separate chunks for large libraries
+            framerMotion: {
+              name: 'framer-motion',
+              test: /[\\/]node_modules[\\/]framer-motion[\\/]/,
+              priority: 30,
+            },
+            recharts: {
+              name: 'recharts',
+              test: /[\\/]node_modules[\\/]recharts[\\/]/,
+              priority: 30,
+            },
+          },
+        },
+      }
+    }
+    return config
   },
   // Enable compression
   compress: true,

@@ -152,6 +152,49 @@
     text-rendering: optimizeLegibility;
   }
 
+  /* GPU Acceleration for animations */
+  .will-change-transform {
+    will-change: transform;
+  }
+
+  .will-change-opacity {
+    will-change: opacity;
+  }
+
+  .will-change-scroll {
+    will-change: scroll-position;
+  }
+
+  /* Force GPU acceleration for animated elements */
+  .gpu-accelerated {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+
+  /* Optimize scroll performance */
+  .smooth-scroll {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Contain layout for better performance */
+  .contain-layout {
+    contain: layout;
+  }
+
+  .contain-paint {
+    contain: paint;
+  }
+
+  .contain-content {
+    contain: content;
+  }
+
+  .contain-strict {
+    contain: strict;
+  }
+
   /* Enhanced focus indicators for accessibility */
   *:focus-visible {
     @apply outline-2 outline-offset-2 outline-ring;
@@ -447,46 +490,49 @@
 @keyframes fade-in {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translate3d(0, 8px, 0);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 .animate-fade-in {
   animation: fade-in 0.3s ease-out forwards;
+  will-change: transform, opacity;
 }
 
 @keyframes slide-up-fade {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translate3d(0, 16px, 0);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 .animate-slide-up-fade {
   animation: slide-up-fade 0.4s ease-out forwards;
+  will-change: transform, opacity;
 }
 
 @keyframes scale-in {
   from {
     opacity: 0;
-    transform: scale(0.96);
+    transform: scale3d(0.96, 0.96, 1);
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: scale3d(1, 1, 1);
   }
 }
 
 .animate-scale-in {
   animation: scale-in 0.3s ease-out forwards;
+  will-change: transform, opacity;
 }
 
 /* Color swirl animation ONLY for AI avatar */
@@ -748,25 +794,26 @@
 @keyframes float {
   0%,
   100% {
-    transform: translateY(0px);
+    transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: translateY(-10px);
+    transform: translate3d(0, -10px, 0);
   }
 }
 
 @keyframes shimmer {
   0% {
-    transform: translateX(-100%);
+    transform: translate3d(-100%, 0, 0);
   }
   100% {
-    transform: translateX(100%);
+    transform: translate3d(100%, 0, 0);
   }
 }
 
 /* Added shimmer animation for pipeline progress bars */
 .animate-shimmer {
   animation: shimmer 2s infinite;
+  will-change: transform;
 }
 
 .animation-delay-200 {
@@ -802,10 +849,11 @@
 /* Professional hover effects */
 .hover-scale {
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
 }
 
 .hover-scale:hover {
-  transform: scale(1.02);
+  transform: scale3d(1.02, 1.02, 1);
 }
 
 .hover-glow {

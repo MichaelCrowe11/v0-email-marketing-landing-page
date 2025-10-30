@@ -10,6 +10,8 @@ import { GlobalHeader } from "@/components/global-header"
 import { ThemeProvider } from "@/components/theme-provider"
 import { SkipLink } from "@/components/skip-link"
 import { HEADER_HEIGHT } from "@/components/global-header"
+import { WebVitals } from "@/components/web-vitals"
+import { Footer } from "@/components/footer"
 
 import { Inter, Fira_Code, Geist as V0_Font_Geist, Geist_Mono as V0_Font_Geist_Mono, Source_Serif_4 as V0_Font_Source_Serif_4 } from 'next/font/google'
 
@@ -75,6 +77,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`font-sans ${inter.variable} ${firaCode.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+          <WebVitals />
           <SkipLink />
           <SidebarNav />
           <GlobalHeader />
@@ -82,6 +85,7 @@ export default function RootLayout({
             <main id="main-content" tabIndex={-1}>
               <Suspense fallback={null}>{children}</Suspense>
             </main>
+            <Footer />
           </div>
         </ThemeProvider>
       </body>
