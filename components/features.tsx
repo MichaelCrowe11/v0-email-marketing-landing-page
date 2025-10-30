@@ -95,7 +95,7 @@ export function Features() {
       learnMoreLink: "/consultations",
     },
     {
-      image: "/crowe-logic-avatar-writing-business-plan-with-mush.jpg",
+      image: "https://i.ytimg.com/vi/TUI4dQ_GI3Y/hqdefault.jpg?sqp=-oaymwEnCNACELwBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLDve2Yi8r7CaFMS0fipStZEOgOrog",
       title: "Business Planning",
       description: "Financial modeling, market analysis, and scaling strategies for commercial operations.",
       category: "planning",
