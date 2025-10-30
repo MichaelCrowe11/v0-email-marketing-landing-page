@@ -1,7 +1,7 @@
-# Azure OpenAI Document Generation Integration
+# Crowe Logic Document Generation System
 
 ## Overview
-Integrate Microsoft's Document Generation Solution Accelerator with Crowe Logic AI chat interface using a three-panel workspace layout.
+Proprietary document generation workspace integrated with Crowe Logic AI chat interface using a three-panel layout.
 
 ## Architecture
 
@@ -73,27 +73,26 @@ Integrate Microsoft's Document Generation Solution Accelerator with Crowe Logic 
 
 ## Technical Implementation
 
-### Azure OpenAI Integration
+### Crowe Logic AI Integration
 ```typescript
-// Azure OpenAI Service
-const azureConfig = {
-  endpoint: process.env.AZURE_OPENAI_ENDPOINT,
-  apiKey: process.env.AZURE_OPENAI_KEY,
-  deploymentName: 'gpt-4',
-  apiVersion: '2024-02-15-preview'
+// Crowe Logic AI Service
+const croweConfig = {
+  endpoint: process.env.CROWE_LOGIC_ENDPOINT,
+  apiKey: process.env.CROWE_LOGIC_API_KEY,
+  model: 'crowe-logic-pro'
 }
 
 // Document Generation
 const documentService = {
   generateSOP: async (params) => {
-    // Use Azure AI Search for knowledge retrieval
+    // Use Crowe Logic knowledge base
     // Generate structured document
     // Return markdown + metadata
   },
   
   renderDocument: async (markdown, template) => {
-    // Convert to PDF/Word using Azure services
-    // Apply branding/styling
+    // Convert to PDF/Word using Crowe Logic rendering engine
+    // Apply Southwest Mushrooms branding
     // Return preview URL
   }
 }
@@ -132,28 +131,29 @@ components/
 - HTML
 - Print-ready format
 
-## Azure Services Used
+## Crowe Logic Technology Stack
 
-### 1. Azure OpenAI Service
-- GPT-4 for content generation
+### 1. Crowe Logic AI Engine
+- Advanced language model trained on 20+ years cultivation data
 - Embeddings for knowledge retrieval
-- Fine-tuned on Michael Crowe's content
+- Specialized in mycology and commercial production
 
-### 2. Azure AI Search
-- Index all YouTube transcripts
-- Index consulting case studies
-- Index production SOPs
+### 2. Crowe Logic Knowledge Base
+- Indexed cultivation protocols
+- Production case studies
+- Contamination database
 - Semantic search for relevant context
 
-### 3. Azure Blob Storage
-- Store generated documents
+### 3. Document Storage System
+- Secure document storage
 - Version control
-- Share links with expiration
+- Shareable links with expiration
 
-### 4. Azure Functions
-- Document rendering pipeline
-- PDF generation
+### 4. Rendering Pipeline
+- Professional document formatting
+- PDF/Word generation
 - Template processing
+- Southwest Mushrooms branding
 
 ## UI/UX Design
 
@@ -185,11 +185,11 @@ type PanelLayout =
 - [ ] Implement panel toggle controls
 - [ ] Mobile responsive design
 
-### Phase 2: Azure Integration (Week 2)
-- [ ] Set up Azure OpenAI connection
-- [ ] Configure Azure AI Search
+### Phase 2: Backend Integration (Week 2)
+- [ ] Set up Crowe Logic AI connection
+- [ ] Configure knowledge base search
 - [ ] Implement document generation API
-- [ ] Add blob storage for documents
+- [ ] Add secure document storage
 
 ### Phase 3: Document Features (Week 3)
 - [ ] Markdown editor with syntax highlighting
@@ -231,17 +231,18 @@ type PanelLayout =
 - **Upsell opportunity:** Premium templates, advanced exports
 - **Data collection:** Learn what documents users need most
 
-## Cost Considerations
+## Infrastructure Costs
 
-### Azure Services (Estimated Monthly)
-- Azure OpenAI API: $100-500 (depending on usage)
-- Azure AI Search: $75-250 (basic tier)
-- Blob Storage: $5-20 (minimal)
-- Functions: $10-50 (consumption plan)
+### Crowe Logic Platform (Estimated Monthly)
+- AI Processing: $100-500 (depending on usage)
+- Knowledge Base: $75-250 (search & retrieval)
+- Storage: $5-20 (documents)
+- Rendering: $10-50 (PDF/Word generation)
 
 **Total:** ~$200-800/month depending on scale
 
-### ROI
+### Revenue Model
 - Premium feature for paid tiers
-- Charge per document export
-- Or include in higher subscription tiers
+- Per-document export fees
+- Enterprise unlimited plans
+- White-label options for large operations
