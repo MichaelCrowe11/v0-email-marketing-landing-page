@@ -1,7 +1,5 @@
 "use client"
 
-import Image from "next/image"
-
 interface AIAvatarProps {
   state: "idle" | "thinking" | "streaming" | "completed"
   size?: "sm" | "md" | "lg"
@@ -13,12 +11,6 @@ const sizeClasses = {
   lg: "h-10 w-10",
 }
 
-const sizePixels = {
-  sm: 24,
-  md: 32,
-  lg: 40,
-}
-
 export function AIAvatar({ state, size = "md" }: AIAvatarProps) {
   const animationClass = {
     idle: "animate-logo-breathe",
@@ -28,11 +20,9 @@ export function AIAvatar({ state, size = "md" }: AIAvatarProps) {
   }[state]
 
   return (
-    <Image
+    <img
       src="/crowe-logic-logo.png"
       alt="Crowe Logic AI"
-      width={sizePixels[size]}
-      height={sizePixels[size]}
       className={`${sizeClasses[size]} rounded-full ring-2 ring-primary/30 ${animationClass} transition-all duration-200`}
     />
   )

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, memo, type ReactNode } from "react"
+import { useEffect, useRef, type ReactNode } from "react"
 
 interface ScrollRevealProps {
   children: ReactNode
@@ -8,7 +8,7 @@ interface ScrollRevealProps {
   delay?: number
 }
 
-export const ScrollReveal = memo(function ScrollReveal({ children, className = "", delay = 0 }: ScrollRevealProps) {
+export function ScrollReveal({ children, className = "", delay = 0 }: ScrollRevealProps) {
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -44,4 +44,4 @@ export const ScrollReveal = memo(function ScrollReveal({ children, className = "
       {children}
     </div>
   )
-})
+}

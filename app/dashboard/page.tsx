@@ -27,7 +27,7 @@ import {
   Sparkles,
 } from "lucide-react"
 import Link from "next/link"
-import { createBrowserClient } from "@supabase/ssr"
+import { createClient } from "@/lib/supabase/client"
 
 export default function DashboardPage() {
   const [projects, setProjects] = useState<any[]>([])
@@ -41,10 +41,7 @@ export default function DashboardPage() {
   })
   const [loading, setLoading] = useState(true)
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  )
+  const supabase = createClient()
 
   useEffect(() => {
     loadDashboardData()

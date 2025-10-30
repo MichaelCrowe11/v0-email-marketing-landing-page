@@ -1,5 +1,3 @@
-import Image from "next/image"
-
 export function AIShowcase() {
   return (
     <section className="px-4 py-12">
@@ -13,7 +11,7 @@ export function AIShowcase() {
           </div>
 
           <div className="mx-auto max-w-4xl overflow-hidden rounded-xl border border-border bg-background shadow-2xl">
-            <Image src="/chatgpt-interface-screenshot.jpeg" alt="Crowe Logic AI ChatGPT Interface" width={1200} height={800} className="w-full" />
+            <img src="/chatgpt-interface-screenshot.jpeg" alt="Crowe Logic AI ChatGPT Interface" className="w-full" />
           </div>
 
           <div className="mt-8 grid gap-4 md:grid-cols-4">
