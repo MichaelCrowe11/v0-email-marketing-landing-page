@@ -5,6 +5,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import {
   User,
   MessageSquare,
@@ -25,35 +26,122 @@ import {
   Home,
   Sparkles,
   Calendar,
+  ChevronDown,
+  ChevronRight,
+  Plus,
+  Upload,
 } from "lucide-react"
 import { HEADER_HEIGHT } from "@/components/global-header"
 
+interface NavItem {
+  href: string
+  label: string
+  icon: React.ComponentType<{ className?: string }>
+  badge?: string
+  isNew?: boolean
+}
+
+interface NavSection {
+  title: string
+  items: NavItem[]
+  defaultOpen?: boolean
+}
+
 export function SidebarNav() {
   const [isOpen, setIsOpen] = useState(false)
+  const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({})
   const pathname = usePathname()
 
-  const navItems = [
-    { href: "/", label: "Home", icon: Home },
-    { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/chat", label: "AI Assistant", icon: MessageSquare },
-    { href: "/crowe-vision", label: "Crowe Vision", icon: Camera },
-    { href: "/video-studio", label: "Video Studio", icon: Video },
-    { href: "/gpts", label: "AI GPT Modules", icon: Sparkles },
-    { href: "/species-library", label: "Species Library", icon: Microscope },
-    { href: "/sops", label: "SOPs & Guides", icon: ClipboardList },
-    { href: "/contamination-guide", label: "Contamination ID", icon: Leaf },
-    { href: "/analytics", label: "Analytics", icon: BarChart3 },
-    { href: "/forum", label: "Community", icon: Users },
-    { href: "/docs", label: "Documentation", icon: BookOpen },
-    { href: "/pricing", label: "Pricing", icon: DollarSign },
-    { href: "/consultations", label: "Consultations", icon: Calendar },
-    { href: "/shop", label: "Shop", icon: ShoppingBag },
+  const navSections: NavSection[] = [
+    {
+      title: "Overview",
+      items: [
+        { href: "/", label: "Home", icon: Home },
+        { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+      ],
+      defaultOpen: true,
+    },
+    {
+      title: "AI Tools",
+      items: [
+        { href: "/chat", label: "AI Assistant", icon: MessageSquare },
+        { href: "/crowe-vision", label: "Crowe Vision", icon: Camera, isNew: true },
+        { href: "/video-studio", label: "Video Studio", icon: Video, isNew: true },
+        { href: "/gpts", label: "AI GPT Modules", icon: Sparkles },
+        { href: "/analytics", label: "Analytics", icon: BarChart3 },
+      ],
+      defaultOpen: true,
+    },
+    {
+      title: "Resources",
+      items: [
+        { href: "/species-library", label: "Species Library", icon: Microscope },
+        { href: "/sops", label: "SOPs & Guides", icon: ClipboardList },
+        { href: "/contamination-guide", label: "Contamination ID", icon: Leaf },
+        { href: "/docs", label: "Documentation", icon: BookOpen },
+      ],
+      defaultOpen: true,
+    },
+    {
+      title: "Community",
+      items: [
+        { href: "/forum", label: "Community Forum", icon: Users },
+        { href: "/consultations", label: "Consultations", icon: Calendar },
+      ],
+      defaultOpen: true,
+    },
+    {
+      title: "Account",
+      items: [
+        { href: "/pricing", label: "Pricing", icon: DollarSign },
+        { href: "/shop", label: "Shop", icon: ShoppingBag },
+      ],
+      defaultOpen: true,
+    },
   ]
+
+  // Initialize collapsed sections
+  useEffect(() => {
+    const initial: Record<string, boolean> = {}
+    navSections.forEach((section) => {
+      initial[section.title] = !section.defaultOpen
+    })
+    setCollapsedSections(initial)
+  }, [])
+
+  const toggleSection = (title: string) => {
+    setCollapsedSections((prev) => ({
+      ...prev,
+      [title]: !prev[title],
+    }))
+  }
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/"
     return pathname.startsWith(href)
   }
+
+  // Arrow key navigation support
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement
+      if (!target.closest('nav')) return
+
+      const navLinks = Array.from(document.querySelectorAll('nav a[href]')) as HTMLAnchorElement[]
+      const currentIndex = navLinks.indexOf(target as HTMLAnchorElement)
+
+      if (e.key === 'ArrowDown' && currentIndex < navLinks.length - 1) {
+        e.preventDefault()
+        navLinks[currentIndex + 1]?.focus()
+      } else if (e.key === 'ArrowUp' && currentIndex > 0) {
+        e.preventDefault()
+        navLinks[currentIndex - 1]?.focus()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [])
 
   useEffect(() => {
     setIsOpen(false)
@@ -86,9 +174,8 @@ export function SidebarNav() {
 
       {/* Sidebar - locked to top with header height offset */}
       <aside
-        className={`fixed left-0 h-screen w-64 bg-sidebar/95 backdrop-blur-xl border-r border-sidebar-border z-40 transition-transform duration-300 ${
-          isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
-        }`}
+        className={`fixed left-0 h-screen w-64 bg-sidebar/95 backdrop-blur-xl border-r border-sidebar-border z-40 transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+          }`}
         style={{ top: 0 }}
       >
         <div className="flex flex-col h-full pb-4">
@@ -108,28 +195,99 @@ export function SidebarNav() {
             />
           </a>
 
-          {/* Navigation */}
-          <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-            {navItems.map((item) => {
-              const Icon = item.icon
-              const active = isActive(item.href)
+          {/* Navigation - Grouped with collapsible sections */}
+          <nav className="flex-1 p-4 space-y-4 overflow-y-auto" aria-label="Main navigation">
+            {navSections.map((section) => {
+              const isCollapsed = collapsedSections[section.title]
               return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-all ${
-                    active
-                      ? "bg-sidebar-accent text-sidebar-foreground"
-                      : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50 active:bg-sidebar-accent"
-                  }`}
-                  onClick={() => setIsOpen(false)}
-                >
-                  <Icon className="w-5 h-5 flex-shrink-0" />
-                  <span className="truncate">{item.label}</span>
-                </Link>
+                <div key={section.title} className="space-y-1">
+                  {/* Section Header */}
+                  <button
+                    onClick={() => toggleSection(section.title)}
+                    className="flex items-center justify-between w-full px-2 py-1 text-xs font-semibold text-sidebar-foreground/60 hover:text-sidebar-foreground uppercase tracking-wider transition-colors"
+                    aria-expanded={!isCollapsed}
+                    aria-label={`${isCollapsed ? "Expand" : "Collapse"} ${section.title} section`}
+                  >
+                    <span>{section.title}</span>
+                    {isCollapsed ? (
+                      <ChevronRight className="w-3 h-3" />
+                    ) : (
+                      <ChevronDown className="w-3 h-3" />
+                    )}
+                  </button>
+
+                  {/* Section Items */}
+                  {!isCollapsed && (
+                    <div className="space-y-1">
+                      {section.items.map((item) => {
+                        const Icon = item.icon
+                        const active = isActive(item.href)
+                        return (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg transition-all group ${active
+                                ? "bg-sidebar-accent text-sidebar-foreground shadow-sm ring-1 ring-primary/20"
+                                : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50 active:bg-sidebar-accent"
+                              }`}
+                            onClick={() => setIsOpen(false)}
+                          >
+                            <Icon className={`w-5 h-5 flex-shrink-0 transition-transform ${active ? "scale-110" : "group-hover:scale-105"
+                              }`} />
+                            <span className="truncate flex-1">{item.label}</span>
+                            {item.isNew && (
+                              <Badge
+                                variant="secondary"
+                                className="text-[10px] px-1.5 py-0 h-5 bg-primary/10 text-primary border-primary/20"
+                              >
+                                NEW
+                              </Badge>
+                            )}
+                            {item.badge && (
+                              <Badge
+                                variant="secondary"
+                                className="text-[10px] px-1.5 py-0 h-5"
+                              >
+                                {item.badge}
+                              </Badge>
+                            )}
+                          </Link>
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
               )
             })}
           </nav>
+
+          {/* Quick Action Buttons */}
+          <div className="px-4 pb-3 space-y-2">
+            <div className="grid grid-cols-2 gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                className="w-full justify-center gap-2 hover:bg-sidebar-accent hover:border-primary/30 text-sidebar-foreground h-10"
+                asChild
+              >
+                <Link href="/chat">
+                  <Plus className="w-4 h-4" />
+                  <span className="text-xs">New Chat</span>
+                </Link>
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="w-full justify-center gap-2 hover:bg-sidebar-accent hover:border-primary/30 text-sidebar-foreground h-10"
+                asChild
+              >
+                <Link href="/crowe-vision">
+                  <Upload className="w-4 h-4" />
+                  <span className="text-xs">Upload</span>
+                </Link>
+              </Button>
+            </div>
+          </div>
 
           {/* Bottom Actions */}
           <div className="p-4 border-t border-sidebar-border space-y-2">
@@ -159,7 +317,7 @@ export function SidebarNav() {
 
             <Button
               size="sm"
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-primary/20 transition-all"
               asChild
             >
               <Link href="/pricing">Upgrade Access</Link>
