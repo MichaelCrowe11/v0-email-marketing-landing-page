@@ -55,7 +55,7 @@ export function Features() {
       learnMoreLink: "/docs#spawn-master",
     },
     {
-      image: "https://img.youtube.com/vi/bgqt0q1I7J8/maxresdefault.jpg",
+      image: "https://i.ytimg.com/vi/Yf5WCbAs32s/hqdefault.jpg?sqp=-oaymwFBCNACELwBSFryq4qpAzMIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB8AEB-AH-CYAC0AWKAgwIABABGEogTyhlMA8=&rs=AOn4CLAcePkk-o7rtwQuRS36_LvSZuZ8UQ",
       videoId: "bgqt0q1I7J8",
       title: "Contam Triage",
       description: "Rapid ID, containment, root-cause analysis, and CAPA playbooks.",
@@ -66,7 +66,7 @@ export function Features() {
       learnMoreLink: "/docs#contam-triage",
     },
     {
-      image: "/crowe-logic-avatar-analyzing-mushroom-data-on-holo.jpg",
+      image: "https://i.ytimg.com/vi/z2fpfQGNbQA/hqdefault.jpg?sqp=-oaymwEnCNACELwBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLAROOPUSBYXSCvKyE-p5QEyMVjHqA",
       title: "Crowe Vision Analysis",
       description: "Advanced visual analysis for growth monitoring and contamination detection.",
       category: "ai-tools",
@@ -76,7 +76,7 @@ export function Features() {
       learnMoreLink: "/crowe-vision",
     },
     {
-      image: "/crowe-logic-avatar-conducting-research-in-laborato.jpg",
+      image: "https://i.ytimg.com/vi/mNnTXNS76Dw/hqdefault.jpg?sqp=-oaymwEnCNACELwBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLAGa1t-l7RfUYO7jiala79Yp6g4WA",
       title: "Species Library",
       description: "Comprehensive database of cultivation parameters for 100+ species.",
       category: "planning",
@@ -84,7 +84,7 @@ export function Features() {
       learnMoreLink: "/species-library",
     },
     {
-      image: "/crowe-logic-avatar-in-consulting-meeting-with-char.jpg",
+      image: "https://i.ytimg.com/vi/90MnwqxIBeg/hqdefault.jpg?sqp=-oaymwEnCNACELwBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLDzjqUcVGVBk9uOnAo5h5Sh_-ZaYA",
       title: "Expert Consultation",
       description: "Direct access to Michael Crowe's 20+ years of cultivation expertise.",
       category: "support",

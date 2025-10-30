@@ -3,7 +3,7 @@ import Image from "next/image"
 export function ProofSection() {
   const credentials = [
     {
-      image: "https://i.ytimg.com/vi/rxlJJpu3O_g/hqdefault.jpg",
+      image: "https://i.ytimg.com/vi/rxlJJpu3O_g/hqdefault.jpg?sqp=-oaymwEnCNACELwBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLCxtvk3XljjaINfKu-I6IFvCks3jA",
       title: "20+ Years of Expertise",
       description:
         "Michael Crowe has spent over two decades mastering commercial mushroom cultivation at Southwest Mushrooms in Phoenix, Arizona. From substrate formulation to contamination triage, this AI is built on real production experience.",
@@ -11,7 +11,7 @@ export function ProofSection() {
       metricLabel: "Professional Experience"
     },
     {
-      image: "https://i.ytimg.com/vi/8KUYup2W2f4/hqdefault.jpg",
+      image: "https://i.ytimg.com/vi/8KUYup2W2f4/hqdefault.jpg?sqp=-oaymwEnCNACELwBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLCZ5HVURMBUHuqD7tMXh5p62ISkOg",
       title: "Comprehensive Knowledge Base",
       description:
         "Every YouTube video, consulting lesson, and production log was transcribed and integrated. The AI mirrors Michael's speech patterns, problem-solving approach, and decision-making process based on thousands of real cultivation scenarios.",
@@ -19,7 +19,7 @@ export function ProofSection() {
       metricLabel: "Hours of Content"
     },
     {
-      image: "https://i.ytimg.com/vi/Ng_Wq9PnEVI/hqdefault.jpg",
+      image: "https://i.ytimg.com/vi/Ng_Wq9PnEVI/hqdefault.jpg?sqp=-oaymwEnCNACELwBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLBEov5nhRSmvkq3hRrNpPixm0AX5A",
       title: "Battle-Tested in Production",
       description:
         "Built from actual production operations at Southwest Mushrooms: real schedules, quality control gates, contamination logs, and corrective actions that have been proven on the cultivation floor.",
