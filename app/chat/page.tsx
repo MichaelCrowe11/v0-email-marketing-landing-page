@@ -1,43 +1,86 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { Code, FileText, MessageSquare, Download, Share2, Settings, PanelLeftClose, PanelRightClose } from "lucide-react"
+import { Code, FileText, Download, Share2, PanelLeftClose, PanelRightClose, Sparkles } from "lucide-react"
 import Image from "next/image"
 
 type PanelLayout = 'all-three' | 'chat-code' | 'chat-preview' | 'chat-only'
 type DocumentType = 'sop' | 'report' | 'business-plan' | null
 
+interface Message {
+  role: 'user' | 'assistant'
+  content: string
+  isStreaming?: boolean
+}
+
 export default function ChatPage() {
   const [layout, setLayout] = useState<PanelLayout>('chat-only')
   const [documentType, setDocumentType] = useState<DocumentType>(null)
-  const [messages, setMessages] = useState<Array<{ role: 'user' | 'assistant', content: string }>>([
+  const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
       content: "Hey! I'm Crowe Logic AI. I can help you with contamination issues, substrate formulas, or generate professional documents like SOPs and reports. What do you need?"
     }
   ])
   const [input, setInput] = useState('')
-  const [isGenerating, setIsGenerating] = useState(false)
+  const [isThinking, setIsThinking] = useState(false)
+  const [streamingText, setStreamingText] = useState('')
+  const [codeParticles, setCodeParticles] = useState<Array<{ id: number, x: number, y: number, char: string, color: string }>>([])
+  const [documentMarkdown, setDocumentMarkdown] = useState('')
+
+  // Generate colorful code particles while thinking
+  useEffect(() => {
+    if (isThinking) {
+      const interval = setInterval(() => {
+        const newParticles = Array.from({ length: 3 }, (_, i) => ({
+          id: Date.now() + i,
+          x: Math.random() * 200 - 100,
+          y: Math.random() * 200 - 100,
+          char: ['<', '>', '{', '}', '/', '*', '=', '+'][Math.floor(Math.random() * 8)],
+          color: ['#22d3ee', '#a855f7', '#ec4899', '#10b981', '#f59e0b'][Math.floor(Math.random() * 5)]
+        }))
+        setCodeParticles(prev => [...prev.slice(-20), ...newParticles])
+      }, 100)
+      return () => clearInterval(interval)
+    } else {
+      setCodeParticles([])
+    }
+  }, [isThinking])
 
   const handleSendMessage = async () => {
     if (!input.trim()) return
 
     // Add user message
-    const userMessage = { role: 'user' as const, content: input }
+    const userMessage: Message = { role: 'user', content: input }
     setMessages(prev => [...prev, userMessage])
     setInput('')
-    setIsGenerating(true)
+    setIsThinking(true)
 
-    // Simulate AI response (replace with actual API call)
-    setTimeout(() => {
-      const aiMessage = {
-        role: 'assistant' as const,
-        content: "I can help with that. Would you like me to generate a document for this?"
-      }
-      setMessages(prev => [...prev, aiMessage])
-      setIsGenerating(false)
-    }, 1000)
+    // Simulate thinking time
+    await new Promise(resolve => setTimeout(resolve, 1500))
+    setIsThinking(false)
+
+    // Stream response with colorful characters
+    const response = "I can help with that! Let me analyze your substrate formulation and generate a detailed SOP. This will include precise measurements, sterilization protocols, and quality control checkpoints based on 20+ years of production data."
+    
+    setMessages(prev => [...prev, { role: 'assistant', content: '', isStreaming: true }])
+    
+    for (let i = 0; i < response.length; i++) {
+      await new Promise(resolve => setTimeout(resolve, 30))
+      setMessages(prev => {
+        const newMessages = [...prev]
+        newMessages[newMessages.length - 1].content = response.slice(0, i + 1)
+        return newMessages
+      })
+    }
+    
+    setMessages(prev => {
+      const newMessages = [...prev]
+      newMessages[newMessages.length - 1].isStreaming = false
+      return newMessages
+    })
   }
 
   const startDocumentGeneration = (type: DocumentType) => {
@@ -149,51 +192,128 @@ export default function ChatPage() {
         )}
 
         {/* Center Panel: Chat Interface */}
-        <div className={`flex flex-col ${layout === 'chat-only' ? 'flex-1' : layout === 'all-three' ? 'w-1/3' : 'flex-1'}`}>
-          <div className="flex-1 overflow-auto p-4 space-y-4">
+        <div className={`flex flex-col ${layout === 'chat-only' ? 'flex-1' : layout === 'all-three' ? 'w-1/3' : 'flex-1'} bg-gradient-to-b from-background to-muted/5`}>
+          <div className="flex-1 overflow-auto p-6 space-y-6">
             {messages.map((message, index) => (
-              <div
+              <motion.div
                 key={index}
-                className={`flex gap-3 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`flex gap-4 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 {message.role === 'assistant' && (
-                  <Image
-                    src="/crowe-avatar.png"
-                    alt="Crowe Logic AI"
-                    width={32}
-                    height={32}
-                    className="rounded-full h-8"
-                  />
+                  <div className="relative flex-shrink-0">
+                    {/* Colorful code particles swirling around avatar when thinking */}
+                    {isThinking && index === messages.length - 1 && (
+                      <div className="absolute inset-0">
+                        <AnimatePresence>
+                          {codeParticles.map((particle) => (
+                            <motion.div
+                              key={particle.id}
+                              initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
+                              animate={{
+                                opacity: [0, 1, 0],
+                                scale: [0, 1, 0],
+                                x: particle.x,
+                                y: particle.y,
+                              }}
+                              exit={{ opacity: 0 }}
+                              transition={{ duration: 2 }}
+                              className="absolute top-1/2 left-1/2 font-mono font-bold text-lg"
+                              style={{ color: particle.color }}
+                            >
+                              {particle.char}
+                            </motion.div>
+                          ))}
+                        </AnimatePresence>
+                      </div>
+                    )}
+                    
+                    {/* Avatar with glow effect */}
+                    <motion.div
+                      animate={{
+                        scale: isThinking && index === messages.length - 1 ? [1, 1.1, 1] : 1,
+                      }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: isThinking && index === messages.length - 1 ? Infinity : 0,
+                      }}
+                      className="relative"
+                    >
+                      {isThinking && index === messages.length - 1 && (
+                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 rounded-full blur-xl opacity-75 animate-pulse" />
+                      )}
+                      <Image
+                        src="/crowe-avatar.png"
+                        alt="Crowe Logic AI"
+                        width={48}
+                        height={48}
+                        className="relative rounded-full ring-2 ring-purple-500/30"
+                      />
+                    </motion.div>
+                  </div>
                 )}
+                
                 <div
-                  className={`max-w-[80%] rounded-2xl px-4 py-3 ${
+                  className={`max-w-[75%] rounded-2xl px-5 py-4 shadow-lg ${
                     message.role === 'user'
-                      ? 'bg-purple-600 text-white rounded-br-md'
-                      : 'bg-muted text-foreground rounded-bl-md'
+                      ? 'bg-gradient-to-br from-purple-600 to-purple-700 text-white rounded-br-md'
+                      : 'bg-card border border-border text-foreground rounded-bl-md'
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                  {message.isStreaming ? (
+                    <p className="text-sm leading-relaxed">
+                      {message.content.split('').map((char, i) => {
+                        const colors = ['text-cyan-400', 'text-purple-400', 'text-pink-400', 'text-green-400', 'text-yellow-400', 'text-blue-400']
+                        const color = colors[i % colors.length]
+                        return (
+                          <motion.span
+                            key={i}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className={`${char === ' ' ? '' : color} font-medium`}
+                          >
+                            {char}
+                          </motion.span>
+                        )
+                      })}
+                      <motion.span
+                        animate={{ opacity: [1, 0] }}
+                        transition={{ repeat: Infinity, duration: 0.8 }}
+                        className="inline-block w-0.5 h-4 ml-1 bg-purple-500"
+                      />
+                    </p>
+                  ) : (
+                    <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                  )}
                 </div>
-              </div>
+              </motion.div>
             ))}
             
-            {isGenerating && (
-              <div className="flex gap-3">
-                <Image
-                  src="/crowe-avatar.png"
-                  alt="Crowe Logic AI"
-                  width={32}
-                  height={32}
-                  className="rounded-full h-8"
-                />
-                <div className="bg-muted rounded-2xl rounded-bl-md px-4 py-3">
-                  <div className="flex gap-1">
-                    <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" />
-                    <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />
-                    <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }} />
+            {/* Thinking state with magical particles */}
+            {isThinking && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="flex gap-4"
+              >
+                <div className="relative flex-shrink-0">
+                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 rounded-full blur-xl opacity-75 animate-pulse" />
+                  <Image
+                    src="/crowe-avatar.png"
+                    alt="Thinking"
+                    width={48}
+                    height={48}
+                    className="relative rounded-full ring-2 ring-purple-500/30"
+                  />
+                </div>
+                <div className="bg-card border border-border rounded-2xl rounded-bl-md px-5 py-4 shadow-lg">
+                  <div className="flex items-center gap-3">
+                    <Sparkles className="w-4 h-4 text-purple-500 animate-pulse" />
+                    <span className="text-sm text-muted-foreground">Analyzing with 20+ years of expertise...</span>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             )}
           </div>
 
@@ -208,7 +328,7 @@ export default function ChatPage() {
                 placeholder="Ask Crowe Logic AI anything..."
                 className="flex-1 px-4 py-2 bg-muted border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
-              <Button onClick={handleSendMessage} disabled={!input.trim() || isGenerating}>
+              <Button onClick={handleSendMessage} disabled={!input.trim() || isThinking}>
                 Send
               </Button>
             </div>
