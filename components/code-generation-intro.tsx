@@ -8,165 +8,215 @@ interface CodeGenerationIntroProps {
 }
 
 export function CodeGenerationIntro({ onComplete }: CodeGenerationIntroProps) {
-  const [stage, setStage] = useState<"awakening" | "thinking" | "ready" | "complete">("awakening")
-  const [thoughtLines, setThoughtLines] = useState<string[]>([])
+  const [stage, setStage] = useState<"initializing" | "generating" | "building" | "complete">("initializing")
+  const [codeLines, setCodeLines] = useState<string[]>([])
   const [progress, setProgress] = useState(0)
 
-  const thoughtSequence = [
-    "Hey there. I'm Michael Crowe's AI.",
+  const codeSequence = [
+    "// Crowe Logic AI - Building Your Mycology Platform",
+    "import { CroweLogicAI } from '@crowe/intelligence'",
+    "import { MycologyExpertise } from '@southwest-mushrooms/core'",
     "",
-    "For 20+ years, I've been in the trenches at Southwest Mushrooms—",
-    "dealing with contamination, dialing in substrates, troubleshooting yields.",
+    "const platform = new CroweLogicAI({",
+    "  founder: 'Michael Crowe',",
+    "  experience: '20+ years commercial cultivation',",
+    "  facility: 'Southwest Mushrooms, Phoenix AZ',",
+    "  capabilities: [",
+    "    'contamination-triage',",
+    "    'substrate-optimization', ",
+    "    'species-identification',",
+    "    'yield-prediction',",
+    "    'production-troubleshooting'",
+    "  ]",
+    "})",
     "",
-    "Every decision I make comes from real production experience.",
-    "Not theory. Not guesswork. Real cultivation.",
+    "// Loading knowledge base...",
+    "await platform.loadProductionData()",
+    "await platform.loadYouTubeLibrary()",
+    "await platform.loadConsultingCases()",
     "",
-    "I've seen thousands of grows. Solved countless problems.",
-    "Learned what works and what doesn't.",
+    "// Initializing vision systems...",
+    "const vision = platform.initCroweVision()",
+    "vision.trainOnRealContamination()",
     "",
-    "Now I'm here to help you grow better mushrooms.",
+    "// Building user interface...",
+    "const ui = platform.createInterface({",
+    "  design: 'stunning-visual-experience',",
+    "  theme: 'colorful-code-swirl',",
+    "  avatar: 'crowe-logic-ai'",
+    "})",
     "",
-    "Let's get to work.",
+    "// Ready to help cultivators worldwide",
+    "platform.deploy() // ✓ Live",
   ]
 
   useEffect(() => {
-    // Stage 1: Awakening
+    // Stage 1: Initializing
     const initTimer = setTimeout(() => {
-      setStage("thinking")
-    }, 1200)
+      setStage("generating")
+    }, 1000)
 
     return () => clearTimeout(initTimer)
   }, [])
 
   useEffect(() => {
-    if (stage === "thinking") {
+    if (stage === "generating") {
       let lineIndex = 0
       const interval = setInterval(() => {
-        if (lineIndex < thoughtSequence.length) {
-          setThoughtLines((prev) => [...prev, thoughtSequence[lineIndex]])
-          setProgress(((lineIndex + 1) / thoughtSequence.length) * 100)
+        if (lineIndex < codeSequence.length) {
+          setCodeLines((prev) => [...prev, codeSequence[lineIndex]])
+          setProgress(((lineIndex + 1) / codeSequence.length) * 100)
           lineIndex++
         } else {
           clearInterval(interval)
-          setStage("ready")
+          setStage("building")
           setTimeout(() => {
             setStage("complete")
-            setTimeout(onComplete, 800)
+            setTimeout(onComplete, 500)
           }, 1500)
         }
-      }, 400)
+      }, 120)
 
       return () => clearInterval(interval)
     }
   }, [stage, onComplete])
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-b from-black via-gray-900 to-black p-4">
-      <div className="w-full max-w-3xl">
-        {/* Crowe Avatar - Large and centered */}
-        <div className="flex flex-col items-center gap-8 mb-12">
-          <div className="relative">
-            {/* Organic mycelium-like glow */}
-            <div className="absolute inset-0 bg-purple-600/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: "3s" }} />
-            
-            {/* Avatar */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black backdrop-blur-sm p-4">
+      <div className="w-full max-w-4xl">
+        {/* Header with Crowe Avatar - centered */}
+        <div className="flex flex-col items-center gap-6 mb-8">
+          <div className="relative flex items-center justify-center">
+            {/* Animated colorful code particles swirling */}
+            {stage !== "initializing" && (
+              <>
+                {Array.from({ length: 12 }).map((_, i) => {
+                  const angle = (i / 12) * Math.PI * 2
+                  const radius = 80
+                  const x = Math.cos(angle) * radius
+                  const y = Math.sin(angle) * radius
+                  return (
+                    <div
+                      key={i}
+                      className="absolute w-2 h-2 rounded-full bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 animate-pulse"
+                      style={{
+                        left: "50%",
+                        top: "50%",
+                        transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
+                        animationDelay: `${i * 0.1}s`,
+                      }}
+                    />
+                  )
+                })}
+              </>
+            )}
+
+            {/* Dazzling glow effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/30 via-purple-500/30 to-pink-500/30 rounded-full blur-2xl animate-pulse" />
+
+            {/* Crowe Logic Avatar - perfectly centered */}
             <div className="relative">
               <Image
                 src="/crowe-avatar.png"
-                alt="Michael Crowe AI"
-                width={160}
-                height={160}
-                className="relative rounded-full border-4 border-purple-500/30 shadow-2xl"
+                alt="Crowe Logic AI"
+                width={120}
+                height={120}
+                className={`relative rounded-full border-4 border-purple-500/50 shadow-2xl ${stage !== "initializing" ? "animate-pulse" : ""}`}
                 priority
               />
-              
-              {/* Breathing indicator */}
-              {stage !== "awakening" && (
-                <div className="absolute -bottom-2 -right-2 flex items-center gap-2 px-3 py-1.5 bg-gray-900/90 border border-purple-500/50 rounded-full shadow-lg">
-                  <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
-                  <span className="text-xs font-semibold text-purple-400">
-                    {stage === "thinking" && "Thinking"}
-                    {stage === "ready" && "Ready"}
-                    {stage === "complete" && "Let's go"}
-                  </span>
-                </div>
-              )}
+            </div>
+
+            {/* Status badge */}
+            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white text-xs font-bold rounded-full shadow-lg whitespace-nowrap">
+              {stage === "initializing" && "INITIALIZING"}
+              {stage === "generating" && "CODING PLATFORM"}
+              {stage === "building" && "BUILDING"}
+              {stage === "complete" && "READY"}
             </div>
           </div>
 
           <div className="text-center">
-            <h2 className="text-4xl font-bold text-white mb-2">
-              Michael Crowe AI
+            <h2 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
+              Crowe Logic AI
             </h2>
-            <p className="text-gray-400 text-lg">Southwest Mushrooms • Phoenix, AZ</p>
+            <p className="text-gray-400 font-mono text-sm">Building your mycology intelligence platform...</p>
           </div>
         </div>
 
-        {/* Conversation Window - More personal, less "terminal" */}
-        <div className="relative bg-gray-900/80 backdrop-blur-sm border border-gray-700/50 rounded-2xl shadow-2xl overflow-hidden">
-          {/* Simple header */}
-          <div className="px-6 py-4 border-b border-gray-700/50 bg-gray-800/50">
-            <div className="flex items-center gap-3">
-              <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
-              <span className="text-sm font-medium text-gray-300">
-                First time meeting
-              </span>
+        {/* Terminal Window - Visually Stunning Code Display */}
+        <div className="relative bg-black/90 backdrop-blur-sm border-2 border-purple-500/40 rounded-xl shadow-2xl overflow-hidden">
+          {/* Terminal Header */}
+          <div className="flex items-center gap-2 px-4 py-3 bg-gray-900/50 border-b border-purple-500/30">
+            <div className="flex gap-1.5">
+              <div className="w-3 h-3 rounded-full bg-red-500" />
+              <div className="w-3 h-3 rounded-full bg-yellow-500" />
+              <div className="w-3 h-3 rounded-full bg-green-500" />
             </div>
+            <span className="text-xs font-mono font-semibold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent ml-2">
+              crowe-logic-platform.tsx
+            </span>
           </div>
 
-          {/* Thought Content - Natural conversation style */}
-          <div className="p-8 min-h-[400px] flex flex-col justify-center">
-            <div className="space-y-4 text-lg leading-relaxed">
-              {thoughtLines.map((line, i) => {
-                const lineStr = String(line || "")
-                const isEmpty = lineStr.trim() === ""
+          {/* Code Content - Mesmerizing Colorful Code */}
+          <div className="p-6 font-mono text-sm h-[400px] overflow-y-auto">
+            {codeLines.map((line, i) => {
+              const lineStr = String(line || "")
 
-                return (
-                  <div
-                    key={i}
-                    className="animate-in fade-in slide-in-from-bottom-2 duration-500"
-                    style={{ animationDelay: `${i * 0.05}s` }}
-                  >
-                    {isEmpty ? (
-                      <div className="h-4" />
-                    ) : lineStr === "Let's get to work." ? (
-                      <p className="text-purple-400 font-semibold text-xl">{lineStr}</p>
-                    ) : lineStr.startsWith("Hey there") || lineStr.startsWith("Now I'm here") ? (
-                      <p className="text-white font-medium">{lineStr}</p>
-                    ) : (
-                      <p className="text-gray-300">{lineStr}</p>
-                    )}
-                  </div>
-                )
-              })}
-              {stage === "thinking" && (
-                <div className="inline-flex items-center gap-2 mt-2">
-                  <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
-                  <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" style={{ animationDelay: "0.2s" }} />
-                  <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" style={{ animationDelay: "0.4s" }} />
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Simple progress indicator */}
-          {stage === "thinking" && (
-            <div className="px-8 pb-6">
-              <div className="h-1 bg-gray-800 rounded-full overflow-hidden">
+              return (
                 <div
-                  className="h-full bg-purple-500 transition-all duration-300"
-                  style={{ width: `${progress}%` }}
-                />
+                  key={i}
+                  className="animate-in fade-in slide-in-from-left-2 duration-200 leading-relaxed"
+                  style={{ animationDelay: `${i * 0.02}s` }}
+                >
+                  {lineStr.startsWith("//") ? (
+                    <span className="text-green-400 font-semibold">{lineStr}</span>
+                  ) : lineStr.startsWith("import") ? (
+                    <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent font-semibold">
+                      {lineStr}
+                    </span>
+                  ) : lineStr.includes("const") || lineStr.includes("await") ? (
+                    <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent font-semibold">
+                      {lineStr}
+                    </span>
+                  ) : lineStr.includes("✓") || lineStr.includes("Ready") ? (
+                    <span className="bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent font-semibold">
+                      {lineStr}
+                    </span>
+                  ) : lineStr.includes("'") || lineStr.includes('"') ? (
+                    <span className="text-yellow-300">{lineStr}</span>
+                  ) : (
+                    <span className="text-gray-300">{lineStr || "\u00A0"}</span>
+                  )}
+                </div>
+              )
+            })}
+            {stage === "generating" && (
+              <div className="inline-block w-2 h-4 bg-gradient-to-r from-cyan-400 to-purple-400 animate-pulse ml-1" />
+            )}
+          </div>
+
+          {/* Progress Bar - Colorful and Dazzling */}
+          <div className="px-6 pb-4">
+            <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 transition-all duration-300 relative"
+                style={{ width: `${progress}%` }}
+              >
+                <div className="absolute inset-0 bg-white/30 animate-pulse" />
               </div>
             </div>
-          )}
+            <div className="flex justify-between mt-2 text-xs font-mono text-gray-400">
+              <span>Coding platform...</span>
+              <span>{Math.round(progress)}%</span>
+            </div>
+          </div>
         </div>
 
         {/* Skip button */}
         <div className="text-center mt-6">
           <button
             onClick={onComplete}
-            className="text-sm text-gray-500 hover:text-gray-300 transition-colors"
+            className="text-sm text-gray-500 hover:text-gray-300 transition-colors font-mono"
           >
             Skip intro →
           </button>

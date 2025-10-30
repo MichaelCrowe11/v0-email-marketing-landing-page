@@ -333,7 +333,7 @@ export function OrchestratedHero() {
               </div>
             </div>
             <div className="text-center">
-              <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-2">Crowe Logic AI</h1>
+              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">Crowe Logic AI</h1>
               <p className="text-lg text-foreground/80 mb-3">Advanced Mycology Intelligence</p>
               
               {/* Credentials Badge */}
