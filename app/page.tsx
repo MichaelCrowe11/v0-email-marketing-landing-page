@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import dynamic from "next/dynamic"
-import { OrchestratedHero } from "@/components/orchestrated-hero"
+import { OrganicHero } from "@/components/organic-hero"
 import { ScrollReveal } from "@/components/scroll-reveal"
 import { TrustIndicators } from "@/components/trust-indicators"
 
@@ -77,7 +77,7 @@ export default function Home() {
     <main className="min-h-screen">
       {/* Above-the-fold: Critical content loads immediately */}
       <div className="critical-content">
-        <OrchestratedHero />
+        <OrganicHero />
       </div>
       
       {/* Below-the-fold: Lazy loaded with CSS containment for performance */}
