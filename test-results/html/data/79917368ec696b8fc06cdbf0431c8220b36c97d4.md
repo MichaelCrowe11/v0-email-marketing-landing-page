@@ -1,0 +1,432 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - button "Open menu" [ref=e3]:
+    - img
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - link "Southwest Mushrooms" [ref=e6] [cursor=pointer]:
+        - /url: https://southwestmushrooms.com
+        - img "Southwest Mushrooms" [ref=e7]
+      - navigation "Main navigation" [ref=e8]:
+        - generic [ref=e9]:
+          - button "Collapse Overview section" [expanded] [ref=e10]:
+            - generic [ref=e11]: Overview
+            - img [ref=e12]
+          - generic [ref=e14]:
+            - link "Home" [ref=e15] [cursor=pointer]:
+              - /url: /
+              - img [ref=e16]
+              - generic [ref=e19]: Home
+            - link "Dashboard" [ref=e20] [cursor=pointer]:
+              - /url: /dashboard
+              - img [ref=e21]
+              - generic [ref=e26]: Dashboard
+        - generic [ref=e27]:
+          - button "Collapse AI Tools section" [expanded] [ref=e28]:
+            - generic [ref=e29]: AI Tools
+            - img [ref=e30]
+          - generic [ref=e32]:
+            - link "AI Assistant" [ref=e33] [cursor=pointer]:
+              - /url: /chat
+              - img [ref=e34]
+              - generic [ref=e36]: AI Assistant
+            - link "Crowe Vision NEW" [ref=e37] [cursor=pointer]:
+              - /url: /crowe-vision
+              - img [ref=e38]
+              - generic [ref=e41]: Crowe Vision
+              - generic [ref=e42]: NEW
+            - link "Video Studio NEW" [ref=e43] [cursor=pointer]:
+              - /url: /video-studio
+              - img [ref=e44]
+              - generic [ref=e47]: Video Studio
+              - generic [ref=e48]: NEW
+            - link "AI GPT Modules" [ref=e49] [cursor=pointer]:
+              - /url: /gpts
+              - img [ref=e50]
+              - generic [ref=e52]: AI GPT Modules
+            - link "Analytics" [ref=e53] [cursor=pointer]:
+              - /url: /analytics
+              - img [ref=e54]
+              - generic [ref=e56]: Analytics
+        - generic [ref=e57]:
+          - button "Collapse Resources section" [expanded] [ref=e58]:
+            - generic [ref=e59]: Resources
+            - img [ref=e60]
+          - generic [ref=e62]:
+            - link "Species Library" [ref=e63] [cursor=pointer]:
+              - /url: /species-library
+              - img [ref=e64]
+              - generic [ref=e68]: Species Library
+            - link "SOPs & Guides" [ref=e69] [cursor=pointer]:
+              - /url: /sops
+              - img [ref=e70]
+              - generic [ref=e73]: SOPs & Guides
+            - link "Contamination ID" [ref=e74] [cursor=pointer]:
+              - /url: /contamination-guide
+              - img [ref=e75]
+              - generic [ref=e78]: Contamination ID
+            - link "Documentation" [ref=e79] [cursor=pointer]:
+              - /url: /docs
+              - img [ref=e80]
+              - generic [ref=e82]: Documentation
+        - generic [ref=e83]:
+          - button "Collapse Community section" [expanded] [ref=e84]:
+            - generic [ref=e85]: Community
+            - img [ref=e86]
+          - generic [ref=e88]:
+            - link "Community Forum" [ref=e89] [cursor=pointer]:
+              - /url: /forum
+              - img [ref=e90]
+              - generic [ref=e95]: Community Forum
+            - link "Consultations" [ref=e96] [cursor=pointer]:
+              - /url: /consultations
+              - img [ref=e97]
+              - generic [ref=e99]: Consultations
+        - generic [ref=e100]:
+          - button "Collapse Account section" [expanded] [ref=e101]:
+            - generic [ref=e102]: Account
+            - img [ref=e103]
+          - generic [ref=e105]:
+            - link "Pricing" [ref=e106] [cursor=pointer]:
+              - /url: /pricing
+              - img [ref=e107]
+              - generic [ref=e109]: Pricing
+            - link "Shop" [ref=e110] [cursor=pointer]:
+              - /url: /shop
+              - img [ref=e111]
+              - generic [ref=e114]: Shop
+      - generic [ref=e116]:
+        - link "New Chat" [ref=e117] [cursor=pointer]:
+          - /url: /chat
+          - img
+          - generic [ref=e118]: New Chat
+        - link "Upload" [ref=e119] [cursor=pointer]:
+          - /url: /crowe-vision
+          - img
+          - generic [ref=e120]: Upload
+      - generic [ref=e121]:
+        - link "Contact Michael" [ref=e122] [cursor=pointer]:
+          - /url: mailto:Michael@CroweLogic.com
+          - img
+          - text: Contact Michael
+        - link "Profile" [ref=e123] [cursor=pointer]:
+          - /url: /profile
+          - img
+          - text: Profile
+        - link "Upgrade Access" [ref=e124] [cursor=pointer]:
+          - /url: /pricing
+  - banner [ref=e125]:
+    - generic [ref=e126]:
+      - generic [ref=e128]:
+        - img
+        - searchbox "Search the platform" [ref=e129]
+      - generic [ref=e130]:
+        - button "Show keyboard shortcuts" [ref=e131]:
+          - img
+        - button "Toggle theme" [ref=e132]:
+          - img
+          - generic [ref=e133]: Toggle theme
+        - link "Docs" [ref=e134] [cursor=pointer]:
+          - /url: /docs
+        - link "AI Chat" [ref=e135] [cursor=pointer]:
+          - /url: /chat
+        - link "Crowe Vision" [ref=e136] [cursor=pointer]:
+          - /url: /crowe-vision
+          - img
+  - generic [ref=e138]:
+    - main [ref=e139]:
+      - generic [ref=e141]:
+        - generic [ref=e142]:
+          - generic [ref=e143]: 20 Years of Mycology Expertise
+          - heading "Choose Your Access Level" [level=1] [ref=e144]
+          - paragraph [ref=e145]: Get instant access to professional cultivation knowledge, AI-powered tools, and expert guidance
+        - generic [ref=e146]:
+          - generic [ref=e147]: Monthly
+          - button [ref=e148]
+          - generic [ref=e150]:
+            - text: Yearly
+            - generic [ref=e151]: Save up to $967
+        - generic [ref=e152]:
+          - generic [ref=e153]:
+            - generic [ref=e154]:
+              - img [ref=e156]
+              - heading "Pro Access" [level=3] [ref=e159]
+            - paragraph [ref=e160]: Complete platform access with AI-powered cultivation tools
+            - generic [ref=e162]:
+              - generic [ref=e163]: $97
+              - generic [ref=e164]: /month
+            - link "Start Pro Access" [ref=e165] [cursor=pointer]:
+              - /url: /checkout?plan=pro&billing=monthly
+            - generic [ref=e166]:
+              - generic [ref=e167]:
+                - img [ref=e168]
+                - generic [ref=e170]: Unlimited AI chat with 11 models
+              - generic [ref=e171]:
+                - img [ref=e172]
+                - generic [ref=e174]: Crowe Vision contamination analysis
+              - generic [ref=e175]:
+                - img [ref=e176]
+                - generic [ref=e178]: Forum with AI assistance
+              - generic [ref=e179]:
+                - img [ref=e180]
+                - generic [ref=e182]: Complete knowledge base (61+ articles)
+              - generic [ref=e183]:
+                - img [ref=e184]
+                - generic [ref=e186]: Environmental monitoring tools
+              - generic [ref=e187]:
+                - img [ref=e188]
+                - generic [ref=e190]: Species library & SOPs
+              - generic [ref=e191]:
+                - img [ref=e192]
+                - generic [ref=e194]: Cultivation project tracking
+              - generic [ref=e195]:
+                - img [ref=e196]
+                - generic [ref=e198]: Email support
+          - generic [ref=e199]:
+            - generic [ref=e200]: Most Popular
+            - generic [ref=e201]:
+              - img [ref=e203]
+              - heading "Expert Access" [level=3] [ref=e206]
+            - paragraph [ref=e207]: Everything in Pro plus all GPT modules and priority support
+            - generic [ref=e209]:
+              - generic [ref=e210]: $197
+              - generic [ref=e211]: /month
+            - link "Start Expert Access" [ref=e212] [cursor=pointer]:
+              - /url: /checkout?plan=expert&billing=monthly
+            - generic [ref=e213]:
+              - generic [ref=e214]:
+                - img [ref=e215]
+                - generic [ref=e217]: Everything in Pro Access
+              - generic [ref=e218]:
+                - img [ref=e219]
+                - generic [ref=e221]: All GPT modules included ($391 value)
+              - generic [ref=e222]:
+                - img [ref=e223]
+                - generic [ref=e225]: Priority support
+              - generic [ref=e226]:
+                - img [ref=e227]
+                - generic [ref=e229]: Monthly group consulting calls
+              - generic [ref=e230]:
+                - img [ref=e231]
+                - generic [ref=e233]: Early access to new features
+              - generic [ref=e234]:
+                - img [ref=e235]
+                - generic [ref=e237]: Advanced analytics dashboard
+              - generic [ref=e238]:
+                - img [ref=e239]
+                - generic [ref=e241]: Custom cultivation templates
+              - generic [ref=e242]:
+                - img [ref=e243]
+                - generic [ref=e245]: Direct expert consultation
+          - generic [ref=e246]:
+            - generic [ref=e247]: Premium
+            - generic [ref=e248]:
+              - img [ref=e250]
+              - heading "Master Grower" [level=3] [ref=e253]
+            - paragraph [ref=e254]: Premium tier for commercial operations with exclusive benefits
+            - generic [ref=e256]:
+              - generic [ref=e257]: $497
+              - generic [ref=e258]: /month
+            - link "Start Master Grower" [ref=e259] [cursor=pointer]:
+              - /url: /checkout?plan=master&billing=monthly
+            - generic [ref=e260]:
+              - generic [ref=e261]:
+                - img [ref=e262]
+                - generic [ref=e264]: Everything in Expert Access
+              - generic [ref=e265]:
+                - img [ref=e266]
+                - generic [ref=e268]: Quarterly 30-min 1-on-1 with Michael Crowe
+              - generic [ref=e269]:
+                - img [ref=e270]
+                - generic [ref=e272]: White-label capability (remove branding)
+              - generic [ref=e273]:
+                - img [ref=e274]
+                - generic [ref=e276]: Multi-facility management (5 locations)
+              - generic [ref=e277]:
+                - img [ref=e278]
+                - generic [ref=e280]: Team collaboration (up to 10 users)
+              - generic [ref=e281]:
+                - img [ref=e282]
+                - generic [ref=e284]: API access for custom integrations
+              - generic [ref=e285]:
+                - img [ref=e286]
+                - generic [ref=e288]: Dedicated account manager
+              - generic [ref=e289]:
+                - img [ref=e290]
+                - generic [ref=e292]: Custom SOP creation service
+        - generic [ref=e295]:
+          - generic [ref=e296]: Premium Consulting Services
+          - heading "Need Direct Expert Guidance?" [level=2] [ref=e297]
+          - paragraph [ref=e298]: Book a consultation with Michael Crowe for facility design, contamination troubleshooting, or strategic guidance. From 1-hour sessions to premium monthly retainers.
+          - generic [ref=e299]:
+            - link "View Consultation Packages" [ref=e300] [cursor=pointer]:
+              - /url: /consultations
+            - link "Request Enterprise Quote" [ref=e301] [cursor=pointer]:
+              - /url: /contact
+          - paragraph [ref=e302]: "Starting at $425/hour • Premium Retainer: $25,000/month"
+        - generic [ref=e303]:
+          - heading "Frequently Asked Questions" [level=2] [ref=e304]
+          - generic [ref=e305]:
+            - generic [ref=e306]:
+              - heading "Can I cancel anytime?" [level=3] [ref=e307]
+              - paragraph [ref=e308]: Yes, you can cancel your subscription at any time. You'll continue to have access until the end of your billing period.
+            - generic [ref=e309]:
+              - heading "What's included in the GPT modules?" [level=3] [ref=e310]
+              - paragraph [ref=e311]: "Expert Access includes all 4 specialized GPT assistants: Core AI, Spawn Master, Substrate Tech, and Inoculation AI - a $391 value."
+            - generic [ref=e312]:
+              - heading "Is there a free trial?" [level=3] [ref=e313]
+              - paragraph [ref=e314]: We offer a 7-day money-back guarantee. If you're not satisfied, we'll refund your first payment in full.
+            - generic [ref=e315]:
+              - heading "Can I upgrade or downgrade?" [level=3] [ref=e316]
+              - paragraph [ref=e317]: Yes, you can change your plan at any time. Upgrades take effect immediately, and downgrades take effect at the end of your billing period.
+            - generic [ref=e318]:
+              - heading "What's included in Master Grower?" [level=3] [ref=e319]
+              - paragraph [ref=e320]: Master Grower is designed for commercial operations. It includes quarterly 1-on-1 consultations with Michael Crowe, white-label capability, multi-facility management, team collaboration for up to 10 users, API access, and dedicated account management.
+            - generic [ref=e321]:
+              - heading "Do you offer enterprise pricing?" [level=3] [ref=e322]
+              - paragraph [ref=e323]: Yes! For large-scale operations (10+ grow rooms), research institutions, or custom implementations, we offer enterprise pricing and custom solutions. Contact us for a quote.
+    - contentinfo [ref=e324]:
+      - generic [ref=e326]:
+        - generic [ref=e327]:
+          - generic [ref=e328]:
+            - generic [ref=e329]:
+              - img "Michael Crowe - Founder & Mycology Expert" [ref=e332]
+              - generic [ref=e333]:
+                - generic [ref=e334]: Crowe Logic AI
+                - generic [ref=e335]: Powered by Southwest Mushrooms
+            - paragraph [ref=e336]: 20+ years of professional mycology expertise, distilled into an AI that thinks like Michael Crowe. Trusted by cultivators worldwide for contamination analysis, yield optimization, and expert guidance.
+            - generic [ref=e337]:
+              - generic [ref=e338]:
+                - img [ref=e339]
+                - generic [ref=e341]: Professional Since 2003
+              - generic [ref=e342]:
+                - img [ref=e343]
+                - generic [ref=e345]: Trusted by Cultivators
+              - generic [ref=e346]:
+                - img [ref=e347]
+                - generic [ref=e349]: AI-Powered Expertise
+          - generic [ref=e350]:
+            - heading "Platform" [level=3] [ref=e351]
+            - list [ref=e352]:
+              - listitem [ref=e353]:
+                - link "Pricing & Plans" [ref=e354] [cursor=pointer]:
+                  - /url: /pricing
+              - listitem [ref=e355]:
+                - link "Try Free Demo" [ref=e356] [cursor=pointer]:
+                  - /url: /chat
+              - listitem [ref=e357]:
+                - link "GPT Modules" [ref=e358] [cursor=pointer]:
+                  - /url: /gpts
+              - listitem [ref=e359]:
+                - link "Species Library" [ref=e360] [cursor=pointer]:
+                  - /url: /species-library
+              - listitem [ref=e361]:
+                - link "Knowledge Base" [ref=e362] [cursor=pointer]:
+                  - /url: /knowledge-base
+          - generic [ref=e363]:
+            - heading "Get in Touch" [level=3] [ref=e364]
+            - list [ref=e365]:
+              - listitem [ref=e366]:
+                - link "Email Michael Crowe" [ref=e367] [cursor=pointer]:
+                  - /url: mailto:michael@crowelogic.com
+                  - img [ref=e368]
+                  - generic [ref=e371]: michael@crowelogic.com
+              - listitem [ref=e372]:
+                - link "Email support team" [ref=e373] [cursor=pointer]:
+                  - /url: mailto:support@crowelogic.com
+                  - img [ref=e374]
+                  - generic [ref=e377]: support@crowelogic.com
+              - listitem [ref=e378]:
+                - link "Call Crowe Logic AI" [ref=e379] [cursor=pointer]:
+                  - /url: tel:+1-555-CROWE-AI
+                  - img [ref=e380]
+                  - generic [ref=e382]: +1 (555) CROWE-AI
+              - listitem [ref=e383]:
+                - link "Visit Southwest Mushrooms website" [ref=e384] [cursor=pointer]:
+                  - /url: https://southwestmushrooms.com
+                  - img [ref=e385]
+                  - generic [ref=e388]: Southwest Mushrooms
+                  - img [ref=e389]
+            - generic [ref=e394]:
+              - img [ref=e395]
+              - generic [ref=e398]:
+                - generic [ref=e399]: Southwest Mushrooms
+                - generic [ref=e400]:
+                  - generic [ref=e401]: Phoenix, Arizona, USA
+                  - generic [ref=e402]: Professional Cultivation Facility
+                  - generic [ref=e403]:
+                    - img [ref=e404]
+                    - generic [ref=e406]: Operating Since 2003
+        - generic [ref=e407]:
+          - heading "Part of the Crowe Ecosystem" [level=4] [ref=e408]
+          - generic [ref=e409]:
+            - link "Southwest Mushrooms" [ref=e410] [cursor=pointer]:
+              - /url: https://southwestmushrooms.com
+              - img [ref=e411]
+              - generic [ref=e414]: Southwest Mushrooms
+              - img [ref=e415]
+            - link "Crowe Vision AI" [ref=e419] [cursor=pointer]:
+              - /url: /crowe-vision
+              - img [ref=e420]
+              - generic [ref=e423]: Crowe Vision AI
+            - link "Contact Us" [ref=e424] [cursor=pointer]:
+              - /url: /contact
+              - img [ref=e425]
+              - generic [ref=e428]: Contact Us
+            - link "Community Forum" [ref=e429] [cursor=pointer]:
+              - /url: /forum
+              - img [ref=e430]
+              - generic [ref=e433]: Community Forum
+          - generic [ref=e434]:
+            - generic [ref=e435]:
+              - generic [ref=e436]: 20+
+              - generic [ref=e437]: Years Experience
+            - generic [ref=e438]:
+              - generic [ref=e439]: 1000+
+              - generic [ref=e440]: Cultivators Helped
+            - generic [ref=e441]:
+              - generic [ref=e442]: 50K+
+              - generic [ref=e443]: Analyses Performed
+            - generic [ref=e444]:
+              - generic [ref=e445]: 24/7
+              - generic [ref=e446]: AI Availability
+        - generic [ref=e448]:
+          - generic [ref=e449]:
+            - generic [ref=e450]: © 2025 Crowe Logic AI. All Rights Reserved.
+            - generic [ref=e451]: Built with expertise from 20+ years of professional mycology
+            - generic [ref=e452]: A product of Southwest Mushrooms, Phoenix, AZ
+          - generic [ref=e453]:
+            - link "Privacy Policy" [ref=e454] [cursor=pointer]:
+              - /url: /privacy
+              - img [ref=e455]
+              - text: Privacy Policy
+            - link "Terms of Service" [ref=e457] [cursor=pointer]:
+              - /url: /terms
+              - img [ref=e458]
+              - text: Terms of Service
+            - link "Refund Policy" [ref=e460] [cursor=pointer]:
+              - /url: /refund-policy
+              - img [ref=e461]
+              - text: Refund Policy
+            - link "Support" [ref=e463] [cursor=pointer]:
+              - /url: mailto:support@crowelogic.com
+              - img [ref=e464]
+              - text: Support
+        - generic [ref=e468]:
+          - generic [ref=e469]:
+            - img [ref=e470]
+            - generic [ref=e472]: Secure Payments
+          - generic [ref=e473]:
+            - img [ref=e474]
+            - generic [ref=e476]: SSL Encrypted
+          - generic [ref=e477]:
+            - img [ref=e478]
+            - generic [ref=e480]: Money-Back Guarantee
+          - generic [ref=e481]:
+            - img [ref=e482]
+            - generic [ref=e485]: 24/7 Support
+```

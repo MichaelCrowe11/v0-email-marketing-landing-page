@@ -1,0 +1,283 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - button "Open menu" [ref=e3]:
+    - img
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - link "Southwest Mushrooms" [ref=e6] [cursor=pointer]:
+        - /url: https://southwestmushrooms.com
+        - img "Southwest Mushrooms" [ref=e7]
+      - navigation "Main navigation" [ref=e8]:
+        - generic [ref=e9]:
+          - button "Collapse Overview section" [expanded] [ref=e10]:
+            - generic [ref=e11]: Overview
+            - img [ref=e12]
+          - generic [ref=e14]:
+            - link "Home" [ref=e15] [cursor=pointer]:
+              - /url: /
+              - img [ref=e16]
+              - generic [ref=e19]: Home
+            - link "Dashboard" [ref=e20] [cursor=pointer]:
+              - /url: /dashboard
+              - img [ref=e21]
+              - generic [ref=e26]: Dashboard
+        - generic [ref=e27]:
+          - button "Collapse AI Tools section" [expanded] [ref=e28]:
+            - generic [ref=e29]: AI Tools
+            - img [ref=e30]
+          - generic [ref=e32]:
+            - link "AI Assistant" [ref=e33] [cursor=pointer]:
+              - /url: /chat
+              - img [ref=e34]
+              - generic [ref=e36]: AI Assistant
+            - link "Crowe Vision NEW" [ref=e37] [cursor=pointer]:
+              - /url: /crowe-vision
+              - img [ref=e38]
+              - generic [ref=e41]: Crowe Vision
+              - generic [ref=e42]: NEW
+            - link "Video Studio NEW" [ref=e43] [cursor=pointer]:
+              - /url: /video-studio
+              - img [ref=e44]
+              - generic [ref=e47]: Video Studio
+              - generic [ref=e48]: NEW
+            - link "AI GPT Modules" [ref=e49] [cursor=pointer]:
+              - /url: /gpts
+              - img [ref=e50]
+              - generic [ref=e52]: AI GPT Modules
+            - link "Analytics" [ref=e53] [cursor=pointer]:
+              - /url: /analytics
+              - img [ref=e54]
+              - generic [ref=e56]: Analytics
+        - generic [ref=e57]:
+          - button "Collapse Resources section" [expanded] [ref=e58]:
+            - generic [ref=e59]: Resources
+            - img [ref=e60]
+          - generic [ref=e62]:
+            - link "Species Library" [ref=e63] [cursor=pointer]:
+              - /url: /species-library
+              - img [ref=e64]
+              - generic [ref=e68]: Species Library
+            - link "SOPs & Guides" [ref=e69] [cursor=pointer]:
+              - /url: /sops
+              - img [ref=e70]
+              - generic [ref=e73]: SOPs & Guides
+            - link "Contamination ID" [ref=e74] [cursor=pointer]:
+              - /url: /contamination-guide
+              - img [ref=e75]
+              - generic [ref=e78]: Contamination ID
+            - link "Documentation" [ref=e79] [cursor=pointer]:
+              - /url: /docs
+              - img [ref=e80]
+              - generic [ref=e82]: Documentation
+        - generic [ref=e83]:
+          - button "Collapse Community section" [expanded] [ref=e84]:
+            - generic [ref=e85]: Community
+            - img [ref=e86]
+          - generic [ref=e88]:
+            - link "Community Forum" [ref=e89] [cursor=pointer]:
+              - /url: /forum
+              - img [ref=e90]
+              - generic [ref=e95]: Community Forum
+            - link "Consultations" [ref=e96] [cursor=pointer]:
+              - /url: /consultations
+              - img [ref=e97]
+              - generic [ref=e99]: Consultations
+        - generic [ref=e100]:
+          - button "Collapse Account section" [expanded] [ref=e101]:
+            - generic [ref=e102]: Account
+            - img [ref=e103]
+          - generic [ref=e105]:
+            - link "Pricing" [ref=e106] [cursor=pointer]:
+              - /url: /pricing
+              - img [ref=e107]
+              - generic [ref=e109]: Pricing
+            - link "Shop" [ref=e110] [cursor=pointer]:
+              - /url: /shop
+              - img [ref=e111]
+              - generic [ref=e114]: Shop
+      - generic [ref=e116]:
+        - link "New Chat" [ref=e117] [cursor=pointer]:
+          - /url: /chat
+          - img
+          - generic [ref=e118]: New Chat
+        - link "Upload" [ref=e119] [cursor=pointer]:
+          - /url: /crowe-vision
+          - img
+          - generic [ref=e120]: Upload
+      - generic [ref=e121]:
+        - link "Contact Michael" [ref=e122] [cursor=pointer]:
+          - /url: mailto:Michael@CroweLogic.com
+          - img
+          - text: Contact Michael
+        - link "Profile" [ref=e123] [cursor=pointer]:
+          - /url: /profile
+          - img
+          - text: Profile
+        - link "Upgrade Access" [ref=e124] [cursor=pointer]:
+          - /url: /pricing
+  - banner [ref=e125]:
+    - generic [ref=e126]:
+      - generic [ref=e128]:
+        - img
+        - searchbox "Search the platform" [ref=e129]
+      - generic [ref=e130]:
+        - button "Show keyboard shortcuts" [ref=e131]:
+          - img
+        - button "Toggle theme" [ref=e132]:
+          - img
+          - generic [ref=e133]: Toggle theme
+        - link "Docs" [ref=e134] [cursor=pointer]:
+          - /url: /docs
+        - link "AI Chat" [ref=e135] [cursor=pointer]:
+          - /url: /chat
+        - link "Crowe Vision" [ref=e136] [cursor=pointer]:
+          - /url: /crowe-vision
+          - img
+  - generic [ref=e138]:
+    - main [ref=e139]:
+      - generic [ref=e141]: Loading...
+    - contentinfo [ref=e142]:
+      - generic [ref=e144]:
+        - generic [ref=e145]:
+          - generic [ref=e146]:
+            - generic [ref=e147]:
+              - img "Michael Crowe - Founder & Mycology Expert" [ref=e150]
+              - generic [ref=e151]:
+                - generic [ref=e152]: Crowe Logic AI
+                - generic [ref=e153]: Powered by Southwest Mushrooms
+            - paragraph [ref=e154]: 20+ years of professional mycology expertise, distilled into an AI that thinks like Michael Crowe. Trusted by cultivators worldwide for contamination analysis, yield optimization, and expert guidance.
+            - generic [ref=e155]:
+              - generic [ref=e156]:
+                - img [ref=e157]
+                - generic [ref=e159]: Professional Since 2003
+              - generic [ref=e160]:
+                - img [ref=e161]
+                - generic [ref=e163]: Trusted by Cultivators
+              - generic [ref=e164]:
+                - img [ref=e165]
+                - generic [ref=e167]: AI-Powered Expertise
+          - generic [ref=e168]:
+            - heading "Platform" [level=3] [ref=e169]
+            - list [ref=e170]:
+              - listitem [ref=e171]:
+                - link "Pricing & Plans" [ref=e172] [cursor=pointer]:
+                  - /url: /pricing
+              - listitem [ref=e173]:
+                - link "Try Free Demo" [ref=e174] [cursor=pointer]:
+                  - /url: /chat
+              - listitem [ref=e175]:
+                - link "GPT Modules" [ref=e176] [cursor=pointer]:
+                  - /url: /gpts
+              - listitem [ref=e177]:
+                - link "Species Library" [ref=e178] [cursor=pointer]:
+                  - /url: /species-library
+              - listitem [ref=e179]:
+                - link "Knowledge Base" [ref=e180] [cursor=pointer]:
+                  - /url: /knowledge-base
+          - generic [ref=e181]:
+            - heading "Get in Touch" [level=3] [ref=e182]
+            - list [ref=e183]:
+              - listitem [ref=e184]:
+                - link "Email Michael Crowe" [ref=e185] [cursor=pointer]:
+                  - /url: mailto:michael@crowelogic.com
+                  - img [ref=e186]
+                  - generic [ref=e189]: michael@crowelogic.com
+              - listitem [ref=e190]:
+                - link "Email support team" [ref=e191] [cursor=pointer]:
+                  - /url: mailto:support@crowelogic.com
+                  - img [ref=e192]
+                  - generic [ref=e195]: support@crowelogic.com
+              - listitem [ref=e196]:
+                - link "Call Crowe Logic AI" [ref=e197] [cursor=pointer]:
+                  - /url: tel:+1-555-CROWE-AI
+                  - img [ref=e198]
+                  - generic [ref=e200]: +1 (555) CROWE-AI
+              - listitem [ref=e201]:
+                - link "Visit Southwest Mushrooms website" [ref=e202] [cursor=pointer]:
+                  - /url: https://southwestmushrooms.com
+                  - img [ref=e203]
+                  - generic [ref=e206]: Southwest Mushrooms
+                  - img [ref=e207]
+            - generic [ref=e212]:
+              - img [ref=e213]
+              - generic [ref=e216]:
+                - generic [ref=e217]: Southwest Mushrooms
+                - generic [ref=e218]:
+                  - generic [ref=e219]: Phoenix, Arizona, USA
+                  - generic [ref=e220]: Professional Cultivation Facility
+                  - generic [ref=e221]:
+                    - img [ref=e222]
+                    - generic [ref=e224]: Operating Since 2003
+        - generic [ref=e225]:
+          - heading "Part of the Crowe Ecosystem" [level=4] [ref=e226]
+          - generic [ref=e227]:
+            - link "Southwest Mushrooms" [ref=e228] [cursor=pointer]:
+              - /url: https://southwestmushrooms.com
+              - img [ref=e229]
+              - generic [ref=e232]: Southwest Mushrooms
+              - img [ref=e233]
+            - link "Crowe Vision AI" [ref=e237] [cursor=pointer]:
+              - /url: /crowe-vision
+              - img [ref=e238]
+              - generic [ref=e241]: Crowe Vision AI
+            - link "Contact Us" [ref=e242] [cursor=pointer]:
+              - /url: /contact
+              - img [ref=e243]
+              - generic [ref=e246]: Contact Us
+            - link "Community Forum" [ref=e247] [cursor=pointer]:
+              - /url: /forum
+              - img [ref=e248]
+              - generic [ref=e251]: Community Forum
+          - generic [ref=e252]:
+            - generic [ref=e253]:
+              - generic [ref=e254]: 20+
+              - generic [ref=e255]: Years Experience
+            - generic [ref=e256]:
+              - generic [ref=e257]: 1000+
+              - generic [ref=e258]: Cultivators Helped
+            - generic [ref=e259]:
+              - generic [ref=e260]: 50K+
+              - generic [ref=e261]: Analyses Performed
+            - generic [ref=e262]:
+              - generic [ref=e263]: 24/7
+              - generic [ref=e264]: AI Availability
+        - generic [ref=e266]:
+          - generic [ref=e267]:
+            - generic [ref=e268]: © 2025 Crowe Logic AI. All Rights Reserved.
+            - generic [ref=e269]: Built with expertise from 20+ years of professional mycology
+            - generic [ref=e270]: A product of Southwest Mushrooms, Phoenix, AZ
+          - generic [ref=e271]:
+            - link "Privacy Policy" [ref=e272] [cursor=pointer]:
+              - /url: /privacy
+              - img [ref=e273]
+              - text: Privacy Policy
+            - link "Terms of Service" [ref=e275] [cursor=pointer]:
+              - /url: /terms
+              - img [ref=e276]
+              - text: Terms of Service
+            - link "Refund Policy" [ref=e278] [cursor=pointer]:
+              - /url: /refund-policy
+              - img [ref=e279]
+              - text: Refund Policy
+            - link "Support" [ref=e281] [cursor=pointer]:
+              - /url: mailto:support@crowelogic.com
+              - img [ref=e282]
+              - text: Support
+        - generic [ref=e286]:
+          - generic [ref=e287]:
+            - img [ref=e288]
+            - generic [ref=e290]: Secure Payments
+          - generic [ref=e291]:
+            - img [ref=e292]
+            - generic [ref=e294]: SSL Encrypted
+          - generic [ref=e295]:
+            - img [ref=e296]
+            - generic [ref=e298]: Money-Back Guarantee
+          - generic [ref=e299]:
+            - img [ref=e300]
+            - generic [ref=e303]: 24/7 Support
+```

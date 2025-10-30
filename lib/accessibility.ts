@@ -84,3 +84,184 @@ export function getAccessibleTextColor(backgroundColor: string, darkColor = '#00
   
   return darkRatio > lightRatio ? darkColor : lightColor
 }
+
+/**
+ * Generate unique ID for ARIA attributes
+ */
+export function generateAriaId(prefix: string): string {
+  return `${prefix}-${Math.random().toString(36).substr(2, 9)}`
+}
+
+/**
+ * Announce to screen readers using ARIA live regions
+ */
+export function announceToScreenReader(message: string, priority: 'polite' | 'assertive' = 'polite'): void {
+  if (typeof window === 'undefined') return
+
+  const announcement = document.createElement('div')
+  announcement.setAttribute('role', priority === 'assertive' ? 'alert' : 'status')
+  announcement.setAttribute('aria-live', priority)
+  announcement.setAttribute('aria-atomic', 'true')
+  announcement.className = 'sr-only'
+  announcement.textContent = message
+
+  document.body.appendChild(announcement)
+
+  // Remove after announcement
+  setTimeout(() => {
+    if (document.body.contains(announcement)) {
+      document.body.removeChild(announcement)
+    }
+  }, 1000)
+}
+
+/**
+ * Trap focus within an element (for modals, dialogs)
+ */
+export function trapFocus(element: HTMLElement): () => void {
+  const focusableElements = getFocusableElements(element)
+  const firstFocusable = focusableElements[0]
+  const lastFocusable = focusableElements[focusableElements.length - 1]
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key !== 'Tab') return
+
+    if (e.shiftKey) {
+      // Shift + Tab
+      if (document.activeElement === firstFocusable) {
+        e.preventDefault()
+        lastFocusable?.focus()
+      }
+    } else {
+      // Tab
+      if (document.activeElement === lastFocusable) {
+        e.preventDefault()
+        firstFocusable?.focus()
+      }
+    }
+  }
+
+  element.addEventListener('keydown', handleKeyDown)
+
+  // Focus first element
+  firstFocusable?.focus()
+
+  // Return cleanup function
+  return () => {
+    element.removeEventListener('keydown', handleKeyDown)
+  }
+}
+
+/**
+ * Get all focusable elements within a container
+ */
+export function getFocusableElements(container: HTMLElement): HTMLElement[] {
+  const selector = [
+    'a[href]',
+    'button:not([disabled])',
+    'textarea:not([disabled])',
+    'input:not([disabled])',
+    'select:not([disabled])',
+    '[tabindex]:not([tabindex="-1"])',
+    '[contenteditable="true"]',
+  ].join(', ')
+
+  return Array.from(container.querySelectorAll(selector)) as HTMLElement[]
+}
+
+/**
+ * Check if element is visible to screen readers
+ */
+export function isVisibleToScreenReader(element: HTMLElement): boolean {
+  if (element.getAttribute('aria-hidden') === 'true') return false
+  if (element.style.display === 'none') return false
+  if (element.style.visibility === 'hidden') return false
+  if (element.hasAttribute('hidden')) return false
+  return true
+}
+
+/**
+ * Set up keyboard navigation for a list of items
+ */
+export function setupArrowKeyNavigation(
+  container: HTMLElement,
+  itemSelector: string,
+  options: {
+    orientation?: 'horizontal' | 'vertical' | 'both'
+    loop?: boolean
+  } = {}
+): () => void {
+  const { orientation = 'vertical', loop = true } = options
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    const items = Array.from(container.querySelectorAll(itemSelector)) as HTMLElement[]
+    const currentIndex = items.indexOf(document.activeElement as HTMLElement)
+
+    if (currentIndex === -1) return
+
+    let nextIndex = currentIndex
+
+    switch (e.key) {
+      case 'ArrowDown':
+        if (orientation === 'vertical' || orientation === 'both') {
+          e.preventDefault()
+          nextIndex = currentIndex + 1
+          if (nextIndex >= items.length) {
+            nextIndex = loop ? 0 : items.length - 1
+          }
+        }
+        break
+
+      case 'ArrowUp':
+        if (orientation === 'vertical' || orientation === 'both') {
+          e.preventDefault()
+          nextIndex = currentIndex - 1
+          if (nextIndex < 0) {
+            nextIndex = loop ? items.length - 1 : 0
+          }
+        }
+        break
+
+      case 'ArrowRight':
+        if (orientation === 'horizontal' || orientation === 'both') {
+          e.preventDefault()
+          nextIndex = currentIndex + 1
+          if (nextIndex >= items.length) {
+            nextIndex = loop ? 0 : items.length - 1
+          }
+        }
+        break
+
+      case 'ArrowLeft':
+        if (orientation === 'horizontal' || orientation === 'both') {
+          e.preventDefault()
+          nextIndex = currentIndex - 1
+          if (nextIndex < 0) {
+            nextIndex = loop ? items.length - 1 : 0
+          }
+        }
+        break
+
+      case 'Home':
+        e.preventDefault()
+        nextIndex = 0
+        break
+
+      case 'End':
+        e.preventDefault()
+        nextIndex = items.length - 1
+        break
+
+      default:
+        return
+    }
+
+    items[nextIndex]?.focus()
+  }
+
+  container.addEventListener('keydown', handleKeyDown)
+
+  return () => {
+    container.removeEventListener('keydown', handleKeyDown)
+  }
+}
