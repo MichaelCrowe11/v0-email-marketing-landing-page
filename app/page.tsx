@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react"
 import dynamic from "next/dynamic"
-import { Hero } from "@/components/hero"
+import { OrchestratedHero } from "@/components/orchestrated-hero"
 import { ScrollReveal } from "@/components/scroll-reveal"
+import { TrustIndicators } from "@/components/trust-indicators"
 
 // Lazy load heavy components with code splitting
 const CodeGenerationIntro = dynamic(() => import("@/components/code-generation-intro").then(mod => ({ default: mod.CodeGenerationIntro })), {
@@ -76,7 +77,7 @@ export default function Home() {
     <main className="min-h-screen">
       {/* Above-the-fold: Critical content loads immediately */}
       <div className="critical-content">
-        <Hero />
+        <OrchestratedHero />
       </div>
       
       {/* Below-the-fold: Lazy loaded with CSS containment for performance */}
@@ -98,6 +99,11 @@ export default function Home() {
       <div className="below-fold mobile-contain-content">
         <ScrollReveal delay={200}>
           <ProofSection />
+        </ScrollReveal>
+      </div>
+      <div className="below-fold mobile-contain-content">
+        <ScrollReveal delay={150}>
+          <TrustIndicators />
         </ScrollReveal>
       </div>
       <div className="below-fold mobile-contain-content">
