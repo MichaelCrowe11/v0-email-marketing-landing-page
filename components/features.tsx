@@ -5,7 +5,7 @@ import Image from "next/image"
 import { ScrollReveal } from "./scroll-reveal"
 import { Badge } from "./ui/badge"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/tabs"
-import { Sparkles, TrendingUp, Zap, BookOpen, Calculator, Microscope, AlertTriangle } from "lucide-react"
+import { TrendingUp, BookOpen, Calculator, Microscope, AlertTriangle, Leaf, FlaskConical, Target, Users } from "lucide-react"
 
 interface Feature {
   image: string
@@ -106,11 +106,11 @@ export function Features() {
   ]
 
   const categories = [
-    { id: "all", label: "All Features", icon: Sparkles },
-    { id: "ai-tools", label: "AI Tools", icon: Zap },
-    { id: "analysis", label: "Analysis", icon: Calculator },
+    { id: "all", label: "All Tools", icon: Target },
+    { id: "ai-tools", label: "Vision Analysis", icon: Microscope },
+    { id: "analysis", label: "Calculations", icon: Calculator },
     { id: "planning", label: "Planning", icon: BookOpen },
-    { id: "support", label: "Support", icon: Microscope },
+    { id: "support", label: "Support", icon: Users },
   ]
 
   const filteredFeatures = activeCategory === "all" 
@@ -128,9 +128,9 @@ export function Features() {
 
   const getBadgeIcon = (badge?: string) => {
     switch (badge) {
-      case "new": return <Sparkles className="w-3 h-3" />
+      case "new": return <Leaf className="w-3 h-3" />
       case "popular": return <TrendingUp className="w-3 h-3" />
-      case "advanced": return <Zap className="w-3 h-3" />
+      case "advanced": return <FlaskConical className="w-3 h-3" />
       default: return null
     }
   }
@@ -140,13 +140,13 @@ export function Features() {
       <div className="mx-auto max-w-7xl">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-4">
-            What's Inside{" "}
-            <span className="bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
-              Crowe Logic AI
+            Tools Built from{" "}
+            <span className="text-purple-500">
+              Real Production Experience
             </span>
           </h2>
-          <p className="text-lg text-foreground max-w-2xl mx-auto mb-8">
-            Comprehensive tools for every stage of mushroom cultivation
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+            Every feature comes from solving actual problems on the cultivation floor
           </p>
 
           {/* Category Filters */}
