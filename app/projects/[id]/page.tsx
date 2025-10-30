@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Progress } from "@/components/ui/progress"
 import { Thermometer, Droplets, Wind, TrendingUp, Calendar, Clock, Eye, Plus } from "lucide-react"
-import { createBrowserClient } from "@supabase/ssr"
+import { createClient } from "@/lib/supabase/client"
 import Link from "next/link"
 
 export default function ProjectDetailPage() {
@@ -21,10 +21,7 @@ export default function ProjectDetailPage() {
   const [harvests, setHarvests] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  )
+  const supabase = createClient()
 
   useEffect(() => {
     loadProjectData()

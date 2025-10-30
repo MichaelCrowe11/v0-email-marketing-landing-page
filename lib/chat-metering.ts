@@ -1,20 +1,11 @@
-import { createServerClient } from "@supabase/ssr"
+import { createClient } from "@/lib/supabase/server"
 import { cookies } from "next/headers"
 
 const DAILY_FREE_MESSAGES = 10
 
 export async function getChatQuota(userId: string) {
+  const supabase = await createClient()
   const cookieStore = await cookies()
-  const supabase = createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
-    cookies: {
-      getAll() {
-        return cookieStore.getAll()
-      },
-      setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
-      },
-    },
-  })
 
   // Get or create usage quota
   const { data: quota, error } = await supabase.from("usage_quotas").select("*").eq("user_id", userId).single()
@@ -73,17 +64,8 @@ export async function getChatQuota(userId: string) {
 }
 
 export async function incrementChatUsage(userId: string): Promise<boolean> {
+  const supabase = await createClient()
   const cookieStore = await cookies()
-  const supabase = createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
-    cookies: {
-      getAll() {
-        return cookieStore.getAll()
-      },
-      setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
-      },
-    },
-  })
 
   const quota = await getChatQuota(userId)
 

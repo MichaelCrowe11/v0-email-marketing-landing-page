@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import Image from "next/image"
 
 export function LoadingSkeleton() {
   const [progress, setProgress] = useState(0)
@@ -42,13 +41,10 @@ export function LoadingSkeleton() {
         <div className="flex justify-center mb-8">
           <div className="relative">
             <div className="absolute inset-0 bg-accent/20 rounded-full blur-2xl animate-pulse" />
-            <Image
+            <img
               src="/crowe-avatar.png"
               alt="Michael Crowe"
-              width={96}
-              height={96}
               className="relative h-24 w-24 rounded-full ring-4 ring-accent/30 animate-float"
-              priority
             />
             <div className="absolute inset-0 rounded-full border-2 border-accent/50 animate-spin-slow" />
           </div>

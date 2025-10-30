@@ -6,16 +6,7 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start",
-    "test": "playwright test",
-    "test:visual": "playwright test tests/visual-regression",
-    "test:visual:update": "playwright test tests/visual-regression --update-snapshots",
-    "test:a11y": "playwright test tests/accessibility",
-    "test:performance": "playwright test tests/performance",
-    "test:mobile": "playwright test tests/mobile",
-    "test:headed": "playwright test --headed",
-    "test:debug": "playwright test --debug",
-    "test:report": "playwright show-report"
+    "start": "next start"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "latest",
@@ -59,7 +50,6 @@
     "@supabase/supabase-js": "latest",
     "@vercel/analytics": "latest",
     "@vercel/blob": "latest",
-    "@vercel/kv": "^3.0.0",
     "ai": "latest",
     "autoprefixer": "^10.4.20",
     "class-variance-authority": "^0.7.1",
@@ -92,12 +82,10 @@
     "zod": "3.25.76"
   },
   "devDependencies": {
-    "@axe-core/playwright": "^4.11.0",
-    "@playwright/test": "^1.56.1",
     "@tailwindcss/postcss": "^4.1.9",
     "@types/node": "^22",
-    "@types/react": "^19.2.2",
-    "@types/react-dom": "^19.2.2",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
     "postcss": "^8.5",
     "tailwindcss": "^4.1.9",
     "tw-animate-css": "1.3.3",

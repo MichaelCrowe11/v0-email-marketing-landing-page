@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 import { LiveCodeGenerator } from "./live-code-generator"
 import { AdvancedTerminal } from "./advanced-terminal"
-import Image from "next/image"
 
 export function TechShowcase() {
   const [activeIndex, setActiveIndex] = useState(0)
@@ -107,11 +106,9 @@ export function TechShowcase() {
         <div className="relative">
           <div className="absolute inset-0 bg-gradient-to-r from-accent/50 via-purple-500/50 to-accent/50 blur-3xl animate-pulse" />
           <div className="relative bg-background/95 backdrop-blur-sm p-6 rounded-2xl border-2 border-accent/60 shadow-2xl">
-            <Image
+            <img
               src="/crowe-logic-logo.png"
               alt="Crowe Logic AI"
-              width={96}
-              height={96}
               className="w-24 h-24 rounded-full object-cover ring-4 ring-accent/70"
             />
             <div className="absolute -bottom-2 -right-2 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full border-2 border-background shadow-lg">
