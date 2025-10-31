@@ -546,20 +546,27 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                     })}
 
                                     {/* Brilliant particle trails */}
-                                    {[...Array(12)].map((_, i) => (
-                                      <div
-                                        key={`particle-${i}`}
-                                        className="absolute w-2 h-2 rounded-full"
-                                        style={{
-                                          background: `hsl(${i * 30}, 100%, 65%)`,
-                                          left: '50%',
-                                          top: '50%',
-                                          animation: `particleExplosion ${1 + i * 0.1}s ease-out infinite`,
-                                          animationDelay: `${i * 0.08}s`,
-                                          boxShadow: `0 0 15px currentColor, 0 0 30px currentColor`,
-                                        }}
-                                      />
-                                    ))}
+                                    {[...Array(20)].map((_, i) => {
+                                      const hue = (i * 18) % 360
+                                      const delay = (i * 0.05)
+                                      const duration = 0.6 + (i % 4) * 0.15
+                                      return (
+                                        <div
+                                          key={`particle-${i}`}
+                                          className="absolute rounded-full"
+                                          style={{
+                                            width: `${3 + (i % 3)}px`,
+                                            height: `${3 + (i % 3)}px`,
+                                            background: `hsl(${hue}, 100%, 65%)`,
+                                            left: '50%',
+                                            top: '50%',
+                                            animation: `particleExplosion${i % 3} ${duration}s ease-out infinite`,
+                                            animationDelay: `${delay}s`,
+                                            boxShadow: `0 0 15px hsl(${hue}, 100%, 65%), 0 0 30px hsl(${hue}, 100%, 65%)`,
+                                          }}
+                                        />
+                                      )
+                                    })}
 
                                     {/* Lightning bolts shooting out */}
                                     {[...Array(8)].map((_, i) => (
@@ -695,17 +702,47 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                 }
                               }
 
-                              @keyframes particleExplosion {
+                              @keyframes particleExplosion0 {
                                 0% {
                                   transform: translate(-50%, -50%) scale(0);
                                   opacity: 1;
                                 }
-                                50% {
-                                  transform: translate(-50%, -50%) translateX(60px) scale(1.5);
-                                  opacity: 0.8;
+                                40% {
+                                  transform: translate(-50%, -50%) translateX(80px) translateY(-40px) scale(2);
+                                  opacity: 1;
                                 }
                                 100% {
-                                  transform: translate(-50%, -50%) translateX(100px) scale(0.2);
+                                  transform: translate(-50%, -50%) translateX(130px) translateY(-70px) scale(0);
+                                  opacity: 0;
+                                }
+                              }
+
+                              @keyframes particleExplosion1 {
+                                0% {
+                                  transform: translate(-50%, -50%) scale(0) rotate(0deg);
+                                  opacity: 1;
+                                }
+                                40% {
+                                  transform: translate(-50%, -50%) translateX(-70px) translateY(60px) scale(1.8) rotate(180deg);
+                                  opacity: 1;
+                                }
+                                100% {
+                                  transform: translate(-50%, -50%) translateX(-120px) translateY(100px) scale(0) rotate(360deg);
+                                  opacity: 0;
+                                }
+                              }
+
+                              @keyframes particleExplosion2 {
+                                0% {
+                                  transform: translate(-50%, -50%) scale(0);
+                                  opacity: 1;
+                                }
+                                40% {
+                                  transform: translate(-50%, -50%) translateX(50px) translateY(80px) scale(2.2);
+                                  opacity: 1;
+                                }
+                                100% {
+                                  transform: translate(-50%, -50%) translateX(90px) translateY(140px) scale(0);
                                   opacity: 0;
                                 }
                               }
@@ -715,19 +752,19 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                   opacity: 0;
                                   transform: translateX(-50%) translateY(-50%) scaleY(0);
                                 }
+                                5% {
+                                  opacity: 1;
+                                  transform: translateX(-50%) translateY(-50%) scaleY(1.5);
+                                }
                                 10% {
+                                  opacity: 0;
+                                  transform: translateX(-50%) translateY(-50%) scaleY(0.5);
+                                }
+                                15% {
                                   opacity: 1;
                                   transform: translateX(-50%) translateY(-50%) scaleY(1.2);
                                 }
-                                20% {
-                                  opacity: 0;
-                                  transform: translateX(-50%) translateY(-50%) scaleY(0.8);
-                                }
-                                30% {
-                                  opacity: 0.8;
-                                  transform: translateX(-50%) translateY(-50%) scaleY(1);
-                                }
-                                40%, 100% {
+                                20%, 100% {
                                   opacity: 0;
                                   transform: translateX(-50%) translateY(-50%) scaleY(0);
                                 }
