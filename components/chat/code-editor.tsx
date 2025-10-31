@@ -18,13 +18,22 @@ export function CodeEditor({ initialCode, language, onClose }: CodeEditorProps) 
 
   const handleRun = async () => {
     setIsRunning(true)
-    setOutput("Running code...")
+    setOutput("⚡ Executing code...\n")
 
     try {
-      // TODO: Implement actual code execution via API
-      // For now, simulate execution
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      setOutput(`✓ Code executed successfully!\n\nOutput:\nHello from ${language}!`)
+      const response = await fetch("/api/execute-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code, language }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setOutput(`✓ Execution completed\n\n${data.output}`)
+      } else {
+        setOutput(`✗ Execution failed\n\n${data.error || data.output}`)
+      }
     } catch (error) {
       setOutput(`✗ Error: ${error instanceof Error ? error.message : "Unknown error"}`)
     } finally {
