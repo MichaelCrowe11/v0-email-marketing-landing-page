@@ -1,11 +1,11 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Sparkles, Send } from "lucide-react"
-import Image from "next/image"
 import Link from "next/link"
+import { AIAvatarSwirlAdvanced } from "@/components/ai-avatar-swirl-advanced"
 
 interface Message {
   role: 'user' | 'assistant'
@@ -22,29 +22,16 @@ export default function ChatPage() {
   ])
   const [input, setInput] = useState('')
   const [isThinking, setIsThinking] = useState(false)
-  const [codeParticles, setCodeParticles] = useState<Array<{ id: number, x: number, y: number, char: string, color: string }>>([])
+  const [isResponding, setIsResponding] = useState(false)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
 
-  // Generate colorful code particles while thinking
+  // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
-    if (isThinking) {
-      const interval = setInterval(() => {
-        const newParticles = Array.from({ length: 3 }, (_, i) => ({
-          id: Date.now() + i,
-          x: Math.random() * 200 - 100,
-          y: Math.random() * 200 - 100,
-          char: ['<', '>', '{', '}', '/', '*', '=', '+'][Math.floor(Math.random() * 8)],
-          color: ['#22d3ee', '#a855f7', '#ec4899', '#10b981', '#f59e0b'][Math.floor(Math.random() * 5)]
-        }))
-        setCodeParticles(prev => [...prev.slice(-20), ...newParticles])
-      }, 100)
-      return () => clearInterval(interval)
-    } else {
-      setCodeParticles([])
-    }
-  }, [isThinking])
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }, [messages])
 
   const handleSendMessage = async () => {
-    if (!input.trim()) return
+    if (!input.trim() || isThinking || isResponding) return
 
     // Add user message
     const userMessage: Message = { role: 'user', content: input }
@@ -55,8 +42,9 @@ export default function ChatPage() {
     // Simulate thinking time
     await new Promise(resolve => setTimeout(resolve, 1500))
     setIsThinking(false)
+    setIsResponding(true)
 
-    // Stream response with colorful characters
+    // Stream response
     const responses = [
       "I can help with that! Based on my experience at Southwest Mushrooms, here's what I recommend for your substrate formulation...",
       "Great question! Let me break down the contamination triage process. First, we need to identify the contaminant type...",
@@ -82,6 +70,15 @@ export default function ChatPage() {
       newMessages[newMessages.length - 1].isStreaming = false
       return newMessages
     })
+    
+    setIsResponding(false)
+  }
+
+  // Get avatar state
+  const getAvatarState = (messageIndex: number): "idle" | "thinking" | "responding" => {
+    if (isThinking && messageIndex === messages.length - 1) return "thinking"
+    if (isResponding && messageIndex === messages.length - 1) return "responding"
+    return "idle"
   }
 
   return (
@@ -89,12 +86,23 @@ export default function ChatPage() {
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-border bg-card/50 backdrop-blur-xl">
         <Link href="/" className="flex items-center gap-3">
-          <Image src="/crowe-avatar.png" alt="Crowe Logic AI" width={40} height={40} className="rounded-full ring-2 ring-purple-500/30" />
+          <AIAvatarSwirlAdvanced
+            state={isThinking ? "thinking" : isResponding ? "responding" : "idle"}
+            size={50}
+            particleCount={40}
+            showNeuralConnections={false}
+            enableTrails={false}
+            reactToMouse={false}
+          />
           <div>
             <h1 className="font-semibold text-foreground bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
               Crowe Logic AI
             </h1>
-            <p className="text-xs text-muted-foreground">20+ years cultivation expertise</p>
+            <p className="text-xs text-muted-foreground">
+              {isThinking && "🧠 Analyzing..."}
+              {isResponding && "💬 Responding..."}
+              {!isThinking && !isResponding && "20+ years cultivation expertise"}
+            </p>
           </div>
         </Link>
         
@@ -115,55 +123,15 @@ export default function ChatPage() {
             className={`flex gap-4 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             {message.role === 'assistant' && (
-              <div className="relative flex-shrink-0">
-                {/* Colorful code particles swirling around avatar when thinking */}
-                {isThinking && index === messages.length - 1 && (
-                  <div className="absolute inset-0">
-                    <AnimatePresence>
-                      {codeParticles.map((particle) => (
-                        <motion.div
-                          key={particle.id}
-                          initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
-                          animate={{
-                            opacity: [0, 1, 0],
-                            scale: [0, 1, 0],
-                            x: particle.x,
-                            y: particle.y,
-                          }}
-                          exit={{ opacity: 0 }}
-                          transition={{ duration: 2 }}
-                          className="absolute top-1/2 left-1/2 font-mono font-bold text-lg"
-                          style={{ color: particle.color }}
-                        >
-                          {particle.char}
-                        </motion.div>
-                      ))}
-                    </AnimatePresence>
-                  </div>
-                )}
-                
-                {/* Avatar with glow effect */}
-                <motion.div
-                  animate={{
-                    scale: isThinking && index === messages.length - 1 ? [1, 1.1, 1] : 1,
-                  }}
-                  transition={{
-                    duration: 1.5,
-                    repeat: isThinking && index === messages.length - 1 ? Infinity : 0,
-                  }}
-                  className="relative"
-                >
-                  {isThinking && index === messages.length - 1 && (
-                    <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 rounded-full blur-xl opacity-75 animate-pulse" />
-                  )}
-                  <Image
-                    src="/crowe-avatar.png"
-                    alt="Crowe Logic AI"
-                    width={48}
-                    height={48}
-                    className="relative rounded-full ring-2 ring-purple-500/30"
-                  />
-                </motion.div>
+              <div className="flex-shrink-0">
+                <AIAvatarSwirlAdvanced
+                  state={getAvatarState(index)}
+                  size={60}
+                  particleCount={80}
+                  showNeuralConnections={index === messages.length - 1}
+                  enableTrails={index === messages.length - 1}
+                  reactToMouse={false}
+                />
               </div>
             )}
             
@@ -174,50 +142,35 @@ export default function ChatPage() {
                   : 'bg-card border border-border text-foreground rounded-bl-md'
               }`}
             >
-              {message.isStreaming ? (
-                <p className="text-sm leading-relaxed">
-                  {message.content.split('').map((char, i) => {
-                    const colors = ['text-cyan-400', 'text-purple-400', 'text-pink-400', 'text-green-400', 'text-yellow-400', 'text-blue-400']
-                    const color = colors[i % colors.length]
-                    return (
-                      <motion.span
-                        key={i}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className={`${char === ' ' ? '' : color} font-medium`}
-                      >
-                        {char}
-                      </motion.span>
-                    )
-                  })}
+              <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                {message.content}
+                {message.isStreaming && (
                   <motion.span
                     animate={{ opacity: [1, 0] }}
                     transition={{ repeat: Infinity, duration: 0.8 }}
                     className="inline-block w-0.5 h-4 ml-1 bg-purple-500"
                   />
-                </p>
-              ) : (
-                <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
-              )}
+                )}
+              </p>
             </div>
           </motion.div>
         ))}
         
-        {/* Thinking state with magical particles */}
+        {/* Thinking state */}
         {isThinking && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="flex gap-4"
           >
-            <div className="relative flex-shrink-0">
-              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 rounded-full blur-xl opacity-75 animate-pulse" />
-              <Image
-                src="/crowe-avatar.png"
-                alt="Thinking"
-                width={48}
-                height={48}
-                className="relative rounded-full ring-2 ring-purple-500/30"
+            <div className="flex-shrink-0">
+              <AIAvatarSwirlAdvanced
+                state="thinking"
+                size={60}
+                particleCount={100}
+                showNeuralConnections={true}
+                enableTrails={true}
+                reactToMouse={false}
               />
             </div>
             <div className="bg-card border border-border rounded-2xl rounded-bl-md px-5 py-4 shadow-lg">
@@ -228,6 +181,8 @@ export default function ChatPage() {
             </div>
           </motion.div>
         )}
+        
+        <div ref={messagesEndRef} />
       </div>
 
       {/* Input Area */}
@@ -238,9 +193,10 @@ export default function ChatPage() {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
+              onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
               placeholder="Ask about contamination, substrates, SOPs, or any cultivation question..."
               className="flex-1 px-4 py-3 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              disabled={isThinking || isResponding}
             />
             <Button 
               onClick={handleSendMessage} 

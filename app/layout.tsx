@@ -23,17 +23,50 @@ const _geist = V0_Font_Geist({ subsets: ['latin'], weight: ["100","200","300","4
 const _geistMono = V0_Font_Geist_Mono({ subsets: ['latin'], weight: ["100","200","300","400","500","600","700","800","900"] })
 const _sourceSerif_4 = V0_Font_Source_Serif_4({ subsets: ['latin'], weight: ["200","300","400","500","600","700","800","900"] })
 
+// Inter font with optimized fallback stack to minimize layout shift
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
+  weight: ["400", "600", "700"],
+  preload: true,
+  // System font fallback stack optimized for each platform
+  fallback: [
+    'system-ui',           // Modern system UI font
+    '-apple-system',       // macOS/iOS San Francisco
+    'BlinkMacSystemFont',  // macOS Chrome
+    'Segoe UI',            // Windows
+    'Roboto',              // Android
+    'Helvetica Neue',      // Older macOS
+    'Arial',               // Universal fallback
+    'sans-serif'           // Generic fallback
+  ],
+  // Automatically adjust fallback font metrics to match Inter
+  adjustFontFallback: true,
 })
 
+// Fira Code font with optimized monospace fallback stack
 const firaCode = Fira_Code({
   subsets: ["latin"],
   variable: "--font-code",
   display: "swap",
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600"],
+  preload: false,
+  // Monospace fallback stack optimized for code display
+  fallback: [
+    'ui-monospace',        // Modern system monospace
+    'SFMono-Regular',      // macOS/iOS monospace
+    'SF Mono',             // macOS system monospace
+    'Menlo',               // macOS Terminal default
+    'Monaco',              // Older macOS
+    'Cascadia Code',       // Windows Terminal
+    'Consolas',            // Windows
+    'Liberation Mono',     // Linux
+    'Courier New',         // Universal fallback
+    'monospace'            // Generic fallback
+  ],
+  // Automatically adjust fallback font metrics to match Fira Code
+  adjustFontFallback: true,
 })
 
 export const viewport: Viewport = {
