@@ -64,7 +64,7 @@ export function CreateSessionDialog({ onClose }: CreateSessionDialogProps) {
           <div className="flex items-center gap-3">
             <AIAvatarSwirl state="thinking" size={48} />
             <div>
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+              <h2 className="text-2xl font-bold text-foreground">
                 New Research Session
               </h2>
               <p className="text-sm text-muted-foreground">
@@ -162,7 +162,7 @@ export function CreateSessionDialog({ onClose }: CreateSessionDialogProps) {
           <Button
             onClick={step === "type" ? () => setStep("details") : handleCreate}
             disabled={step === "type" ? !selectedType : !title.trim()}
-            className="bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 hover:from-cyan-600 hover:via-purple-600 hover:to-pink-600"
+            className="bg-primary text-primary-foreground hover:bg-primary/90"
           >
             {step === "type" ? "Continue" : "Create Session"}
           </Button>

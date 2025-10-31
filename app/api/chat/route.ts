@@ -85,18 +85,32 @@ Approach:
 - Be clear and precise`,
     }
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    // Use Azure OpenAI if configured, otherwise fallback to OpenAI
+    const useAzure = process.env.AZURE_OPENAI_ENDPOINT && process.env.AZURE_OPENAI_API_KEY
+    
+    const apiUrl = useAzure
+      ? `${process.env.AZURE_OPENAI_ENDPOINT}/openai/deployments/${process.env.AZURE_OPENAI_DEPLOYMENT_NAME}/chat/completions?api-version=2024-02-15-preview`
+      : "https://api.openai.com/v1/chat/completions"
+    
+    const headers = useAzure
+      ? {
+          "Content-Type": "application/json",
+          "api-key": process.env.AZURE_OPENAI_API_KEY!,
+        }
+      : {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        }
+
+    const response = await fetch(apiUrl, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-      },
+      headers,
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: useAzure ? undefined : "gpt-4o-mini", // Azure uses deployment name in URL
         messages: [systemMessage, ...normalizedMessages],
         temperature: 0.7,
         max_tokens: 2000,
-        stream: true, // Enable streaming
+        stream: true,
       }),
     })
 

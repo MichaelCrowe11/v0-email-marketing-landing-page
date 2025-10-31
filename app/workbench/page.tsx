@@ -82,7 +82,7 @@ export default function WorkbenchPage() {
               <Link href="/" className="flex items-center gap-3">
                 <AIAvatarSwirl state="idle" size={48} />
                 <div>
-                  <h1 className="text-xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                  <h1 className="text-xl font-bold text-foreground">
                     Mycological Workbench
                   </h1>
                   <p className="text-xs text-muted-foreground">DeepParallel AgBiotech Reasoning Engine</p>
@@ -98,7 +98,7 @@ export default function WorkbenchPage() {
               </Link>
               <Button
                 onClick={() => setShowCreateDialog(true)}
-                className="bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 hover:from-cyan-600 hover:via-purple-600 hover:to-pink-600"
+                className="bg-primary text-primary-foreground hover:bg-primary/90"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 New Research Session
@@ -178,7 +178,7 @@ export default function WorkbenchPage() {
             <Button
               onClick={() => setShowCreateDialog(true)}
               size="lg"
-              className="bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500"
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
             >
               <Plus className="w-5 h-5 mr-2" />
               Create Your First Session

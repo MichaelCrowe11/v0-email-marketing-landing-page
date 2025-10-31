@@ -3,7 +3,6 @@
 import type React from "react"
 import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
-import { ModelSelector } from "@/components/chat/model-selector"
 import { AIAvatarSwirl } from "@/components/chat/ai-avatar-swirl"
 import { ChatCanvas } from "@/components/chat/chat-canvas"
 import { ConversationHistory } from "@/components/chat/conversation-history"
@@ -17,7 +16,6 @@ type Message = {
 }
 
 export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAccess?: boolean }) {
-  const [selectedModel, setSelectedModel] = useState("openai/gpt-4o-mini")
   const [copied, setCopied] = useState(false)
   const [inputValue, setInputValue] = useState("")
   const [messages, setMessages] = useState<Message[]>([])
@@ -136,7 +134,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
     ])
 
     try {
-      console.log("[v0] Sending chat request with model:", selectedModel)
+      console.log("[v0] Sending chat request")
 
       const response = await fetch("/api/chat", {
         method: "POST",
@@ -146,7 +144,6 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
             role: m.role,
             content: m.content,
           })),
-          model: selectedModel,
         }),
       })
 
@@ -299,7 +296,6 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                 </div>
               )}
 
-              <ModelSelector selectedModel={selectedModel} onModelChange={setSelectedModel} />
               <Link
                 href="/"
                 className="hidden sm:flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"

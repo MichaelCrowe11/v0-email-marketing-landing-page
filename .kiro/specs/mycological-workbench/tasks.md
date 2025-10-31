@@ -49,6 +49,7 @@
 - [x] 2.1 Build session dashboard page
 
 
+
   - Create session list with grid/list view toggle
   - Implement search and filter functionality (tags, date, collaborators)
   - Add session cards with preview information
