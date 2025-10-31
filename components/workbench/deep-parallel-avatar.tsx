@@ -91,11 +91,11 @@ export function DeepParallelAvatar({
           // Quantum field forces
           const centerDist = Math.sqrt(p.x * p.x + p.y * p.y)
           const maxDist = size * 1.5
-          
+
           // Attraction to center with quantum fluctuation
           const attractionForce = (centerDist / maxDist) * fieldIntensity * 0.5
           const quantumNoise = (Math.random() - 0.5) * fieldIntensity * 2
-          
+
           let newVx = p.vx - (p.x / centerDist) * attractionForce + quantumNoise
           let newVy = p.vy - (p.y / centerDist) * attractionForce + quantumNoise
 
