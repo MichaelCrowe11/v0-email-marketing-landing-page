@@ -5,6 +5,7 @@
 - [-] 1. Project setup and core architecture
 
 
+
 - [ ] 1.1 Initialize Next.js 14 project with TypeScript and App Router
   - Configure next.config.mjs with optimizations
   - Set up Tailwind CSS with scientific theme
