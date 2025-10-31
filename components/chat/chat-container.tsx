@@ -6,6 +6,7 @@ import Link from "next/link"
 import { AIAvatarSwirl } from "@/components/chat/ai-avatar-swirl"
 import { ChatCanvas } from "@/components/chat/chat-canvas"
 import { ConversationHistory } from "@/components/chat/conversation-history"
+import { CodeEditor } from "@/components/chat/code-editor"
 import { Button } from "@/components/ui/button"
 import { FileText, Code, Download, Copy, Check, Maximize2, Menu, X } from "lucide-react"
 
@@ -25,8 +26,13 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
     type: "code" | "document"
     language?: string
   } | null>(null)
+  const [codeEditorContent, setCodeEditorContent] = useState<{
+    code: string
+    language: string
+  } | null>(null)
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null)
   const [showSidebar, setShowSidebar] = useState(false)
+  const [avatarPosition, setAvatarPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const isEmpty = messages.length === 0
@@ -37,6 +43,26 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
       saveMessage(lastMessage)
     }
   }, [messages, currentConversationId])
+
+  // Update avatar position in real-time during streaming
+  useEffect(() => {
+    if (!isLoading) return
+
+    const interval = setInterval(() => {
+      const lastMessage = messages[messages.length - 1]
+      if (lastMessage && lastMessage.role === 'assistant' && lastMessage.content) {
+        const messageEl = document.getElementById(`message-${lastMessage.id}`)
+        const cursorEl = messageEl?.querySelector('.streaming-cursor')
+
+        if (cursorEl) {
+          const rect = cursorEl.getBoundingClientRect()
+          setAvatarPosition({ x: rect.left - 80, y: rect.top - 10 })
+        }
+      }
+    }, 50) // Update every 50ms for smooth tracking
+
+    return () => clearInterval(interval)
+  }, [isLoading, messages])
 
   const saveMessage = async (message: Message) => {
     if (!currentConversationId) return
@@ -463,65 +489,85 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                               : "bg-gradient-to-br from-amber-50 to-amber-100/50 dark:from-amber-950/30 dark:to-amber-900/20 border border-amber-200/50 dark:border-amber-800/50"
                               }`}
                           >
-                            <div className="relative min-h-[80px]">
-                              {/* PROFOUNDLY DAZZLING AVATAR - Zips and swirls during streaming */}
+                            <div className="relative min-h-[80px]" id={`message-${message.id}`}>
+                              {/* MAGNIFICENT AVATAR - Zips across screen following text cursor */}
                               {isAssistant && isStreaming && hasContent && (
                                 <div
-                                  className="absolute -left-20 top-0 z-50"
+                                  className="fixed pointer-events-none z-[9999]"
                                   style={{
-                                    animation: 'avatarFloat 4s ease-in-out infinite',
+                                    left: `${avatarPosition.x}px`,
+                                    top: `${avatarPosition.y}px`,
+                                    transition: 'all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
                                   }}
                                 >
                                   <div className="relative">
-                                    {/* Pulsing energy rings */}
-                                    <div className="absolute inset-0 -m-6 rounded-full border-2 border-cyan-400/40 animate-ping" />
-                                    <div className="absolute inset-0 -m-10 rounded-full border-2 border-purple-400/30 animate-ping" style={{ animationDuration: '2s', animationDelay: '0.5s' }} />
-                                    <div className="absolute inset-0 -m-14 rounded-full border border-pink-400/20 animate-ping" style={{ animationDuration: '3s', animationDelay: '1s' }} />
+                                    {/* Explosive energy rings */}
+                                    <div className="absolute inset-0 -m-8 rounded-full border-2 border-cyan-400/50 animate-ping" style={{ animationDuration: '1s' }} />
+                                    <div className="absolute inset-0 -m-12 rounded-full border-2 border-purple-400/40 animate-ping" style={{ animationDuration: '1.5s', animationDelay: '0.3s' }} />
+                                    <div className="absolute inset-0 -m-16 rounded-full border border-pink-400/30 animate-ping" style={{ animationDuration: '2s', animationDelay: '0.6s' }} />
 
-                                    {/* The magnificent avatar */}
-                                    <AIAvatarSwirl state="responding" size={56} />
+                                    {/* The avatar with dramatic rotation */}
+                                    <div style={{ animation: 'avatarSpin 3s linear infinite' }}>
+                                      <AIAvatarSwirl state="responding" size={64} />
+                                    </div>
 
-                                    {/* Orbiting particles */}
-                                    {[...Array(6)].map((_, i) => (
+                                    {/* INSANE CODE STORM - Flying code snippets all around */}
+                                    {['const', 'function', '{', '}', '=>', 'return', 'async', 'await', 'import', 'export', 'class', 'interface', 'type', 'let', 'var', '[]', '()', '...', '&&', '||'].map((code, i) => (
                                       <div
-                                        key={i}
-                                        className="absolute w-1.5 h-1.5 rounded-full"
+                                        key={`code-${i}`}
+                                        className="absolute font-mono text-sm font-bold pointer-events-none"
                                         style={{
-                                          background: `hsl(${i * 60}, 100%, 65%)`,
                                           left: '50%',
                                           top: '50%',
-                                          animation: `orbit ${2 + i * 0.3}s linear infinite`,
-                                          animationDelay: `${i * 0.2}s`,
-                                          boxShadow: `0 0 10px currentColor, 0 0 20px currentColor`,
+                                          color: `hsl(${(i * 360 / 20)}, 100%, 70%)`,
+                                          animation: `codeStorm ${1.5 + (i % 5) * 0.3}s ease-in-out infinite`,
+                                          animationDelay: `${i * 0.1}s`,
+                                          textShadow: '0 0 20px currentColor, 0 0 40px currentColor, 0 0 60px currentColor',
+                                          filter: 'blur(0.5px)',
+                                          transform: `rotate(${i * 18}deg)`,
+                                        }}
+                                      >
+                                        {code}
+                                      </div>
+                                    ))}
+
+                                    {/* Brilliant particle trails */}
+                                    {[...Array(12)].map((_, i) => (
+                                      <div
+                                        key={`particle-${i}`}
+                                        className="absolute w-2 h-2 rounded-full"
+                                        style={{
+                                          background: `hsl(${i * 30}, 100%, 65%)`,
+                                          left: '50%',
+                                          top: '50%',
+                                          animation: `particleExplosion ${1 + i * 0.1}s ease-out infinite`,
+                                          animationDelay: `${i * 0.08}s`,
+                                          boxShadow: `0 0 15px currentColor, 0 0 30px currentColor`,
+                                        }}
+                                      />
+                                    ))}
+
+                                    {/* Lightning bolts shooting out */}
+                                    {[...Array(8)].map((_, i) => (
+                                      <div
+                                        key={`lightning-${i}`}
+                                        className="absolute w-1 rounded-full"
+                                        style={{
+                                          left: '50%',
+                                          top: '50%',
+                                          height: `${30 + i * 5}px`,
+                                          background: `linear-gradient(180deg, hsl(${i * 45}, 100%, 70%), transparent)`,
+                                          transformOrigin: 'top',
+                                          animation: `lightning ${0.8 + i * 0.1}s ease-in-out infinite`,
+                                          animationDelay: `${i * 0.12}s`,
+                                          boxShadow: '0 0 10px currentColor',
+                                          transform: `rotate(${i * 45}deg)`,
                                         }}
                                       />
                                     ))}
                                   </div>
                                 </div>
                               )}
-
-                              {/* FLYING LETTERS from code storm to text */}
-                              {isAssistant && isStreaming && hasContent && message.content.slice(-15).split('').map((char, i) => {
-                                if (char === ' ' || char === '\n') return null
-                                return (
-                                  <div
-                                    key={`fly-${message.id}-${i}`}
-                                    className="absolute font-mono text-base font-black pointer-events-none z-40"
-                                    style={{
-                                      left: '-60px',
-                                      top: '20px',
-                                      color: `hsl(${(i * 40) % 360}, 100%, 65%)`,
-                                      animation: `letterMagic ${1.2 + i * 0.08}s cubic-bezier(0.34, 1.56, 0.64, 1) forwards`,
-                                      animationDelay: `${i * 0.06}s`,
-                                      textShadow: '0 0 15px currentColor, 0 0 30px currentColor, 0 0 45px currentColor',
-                                      opacity: 0,
-                                      filter: 'blur(3px)',
-                                    }}
-                                  >
-                                    {char}
-                                  </div>
-                                )
-                              })}
 
                               <div className="text-base text-foreground leading-relaxed whitespace-pre-wrap relative z-10 font-medium">
                                 {/* Each character materializes with color flash */}
@@ -548,7 +594,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                 )}
                                 {isStreaming && (
                                   <span
-                                    className="inline-block w-2 h-5 ml-1 align-middle"
+                                    className="inline-block w-2 h-5 ml-1 align-middle streaming-cursor"
                                     style={{
                                       background: 'linear-gradient(90deg, #22d3ee, #a855f7, #ec4899)',
                                       animation: 'cursorPulse 0.8s ease-in-out infinite',
@@ -560,48 +606,74 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                             </div>
 
                             <style jsx>{`
-                              @keyframes avatarFloat {
-                                0%, 100% {
-                                  transform: translateY(0) translateX(0) rotate(0deg);
-                                }
-                                25% {
-                                  transform: translateY(-15px) translateX(10px) rotate(5deg);
+                              @keyframes avatarSpin {
+                                0% {
+                                  transform: rotate(0deg) scale(1);
                                 }
                                 50% {
-                                  transform: translateY(-5px) translateX(-5px) rotate(-3deg);
-                                }
-                                75% {
-                                  transform: translateY(-20px) translateX(15px) rotate(7deg);
-                                }
-                              }
-
-                              @keyframes orbit {
-                                0% {
-                                  transform: translate(-50%, -50%) rotate(0deg) translateX(40px) rotate(0deg);
+                                  transform: rotate(180deg) scale(1.1);
                                 }
                                 100% {
-                                  transform: translate(-50%, -50%) rotate(360deg) translateX(40px) rotate(-360deg);
+                                  transform: rotate(360deg) scale(1);
                                 }
                               }
 
-                              @keyframes letterMagic {
+                              @keyframes codeStorm {
                                 0% {
-                                  transform: translateX(0) translateY(0) scale(0.3) rotate(0deg);
+                                  transform: translate(-50%, -50%) translateX(0) translateY(0) scale(0.8) rotate(0deg);
                                   opacity: 0;
-                                  filter: blur(8px);
+                                }
+                                20% {
+                                  opacity: 1;
+                                }
+                                50% {
+                                  transform: translate(-50%, -50%) translateX(80px) translateY(-60px) scale(1.3) rotate(360deg);
+                                  opacity: 0.8;
+                                }
+                                80% {
+                                  opacity: 0.4;
+                                }
+                                100% {
+                                  transform: translate(-50%, -50%) translateX(120px) translateY(40px) scale(0.6) rotate(720deg);
+                                  opacity: 0;
+                                }
+                              }
+
+                              @keyframes particleExplosion {
+                                0% {
+                                  transform: translate(-50%, -50%) scale(0);
+                                  opacity: 1;
+                                }
+                                50% {
+                                  transform: translate(-50%, -50%) translateX(60px) scale(1.5);
+                                  opacity: 0.8;
+                                }
+                                100% {
+                                  transform: translate(-50%, -50%) translateX(100px) scale(0.2);
+                                  opacity: 0;
+                                }
+                              }
+
+                              @keyframes lightning {
+                                0%, 100% {
+                                  opacity: 0;
+                                  transform: translateX(-50%) translateY(-50%) scaleY(0);
+                                }
+                                10% {
+                                  opacity: 1;
+                                  transform: translateX(-50%) translateY(-50%) scaleY(1.2);
+                                }
+                                20% {
+                                  opacity: 0;
+                                  transform: translateX(-50%) translateY(-50%) scaleY(0.8);
                                 }
                                 30% {
-                                  opacity: 1;
-                                  filter: blur(4px);
+                                  opacity: 0.8;
+                                  transform: translateX(-50%) translateY(-50%) scaleY(1);
                                 }
-                                60% {
-                                  transform: translateX(100px) translateY(-20px) scale(1.5) rotate(360deg);
-                                  filter: blur(2px);
-                                }
-                                100% {
-                                  transform: translateX(180px) translateY(0) scale(0.8) rotate(720deg);
+                                40%, 100% {
                                   opacity: 0;
-                                  filter: blur(6px);
+                                  transform: translateX(-50%) translateY(-50%) scaleY(0);
                                 }
                               }
 
@@ -646,20 +718,36 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                             {isAssistant && !isStreaming && (hasCode || isDocument) && (
                               <div className="mt-4 flex gap-2">
                                 {hasCode && (
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => {
-                                      const codeMatch = message.content.match(/```(\w+)?\n([\s\S]*?)```/)
-                                      const code = codeMatch ? codeMatch[2] : message.content
-                                      const lang = codeMatch ? codeMatch[1] || "typescript" : "typescript"
-                                      handleOpenCanvas(code, "code", lang)
-                                    }}
-                                    className="gap-2"
-                                  >
-                                    <Maximize2 className="w-3 h-3" />
-                                    Open in Code Canvas
-                                  </Button>
+                                  <>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => {
+                                        const codeMatch = message.content.match(/```(\w+)?\n([\s\S]*?)```/)
+                                        const code = codeMatch ? codeMatch[2] : message.content
+                                        const lang = codeMatch ? codeMatch[1] || "python" : "python"
+                                        setCodeEditorContent({ code, language: lang })
+                                      }}
+                                      className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
+                                    >
+                                      <Code className="w-3 h-3" />
+                                      Open in IDE
+                                    </Button>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => {
+                                        const codeMatch = message.content.match(/```(\w+)?\n([\s\S]*?)```/)
+                                        const code = codeMatch ? codeMatch[2] : message.content
+                                        const lang = codeMatch ? codeMatch[1] || "typescript" : "typescript"
+                                        handleOpenCanvas(code, "code", lang)
+                                      }}
+                                      className="gap-2"
+                                    >
+                                      <Maximize2 className="w-3 h-3" />
+                                      View Full Screen
+                                    </Button>
+                                  </>
                                 )}
                                 {isDocument && (
                                   <Button
@@ -793,6 +881,15 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
           type={canvasContent.type}
           language={canvasContent.language}
           onClose={() => setCanvasContent(null)}
+        />
+      )}
+
+      {/* Code IDE Modal */}
+      {codeEditorContent && (
+        <CodeEditor
+          initialCode={codeEditorContent.code}
+          language={codeEditorContent.language}
+          onClose={() => setCodeEditorContent(null)}
         />
       )}
     </>
