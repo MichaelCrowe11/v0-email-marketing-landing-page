@@ -93,7 +93,7 @@ export default function WorkbenchPage() {
             <div className="flex items-center gap-3">
               <Link href="/chat">
                 <Button variant="outline" size="sm">
-                  AI Assistant
+                  Crowe Logic Interface
                 </Button>
               </Link>
               <Button

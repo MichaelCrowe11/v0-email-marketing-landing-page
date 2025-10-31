@@ -64,7 +64,7 @@ export function SidebarNav() {
     {
       title: "AI Tools",
       items: [
-        { href: "/chat", label: "AI Assistant", icon: MessageSquare },
+        { href: "/chat", label: "Crowe Logic Interface", icon: MessageSquare },
         { href: "/crowe-vision", label: "Crowe Vision", icon: Camera, isNew: true },
         { href: "/video-studio", label: "Video Studio", icon: Video, isNew: true },
         { href: "/gpts", label: "AI GPT Modules", icon: Sparkles },
