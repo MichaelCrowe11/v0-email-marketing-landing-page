@@ -2,13 +2,9 @@
 
 ## Overview
 
-This design document outlines a comprehensive performance optimization strategy for the Crowe Logic AI platform. The optimization focuses on reducing bundle sizes, improving load times, enhancing runtime performance, and ensuring excellent user experience across all devices and network conditions.
+This design document outlines the technical approach for optimizing the Crowe Logic AI platform to achieve exceptional performance across all metrics. The optimization strategy focuses on reducing bundle sizes, improving load times, enhancing runtime performance, and implementing comprehensive monitoring.
 
-The design follows a multi-layered approach:
-1. **Build-time optimizations** - Bundle analysis, code splitting, tree shaking
-2. **Load-time optimizations** - Resource prioritization, lazy loading, caching
-3. **Runtime optimizations** - Efficient rendering, event handling, memory management
-4. **Monitoring and measurement** - Continuous performance tracking and alerting
+The design leverages Next.js 15 capabilities, modern web APIs, and industry best practices to deliver a fast, efficient user experience while maintaining the platform's rich feature set.
 
 ## Architecture
 
@@ -16,166 +12,138 @@ The design follows a multi-layered approach:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                     User Browser                             │
+│                     Client Browser                           │
 ├─────────────────────────────────────────────────────────────┤
 │  Service Worker (Cache-First Strategy)                      │
 │  ├─ Static Assets Cache (1 year)                           │
 │  ├─ API Response Cache (5 min TTL)                         │
-│  └─ Dynamic Content Cache (Stale-While-Revalidate)         │
+│  └─ Offline Fallback                                        │
 ├─────────────────────────────────────────────────────────────┤
-│  React Application Layer                                    │
-│  ├─ Critical Components (Immediate Load)                   │
-│  ├─ Lazy-Loaded Components (On-Demand)                     │
-│  ├─ Performance Monitor (Web Vitals)                       │
-│  └─ Resource Hints (Preload, Prefetch, Preconnect)        │
+│  Application Layer                                           │
+│  ├─ Critical CSS (Inlined)                                  │
+│  ├─ Core Bundle (<100KB)                                    │
+│  ├─ Route Chunks (Lazy Loaded)                             │
+│  └─ Component Chunks (Dynamic Import)                       │
 ├─────────────────────────────────────────────────────────────┤
-│  Next.js Framework Layer                                    │
-│  ├─ Static Generation (Build Time)                         │
-│  ├─ Server Components (Streaming SSR)                      │
-│  ├─ Incremental Static Regeneration (ISR)                  │
-│  └─ Edge Runtime (Fast Response)                           │
+│  Performance Monitoring                                      │
+│  ├─ Web Vitals Collector                                    │
+│  ├─ Error Boundary Tracking                                 │
+│  └─ Analytics Reporter                                      │
 └─────────────────────────────────────────────────────────────┘
                             ↓
 ┌─────────────────────────────────────────────────────────────┐
-│                   Vercel Edge Network                        │
-│  ├─ CDN (Global Distribution)                              │
+│                   Next.js Edge Runtime                       │
+├─────────────────────────────────────────────────────────────┤
+│  Middleware Layer                                            │
+│  ├─ Request Deduplication                                   │
+│  ├─ Response Compression                                     │
+│  └─ Cache Headers                                            │
+├─────────────────────────────────────────────────────────────┤
+│  Rendering Strategy                                          │
+│  ├─ Static Generation (Marketing Pages)                     │
+│  ├─ ISR (Content Pages, 60s revalidate)                    │
+│  ├─ Server Components (Data-Heavy Pages)                    │
+│  └─ Client Components (Interactive Features)                │
+└─────────────────────────────────────────────────────────────┘
+                            ↓
+┌─────────────────────────────────────────────────────────────┐
+│                    CDN Layer (Vercel)                        │
+│  ├─ Static Asset Delivery                                   │
 │  ├─ Image Optimization (AVIF/WebP)                         │
-│  ├─ Compression (Brotli/Gzip)                              │
-│  └─ Smart Caching (Stale-While-Revalidate)                 │
+│  └─ Edge Caching                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### Component Loading Strategy
+### Bundle Architecture
 
 ```
-Page Load Timeline:
-0ms     ├─ HTML Document (Inline Critical CSS)
-        ├─ Preload Critical Fonts
-        ├─ Preconnect to APIs
-        │
-100ms   ├─ Critical JavaScript Bundle (<100KB)
-        ├─ Above-the-Fold Components
-        │
-500ms   ├─ First Contentful Paint (FCP)
-        ├─ Hero Section Visible
-        │
-1000ms  ├─ Lazy Load Below-Fold Components
-        ├─ Prefetch Next Route
-        │
-1500ms  ├─ Largest Contentful Paint (LCP)
-        ├─ Main Content Visible
-        │
-2000ms  ├─ Load Non-Critical Features
-        ├─ Analytics, Chat Widget
-        │
-3000ms  ├─ Time to Interactive (TTI)
-        └─ Fully Interactive
+Main Bundle (< 100KB gzipped)
+├─ React Runtime
+├─ Next.js Router
+├─ Critical Components
+│  ├─ Layout
+│  ├─ Header
+│  └─ Footer
+└─ Core Utilities
+
+Route Bundles (Lazy Loaded)
+├─ /chat → chat.chunk.js
+├─ /dashboard → dashboard.chunk.js
+├─ /knowledge-base → kb.chunk.js
+└─ /admin → admin.chunk.js
+
+Component Bundles (Dynamic Import)
+├─ Heavy Components
+│  ├─ StreamingChatDemo
+│  ├─ CodeGenerationIntro
+│  ├─ Features
+│  └─ FAQ
+├─ Third-Party Libraries
+│  ├─ Framer Motion
+│  ├─ Recharts
+│  └─ Syntax Highlighter
+└─ Modals & Dialogs
+   ├─ Keyboard Shortcuts
+   ├─ Accessibility Settings
+   └─ User Menu
 ```
 
 ## Components and Interfaces
 
-### 1. Bundle Optimization Module
+### 1. Bundle Optimization System
 
-**Purpose**: Analyze and optimize JavaScript bundles
+#### Next.js Configuration Enhancement
 
-**Implementation**:
 ```typescript
-// lib/performance/bundle-analyzer.ts
-interface BundleAnalysis {
-  totalSize: number
-  gzippedSize: number
-  chunks: ChunkInfo[]
-  recommendations: string[]
+// next.config.mjs enhancements
+interface OptimizedNextConfig {
+  // Compiler optimizations
+  compiler: {
+    removeConsole: boolean // Remove console.* in production
+    reactRemoveProperties: boolean // Remove test IDs
+  }
+  
+  // SWC minification
+  swcMinify: boolean
+  
+  // Experimental features
+  experimental: {
+    optimizeCss: boolean // CSS optimization
+    optimizePackageImports: string[] // Auto tree-shake packages
+  }
+  
+  // Bundle analyzer
+  webpack: (config: WebpackConfig) => WebpackConfig
 }
-
-interface ChunkInfo {
-  name: string
-  size: number
-  modules: ModuleInfo[]
-}
-
-interface ModuleInfo {
-  path: string
-  size: number
-  isUnused: boolean
-}
-
-// Webpack Bundle Analyzer integration
-export function analyzeBundles(): BundleAnalysis
-export function identifyUnusedCode(): ModuleInfo[]
-export function suggestCodeSplitting(): string[]
 ```
 
-**Configuration**:
-```javascript
-// next.config.mjs additions
-const nextConfig = {
-  // Enable SWC minification (faster than Terser)
-  swcMinify: true,
+#### Tree Shaking Configuration
+
+```typescript
+// lib/optimization/tree-shaking.ts
+interface TreeShakingConfig {
+  // Packages to optimize
+  packages: {
+    'lucide-react': {
+      transform: 'lucide-react/dist/esm/icons/[name]'
+    }
+    'date-fns': {
+      transform: 'date-fns/[name]'
+    }
+    'lodash': {
+      transform: 'lodash-es/[name]'
+    }
+  }
   
-  // Optimize bundle splitting
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      // Split vendor chunks
-      config.optimization.splitChunks = {
-        chunks: 'all',
-        cacheGroups: {
-          default: false,
-          vendors: false,
-          // Vendor chunk for react/next
-          framework: {
-            name: 'framework',
-            chunks: 'all',
-            test: /[\\/]node_modules[\\/](react|react-dom|next)[\\/]/,
-            priority: 40,
-            enforce: true,
-          },
-          // Separate chunk for large libraries
-          lib: {
-            test: /[\\/]node_modules[\\/]/,
-            name(module) {
-              const packageName = module.context.match(
-                /[\\/]node_modules[\\/](.*?)([\\/]|$)/
-              )[1]
-              return `npm.${packageName.replace('@', '')}`
-            },
-            priority: 30,
-            minChunks: 1,
-            reuseExistingChunk: true,
-          },
-          // Common components chunk
-          commons: {
-            name: 'commons',
-            minChunks: 2,
-            priority: 20,
-          },
-        },
-      }
-    }
-    
-    // Analyze bundles in production
-    if (process.env.ANALYZE === 'true') {
-      const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
-      config.plugins.push(
-        new BundleAnalyzerPlugin({
-          analyzerMode: 'static',
-          reportFilename: isServer
-            ? '../analyze/server.html'
-            : './analyze/client.html',
-        })
-      )
-    }
-    
-    return config
-  },
+  // Side effects configuration
+  sideEffects: string[]
 }
 ```
 
 ### 2. Image Optimization System
 
-**Purpose**: Deliver optimized images in modern formats
+#### Optimized Image Component
 
-**Implementation**:
 ```typescript
 // components/optimized-image.tsx
 interface OptimizedImageProps {
@@ -183,22 +151,702 @@ interface OptimizedImageProps {
   alt: string
   width: number
   height: number
-  priority?: boolean
-  quality?: number
+  priority?: boolean // Preload critical images
+  quality?: number // Default: 85
+  sizes?: string // Responsive sizes
+  loading?: 'lazy' | 'eager'
+  placeholder?: 'blur' | 'empty'
+  blurDataURL?: string
 }
 
-export function OptimizedImage({
-  src,
-  alt,
-  width,
-  height,
-  priority = false,
-  quality = 85,
-}: OptimizedImageProps) {
-  return (
-    <Image
-      src={src}
-      alt={alt}
+interface ImageOptimizationConfig {
+  formats: ['avif', 'webp', 'jpeg']
+  deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840]
+  imageSizes: [16, 32, 48, 64, 96, 128, 256, 384]
+  minimumCacheTTL: 31536000 // 1 year
+}
+```
+
+#### Image Loader Strategy
+
+```typescript
+// lib/optimization/image-loader.ts
+interface ImageLoaderStrategy {
+  // Lazy loading with intersection observer
+  lazyLoad: (threshold: number) => void
+  
+  // Preload critical images
+  preloadCritical: (images: string[]) => void
+  
+  // Generate responsive srcset
+  generateSrcSet: (src: string, sizes: number[]) => string
+  
+  // Blur placeholder generation
+  generateBlurPlaceholder: (src: string) => Promise<string>
+}
+```
+
+### 3. Font Optimization System
+
+#### Font Loading Strategy
+
+```typescript
+// lib/optimization/font-loader.ts
+interface FontOptimizationConfig {
+  fonts: {
+    inter: {
+      weights: [400, 600, 700]
+      display: 'swap'
+      preload: true
+      subset: 'latin'
+      fallback: 'system-ui, -apple-system, sans-serif'
+    }
+    firaCode: {
+      weights: [400, 500, 600]
+      display: 'swap'
+      preload: false
+      subset: 'latin'
+      fallback: '"Courier New", monospace'
+    }
+  }
+  
+  // Font subsetting
+  unicodeRange: string
+  
+  // Preload strategy
+  preloadFonts: string[]
+}
+```
+
+### 4. CSS Optimization System
+
+#### Critical CSS Extraction
+
+```typescript
+// lib/optimization/critical-css.ts
+interface CriticalCSSConfig {
+  // Extract critical CSS for routes
+  routes: string[]
+  
+  // Inline threshold
+  inlineThreshold: 14000 // 14KB
+  
+  // Dimensions for above-the-fold
+  dimensions: {
+    width: number
+    height: number
+  }[]
+  
+  // Ignore patterns
+  ignore: string[]
+}
+
+interface CSSOptimizer {
+  extractCritical: (html: string) => Promise<string>
+  inlineCritical: (html: string, css: string) => string
+  deferNonCritical: (css: string) => string
+}
+```
+
+#### Tailwind Optimization
+
+```typescript
+// tailwind.config optimization
+interface TailwindOptimization {
+  content: {
+    files: string[]
+    extract: {
+      // Custom extractors for better tree-shaking
+      tsx: (content: string) => string[]
+    }
+  }
+  
+  // Safelist only essential classes
+  safelist: string[]
+  
+  // Disable unused features
+  corePlugins: {
+    preflight: boolean
+    container: boolean
+  }
+}
+```
+
+### 5. JavaScript Execution Optimizer
+
+#### Performance Utilities Enhancement
+
+```typescript
+// lib/optimization/execution.ts
+interface ExecutionOptimizer {
+  // Throttle with RAF
+  rafThrottle: <T extends Function>(fn: T) => T
+  
+  // Debounce with leading/trailing options
+  debounce: <T extends Function>(
+    fn: T,
+    wait: number,
+    options?: { leading?: boolean; trailing?: boolean }
+  ) => T
+  
+  // Idle callback wrapper
+  runWhenIdle: (fn: Function, timeout?: number) => void
+  
+  // Batch DOM operations
+  batchDOMUpdates: (operations: Function[]) => void
+  
+  // Measure performance
+  measurePerformance: (name: string, fn: Function) => Promise<number>
+}
+```
+
+#### Animation Optimizer
+
+```typescript
+// lib/optimization/animations.ts
+interface AnimationOptimizer {
+  // Check if animations should be enabled
+  shouldAnimate: () => boolean
+  
+  // GPU-accelerated transform
+  gpuTransform: (element: HTMLElement, transform: string) => void
+  
+  // Will-change management
+  willChange: {
+    add: (element: HTMLElement, properties: string[]) => void
+    remove: (element: HTMLElement) => void
+  }
+  
+  // Intersection-based animations
+  animateOnScroll: (
+    element: HTMLElement,
+    animation: string,
+    options?: IntersectionObserverInit
+  ) => void
+}
+```
+
+### 6. Component Lazy Loading System
+
+#### Dynamic Import Manager
+
+```typescript
+// lib/optimization/dynamic-imports.ts
+interface DynamicImportConfig {
+  // Component import configuration
+  components: {
+    [key: string]: {
+      loader: () => Promise<any>
+      loading: React.ComponentType
+      ssr: boolean
+      suspense: boolean
+    }
+  }
+  
+  // Preload strategy
+  preloadStrategy: 'hover' | 'visible' | 'idle'
+  
+  // Chunk naming
+  chunkName: (componentName: string) => string
+}
+
+interface LazyLoadManager {
+  // Register lazy component
+  register: (name: string, config: ComponentConfig) => void
+  
+  // Preload component
+  preload: (name: string) => Promise<void>
+  
+  // Load component on interaction
+  loadOnInteraction: (name: string, trigger: 'hover' | 'click') => void
+}
+```
+
+### 7. API Optimization System
+
+#### Request Deduplication
+
+```typescript
+// lib/optimization/api-deduplication.ts
+interface RequestDeduplicator {
+  // Cache for in-flight requests
+  cache: Map<string, Promise<any>>
+  
+  // Deduplicate requests
+  deduplicate: <T>(
+    key: string,
+    fetcher: () => Promise<T>
+  ) => Promise<T>
+  
+  // Clear cache
+  clear: (key?: string) => void
+}
+```
+
+#### Data Fetching Strategy
+
+```typescript
+// lib/optimization/data-fetching.ts
+interface DataFetchingStrategy {
+  // Stale-while-revalidate
+  swr: {
+    fetcher: <T>(key: string) => Promise<T>
+    revalidateOnFocus: boolean
+    revalidateOnReconnect: boolean
+    dedupingInterval: number
+  }
+  
+  // Pagination
+  pagination: {
+    pageSize: number
+    prefetchPages: number
+  }
+  
+  // Request cancellation
+  cancellation: {
+    createAbortController: () => AbortController
+    cancelPending: (key: string) => void
+  }
+}
+```
+
+### 8. Caching System
+
+#### Service Worker Strategy
+
+```typescript
+// public/sw.js configuration
+interface ServiceWorkerStrategy {
+  // Cache configuration
+  caches: {
+    static: {
+      name: string
+      version: string
+      urls: string[]
+      maxAge: number // 1 year
+    }
+    dynamic: {
+      name: string
+      maxEntries: number
+      maxAge: number // 1 week
+    }
+    api: {
+      name: string
+      maxEntries: number
+      maxAge: number // 5 minutes
+    }
+  }
+  
+  // Strategies
+  strategies: {
+    static: 'CacheFirst'
+    dynamic: 'StaleWhileRevalidate'
+    api: 'NetworkFirst'
+  }
+}
+```
+
+#### Client-Side Caching
+
+```typescript
+// lib/optimization/client-cache.ts
+interface ClientCacheStrategy {
+  // Memory cache for small data
+  memory: {
+    set: (key: string, value: any, ttl: number) => void
+    get: (key: string) => any | null
+    clear: () => void
+  }
+  
+  // IndexedDB for large data
+  indexedDB: {
+    set: (key: string, value: any) => Promise<void>
+    get: (key: string) => Promise<any | null>
+    delete: (key: string) => Promise<void>
+  }
+  
+  // LocalStorage for preferences
+  localStorage: {
+    set: (key: string, value: any) => void
+    get: (key: string) => any | null
+  }
+}
+```
+
+### 9. SSR/SSG Optimization
+
+#### Rendering Strategy Configuration
+
+```typescript
+// app/[route]/page.tsx patterns
+interface RenderingStrategy {
+  // Static Generation
+  static: {
+    generateStaticParams: () => Promise<Param[]>
+    revalidate: false
+  }
+  
+  // Incremental Static Regeneration
+  isr: {
+    revalidate: number // 60 seconds
+    generateStaticParams: () => Promise<Param[]>
+  }
+  
+  // Server Components
+  serverComponent: {
+    dynamic: 'auto' | 'force-dynamic' | 'force-static'
+    fetchCache: 'auto' | 'force-cache' | 'force-no-store'
+  }
+  
+  // Streaming
+  streaming: {
+    loading: React.ComponentType
+    suspense: boolean
+  }
+}
+```
+
+#### Hydration Optimization
+
+```typescript
+// lib/optimization/hydration.ts
+interface HydrationOptimizer {
+  // Selective hydration
+  selectiveHydration: {
+    hydrateOnVisible: (component: React.ComponentType) => React.ComponentType
+    hydrateOnIdle: (component: React.ComponentType) => React.ComponentType
+    hydrateOnInteraction: (component: React.ComponentType) => React.ComponentType
+  }
+  
+  // Progressive hydration
+  progressiveHydration: {
+    priority: 'high' | 'medium' | 'low'
+    defer: boolean
+  }
+}
+```
+
+### 10. Performance Monitoring System
+
+#### Web Vitals Collector Enhancement
+
+```typescript
+// lib/optimization/web-vitals-collector.ts
+interface WebVitalsCollector {
+  // Core Web Vitals
+  metrics: {
+    LCP: number // Largest Contentful Paint
+    FID: number // First Input Delay
+    CLS: number // Cumulative Layout Shift
+    FCP: number // First Contentful Paint
+    TTFB: number // Time to First Byte
+    TTI: number // Time to Interactive
+  }
+  
+  // Collection strategy
+  collect: () => void
+  
+  // Reporting
+  report: (metric: Metric) => void
+  
+  // Thresholds
+  thresholds: {
+    LCP: { good: 2500, needsImprovement: 4000 }
+    FID: { good: 100, needsImprovement: 300 }
+    CLS: { good: 0.1, needsImprovement: 0.25 }
+  }
+}
+```
+
+#### Performance Dashboard
+
+```typescript
+// components/performance-dashboard.tsx
+interface PerformanceDashboard {
+  // Real-time metrics
+  realTimeMetrics: {
+    currentLCP: number
+    currentFID: number
+    currentCLS: number
+  }
+  
+  // Historical data
+  historicalData: {
+    date: string
+    metrics: Metrics
+  }[]
+  
+  // Alerts
+  alerts: {
+    metric: string
+    threshold: number
+    current: number
+    severity: 'warning' | 'critical'
+  }[]
+}
+```
+
+## Data Models
+
+### Performance Metrics Model
+
+```typescript
+interface PerformanceMetric {
+  id: string
+  timestamp: Date
+  userId?: string
+  sessionId: string
+  
+  // Core Web Vitals
+  lcp: number
+  fid: number
+  cls: number
+  fcp: number
+  ttfb: number
+  tti: number
+  
+  // Context
+  route: string
+  deviceType: 'mobile' | 'tablet' | 'desktop'
+  connectionType: string
+  
+  // Bundle info
+  bundleSize: number
+  chunkCount: number
+  
+  // Resource timing
+  resources: {
+    type: string
+    size: number
+    duration: number
+  }[]
+}
+```
+
+### Cache Entry Model
+
+```typescript
+interface CacheEntry {
+  key: string
+  value: any
+  timestamp: Date
+  ttl: number
+  size: number
+  hits: number
+  
+  // Metadata
+  metadata: {
+    route: string
+    version: string
+    tags: string[]
+  }
+}
+```
+
+### Bundle Analysis Model
+
+```typescript
+interface BundleAnalysis {
+  timestamp: Date
+  version: string
+  
+  // Bundle sizes
+  bundles: {
+    name: string
+    size: number
+    gzipSize: number
+    brotliSize: number
+  }[]
+  
+  // Dependencies
+  dependencies: {
+    name: string
+    version: string
+    size: number
+    treeshakeable: boolean
+  }[]
+  
+  // Recommendations
+  recommendations: {
+    type: 'remove' | 'replace' | 'optimize'
+    package: string
+    reason: string
+    potentialSavings: number
+  }[]
+}
+```
+
+## Error Handling
+
+### Performance Error Boundaries
+
+```typescript
+// components/performance-error-boundary.tsx
+interface PerformanceErrorBoundary {
+  // Catch rendering errors
+  componentDidCatch: (error: Error, errorInfo: ErrorInfo) => void
+  
+  // Report performance impact
+  reportPerformanceImpact: (error: Error) => void
+  
+  // Fallback UI
+  fallback: React.ComponentType<{ error: Error }>
+  
+  // Recovery strategy
+  recover: () => void
+}
+```
+
+### Resource Loading Errors
+
+```typescript
+// lib/optimization/resource-error-handler.ts
+interface ResourceErrorHandler {
+  // Handle failed image loads
+  handleImageError: (src: string) => string // Return fallback
+  
+  // Handle failed script loads
+  handleScriptError: (src: string) => void
+  
+  // Handle failed font loads
+  handleFontError: (family: string) => void
+  
+  // Retry strategy
+  retry: {
+    maxAttempts: number
+    backoff: 'linear' | 'exponential'
+    delay: number
+  }
+}
+```
+
+## Testing Strategy
+
+### Performance Testing
+
+```typescript
+// tests/performance/performance.spec.ts
+interface PerformanceTests {
+  // Bundle size tests
+  testBundleSize: () => void // Assert < 300KB
+  
+  // Load time tests
+  testLoadTime: () => void // Assert LCP < 2.5s
+  
+  // Runtime performance tests
+  testScrollPerformance: () => void // Assert 60fps
+  
+  // Memory leak tests
+  testMemoryLeaks: () => void
+}
+```
+
+### Lighthouse CI Integration
+
+```yaml
+# .lighthouserc.json
+{
+  "ci": {
+    "collect": {
+      "numberOfRuns": 3,
+      "settings": {
+        "preset": "desktop"
+      }
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["error", {"minScore": 0.9}],
+        "first-contentful-paint": ["error", {"maxNumericValue": 1500}],
+        "largest-contentful-paint": ["error", {"maxNumericValue": 2500}],
+        "cumulative-layout-shift": ["error", {"maxNumericValue": 0.1}],
+        "total-blocking-time": ["error", {"maxNumericValue": 300}]
+      }
+    }
+  }
+}
+```
+
+### Bundle Analysis Tests
+
+```typescript
+// tests/performance/bundle-analysis.spec.ts
+interface BundleAnalysisTests {
+  // Test total bundle size
+  testTotalBundleSize: () => void
+  
+  // Test individual chunk sizes
+  testChunkSizes: () => void
+  
+  // Test tree-shaking effectiveness
+  testTreeShaking: () => void
+  
+  // Test code splitting
+  testCodeSplitting: () => void
+}
+```
+
+## Implementation Phases
+
+### Phase 1: Foundation (Week 1)
+- Configure Next.js optimizations
+- Set up bundle analyzer
+- Implement tree-shaking for icon libraries
+- Configure SWC compiler
+
+### Phase 2: Assets (Week 1-2)
+- Optimize image loading system
+- Implement font optimization
+- Extract and inline critical CSS
+- Set up service worker
+
+### Phase 3: Code Splitting (Week 2)
+- Implement dynamic imports for heavy components
+- Configure route-based code splitting
+- Set up lazy loading for modals
+- Optimize third-party library imports
+
+### Phase 4: Runtime (Week 2-3)
+- Enhance performance utilities
+- Implement animation optimizations
+- Add request deduplication
+- Optimize data fetching
+
+### Phase 5: Caching (Week 3)
+- Implement service worker caching
+- Set up IndexedDB for large data
+- Configure API response caching
+- Add cache invalidation strategy
+
+### Phase 6: Monitoring (Week 3-4)
+- Enhance Web Vitals collection
+- Set up performance dashboard
+- Configure alerts and thresholds
+- Implement bundle analysis automation
+
+### Phase 7: Testing & Validation (Week 4)
+- Run Lighthouse CI tests
+- Perform bundle analysis
+- Test on real devices
+- Validate all metrics meet targets
+
+## Success Metrics
+
+### Target Metrics
+- **Bundle Size**: < 300KB gzipped (main bundle < 100KB)
+- **LCP**: < 2.5s (mobile), < 1.5s (desktop)
+- **FID**: < 100ms
+- **CLS**: < 0.1
+- **TTI**: < 3.5s (mobile), < 2s (desktop)
+- **Lighthouse Score**: > 90 (Performance)
+- **Build Time**: < 3 minutes
+
+### Monitoring Thresholds
+- Alert if LCP > 4s
+- Alert if FID > 300ms
+- Alert if CLS > 0.25
+- Alert if bundle size increases > 10%
+- Alert if Lighthouse score drops below 85
+
       width={width}
       height={height}
       quality={quality}
