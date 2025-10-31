@@ -171,13 +171,14 @@ export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
         {particles.map((particle) => (
           <div
             key={particle.id}
-            className="absolute font-mono text-[8px] font-bold whitespace-nowrap transition-all duration-100 pointer-events-none"
+            className="absolute font-mono text-[10px] font-bold whitespace-nowrap transition-all duration-100 pointer-events-none"
             style={{
               transform: `translate(${particle.x}px, ${particle.y}px) scale(${particle.scale})`,
               color: particle.color,
               opacity: particle.opacity * (isBlinking ? 0.3 : 1),
-              textShadow: `0 0 ${state === "thinking" ? "10px" : "6px"} currentColor, 0 0 ${state === "thinking" ? "20px" : "12px"} currentColor`,
-              filter: `blur(${state === "thinking" ? "0.5px" : "0px"})`,
+              textShadow: `0 0 ${state === "thinking" ? "12px" : "8px"} currentColor, 0 0 ${state === "thinking" ? "24px" : "16px"} currentColor`,
+              filter: `blur(${state === "thinking" ? "0.3px" : "0px"})`,
+              fontWeight: 900,
             }}
           >
             {particle.code}

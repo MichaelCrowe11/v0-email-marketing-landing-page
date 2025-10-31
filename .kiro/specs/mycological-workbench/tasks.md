@@ -2,7 +2,10 @@
 
 ## Phase 1: Foundation & Core Infrastructure
 
-- [-] 1. Project setup and core architecture
+- [ ] 1. Project setup and core architecture
+
+
+
 
 
 
@@ -16,6 +19,7 @@
   - Configure Supabase project with PostgreSQL
   - Implement database schema (research_sessions, datasets, experiments, hypotheses, reasoning_traces, knowledge_base)
   - Set up NextAuth.js with email and institutional SSO providers
+
   - Create auth middleware for protected routes
   - _Requirements: 1.1, 7.1_
 

@@ -408,6 +408,12 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                     const isAssistant = message.role === "assistant"
                     const isLastMessage = index === messages.length - 1
                     const isStreaming = isLastMessage && isLoading && isAssistant
+                    
+                    // Determine avatar state based on streaming status
+                    const hasContent = message.content.length > 0
+                    const avatarState = isStreaming 
+                      ? (hasContent ? "responding" : "thinking")  // "responding" when streaming content, "thinking" when waiting
+                      : "idle"  // "idle" when message is complete
 
                     // Detect if message contains code or document
                     const hasCode = message.content.includes("```")
@@ -433,8 +439,8 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                             <div className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
                               {message.content}
                               {isAssistant && (
-                                <span className="inline-block align-middle ml-3">
-                                  <AIAvatarSwirl state={isStreaming ? "thinking" : "idle"} size={32} />
+                                <span className="inline-block align-middle ml-3 relative" style={{ minWidth: '48px', minHeight: '48px' }}>
+                                  <AIAvatarSwirl state={avatarState} size={40} />
                                 </span>
                               )}
                               {isStreaming && (
