@@ -47,31 +47,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
     }
   }, [messages, currentConversationId])
 
-  // Update avatar position in real-time during streaming - ALIGNED WITH CURSOR END
-  useEffect(() => {
-    if (!isLoading) return
-
-    let animationFrameId: number
-
-    const updatePosition = () => {
-      const lastMessage = messages[messages.length - 1]
-      if (lastMessage && lastMessage.role === 'assistant' && lastMessage.content) {
-        const messageEl = document.getElementById(`message-${lastMessage.id}`)
-        const cursorEl = messageEl?.querySelector('.streaming-cursor')
-
-        if (cursorEl) {
-          const rect = cursorEl.getBoundingClientRect()
-          // Position avatar right after cursor (aligned with end)
-          setAvatarPosition({ x: rect.right + 10, y: rect.top - 20 })
-        }
-      }
-      animationFrameId = requestAnimationFrame(updatePosition)
-    }
-
-    animationFrameId = requestAnimationFrame(updatePosition)
-
-    return () => cancelAnimationFrame(animationFrameId)
-  }, [isLoading, messages])
+  // No longer needed - avatar is now inline with text
 
   const saveMessage = async (message: Message) => {
     if (!currentConversationId) return
@@ -505,134 +481,6 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                               }`}
                           >
                             <div className="relative min-h-[80px]" id={`message-${message.id}`}>
-                              {/* OPTIMIZED METAMORPHOSIS - Avatar spins into quantum field with GPU acceleration */}
-                              {isAssistant && (isStreaming || isCompletingStream) && hasContent && (
-                                <div 
-                                  className="fixed z-50 pointer-events-none will-change-transform"
-                                  style={{
-                                    left: `${avatarPosition.x}px`,
-                                    top: `${avatarPosition.y}px`,
-                                    width: '64px',
-                                    height: '64px',
-                                    transition: isCompletingStream 
-                                      ? 'left 0.3s ease-out, top 0.3s ease-out, opacity 1.5s ease-out'
-                                      : 'left 0.05s linear, top 0.05s linear',
-                                    opacity: isCompletingStream ? 0 : 1,
-                                  }}
-                                >
-                                  <div className="relative w-full h-full">
-                                    {/* Quantum field - single layer, GPU accelerated */}
-                                    <div
-                                      className="absolute inset-0 rounded-full will-change-transform"
-                                      style={{
-                                        background: 'radial-gradient(circle, rgba(34, 211, 238, 0.4) 0%, rgba(168, 85, 247, 0.2) 50%, transparent 70%)',
-                                        filter: 'blur(25px)',
-                                        transform: isCompletingStream ? 'scale(1.5)' : 'scale(2.5)',
-                                        animation: isCompletingStream ? 'none' : 'quantumPulse 1.5s ease-in-out infinite',
-                                        transition: 'transform 1.5s ease-out',
-                                        opacity: isCompletingStream ? 0.2 : 1,
-                                      }}
-                                    />
-
-                                    {/* Reduced energy rings - only 2 for performance */}
-                                    <div 
-                                      className="absolute inset-0 -m-6 rounded-full border-2 border-cyan-400/70 will-change-transform" 
-                                      style={{ 
-                                        animation: isCompletingStream ? 'ringRotate 3s linear infinite' : 'ringRotate 1s linear infinite',
-                                        opacity: isCompletingStream ? 0.3 : 1,
-                                        transition: 'opacity 1.5s ease-out',
-                                      }} 
-                                    />
-                                    <div 
-                                      className="absolute inset-0 -m-10 rounded-full border border-purple-400/50 will-change-transform" 
-                                      style={{ 
-                                        animation: isCompletingStream ? 'ringRotate 4s linear infinite reverse' : 'ringRotate 0.7s linear infinite reverse',
-                                        opacity: isCompletingStream ? 0.2 : 1,
-                                        transition: 'opacity 1.5s ease-out',
-                                      }} 
-                                    />
-
-                                    {/* Avatar - GPU accelerated spinning */}
-                                    <div 
-                                      className="will-change-transform"
-                                      style={{ 
-                                        animation: isCompletingStream 
-                                          ? 'slowdownTransform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
-                                          : 'metamorphosis 0.4s linear infinite',
-                                      }}
-                                    >
-                                      <AIAvatarSwirl state={isCompletingStream ? "idle" : "responding"} size={56} />
-                                    </div>
-
-                                    {/* Reduced CODE STORM - only 12 elements instead of 18 */}
-                                    {!isCompletingStream && ['const', 'fn', '=>', 'async', 'class', 'let', '[]', '<>', '&&', 'new', 'void', '{}'].map((code, i) => {
-                                      const angle = (i * 360 / 12)
-                                      const speed = 0.5 + (i % 3) * 0.15
-                                      return (
-                                        <div
-                                          key={`code-${i}`}
-                                          className="absolute font-mono font-black pointer-events-none will-change-transform"
-                                          style={{
-                                            left: '50%',
-                                            top: '50%',
-                                            fontSize: `${14 + (i % 2) * 2}px`,
-                                            color: `hsl(${angle}, 100%, 70%)`,
-                                            animation: `codeStorm${i % 3} ${speed}s ease-in-out infinite`,
-                                            animationDelay: `${i * 0.04}s`,
-                                            textShadow: '0 0 20px currentColor, 0 0 40px currentColor',
-                                            filter: 'blur(0.3px)',
-                                            fontWeight: 900,
-                                          }}
-                                        >
-                                          {code}
-                                        </div>
-                                      )
-                                    })}
-
-                                    {/* Reduced particles - 10 instead of 16 */}
-                                    {!isCompletingStream && [...Array(10)].map((_, i) => {
-                                      const hue = (i * 36) % 360
-                                      const delay = (i * 0.05)
-                                      const duration = 0.5 + (i % 3) * 0.12
-                                      return (
-                                        <div
-                                          key={`particle-${i}`}
-                                          className="absolute rounded-full will-change-transform"
-                                          style={{
-                                            width: `${4 + (i % 2)}px`,
-                                            height: `${4 + (i % 2)}px`,
-                                            background: `hsl(${hue}, 100%, 70%)`,
-                                            left: '50%',
-                                            top: '50%',
-                                            animation: `particleExplosion${i % 3} ${duration}s ease-out infinite`,
-                                            animationDelay: `${delay}s`,
-                                            boxShadow: `0 0 20px hsl(${hue}, 100%, 70%)`,
-                                          }}
-                                        />
-                                      )
-                                    })}
-
-                                    {/* Reduced lightning - 4 instead of 6 */}
-                                    {!isCompletingStream && [...Array(4)].map((_, i) => (
-                                      <div
-                                        key={`lightning-${i}`}
-                                        className="absolute w-1 rounded-full will-change-transform"
-                                        style={{
-                                          left: '50%',
-                                          top: '50%',
-                                          height: `${40 + i * 8}px`,
-                                          background: `linear-gradient(180deg, hsl(${i * 90}, 100%, 75%), transparent)`,
-                                          transformOrigin: 'top',
-                                          animation: `lightning ${0.6 + i * 0.1}s ease-in-out infinite`,
-                                          animationDelay: `${i * 0.12}s`,
-                                          boxShadow: '0 0 12px currentColor',
-                                          transform: `rotate(${i * 90}deg)`,
-                                        }}
-                                      />
-                                    ))}
-                                  </div>
-                                </div>
-                              )}
 
                               <div className="text-base text-foreground leading-relaxed whitespace-pre-wrap relative z-10 font-medium">
                                 {/* Each character materializes with color flash */}
@@ -652,6 +500,98 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                     </span>
                                   )
                                 })}
+                                
+                                {/* EPIC INLINE AVATAR - flows with text naturally */}
+                                {isAssistant && isStreaming && hasContent && (
+                                  <span className="inline-block align-middle ml-3 relative" style={{ width: '72px', height: '72px', verticalAlign: 'middle' }}>
+                                    <div className="relative w-full h-full">
+                                      {/* Quantum field glow */}
+                                      <div
+                                        className="absolute inset-0 rounded-full will-change-transform"
+                                        style={{
+                                          background: 'radial-gradient(circle, rgba(34, 211, 238, 0.5) 0%, rgba(168, 85, 247, 0.3) 50%, transparent 70%)',
+                                          filter: 'blur(30px)',
+                                          transform: 'scale(2.8)',
+                                          animation: 'quantumPulse 1.2s ease-in-out infinite',
+                                        }}
+                                      />
+
+                                      {/* Energy rings */}
+                                      <div className="absolute inset-0 -m-8 rounded-full border-2 border-cyan-400/80 will-change-transform" style={{ animation: 'ringRotate 0.8s linear infinite' }} />
+                                      <div className="absolute inset-0 -m-12 rounded-full border border-purple-400/60 will-change-transform" style={{ animation: 'ringRotate 0.6s linear infinite reverse' }} />
+
+                                      {/* Spinning avatar */}
+                                      <div className="will-change-transform" style={{ animation: 'metamorphosis 0.35s linear infinite' }}>
+                                        <AIAvatarSwirl state="responding" size={64} />
+                                      </div>
+
+                                      {/* CODE STORM */}
+                                      {['const', 'fn', '=>', 'async', 'let', '[]', '<>', '&&', 'new', '{}'].map((code, i) => {
+                                        const angle = (i * 360 / 10)
+                                        return (
+                                          <div
+                                            key={`code-${i}`}
+                                            className="absolute font-mono font-black pointer-events-none will-change-transform"
+                                            style={{
+                                              left: '50%',
+                                              top: '50%',
+                                              fontSize: '15px',
+                                              color: `hsl(${angle}, 100%, 70%)`,
+                                              animation: `codeStorm${i % 3} ${0.45 + (i % 3) * 0.1}s ease-in-out infinite`,
+                                              animationDelay: `${i * 0.04}s`,
+                                              textShadow: '0 0 25px currentColor, 0 0 50px currentColor',
+                                              filter: 'blur(0.3px)',
+                                              fontWeight: 900,
+                                            }}
+                                          >
+                                            {code}
+                                          </div>
+                                        )
+                                      })}
+
+                                      {/* Particles */}
+                                      {[...Array(8)].map((_, i) => {
+                                        const hue = (i * 45) % 360
+                                        return (
+                                          <div
+                                            key={`particle-${i}`}
+                                            className="absolute rounded-full will-change-transform"
+                                            style={{
+                                              width: '5px',
+                                              height: '5px',
+                                              background: `hsl(${hue}, 100%, 70%)`,
+                                              left: '50%',
+                                              top: '50%',
+                                              animation: `particleExplosion${i % 3} ${0.5 + (i % 3) * 0.1}s ease-out infinite`,
+                                              animationDelay: `${i * 0.06}s`,
+                                              boxShadow: `0 0 25px hsl(${hue}, 100%, 70%)`,
+                                            }}
+                                          />
+                                        )
+                                      })}
+
+                                      {/* Lightning */}
+                                      {[...Array(4)].map((_, i) => (
+                                        <div
+                                          key={`lightning-${i}`}
+                                          className="absolute w-1 rounded-full will-change-transform"
+                                          style={{
+                                            left: '50%',
+                                            top: '50%',
+                                            height: '45px',
+                                            background: `linear-gradient(180deg, hsl(${i * 90}, 100%, 75%), transparent)`,
+                                            transformOrigin: 'top',
+                                            animation: `lightning ${0.55 + i * 0.1}s ease-in-out infinite`,
+                                            animationDelay: `${i * 0.12}s`,
+                                            boxShadow: '0 0 15px currentColor',
+                                            transform: `rotate(${i * 90}deg)`,
+                                          }}
+                                        />
+                                      ))}
+                                    </div>
+                                  </span>
+                                )}
+                                
                                 {isAssistant && !isStreaming && (
                                   <span className="inline-block align-middle ml-3">
                                     <AIAvatarSwirl state="idle" size={40} />
