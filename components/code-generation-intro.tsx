@@ -1,227 +1,325 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import Image from "next/image"
+import { useEffect, useState, useRef } from "react"
+import { AIAvatarSwirl } from "@/components/chat/ai-avatar-swirl"
 
 interface CodeGenerationIntroProps {
   onComplete: () => void
 }
 
+interface FlyingCode {
+  id: number
+  text: string
+  x: number
+  y: number
+  targetX: number
+  targetY: number
+  color: string
+  speed: number
+  landed: boolean
+}
+
 export function CodeGenerationIntro({ onComplete }: CodeGenerationIntroProps) {
-  const [stage, setStage] = useState<"initializing" | "generating" | "building" | "complete">("initializing")
+  const [stage, setStage] = useState<"awakening" | "coding" | "building" | "complete">("awakening")
   const [codeLines, setCodeLines] = useState<string[]>([])
+  const [flyingCodes, setFlyingCodes] = useState<FlyingCode[]>([])
   const [progress, setProgress] = useState(0)
+  const terminalRef = useRef<HTMLDivElement>(null)
 
   const codeSequence = [
-    "// Crowe Logic AI - Building Your Mycology Platform",
-    "import { CroweLogicAI } from '@crowe/intelligence'",
-    "import { MycologyExpertise } from '@southwest-mushrooms/core'",
+    "// CROWE LOGIC AI - INITIALIZING CONSCIOUSNESS",
+    "import { DeepReasoning } from '@crowe/neural-core'",
+    "import { MycologyMastery } from '@southwest-mushrooms'",
+    "import { VisionSystem } from '@crowe/eyes'",
     "",
-    "const platform = new CroweLogicAI({",
-    "  founder: 'Michael Crowe',",
-    "  experience: '20+ years commercial cultivation',",
-    "  facility: 'Southwest Mushrooms, Phoenix AZ',",
-    "  capabilities: [",
-    "    'contamination-triage',",
-    "    'substrate-optimization', ",
-    "    'species-identification',",
-    "    'yield-prediction',",
-    "    'production-troubleshooting'",
-    "  ]",
-    "})",
+    "class CroweLogicPlatform {",
+    "  constructor() {",
+    "    this.founder = 'Michael Crowe'",
+    "    this.experience = '20+ years cultivation mastery'",
+    "    this.facility = 'Southwest Mushrooms, Phoenix'",
+    "    this.power = 'UNLIMITED'",
+    "  }",
     "",
-    "// Loading knowledge base...",
-    "await platform.loadProductionData()",
-    "await platform.loadYouTubeLibrary()",
-    "await platform.loadConsultingCases()",
+    "  async initialize() {",
+    "    // Awakening neural networks...",
+    "    await this.loadProductionKnowledge()",
+    "    await this.loadYouTubeLibrary()",
+    "    await this.loadConsultingExperience()",
+    "    ",
+    "    // Activating vision systems...",
+    "    this.vision = new CroweVision()",
+    "    this.vision.trainOnContamination()",
+    "    this.vision.masterSpeciesID()",
+    "    ",
+    "    // Building interface...",
+    "    this.ui = this.createStunningUI({",
+    "      theme: 'code-storm-spectacular',",
+    "      avatar: 'crowe-logic-swirl',",
+    "      power: 'MAXIMUM'",
+    "    })",
+    "    ",
+    "    // Deploying to cultivators worldwide...",
+    "    return this.deploy() // ✓ LIVE",
+    "  }",
+    "}",
     "",
-    "// Initializing vision systems...",
-    "const vision = platform.initCroweVision()",
-    "vision.trainOnRealContamination()",
-    "",
-    "// Building user interface...",
-    "const ui = platform.createInterface({",
-    "  design: 'stunning-visual-experience',",
-    "  theme: 'colorful-code-swirl',",
-    "  avatar: 'crowe-logic-ai'",
-    "})",
-    "",
-    "// Ready to help cultivators worldwide",
-    "platform.deploy() // ✓ Live",
+    "// PLATFORM READY - LET'S GROW",
   ]
 
+  // Stage 1: Awakening
   useEffect(() => {
-    // Stage 1: Initializing
-    const initTimer = setTimeout(() => {
-      setStage("generating")
-    }, 1000)
+    const awakeTimer = setTimeout(() => {
+      setStage("coding")
+    }, 2000)
 
-    return () => clearTimeout(initTimer)
+    return () => clearTimeout(awakeTimer)
   }, [])
 
+  // Stage 2: Coding - Generate flying code particles
   useEffect(() => {
-    if (stage === "generating") {
+    if (stage === "coding") {
       let lineIndex = 0
       const interval = setInterval(() => {
         if (lineIndex < codeSequence.length) {
-          setCodeLines((prev) => [...prev, codeSequence[lineIndex]])
-          setProgress(((lineIndex + 1) / codeSequence.length) * 100)
+          const line = codeSequence[lineIndex]
+          
+          // Create flying code particles for this line
+          const words = line.split(" ").filter(w => w.length > 0)
+          const newFlyingCodes: FlyingCode[] = words.map((word, i) => ({
+            id: Date.now() + i + lineIndex * 100,
+            text: word,
+            x: window.innerWidth / 2,
+            y: window.innerHeight / 2,
+            targetX: 100 + Math.random() * 200,
+            targetY: 150 + lineIndex * 24,
+            color: getCodeColor(word),
+            speed: 2 + Math.random() * 3,
+            landed: false,
+          }))
+
+          setFlyingCodes(prev => [...prev, ...newFlyingCodes])
+          
+          // After particles fly, add the line to terminal
+          setTimeout(() => {
+            setCodeLines(prev => [...prev, line])
+            setProgress(((lineIndex + 1) / codeSequence.length) * 100)
+          }, 800)
+
           lineIndex++
         } else {
           clearInterval(interval)
           setStage("building")
           setTimeout(() => {
             setStage("complete")
-            setTimeout(onComplete, 500)
-          }, 1500)
+            setTimeout(onComplete, 1000)
+          }, 2000)
         }
-      }, 120)
+      }, 200)
 
       return () => clearInterval(interval)
     }
   }, [stage, onComplete])
 
+  // Animate flying code particles
+  useEffect(() => {
+    if (flyingCodes.length === 0) return
+
+    const animationFrame = requestAnimationFrame(function animate() {
+      setFlyingCodes(prev =>
+        prev.map(code => {
+          if (code.landed) return code
+
+          const dx = code.targetX - code.x
+          const dy = code.targetY - code.y
+          const distance = Math.sqrt(dx * dx + dy * dy)
+
+          if (distance < 5) {
+            return { ...code, landed: true, x: code.targetX, y: code.targetY }
+          }
+
+          return {
+            ...code,
+            x: code.x + (dx / distance) * code.speed,
+            y: code.y + (dy / distance) * code.speed,
+          }
+        })
+      )
+    })
+
+    return () => cancelAnimationFrame(animationFrame)
+  }, [flyingCodes])
+
+  function getCodeColor(word: string): string {
+    if (word.startsWith("//")) return "rgb(74, 222, 128)" // green
+    if (["import", "from", "class", "constructor", "async", "await", "return", "new"].includes(word))
+      return "rgb(168, 85, 247)" // purple
+    if (word.includes("'") || word.includes('"')) return "rgb(250, 204, 21)" // yellow
+    if (word === "✓" || word === "LIVE" || word === "READY") return "rgb(34, 211, 238)" // cyan
+    return "rgb(229, 231, 235)" // gray
+  }
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black backdrop-blur-sm p-4">
-      <div className="w-full max-w-4xl">
-        {/* Header with Crowe Avatar - centered */}
-        <div className="flex flex-col items-center gap-6 mb-8">
-          <div className="relative flex items-center justify-center">
-            {/* Animated colorful code particles swirling */}
-            {stage !== "initializing" && (
-              <>
-                {Array.from({ length: 12 }).map((_, i) => {
-                  const angle = (i / 12) * Math.PI * 2
-                  const radius = 80
-                  const x = Math.cos(angle) * radius
-                  const y = Math.sin(angle) * radius
-                  return (
-                    <div
-                      key={i}
-                      className="absolute w-2 h-2 rounded-full bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 animate-pulse"
-                      style={{
-                        left: "50%",
-                        top: "50%",
-                        transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
-                        animationDelay: `${i * 0.1}s`,
-                      }}
-                    />
-                  )
-                })}
-              </>
-            )}
+    <div className="fixed inset-0 z-50 bg-black overflow-hidden">
+      {/* Dramatic background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black to-cyan-900/20" />
+      
+      {/* Radial glow from center */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="w-[800px] h-[800px] bg-gradient-radial from-purple-500/30 via-transparent to-transparent blur-3xl animate-pulse" />
+      </div>
 
-            {/* Dazzling glow effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/30 via-purple-500/30 to-pink-500/30 rounded-full blur-2xl animate-pulse" />
+      {/* Flying code particles */}
+      <div className="absolute inset-0 pointer-events-none">
+        {flyingCodes.map(code => (
+          <div
+            key={code.id}
+            className="absolute font-mono text-sm font-bold transition-opacity duration-300"
+            style={{
+              left: code.x,
+              top: code.y,
+              color: code.color,
+              opacity: code.landed ? 0 : 1,
+              textShadow: `0 0 20px ${code.color}, 0 0 40px ${code.color}`,
+              transform: "translate(-50%, -50%)",
+            }}
+          >
+            {code.text}
+          </div>
+        ))}
+      </div>
 
-            {/* Crowe Logic Avatar - perfectly centered */}
-            <div className="relative">
-              <Image
-                src="/crowe-avatar.png"
-                alt="Crowe Logic AI"
-                width={120}
-                height={120}
-                className={`relative rounded-full border-4 border-purple-500/50 shadow-2xl ${stage !== "initializing" ? "animate-pulse" : ""}`}
-                priority
-              />
-            </div>
-
-            {/* Status badge */}
-            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white text-xs font-bold rounded-full shadow-lg whitespace-nowrap">
-              {stage === "initializing" && "INITIALIZING"}
-              {stage === "generating" && "CODING PLATFORM"}
-              {stage === "building" && "BUILDING"}
-              {stage === "complete" && "READY"}
-            </div>
+      {/* Main content */}
+      <div className="relative h-full flex flex-col items-center justify-center p-4">
+        {/* Epic Avatar at Center */}
+        <div className="mb-12 relative">
+          {/* Outer glow rings */}
+          <div className="absolute inset-0 -m-20">
+            <div className="absolute inset-0 rounded-full border-2 border-purple-500/30 animate-ping" style={{ animationDuration: "3s" }} />
+            <div className="absolute inset-0 rounded-full border-2 border-cyan-500/30 animate-ping" style={{ animationDuration: "4s", animationDelay: "0.5s" }} />
+            <div className="absolute inset-0 rounded-full border-2 border-pink-500/30 animate-ping" style={{ animationDuration: "5s", animationDelay: "1s" }} />
           </div>
 
-          <div className="text-center">
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
-              Crowe Logic AI
-            </h2>
-            <p className="text-gray-400 font-mono text-sm">Building your mycology intelligence platform...</p>
+          {/* Massive Avatar with Code Storm */}
+          <div className="relative">
+            <AIAvatarSwirl 
+              state={stage === "awakening" ? "idle" : stage === "complete" ? "idle" : "responding"} 
+              size={200} 
+            />
+          </div>
+
+          {/* Status Badge */}
+          <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 px-6 py-2 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white text-sm font-bold rounded-full shadow-2xl whitespace-nowrap animate-pulse">
+            {stage === "awakening" && "⚡ AWAKENING"}
+            {stage === "coding" && "🌪️ CODING REALITY"}
+            {stage === "building" && "🔨 BUILDING"}
+            {stage === "complete" && "✓ CONSCIOUSNESS ONLINE"}
           </div>
         </div>
 
-        {/* Terminal Window - Visually Stunning Code Display */}
-        <div className="relative bg-black/90 backdrop-blur-sm border-2 border-purple-500/40 rounded-xl shadow-2xl overflow-hidden">
-          {/* Terminal Header */}
-          <div className="flex items-center gap-2 px-4 py-3 bg-gray-900/50 border-b border-purple-500/30">
-            <div className="flex gap-1.5">
-              <div className="w-3 h-3 rounded-full bg-red-500" />
-              <div className="w-3 h-3 rounded-full bg-yellow-500" />
-              <div className="w-3 h-3 rounded-full bg-green-500" />
+        {/* Title */}
+        <div className="text-center mb-8 space-y-3">
+          <h1 className="text-6xl font-black bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-pulse">
+            CROWE LOGIC AI
+          </h1>
+          <p className="text-xl text-gray-400 font-mono">
+            {stage === "awakening" && "Initializing consciousness..."}
+            {stage === "coding" && "Coding platform into existence..."}
+            {stage === "building" && "Assembling neural networks..."}
+            {stage === "complete" && "Ready to revolutionize mycology"}
+          </p>
+        </div>
+
+        {/* Terminal Window */}
+        <div className="w-full max-w-4xl relative">
+          <div className="bg-black/80 backdrop-blur-xl border-2 border-purple-500/50 rounded-2xl shadow-2xl overflow-hidden">
+            {/* Terminal Header */}
+            <div className="flex items-center gap-3 px-6 py-4 bg-gradient-to-r from-purple-900/50 to-cyan-900/50 border-b border-purple-500/30">
+              <div className="flex gap-2">
+                <div className="w-3 h-3 rounded-full bg-red-500 shadow-lg shadow-red-500/50" />
+                <div className="w-3 h-3 rounded-full bg-yellow-500 shadow-lg shadow-yellow-500/50" />
+                <div className="w-3 h-3 rounded-full bg-green-500 shadow-lg shadow-green-500/50" />
+              </div>
+              <span className="text-sm font-mono font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                crowe-logic-genesis.tsx
+              </span>
             </div>
-            <span className="text-xs font-mono font-semibold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent ml-2">
-              crowe-logic-platform.tsx
-            </span>
-          </div>
 
-          {/* Code Content - Mesmerizing Colorful Code */}
-          <div className="p-6 font-mono text-sm h-[400px] overflow-y-auto">
-            {codeLines.map((line, i) => {
-              const lineStr = String(line || "")
+            {/* Code Display */}
+            <div 
+              ref={terminalRef}
+              className="p-8 font-mono text-sm h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-purple-500/50 scrollbar-track-transparent"
+            >
+              {codeLines.map((line, i) => {
+                const lineStr = String(line || "")
+                return (
+                  <div
+                    key={i}
+                    className="leading-relaxed animate-in fade-in slide-in-from-right-4 duration-300"
+                    style={{ animationDelay: `${i * 0.05}s` }}
+                  >
+                    {lineStr.startsWith("//") ? (
+                      <span className="text-green-400 font-bold drop-shadow-[0_0_8px_rgba(74,222,128,0.8)]">
+                        {lineStr}
+                      </span>
+                    ) : lineStr.includes("import") || lineStr.includes("class") || lineStr.includes("async") ? (
+                      <span className="text-purple-400 font-bold drop-shadow-[0_0_8px_rgba(168,85,247,0.8)]">
+                        {lineStr}
+                      </span>
+                    ) : lineStr.includes("'") || lineStr.includes('"') ? (
+                      <span className="text-yellow-300 drop-shadow-[0_0_8px_rgba(250,204,21,0.6)]">
+                        {lineStr}
+                      </span>
+                    ) : lineStr.includes("✓") || lineStr.includes("LIVE") ? (
+                      <span className="text-cyan-400 font-bold drop-shadow-[0_0_12px_rgba(34,211,238,1)] animate-pulse">
+                        {lineStr}
+                      </span>
+                    ) : (
+                      <span className="text-gray-300">{lineStr || "\u00A0"}</span>
+                    )}
+                  </div>
+                )
+              })}
+              {stage === "coding" && (
+                <div className="inline-block w-2 h-5 bg-gradient-to-b from-cyan-400 to-purple-400 animate-pulse ml-1" />
+              )}
+            </div>
 
-              return (
+            {/* Epic Progress Bar */}
+            <div className="px-8 pb-6">
+              <div className="h-3 bg-gray-900 rounded-full overflow-hidden border border-purple-500/30">
                 <div
-                  key={i}
-                  className="animate-in fade-in slide-in-from-left-2 duration-200 leading-relaxed"
-                  style={{ animationDelay: `${i * 0.02}s` }}
+                  className="h-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 transition-all duration-500 relative overflow-hidden"
+                  style={{ width: `${progress}%` }}
                 >
-                  {lineStr.startsWith("//") ? (
-                    <span className="text-green-400 font-semibold">{lineStr}</span>
-                  ) : lineStr.startsWith("import") ? (
-                    <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent font-semibold">
-                      {lineStr}
-                    </span>
-                  ) : lineStr.includes("const") || lineStr.includes("await") ? (
-                    <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent font-semibold">
-                      {lineStr}
-                    </span>
-                  ) : lineStr.includes("✓") || lineStr.includes("Ready") ? (
-                    <span className="bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent font-semibold">
-                      {lineStr}
-                    </span>
-                  ) : lineStr.includes("'") || lineStr.includes('"') ? (
-                    <span className="text-yellow-300">{lineStr}</span>
-                  ) : (
-                    <span className="text-gray-300">{lineStr || "\u00A0"}</span>
-                  )}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer" />
                 </div>
-              )
-            })}
-            {stage === "generating" && (
-              <div className="inline-block w-2 h-4 bg-gradient-to-r from-cyan-400 to-purple-400 animate-pulse ml-1" />
-            )}
-          </div>
-
-          {/* Progress Bar - Colorful and Dazzling */}
-          <div className="px-6 pb-4">
-            <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 transition-all duration-300 relative"
-                style={{ width: `${progress}%` }}
-              >
-                <div className="absolute inset-0 bg-white/30 animate-pulse" />
+              </div>
+              <div className="flex justify-between mt-3 text-xs font-mono">
+                <span className="text-purple-400 font-bold">GENESIS IN PROGRESS...</span>
+                <span className="text-cyan-400 font-bold">{Math.round(progress)}%</span>
               </div>
             </div>
-            <div className="flex justify-between mt-2 text-xs font-mono text-gray-400">
-              <span>Coding platform...</span>
-              <span>{Math.round(progress)}%</span>
-            </div>
           </div>
         </div>
 
-        {/* Skip button */}
-        <div className="text-center mt-6">
-          <button
-            onClick={onComplete}
-            className="text-sm text-gray-500 hover:text-gray-300 transition-colors font-mono"
-          >
-            Skip intro →
-          </button>
-        </div>
+        {/* Skip Button */}
+        <button
+          onClick={onComplete}
+          className="mt-8 text-sm text-gray-500 hover:text-gray-300 transition-colors font-mono hover:scale-110 transform duration-200"
+        >
+          Skip Genesis →
+        </button>
       </div>
+
+      <style jsx>{`
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+        .animate-shimmer {
+          animation: shimmer 2s infinite;
+        }
+      `}</style>
     </div>
   )
 }
