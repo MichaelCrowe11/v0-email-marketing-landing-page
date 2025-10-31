@@ -47,7 +47,22 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
     }
   }, [messages, currentConversationId])
 
-  // No longer needed - avatar is now inline with text
+  // Auto-scroll to keep avatar in view during streaming
+  useEffect(() => {
+    if (!isLoading) return
+
+    const scrollInterval = setInterval(() => {
+      const lastMessage = messages[messages.length - 1]
+      if (lastMessage && lastMessage.role === 'assistant') {
+        const messageEl = document.getElementById(`message-${lastMessage.id}`)
+        if (messageEl) {
+          messageEl.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+      }
+    }, 100)
+
+    return () => clearInterval(scrollInterval)
+  }, [isLoading, messages])
 
   const saveMessage = async (message: Message) => {
     if (!currentConversationId) return
@@ -501,40 +516,54 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                   )
                                 })}
                                 
-                                {/* COMPACT FAST AVATAR - smaller, faster, more code */}
+                                {/* DAZZLING AVATAR - intense visual effects with auto-scroll */}
                                 {isAssistant && isStreaming && hasContent && (
                                   <span className="inline-block align-middle ml-2 relative group" style={{ width: '48px', height: '48px', verticalAlign: 'middle' }}>
-                                    {/* Reasoning tooltip */}
-                                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-black/90 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 backdrop-blur-sm border border-cyan-500/30">
-                                      <div className="font-bold text-cyan-400 mb-1">⚡ Deep Reasoning Active</div>
-                                      <div className="text-[10px] text-gray-300">Analyzing patterns • Synthesizing knowledge • Generating insights</div>
-                                      <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-black/90"></div>
+                                    {/* Enhanced reasoning tooltip */}
+                                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-4 py-2.5 bg-gradient-to-r from-cyan-500/95 to-purple-500/95 text-white text-xs rounded-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-50 backdrop-blur-md border-2 border-white/30 shadow-2xl shadow-cyan-500/50">
+                                      <div className="font-black text-white mb-1 flex items-center gap-2">
+                                        <span className="animate-pulse">⚡</span>
+                                        <span className="bg-gradient-to-r from-white to-cyan-100 bg-clip-text text-transparent">Deep Reasoning Active</span>
+                                      </div>
+                                      <div className="text-[10px] text-cyan-50 font-semibold">Analyzing patterns • Synthesizing knowledge • Generating insights</div>
+                                      <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-[6px] border-transparent border-t-cyan-500"></div>
                                     </div>
 
                                     <div className="relative w-full h-full">
-                                      {/* Compact quantum field */}
+                                      {/* INTENSE quantum field with multiple layers */}
                                       <div
                                         className="absolute inset-0 rounded-full will-change-transform"
                                         style={{
-                                          background: 'radial-gradient(circle, rgba(34, 211, 238, 0.6) 0%, rgba(168, 85, 247, 0.3) 50%, transparent 70%)',
-                                          filter: 'blur(20px)',
-                                          transform: 'scale(2.2)',
-                                          animation: 'quantumPulse 0.9s ease-in-out infinite',
+                                          background: 'radial-gradient(circle, rgba(34, 211, 238, 0.9) 0%, rgba(168, 85, 247, 0.6) 40%, rgba(236, 72, 153, 0.4) 70%, transparent 85%)',
+                                          filter: 'blur(25px)',
+                                          transform: 'scale(2.5)',
+                                          animation: 'quantumPulse 0.7s ease-in-out infinite',
+                                        }}
+                                      />
+                                      {/* Secondary glow layer */}
+                                      <div
+                                        className="absolute inset-0 rounded-full will-change-transform"
+                                        style={{
+                                          background: 'radial-gradient(circle, rgba(34, 211, 238, 0.7) 0%, transparent 60%)',
+                                          filter: 'blur(15px)',
+                                          transform: 'scale(1.8)',
+                                          animation: 'quantumPulse 0.5s ease-in-out infinite reverse',
                                         }}
                                       />
 
-                                      {/* Fast energy rings */}
-                                      <div className="absolute inset-0 -m-5 rounded-full border-2 border-cyan-400/90 will-change-transform" style={{ animation: 'ringRotate 0.5s linear infinite' }} />
-                                      <div className="absolute inset-0 -m-7 rounded-full border border-purple-400/70 will-change-transform" style={{ animation: 'ringRotate 0.35s linear infinite reverse' }} />
+                                      {/* BLAZING energy rings - 3 layers */}
+                                      <div className="absolute inset-0 -m-4 rounded-full border-[3px] border-cyan-300 will-change-transform shadow-[0_0_20px_rgba(34,211,238,0.8)]" style={{ animation: 'ringRotate 0.4s linear infinite' }} />
+                                      <div className="absolute inset-0 -m-6 rounded-full border-2 border-purple-300 will-change-transform shadow-[0_0_15px_rgba(168,85,247,0.7)]" style={{ animation: 'ringRotate 0.3s linear infinite reverse' }} />
+                                      <div className="absolute inset-0 -m-8 rounded-full border border-pink-300 will-change-transform shadow-[0_0_10px_rgba(236,72,153,0.6)]" style={{ animation: 'ringRotate 0.25s linear infinite' }} />
 
-                                      {/* Super fast spinning avatar */}
-                                      <div className="will-change-transform" style={{ animation: 'metamorphosis 0.25s linear infinite' }}>
+                                      {/* HYPER-SPEED spinning avatar */}
+                                      <div className="will-change-transform" style={{ animation: 'metamorphosis 0.2s linear infinite' }}>
                                         <AIAvatarSwirl state="responding" size={42} />
                                       </div>
 
-                                      {/* MASSIVE CODE STORM - 24 elements! */}
-                                      {['const', 'fn', '=>', 'async', 'await', 'let', 'var', 'if', 'for', 'map', 'filter', 'reduce', '[]', '{}', '()', '<>', '&&', '||', '!', '==', '++', 'new', 'this', 'return'].map((code, i) => {
-                                        const angle = (i * 360 / 24)
+                                      {/* APOCALYPTIC CODE STORM - 30 elements! */}
+                                      {['const', 'fn', '=>', 'async', 'await', 'let', 'var', 'if', 'for', 'while', 'map', 'filter', 'reduce', 'find', 'some', 'every', '[]', '{}', '()', '<>', '&&', '||', '!', '==', '===', '++', '--', 'new', 'this', 'return'].map((code, i) => {
+                                        const angle = (i * 360 / 30)
                                         return (
                                           <div
                                             key={`code-${i}`}
@@ -542,12 +571,12 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                             style={{
                                               left: '50%',
                                               top: '50%',
-                                              fontSize: `${11 + (i % 3)}px`,
-                                              color: `hsl(${angle}, 100%, ${65 + (i % 3) * 5}%)`,
-                                              animation: `codeStorm${i % 3} ${0.35 + (i % 3) * 0.08}s ease-in-out infinite`,
-                                              animationDelay: `${i * 0.02}s`,
-                                              textShadow: '0 0 20px currentColor, 0 0 40px currentColor',
-                                              filter: 'blur(0.2px)',
+                                              fontSize: `${12 + (i % 4)}px`,
+                                              color: `hsl(${angle}, 100%, ${70 + (i % 3) * 5}%)`,
+                                              animation: `codeStorm${i % 3} ${0.3 + (i % 3) * 0.06}s ease-in-out infinite`,
+                                              animationDelay: `${i * 0.015}s`,
+                                              textShadow: '0 0 25px currentColor, 0 0 50px currentColor, 0 0 75px currentColor',
+                                              filter: 'blur(0.15px) brightness(1.3)',
                                               fontWeight: 900,
                                             }}
                                           >
@@ -556,42 +585,62 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                         )
                                       })}
 
-                                      {/* More particles */}
-                                      {[...Array(12)].map((_, i) => {
-                                        const hue = (i * 30) % 360
+                                      {/* INTENSE particles - 16 elements */}
+                                      {[...Array(16)].map((_, i) => {
+                                        const hue = (i * 22.5) % 360
                                         return (
                                           <div
                                             key={`particle-${i}`}
                                             className="absolute rounded-full will-change-transform"
                                             style={{
-                                              width: '4px',
-                                              height: '4px',
-                                              background: `hsl(${hue}, 100%, 70%)`,
+                                              width: `${4 + (i % 3)}px`,
+                                              height: `${4 + (i % 3)}px`,
+                                              background: `hsl(${hue}, 100%, 75%)`,
                                               left: '50%',
                                               top: '50%',
-                                              animation: `particleExplosion${i % 3} ${0.4 + (i % 3) * 0.08}s ease-out infinite`,
-                                              animationDelay: `${i * 0.04}s`,
-                                              boxShadow: `0 0 20px hsl(${hue}, 100%, 70%)`,
+                                              animation: `particleExplosion${i % 3} ${0.35 + (i % 3) * 0.06}s ease-out infinite`,
+                                              animationDelay: `${i * 0.03}s`,
+                                              boxShadow: `0 0 25px hsl(${hue}, 100%, 75%), 0 0 40px hsl(${hue}, 100%, 75%)`,
+                                              filter: 'brightness(1.4)',
                                             }}
                                           />
                                         )
                                       })}
 
-                                      {/* Fast lightning */}
-                                      {[...Array(6)].map((_, i) => (
+                                      {/* BLAZING lightning - 8 bolts */}
+                                      {[...Array(8)].map((_, i) => (
                                         <div
                                           key={`lightning-${i}`}
-                                          className="absolute w-0.5 rounded-full will-change-transform"
+                                          className="absolute w-1 rounded-full will-change-transform"
                                           style={{
                                             left: '50%',
                                             top: '50%',
-                                            height: '35px',
-                                            background: `linear-gradient(180deg, hsl(${i * 60}, 100%, 75%), transparent)`,
+                                            height: `${38 + i * 3}px`,
+                                            background: `linear-gradient(180deg, hsl(${i * 45}, 100%, 80%), transparent)`,
                                             transformOrigin: 'top',
-                                            animation: `lightning ${0.4 + i * 0.08}s ease-in-out infinite`,
-                                            animationDelay: `${i * 0.08}s`,
-                                            boxShadow: '0 0 12px currentColor',
-                                            transform: `rotate(${i * 60}deg)`,
+                                            animation: `lightning ${0.35 + i * 0.06}s ease-in-out infinite`,
+                                            animationDelay: `${i * 0.06}s`,
+                                            boxShadow: '0 0 15px currentColor, 0 0 30px currentColor',
+                                            transform: `rotate(${i * 45}deg)`,
+                                            filter: 'brightness(1.5)',
+                                          }}
+                                        />
+                                      ))}
+
+                                      {/* Star burst effect */}
+                                      {[...Array(12)].map((_, i) => (
+                                        <div
+                                          key={`star-${i}`}
+                                          className="absolute w-0.5 h-3 will-change-transform"
+                                          style={{
+                                            left: '50%',
+                                            top: '50%',
+                                            background: `linear-gradient(180deg, hsl(${i * 30}, 100%, 85%), transparent)`,
+                                            transformOrigin: 'center',
+                                            animation: `starBurst 0.6s ease-in-out infinite`,
+                                            animationDelay: `${i * 0.05}s`,
+                                            transform: `rotate(${i * 30}deg) translateY(-20px)`,
+                                            boxShadow: '0 0 10px currentColor',
                                           }}
                                         />
                                       ))}
@@ -650,6 +699,17 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                 }
                                 to {
                                   transform: rotate(360deg);
+                                }
+                              }
+
+                              @keyframes starBurst {
+                                0%, 100% {
+                                  opacity: 0;
+                                  transform: rotate(var(--rotation, 0deg)) translateY(-15px) scale(0);
+                                }
+                                50% {
+                                  opacity: 1;
+                                  transform: rotate(var(--rotation, 0deg)) translateY(-30px) scale(1.5);
                                 }
                               }
 
