@@ -180,6 +180,9 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
             role: m.role,
             content: m.content,
           })),
+          agent: currentAgent,
+          images: attachedImages.map(img => img.name), // Send image metadata
+          includeReasoning: showReasoningTrace,
         }),
       })
 
@@ -220,6 +223,25 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
 
               if (content) {
                 accumulatedText += content
+
+                // Parse reasoning steps if present
+                if (showReasoningTrace && content.includes("[REASONING_STEP:")) {
+                  const stepMatch = content.match(/\[REASONING_STEP: ([^|]+) \| ([^|]+) \| ([^|]+) \| ([^\]]+)\]/)
+                  if (stepMatch) {
+                    const [, agent, action, reasoning, confidence] = stepMatch
+                    setReasoningSteps(prev => [...prev, {
+                      id: Date.now().toString(),
+                      agent: agent.trim(),
+                      action: action.trim(),
+                      input: "",
+                      output: "",
+                      reasoning: reasoning.trim(),
+                      confidence: parseFloat(confidence.trim()),
+                      status: "complete",
+                      duration: Math.random() * 500 + 200,
+                    }])
+                  }
+                }
 
                 setMessages((prev) =>
                   prev.map((m) => (m.id === assistantMessageId ? { ...m, content: accumulatedText } : m)),
@@ -887,6 +909,11 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                 }
                               }
                             `}</style>
+
+                            {/* Reasoning Trace */}
+                            {isAssistant && showReasoningTrace && reasoningSteps.length > 0 && isLastMessage && (
+                              <ReasoningTrace steps={reasoningSteps} isStreaming={isStreaming} />
+                            )}
 
                             {/* Canvas buttons for code/documents */}
                             {isAssistant && !isStreaming && (hasCode || isDocument) && (

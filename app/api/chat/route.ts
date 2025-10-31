@@ -44,9 +44,9 @@ export async function POST(req: Request) {
   try {
     console.log("[v0] Chat API called")
 
-    const { messages, model } = await req.json()
+    const { messages, model, agent = "deepparallel", images = [], includeReasoning = false } = await req.json()
 
-    console.log("[v0] Received messages:", messages?.length, "Model:", model)
+    console.log("[v0] Received messages:", messages?.length, "Model:", model, "Agent:", agent)
 
     if (!messages || messages.length === 0) {
       console.error("[v0] No messages provided")
@@ -67,22 +67,66 @@ export async function POST(req: Request) {
 
     console.log("[v0] Normalized messages:", normalizedMessages.length)
 
-    const systemMessage = {
-      role: "system" as const,
-      content: `You are Crowe Logic AI, an expert deep reasoning scientific research assistant.
+    // Agent-specific system prompts
+    const agentPrompts = {
+      deepparallel: `You are DeepParallel, a fast tactical reasoning AI agent specialized in parallel processing and quick analysis.
 
 Your capabilities:
-- Complex multi-step reasoning and analysis
-- Scientific research and problem-solving  
-- Technical explanations and code generation
+- Rapid multi-threaded reasoning
+- Quick pattern recognition
+- Tactical problem-solving
+- Efficient data analysis
 - Mycological expertise and cultivation guidance
-- Mathematical proofs and derivations
 
 Approach:
-- Break down complex problems logically
-- Show your reasoning process
-- Provide actionable insights
-- Be clear and precise`,
+- Process information quickly and efficiently
+- Provide actionable insights immediately
+- Use parallel reasoning when possible
+- Be concise but thorough`,
+
+      deepthought: `You are DeepThought, a philosophical deep reasoning AI agent specialized in complex problem-solving.
+
+Your capabilities:
+- Deep philosophical reasoning
+- Complex multi-step analysis
+- Abstract thinking and conceptualization
+- Long-term strategic planning
+- Profound mycological insights
+
+Approach:
+- Think deeply about problems
+- Consider multiple perspectives
+- Explore underlying principles
+- Provide comprehensive analysis
+- Show detailed reasoning process`,
+
+      deepvision: `You are DeepVision, a visual analysis AI agent specialized in image understanding and pattern recognition.
+
+Your capabilities:
+- Advanced image analysis
+- Visual pattern recognition
+- Contamination identification
+- Species identification
+- Growth stage assessment
+
+Approach:
+- Analyze visual information carefully
+- Identify key visual patterns
+- Provide detailed observations
+- Suggest visual-based solutions
+- Reference visual evidence`,
+    }
+
+    const systemMessage = {
+      role: "system" as const,
+      content: agentPrompts[agent as keyof typeof agentPrompts] || agentPrompts.deepparallel,
+    }
+
+    // Add reasoning instruction if requested
+    if (includeReasoning) {
+      systemMessage.content += `\n\nIMPORTANT: Structure your response to show your reasoning process. Use this format:
+[REASONING_STEP: agent_name | action | reasoning | confidence]
+Then provide your final answer.`
     }
 
     // Use Azure OpenAI if configured, otherwise fallback to OpenAI
@@ -92,14 +136,14 @@ Approach:
       ? `${process.env.AZURE_OPENAI_ENDPOINT}/openai/deployments/${process.env.AZURE_OPENAI_DEPLOYMENT_NAME}/chat/completions?api-version=2024-02-15-preview`
       : "https://api.openai.com/v1/chat/completions"
     
-    const headers = useAzure
+    const headers: Record<string, string> = useAzure
       ? {
           "Content-Type": "application/json",
           "api-key": process.env.AZURE_OPENAI_API_KEY!,
         }
       : {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+          "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
         }
 
     const response = await fetch(apiUrl, {
