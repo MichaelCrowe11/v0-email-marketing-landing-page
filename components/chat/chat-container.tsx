@@ -223,7 +223,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
   }
 
   const handleCopyConversation = async () => {
-    const text = messages.map((m) => `${m.role === "user" ? "You" : "Crowe Logic AI"}: ${m.content}`).join("\n\n")
+    const text = messages.map((m) => `${m.role === "user" ? "You" : "Crowe Logic Interface"}: ${m.content}`).join("\n\n")
     await navigator.clipboard.writeText(text)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
@@ -231,7 +231,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
 
   const handleExportMarkdown = () => {
     const markdown = messages
-      .map((m) => `### ${m.role === "user" ? "You" : "Crowe Logic AI"}\n\n${m.content}\n`)
+      .map((m) => `### ${m.role === "user" ? "You" : "Crowe Logic Interface"}\n\n${m.content}\n`)
       .join("\n")
 
     const blob = new Blob([markdown], { type: "text/markdown" })
@@ -270,14 +270,14 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
 
         <div className="flex-1 flex flex-col">
           {/* Header */}
-          <div className="px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between border-b border-border glass-panel">
+          <div className="px-4 sm:px-6 py-2 sm:py-3 flex items-center justify-between border-b border-border glass-panel">
             <div className="flex items-center gap-2 sm:gap-3">
-              <Button variant="ghost" size="icon-sm" onClick={() => setShowSidebar(!showSidebar)} className="h-8 w-8">
+              <Button variant="ghost" size="icon-sm" onClick={() => setShowSidebar(!showSidebar)} className="h-7 w-7">
                 {showSidebar ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
               </Button>
-              <AIAvatarSwirl state="idle" size={48} />
+              <AIAvatarSwirl state="idle" size={36} />
               <div>
-                <h1 className="text-sm sm:text-base font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                <h1 className="text-sm font-bold text-foreground">
                   Crowe Logic Interface
                 </h1>
                 <p className="text-xs text-muted-foreground hidden sm:block">Neural Mycology Intelligence System</p>
@@ -462,16 +462,27 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                 : "bg-gradient-to-br from-amber-50 to-amber-100/50 dark:from-amber-950/30 dark:to-amber-900/20 border border-amber-200/50 dark:border-amber-800/50"
                             }`}
                           >
-                            <div className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
-                              {message.content}
-                              {isAssistant && (
-                                <span className="inline-block align-middle ml-4 relative" style={{ minWidth: '64px', minHeight: '64px' }}>
-                                  <AIAvatarSwirl state={avatarState} size={56} />
-                                </span>
+                            <div className="relative overflow-visible">
+                              {/* Avatar zips around during streaming */}
+                              {isAssistant && isStreaming && hasContent && (
+                                <div className="absolute -left-24 -top-4 z-50 animate-pulse">
+                                  <div className="animate-bounce">
+                                    <AIAvatarSwirl state={avatarState} size={56} />
+                                  </div>
+                                </div>
                               )}
-                              {isStreaming && (
-                                <span className="inline-block w-1.5 h-4 ml-0.5 bg-foreground animate-pulse align-middle" />
-                              )}
+                              
+                              <div className="text-sm text-foreground leading-relaxed whitespace-pre-wrap relative z-10">
+                                {message.content}
+                                {isAssistant && !isStreaming && (
+                                  <span className="inline-block align-middle ml-3 relative" style={{ minWidth: '56px', minHeight: '56px' }}>
+                                    <AIAvatarSwirl state={avatarState} size={48} />
+                                  </span>
+                                )}
+                                {isStreaming && (
+                                  <span className="inline-block w-1.5 h-4 ml-0.5 bg-foreground animate-pulse align-middle" />
+                                )}
+                              </div>
                             </div>
 
                             {/* Canvas buttons for code/documents */}

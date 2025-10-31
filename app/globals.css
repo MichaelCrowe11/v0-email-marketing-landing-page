@@ -150,7 +150,19 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    font-size: 14px;
   }
+  
+  /* Better proportions - slightly smaller base sizes */
+  h1 { font-size: 1.75rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.25rem; }
+  h4 { font-size: 1.125rem; }
+  
+  /* Compact spacing */
+  .max-w-7xl { max-width: 1200px; }
+  .max-w-4xl { max-width: 900px; }
+  .max-w-2xl { max-width: 600px; }
 
   /* GPU Acceleration for animations */
   .will-change-transform {
