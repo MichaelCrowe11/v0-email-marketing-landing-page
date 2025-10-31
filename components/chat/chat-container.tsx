@@ -501,33 +501,40 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                   )
                                 })}
                                 
-                                {/* EPIC INLINE AVATAR - flows with text naturally */}
+                                {/* COMPACT FAST AVATAR - smaller, faster, more code */}
                                 {isAssistant && isStreaming && hasContent && (
-                                  <span className="inline-block align-middle ml-3 relative" style={{ width: '72px', height: '72px', verticalAlign: 'middle' }}>
+                                  <span className="inline-block align-middle ml-2 relative group" style={{ width: '48px', height: '48px', verticalAlign: 'middle' }}>
+                                    {/* Reasoning tooltip */}
+                                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-black/90 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 backdrop-blur-sm border border-cyan-500/30">
+                                      <div className="font-bold text-cyan-400 mb-1">⚡ Deep Reasoning Active</div>
+                                      <div className="text-[10px] text-gray-300">Analyzing patterns • Synthesizing knowledge • Generating insights</div>
+                                      <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-black/90"></div>
+                                    </div>
+
                                     <div className="relative w-full h-full">
-                                      {/* Quantum field glow */}
+                                      {/* Compact quantum field */}
                                       <div
                                         className="absolute inset-0 rounded-full will-change-transform"
                                         style={{
-                                          background: 'radial-gradient(circle, rgba(34, 211, 238, 0.5) 0%, rgba(168, 85, 247, 0.3) 50%, transparent 70%)',
-                                          filter: 'blur(30px)',
-                                          transform: 'scale(2.8)',
-                                          animation: 'quantumPulse 1.2s ease-in-out infinite',
+                                          background: 'radial-gradient(circle, rgba(34, 211, 238, 0.6) 0%, rgba(168, 85, 247, 0.3) 50%, transparent 70%)',
+                                          filter: 'blur(20px)',
+                                          transform: 'scale(2.2)',
+                                          animation: 'quantumPulse 0.9s ease-in-out infinite',
                                         }}
                                       />
 
-                                      {/* Energy rings */}
-                                      <div className="absolute inset-0 -m-8 rounded-full border-2 border-cyan-400/80 will-change-transform" style={{ animation: 'ringRotate 0.8s linear infinite' }} />
-                                      <div className="absolute inset-0 -m-12 rounded-full border border-purple-400/60 will-change-transform" style={{ animation: 'ringRotate 0.6s linear infinite reverse' }} />
+                                      {/* Fast energy rings */}
+                                      <div className="absolute inset-0 -m-5 rounded-full border-2 border-cyan-400/90 will-change-transform" style={{ animation: 'ringRotate 0.5s linear infinite' }} />
+                                      <div className="absolute inset-0 -m-7 rounded-full border border-purple-400/70 will-change-transform" style={{ animation: 'ringRotate 0.35s linear infinite reverse' }} />
 
-                                      {/* Spinning avatar */}
-                                      <div className="will-change-transform" style={{ animation: 'metamorphosis 0.35s linear infinite' }}>
-                                        <AIAvatarSwirl state="responding" size={64} />
+                                      {/* Super fast spinning avatar */}
+                                      <div className="will-change-transform" style={{ animation: 'metamorphosis 0.25s linear infinite' }}>
+                                        <AIAvatarSwirl state="responding" size={42} />
                                       </div>
 
-                                      {/* CODE STORM */}
-                                      {['const', 'fn', '=>', 'async', 'let', '[]', '<>', '&&', 'new', '{}'].map((code, i) => {
-                                        const angle = (i * 360 / 10)
+                                      {/* MASSIVE CODE STORM - 24 elements! */}
+                                      {['const', 'fn', '=>', 'async', 'await', 'let', 'var', 'if', 'for', 'map', 'filter', 'reduce', '[]', '{}', '()', '<>', '&&', '||', '!', '==', '++', 'new', 'this', 'return'].map((code, i) => {
+                                        const angle = (i * 360 / 24)
                                         return (
                                           <div
                                             key={`code-${i}`}
@@ -535,12 +542,12 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                             style={{
                                               left: '50%',
                                               top: '50%',
-                                              fontSize: '15px',
-                                              color: `hsl(${angle}, 100%, 70%)`,
-                                              animation: `codeStorm${i % 3} ${0.45 + (i % 3) * 0.1}s ease-in-out infinite`,
-                                              animationDelay: `${i * 0.04}s`,
-                                              textShadow: '0 0 25px currentColor, 0 0 50px currentColor',
-                                              filter: 'blur(0.3px)',
+                                              fontSize: `${11 + (i % 3)}px`,
+                                              color: `hsl(${angle}, 100%, ${65 + (i % 3) * 5}%)`,
+                                              animation: `codeStorm${i % 3} ${0.35 + (i % 3) * 0.08}s ease-in-out infinite`,
+                                              animationDelay: `${i * 0.02}s`,
+                                              textShadow: '0 0 20px currentColor, 0 0 40px currentColor',
+                                              filter: 'blur(0.2px)',
                                               fontWeight: 900,
                                             }}
                                           >
@@ -549,42 +556,42 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                         )
                                       })}
 
-                                      {/* Particles */}
-                                      {[...Array(8)].map((_, i) => {
-                                        const hue = (i * 45) % 360
+                                      {/* More particles */}
+                                      {[...Array(12)].map((_, i) => {
+                                        const hue = (i * 30) % 360
                                         return (
                                           <div
                                             key={`particle-${i}`}
                                             className="absolute rounded-full will-change-transform"
                                             style={{
-                                              width: '5px',
-                                              height: '5px',
+                                              width: '4px',
+                                              height: '4px',
                                               background: `hsl(${hue}, 100%, 70%)`,
                                               left: '50%',
                                               top: '50%',
-                                              animation: `particleExplosion${i % 3} ${0.5 + (i % 3) * 0.1}s ease-out infinite`,
-                                              animationDelay: `${i * 0.06}s`,
-                                              boxShadow: `0 0 25px hsl(${hue}, 100%, 70%)`,
+                                              animation: `particleExplosion${i % 3} ${0.4 + (i % 3) * 0.08}s ease-out infinite`,
+                                              animationDelay: `${i * 0.04}s`,
+                                              boxShadow: `0 0 20px hsl(${hue}, 100%, 70%)`,
                                             }}
                                           />
                                         )
                                       })}
 
-                                      {/* Lightning */}
-                                      {[...Array(4)].map((_, i) => (
+                                      {/* Fast lightning */}
+                                      {[...Array(6)].map((_, i) => (
                                         <div
                                           key={`lightning-${i}`}
-                                          className="absolute w-1 rounded-full will-change-transform"
+                                          className="absolute w-0.5 rounded-full will-change-transform"
                                           style={{
                                             left: '50%',
                                             top: '50%',
-                                            height: '45px',
-                                            background: `linear-gradient(180deg, hsl(${i * 90}, 100%, 75%), transparent)`,
+                                            height: '35px',
+                                            background: `linear-gradient(180deg, hsl(${i * 60}, 100%, 75%), transparent)`,
                                             transformOrigin: 'top',
-                                            animation: `lightning ${0.55 + i * 0.1}s ease-in-out infinite`,
-                                            animationDelay: `${i * 0.12}s`,
-                                            boxShadow: '0 0 15px currentColor',
-                                            transform: `rotate(${i * 90}deg)`,
+                                            animation: `lightning ${0.4 + i * 0.08}s ease-in-out infinite`,
+                                            animationDelay: `${i * 0.08}s`,
+                                            boxShadow: '0 0 12px currentColor',
+                                            transform: `rotate(${i * 60}deg)`,
                                           }}
                                         />
                                       ))}
@@ -614,34 +621,26 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                               @keyframes metamorphosis {
                                 0% {
                                   transform: rotate(0deg) scale(1);
-                                  filter: blur(0px) brightness(1);
-                                }
-                                25% {
-                                  transform: rotate(90deg) scale(1.1);
-                                  filter: blur(0.5px) brightness(1.2);
+                                  filter: blur(0px) brightness(1.1);
                                 }
                                 50% {
-                                  transform: rotate(180deg) scale(1.15);
-                                  filter: blur(1px) brightness(1.4);
-                                }
-                                75% {
-                                  transform: rotate(270deg) scale(1.1);
-                                  filter: blur(0.5px) brightness(1.2);
+                                  transform: rotate(180deg) scale(1.08);
+                                  filter: blur(0.3px) brightness(1.3);
                                 }
                                 100% {
                                   transform: rotate(360deg) scale(1);
-                                  filter: blur(0px) brightness(1);
+                                  filter: blur(0px) brightness(1.1);
                                 }
                               }
 
                               @keyframes quantumPulse {
                                 0%, 100% {
-                                  transform: scale(2.5);
-                                  opacity: 0.4;
+                                  transform: scale(2.2);
+                                  opacity: 0.5;
                                 }
                                 50% {
-                                  transform: scale(3);
-                                  opacity: 0.6;
+                                  transform: scale(2.6);
+                                  opacity: 0.7;
                                 }
                               }
 
