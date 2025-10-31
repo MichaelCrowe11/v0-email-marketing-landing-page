@@ -1,11 +1,11 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Sparkles, Send } from "lucide-react"
 import Link from "next/link"
-import { AIAvatarSwirlAdvanced } from "@/components/ai-avatar-swirl-advanced"
+import { AIAvatarUltimate } from "@/components/ai-avatar-ultimate"
 
 interface Message {
   role: 'user' | 'assistant'
