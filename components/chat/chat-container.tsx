@@ -47,22 +47,24 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
     }
   }, [messages, currentConversationId])
 
-  // Auto-scroll to keep avatar in view during streaming
+  // Gentle auto-scroll only when new content appears - no jumbling
   useEffect(() => {
     if (!isLoading) return
 
-    const scrollInterval = setInterval(() => {
-      const lastMessage = messages[messages.length - 1]
-      if (lastMessage && lastMessage.role === 'assistant') {
-        const messageEl = document.getElementById(`message-${lastMessage.id}`)
-        if (messageEl) {
-          messageEl.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    const lastMessage = messages[messages.length - 1]
+    if (lastMessage && lastMessage.role === 'assistant' && lastMessage.content) {
+      const messageEl = document.getElementById(`message-${lastMessage.id}`)
+      if (messageEl) {
+        // Only scroll if avatar is out of view
+        const rect = messageEl.getBoundingClientRect()
+        const isOutOfView = rect.bottom > window.innerHeight - 100 || rect.top < 100
+        
+        if (isOutOfView) {
+          messageEl.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
         }
       }
-    }, 100)
-
-    return () => clearInterval(scrollInterval)
-  }, [isLoading, messages])
+    }
+  }, [isLoading, messages.length, messages[messages.length - 1]?.content.length])
 
   const saveMessage = async (message: Message) => {
     if (!currentConversationId) return
@@ -516,9 +518,9 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                   )
                                 })}
                                 
-                                {/* DAZZLING AVATAR - intense visual effects with auto-scroll */}
+                                {/* PRECISE DAZZLING AVATAR - stable and beautiful */}
                                 {isAssistant && isStreaming && hasContent && (
-                                  <span className="inline-block align-middle ml-2 relative group" style={{ width: '48px', height: '48px', verticalAlign: 'middle' }}>
+                                  <span className="inline-block align-middle ml-2 relative group" style={{ width: '50px', height: '50px', verticalAlign: 'middle', display: 'inline-block' }}>
                                     {/* Enhanced reasoning tooltip */}
                                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-4 py-2.5 bg-gradient-to-r from-cyan-500/95 to-purple-500/95 text-white text-xs rounded-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-50 backdrop-blur-md border-2 border-white/30 shadow-2xl shadow-cyan-500/50">
                                       <div className="font-black text-white mb-1 flex items-center gap-2">
@@ -561,9 +563,9 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                         <AIAvatarSwirl state="responding" size={42} />
                                       </div>
 
-                                      {/* APOCALYPTIC CODE STORM - 30 elements! */}
-                                      {['const', 'fn', '=>', 'async', 'await', 'let', 'var', 'if', 'for', 'while', 'map', 'filter', 'reduce', 'find', 'some', 'every', '[]', '{}', '()', '<>', '&&', '||', '!', '==', '===', '++', '--', 'new', 'this', 'return'].map((code, i) => {
-                                        const angle = (i * 360 / 30)
+                                      {/* OPTIMIZED CODE STORM - 24 elements for precision */}
+                                      {['const', 'fn', '=>', 'async', 'await', 'let', 'if', 'for', 'map', 'filter', 'reduce', 'find', '[]', '{}', '()', '<>', '&&', '||', '!', '==', '++', 'new', 'this', 'return'].map((code, i) => {
+                                        const angle = (i * 360 / 24)
                                         return (
                                           <div
                                             key={`code-${i}`}
@@ -571,12 +573,12 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                             style={{
                                               left: '50%',
                                               top: '50%',
-                                              fontSize: `${12 + (i % 4)}px`,
-                                              color: `hsl(${angle}, 100%, ${70 + (i % 3) * 5}%)`,
-                                              animation: `codeStorm${i % 3} ${0.3 + (i % 3) * 0.06}s ease-in-out infinite`,
-                                              animationDelay: `${i * 0.015}s`,
+                                              fontSize: `${12 + (i % 3)}px`,
+                                              color: `hsl(${angle}, 100%, ${72 + (i % 3) * 4}%)`,
+                                              animation: `codeStorm${i % 3} ${0.32 + (i % 3) * 0.06}s ease-in-out infinite`,
+                                              animationDelay: `${i * 0.018}s`,
                                               textShadow: '0 0 25px currentColor, 0 0 50px currentColor, 0 0 75px currentColor',
-                                              filter: 'blur(0.15px) brightness(1.3)',
+                                              filter: 'blur(0.2px) brightness(1.3)',
                                               fontWeight: 900,
                                             }}
                                           >
@@ -585,9 +587,9 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                         )
                                       })}
 
-                                      {/* INTENSE particles - 16 elements */}
-                                      {[...Array(16)].map((_, i) => {
-                                        const hue = (i * 22.5) % 360
+                                      {/* PRECISE particles - 14 elements */}
+                                      {[...Array(14)].map((_, i) => {
+                                        const hue = (i * 25.7) % 360
                                         return (
                                           <div
                                             key={`particle-${i}`}
@@ -598,8 +600,8 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                               background: `hsl(${hue}, 100%, 75%)`,
                                               left: '50%',
                                               top: '50%',
-                                              animation: `particleExplosion${i % 3} ${0.35 + (i % 3) * 0.06}s ease-out infinite`,
-                                              animationDelay: `${i * 0.03}s`,
+                                              animation: `particleExplosion${i % 3} ${0.36 + (i % 3) * 0.06}s ease-out infinite`,
+                                              animationDelay: `${i * 0.032}s`,
                                               boxShadow: `0 0 25px hsl(${hue}, 100%, 75%), 0 0 40px hsl(${hue}, 100%, 75%)`,
                                               filter: 'brightness(1.4)',
                                             }}
@@ -627,19 +629,19 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                         />
                                       ))}
 
-                                      {/* Star burst effect */}
-                                      {[...Array(12)].map((_, i) => (
+                                      {/* Precise star burst effect */}
+                                      {[...Array(10)].map((_, i) => (
                                         <div
                                           key={`star-${i}`}
                                           className="absolute w-0.5 h-3 will-change-transform"
                                           style={{
                                             left: '50%',
                                             top: '50%',
-                                            background: `linear-gradient(180deg, hsl(${i * 30}, 100%, 85%), transparent)`,
+                                            background: `linear-gradient(180deg, hsl(${i * 36}, 100%, 85%), transparent)`,
                                             transformOrigin: 'center',
-                                            animation: `starBurst 0.6s ease-in-out infinite`,
-                                            animationDelay: `${i * 0.05}s`,
-                                            transform: `rotate(${i * 30}deg) translateY(-20px)`,
+                                            animation: `starBurst 0.65s ease-in-out infinite`,
+                                            animationDelay: `${i * 0.055}s`,
+                                            transform: `rotate(${i * 36}deg) translateY(-20px)`,
                                             boxShadow: '0 0 10px currentColor',
                                           }}
                                         />
