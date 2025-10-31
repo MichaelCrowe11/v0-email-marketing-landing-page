@@ -270,14 +270,14 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
 
         <div className="flex-1 flex flex-col">
           {/* Header */}
-          <div className="px-4 sm:px-6 py-2 sm:py-3 flex items-center justify-between border-b border-border glass-panel">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <Button variant="ghost" size="icon-sm" onClick={() => setShowSidebar(!showSidebar)} className="h-7 w-7">
+          <div className="px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between border-b border-border bg-card/50 backdrop-blur-sm">
+            <div className="flex items-center gap-3">
+              <Button variant="ghost" size="sm" onClick={() => setShowSidebar(!showSidebar)}>
                 {showSidebar ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
               </Button>
               <AIAvatarSwirl state="idle" size={40} />
               <div>
-                <h1 className="text-base font-bold text-foreground">
+                <h1 className="text-base font-semibold text-foreground">
                   Crowe Logic Interface
                 </h1>
                 <p className="text-xs text-muted-foreground hidden sm:block">Neural Mycology Intelligence System</p>
@@ -329,7 +329,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                       <div className="absolute inset-0 rounded-full border-2 border-purple-500/20 animate-ping" style={{ animationDuration: "3s" }} />
                       <div className="absolute inset-0 rounded-full border-2 border-cyan-500/20 animate-ping" style={{ animationDuration: "4s", animationDelay: "0.5s" }} />
                     </div>
-                    <AIAvatarSwirl state="idle" size={160} />
+                    <AIAvatarSwirl state="idle" size={120} />
                   </div>
 
                   <div className="text-center space-y-3 sm:space-y-4 max-w-3xl">
@@ -457,21 +457,188 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                         <div className="flex-1">
                           <div
                             className={`rounded-2xl px-5 py-4 shadow-sm ${isAssistant
-                                ? "bg-card border border-border"
-                                : "bg-gradient-to-br from-amber-50 to-amber-100/50 dark:from-amber-950/30 dark:to-amber-900/20 border border-amber-200/50 dark:border-amber-800/50"
+                              ? "bg-card border border-border"
+                              : "bg-gradient-to-br from-amber-50 to-amber-100/50 dark:from-amber-950/30 dark:to-amber-900/20 border border-amber-200/50 dark:border-amber-800/50"
                               }`}
                           >
-                            <div className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
-                              {message.content}
-                              {isAssistant && (
-                                <span className="inline-block align-middle ml-2">
-                                  <AIAvatarSwirl state={avatarState} size={32} />
-                                </span>
+                            <div className="relative min-h-[80px]">
+                              {/* PROFOUNDLY DAZZLING AVATAR - Zips and swirls during streaming */}
+                              {isAssistant && isStreaming && hasContent && (
+                                <div 
+                                  className="absolute -left-20 top-0 z-50"
+                                  style={{
+                                    animation: 'avatarFloat 4s ease-in-out infinite',
+                                  }}
+                                >
+                                  <div className="relative">
+                                    {/* Pulsing energy rings */}
+                                    <div className="absolute inset-0 -m-6 rounded-full border-2 border-cyan-400/40 animate-ping" />
+                                    <div className="absolute inset-0 -m-10 rounded-full border-2 border-purple-400/30 animate-ping" style={{ animationDuration: '2s', animationDelay: '0.5s' }} />
+                                    <div className="absolute inset-0 -m-14 rounded-full border border-pink-400/20 animate-ping" style={{ animationDuration: '3s', animationDelay: '1s' }} />
+                                    
+                                    {/* The magnificent avatar */}
+                                    <AIAvatarSwirl state="responding" size={56} />
+                                    
+                                    {/* Orbiting particles */}
+                                    {[...Array(6)].map((_, i) => (
+                                      <div
+                                        key={i}
+                                        className="absolute w-1.5 h-1.5 rounded-full"
+                                        style={{
+                                          background: `hsl(${i * 60}, 100%, 65%)`,
+                                          left: '50%',
+                                          top: '50%',
+                                          animation: `orbit ${2 + i * 0.3}s linear infinite`,
+                                          animationDelay: `${i * 0.2}s`,
+                                          boxShadow: `0 0 10px currentColor, 0 0 20px currentColor`,
+                                        }}
+                                      />
+                                    ))}
+                                  </div>
+                                </div>
                               )}
-                              {isStreaming && (
-                                <span className="inline-block w-1 h-4 ml-1 bg-foreground animate-pulse align-middle" />
-                              )}
+
+                              {/* FLYING LETTERS from code storm to text */}
+                              {isAssistant && isStreaming && hasContent && message.content.slice(-15).split('').map((char, i) => {
+                                if (char === ' ' || char === '\n') return null
+                                return (
+                                  <div
+                                    key={`fly-${message.id}-${i}`}
+                                    className="absolute font-mono text-base font-black pointer-events-none z-40"
+                                    style={{
+                                      left: '-60px',
+                                      top: '20px',
+                                      color: `hsl(${(i * 40) % 360}, 100%, 65%)`,
+                                      animation: `letterMagic ${1.2 + i * 0.08}s cubic-bezier(0.34, 1.56, 0.64, 1) forwards`,
+                                      animationDelay: `${i * 0.06}s`,
+                                      textShadow: '0 0 15px currentColor, 0 0 30px currentColor, 0 0 45px currentColor',
+                                      opacity: 0,
+                                      filter: 'blur(3px)',
+                                    }}
+                                  >
+                                    {char}
+                                  </div>
+                                )
+                              })}
+                              
+                              <div className="text-base text-foreground leading-relaxed whitespace-pre-wrap relative z-10 font-medium">
+                                {/* Each character materializes with color flash */}
+                                {message.content.split('').map((char, i) => {
+                                  const isNew = isStreaming && i >= message.content.length - 25
+                                  return (
+                                    <span
+                                      key={`char-${i}`}
+                                      className={isNew ? "inline-block" : ""}
+                                      style={isNew ? {
+                                        animation: 'charSparkle 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+                                        animationDelay: `${(i - (message.content.length - 25)) * 0.03}s`,
+                                        opacity: 0,
+                                      } : {}}
+                                    >
+                                      {char}
+                                    </span>
+                                  )
+                                })}
+                                {isAssistant && !isStreaming && (
+                                  <span className="inline-block align-middle ml-3">
+                                    <AIAvatarSwirl state="idle" size={40} />
+                                  </span>
+                                )}
+                                {isStreaming && (
+                                  <span 
+                                    className="inline-block w-2 h-5 ml-1 align-middle" 
+                                    style={{
+                                      background: 'linear-gradient(90deg, #22d3ee, #a855f7, #ec4899)',
+                                      animation: 'cursorPulse 0.8s ease-in-out infinite',
+                                      boxShadow: '0 0 15px rgba(34, 211, 238, 0.8)',
+                                    }}
+                                  />
+                                )}
+                              </div>
                             </div>
+
+                            <style jsx>{`
+                              @keyframes avatarFloat {
+                                0%, 100% {
+                                  transform: translateY(0) translateX(0) rotate(0deg);
+                                }
+                                25% {
+                                  transform: translateY(-15px) translateX(10px) rotate(5deg);
+                                }
+                                50% {
+                                  transform: translateY(-5px) translateX(-5px) rotate(-3deg);
+                                }
+                                75% {
+                                  transform: translateY(-20px) translateX(15px) rotate(7deg);
+                                }
+                              }
+
+                              @keyframes orbit {
+                                0% {
+                                  transform: translate(-50%, -50%) rotate(0deg) translateX(40px) rotate(0deg);
+                                }
+                                100% {
+                                  transform: translate(-50%, -50%) rotate(360deg) translateX(40px) rotate(-360deg);
+                                }
+                              }
+
+                              @keyframes letterMagic {
+                                0% {
+                                  transform: translateX(0) translateY(0) scale(0.3) rotate(0deg);
+                                  opacity: 0;
+                                  filter: blur(8px);
+                                }
+                                30% {
+                                  opacity: 1;
+                                  filter: blur(4px);
+                                }
+                                60% {
+                                  transform: translateX(100px) translateY(-20px) scale(1.5) rotate(360deg);
+                                  filter: blur(2px);
+                                }
+                                100% {
+                                  transform: translateX(180px) translateY(0) scale(0.8) rotate(720deg);
+                                  opacity: 0;
+                                  filter: blur(6px);
+                                }
+                              }
+
+                              @keyframes charSparkle {
+                                0% {
+                                  opacity: 0;
+                                  transform: translateY(-15px) scale(2);
+                                  filter: blur(8px) brightness(3);
+                                  color: #22d3ee;
+                                }
+                                40% {
+                                  color: #a855f7;
+                                  filter: blur(4px) brightness(2);
+                                }
+                                70% {
+                                  color: #ec4899;
+                                  filter: blur(2px) brightness(1.5);
+                                }
+                                100% {
+                                  opacity: 1;
+                                  transform: translateY(0) scale(1);
+                                  filter: blur(0) brightness(1);
+                                  color: inherit;
+                                }
+                              }
+
+                              @keyframes cursorPulse {
+                                0%, 100% {
+                                  opacity: 1;
+                                  transform: scaleY(1);
+                                  box-shadow: 0 0 15px rgba(34, 211, 238, 0.8);
+                                }
+                                50% {
+                                  opacity: 0.4;
+                                  transform: scaleY(0.8);
+                                  box-shadow: 0 0 25px rgba(168, 85, 247, 1);
+                                }
+                              }
+                            `}</style>
 
                             {/* Canvas buttons for code/documents */}
                             {isAssistant && !isStreaming && (hasCode || isDocument) && (
