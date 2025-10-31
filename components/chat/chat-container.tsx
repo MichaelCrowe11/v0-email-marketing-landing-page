@@ -33,6 +33,8 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null)
   const [showSidebar, setShowSidebar] = useState(false)
   const [avatarPosition, setAvatarPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
+  const [uploadedImage, setUploadedImage] = useState<File | null>(null)
+  const [isAnalyzingImage, setIsAnalyzingImage] = useState(false)
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const isEmpty = messages.length === 0
@@ -44,11 +46,13 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
     }
   }, [messages, currentConversationId])
 
-  // Update avatar position in real-time during streaming
+  // Update avatar position in real-time during streaming - SUPER FAST AND PRECISE
   useEffect(() => {
     if (!isLoading) return
 
-    const interval = setInterval(() => {
+    let animationFrameId: number
+
+    const updatePosition = () => {
       const lastMessage = messages[messages.length - 1]
       if (lastMessage && lastMessage.role === 'assistant' && lastMessage.content) {
         const messageEl = document.getElementById(`message-${lastMessage.id}`)
@@ -56,12 +60,15 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
 
         if (cursorEl) {
           const rect = cursorEl.getBoundingClientRect()
-          setAvatarPosition({ x: rect.left - 80, y: rect.top - 10 })
+          setAvatarPosition({ x: rect.left - 90, y: rect.top - 15 })
         }
       }
-    }, 50) // Update every 50ms for smooth tracking
+      animationFrameId = requestAnimationFrame(updatePosition)
+    }
 
-    return () => clearInterval(interval)
+    animationFrameId = requestAnimationFrame(updatePosition)
+
+    return () => cancelAnimationFrame(animationFrameId)
   }, [isLoading, messages])
 
   const saveMessage = async (message: Message) => {
@@ -497,7 +504,8 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                   style={{
                                     left: `${avatarPosition.x}px`,
                                     top: `${avatarPosition.y}px`,
-                                    transition: 'all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                                    transition: 'all 0.08s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                                    willChange: 'transform',
                                   }}
                                 >
                                   <div className="relative">
@@ -512,24 +520,30 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                     </div>
 
                                     {/* INSANE CODE STORM - Flying code snippets all around */}
-                                    {['const', 'function', '{', '}', '=>', 'return', 'async', 'await', 'import', 'export', 'class', 'interface', 'type', 'let', 'var', '[]', '()', '...', '&&', '||'].map((code, i) => (
-                                      <div
-                                        key={`code-${i}`}
-                                        className="absolute font-mono text-sm font-bold pointer-events-none"
-                                        style={{
-                                          left: '50%',
-                                          top: '50%',
-                                          color: `hsl(${(i * 360 / 20)}, 100%, 70%)`,
-                                          animation: `codeStorm ${1.5 + (i % 5) * 0.3}s ease-in-out infinite`,
-                                          animationDelay: `${i * 0.1}s`,
-                                          textShadow: '0 0 20px currentColor, 0 0 40px currentColor, 0 0 60px currentColor',
-                                          filter: 'blur(0.5px)',
-                                          transform: `rotate(${i * 18}deg)`,
-                                        }}
-                                      >
-                                        {code}
-                                      </div>
-                                    ))}
+                                    {['const', 'function', '{...}', '=>', 'return', 'async', 'await', 'import', 'export', 'class', 'interface', 'type', 'let', 'Map', 'Set', '[]', '()', '<>', '&&', '||', 'new', 'null', 'void', 'this'].map((code, i) => {
+                                      const angle = (i * 360 / 24) + (i % 2 === 0 ? 180 : 0)
+                                      const distance = 60 + (i % 3) * 30
+                                      const speed = 0.8 + (i % 4) * 0.2
+                                      return (
+                                        <div
+                                          key={`code-${i}`}
+                                          className="absolute font-mono font-black pointer-events-none"
+                                          style={{
+                                            left: '50%',
+                                            top: '50%',
+                                            fontSize: `${12 + (i % 3) * 2}px`,
+                                            color: `hsl(${angle}, 100%, ${60 + (i % 3) * 10}%)`,
+                                            animation: `codeStorm${i % 3} ${speed}s ease-in-out infinite`,
+                                            animationDelay: `${i * 0.05}s`,
+                                            textShadow: '0 0 10px currentColor, 0 0 25px currentColor, 0 0 40px currentColor, 0 0 60px currentColor',
+                                            filter: 'blur(0.3px)',
+                                            transform: `rotate(${angle}deg)`,
+                                          }}
+                                        >
+                                          {code}
+                                        </div>
+                                      )
+                                    })}
 
                                     {/* Brilliant particle trails */}
                                     {[...Array(12)].map((_, i) => (
@@ -611,30 +625,72 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                   transform: rotate(0deg) scale(1);
                                 }
                                 50% {
-                                  transform: rotate(180deg) scale(1.1);
+                                  transform: rotate(180deg) scale(1.15);
                                 }
                                 100% {
                                   transform: rotate(360deg) scale(1);
                                 }
                               }
 
-                              @keyframes codeStorm {
+                              @keyframes codeStorm0 {
                                 0% {
-                                  transform: translate(-50%, -50%) translateX(0) translateY(0) scale(0.8) rotate(0deg);
+                                  transform: translate(-50%, -50%) translateX(0) translateY(0) scale(0.5) rotate(0deg);
+                                  opacity: 0;
+                                }
+                                15% {
+                                  opacity: 1;
+                                }
+                                50% {
+                                  transform: translate(-50%, -50%) translateX(120px) translateY(-80px) scale(1.5) rotate(540deg);
+                                  opacity: 1;
+                                }
+                                85% {
+                                  opacity: 0.3;
+                                }
+                                100% {
+                                  transform: translate(-50%, -50%) translateX(160px) translateY(60px) scale(0.3) rotate(1080deg);
+                                  opacity: 0;
+                                }
+                              }
+
+                              @keyframes codeStorm1 {
+                                0% {
+                                  transform: translate(-50%, -50%) translateX(0) translateY(0) scale(0.6) rotate(0deg);
                                   opacity: 0;
                                 }
                                 20% {
                                   opacity: 1;
                                 }
                                 50% {
-                                  transform: translate(-50%, -50%) translateX(80px) translateY(-60px) scale(1.3) rotate(360deg);
-                                  opacity: 0.8;
+                                  transform: translate(-50%, -50%) translateX(-100px) translateY(90px) scale(1.6) rotate(-720deg);
+                                  opacity: 1;
                                 }
                                 80% {
                                   opacity: 0.4;
                                 }
                                 100% {
-                                  transform: translate(-50%, -50%) translateX(120px) translateY(40px) scale(0.6) rotate(720deg);
+                                  transform: translate(-50%, -50%) translateX(-140px) translateY(-50px) scale(0.4) rotate(-1440deg);
+                                  opacity: 0;
+                                }
+                              }
+
+                              @keyframes codeStorm2 {
+                                0% {
+                                  transform: translate(-50%, -50%) translateX(0) translateY(0) scale(0.7) rotate(0deg);
+                                  opacity: 0;
+                                }
+                                25% {
+                                  opacity: 1;
+                                }
+                                50% {
+                                  transform: translate(-50%, -50%) translateX(90px) translateY(110px) scale(1.4) rotate(900deg);
+                                  opacity: 1;
+                                }
+                                75% {
+                                  opacity: 0.5;
+                                }
+                                100% {
+                                  transform: translate(-50%, -50%) translateX(-120px) translateY(-80px) scale(0.5) rotate(1800deg);
                                   opacity: 0;
                                 }
                               }
@@ -815,11 +871,49 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                     type="file"
                     accept="image/*,.pdf,.doc,.docx,.txt"
                     className="hidden"
-                    onChange={(e) => {
+                    onChange={async (e) => {
                       const file = e.target.files?.[0]
-                      if (file) {
-                        // TODO: Handle file upload
-                        console.log("File selected:", file.name)
+                      if (file && file.type.startsWith("image/")) {
+                        setUploadedImage(file)
+                        setIsAnalyzingImage(true)
+                        
+                        try {
+                          const formData = new FormData()
+                          formData.append("image", file)
+                          formData.append("prompt", inputValue || "Analyze this image for contamination")
+                          
+                          const response = await fetch("/api/analyze-image", {
+                            method: "POST",
+                            body: formData,
+                          })
+                          
+                          const data = await response.json()
+                          
+                          if (data.success) {
+                            // Add user message with image
+                            const userMessage: Message = {
+                              id: Date.now().toString(),
+                              role: "user",
+                              content: `[Image: ${file.name}]\n${inputValue || "Analyze this image"}`,
+                            }
+                            
+                            // Add AI analysis response
+                            const aiMessage: Message = {
+                              id: (Date.now() + 1).toString(),
+                              role: "assistant",
+                              content: data.analysis,
+                            }
+                            
+                            setMessages(prev => [...prev, userMessage, aiMessage])
+                            setInputValue("")
+                          }
+                        } catch (error) {
+                          console.error("Image analysis error:", error)
+                        } finally {
+                          setIsAnalyzingImage(false)
+                          setUploadedImage(null)
+                          e.target.value = ""
+                        }
                       }
                     }}
                   />
