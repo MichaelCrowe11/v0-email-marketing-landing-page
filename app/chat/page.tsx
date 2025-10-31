@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Sparkles, Send } from "lucide-react"
 import Link from "next/link"
 import { AIAvatarUltimate } from "@/components/ai-avatar-ultimate"
+import { AIAvatarSwirlAdvanced } from "@/components/ai-avatar-swirl-advanced"
 
 interface Message {
   role: 'user' | 'assistant'
