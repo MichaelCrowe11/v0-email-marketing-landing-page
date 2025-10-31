@@ -439,8 +439,8 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                             <div className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
                               {message.content}
                               {isAssistant && (
-                                <span className="inline-block align-middle ml-3 relative" style={{ minWidth: '48px', minHeight: '48px' }}>
-                                  <AIAvatarSwirl state={avatarState} size={40} />
+                                <span className="inline-block align-middle ml-4 relative" style={{ minWidth: '64px', minHeight: '64px' }}>
+                                  <AIAvatarSwirl state={avatarState} size={56} />
                                 </span>
                               )}
                               {isStreaming && (
