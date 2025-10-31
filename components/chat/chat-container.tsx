@@ -303,55 +303,29 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
         )}
 
         <div className="flex-1 flex flex-col">
-          {/* Enhanced Header */}
-          <div className="px-4 sm:px-6 py-3 flex items-center justify-between border-b border-border bg-card shadow-sm">
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" size="sm" onClick={() => setShowSidebar(!showSidebar)} className="hover:bg-accent">
-                {showSidebar ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+          {/* Minimal floating actions */}
+          {!isEmpty && (
+            <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
+              <Button variant="ghost" size="sm" onClick={handleCopyConversation} className="gap-2 bg-card/80 backdrop-blur-sm border border-border shadow-sm">
+                {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                <span className="text-xs hidden sm:inline">Copy</span>
               </Button>
-              <AIAvatarSwirl state="idle" size={40} />
-              <div>
-                <h1 className="text-lg font-bold text-foreground tracking-tight">
-                  Crowe Logic Interface
-                </h1>
-                <p className="text-xs text-muted-foreground hidden sm:block font-medium">Neural Mycology Intelligence</p>
-              </div>
+              <Button variant="ghost" size="sm" onClick={handleExportMarkdown} className="gap-2 bg-card/80 backdrop-blur-sm border border-border shadow-sm">
+                <Download className="w-4 h-4" />
+                <span className="text-xs hidden sm:inline">Export</span>
+              </Button>
             </div>
-
-            <div className="flex items-center gap-2">
-              {!isEmpty && (
-                <>
-                  <Button variant="ghost" size="sm" onClick={handleCopyConversation} className="gap-2 hidden sm:flex">
-                    {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                    <span className="text-xs">Copy</span>
-                  </Button>
-                  <Button variant="ghost" size="sm" onClick={handleExportMarkdown} className="gap-2 hidden sm:flex">
-                    <Download className="w-4 h-4" />
-                    <span className="text-xs">Export</span>
-                  </Button>
-                </>
-              )}
-
-              <Link
-                href="/"
-                className="hidden sm:flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="w-4 h-4"
-                >
-                  <path d="m3 9 9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-                </svg>
-                Home
-              </Link>
-            </div>
-          </div>
+          )}
+          
+          {/* Sidebar toggle button */}
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => setShowSidebar(!showSidebar)} 
+            className="absolute top-4 left-4 z-10 bg-card/80 backdrop-blur-sm border border-border shadow-sm hover:bg-accent"
+          >
+            {showSidebar ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+          </Button>
 
           {/* Messages */}
           <div className="flex-1 overflow-y-auto">
@@ -518,9 +492,9 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                   )
                                 })}
                                 
-                                {/* PRECISE DAZZLING AVATAR - stable and beautiful */}
+                                {/* COMPACT STABLE AVATAR - small and precise */}
                                 {isAssistant && isStreaming && hasContent && (
-                                  <span className="inline-block align-middle ml-2 relative group" style={{ width: '50px', height: '50px', verticalAlign: 'middle', display: 'inline-block' }}>
+                                  <span className="inline-block align-middle ml-2 relative group" style={{ width: '36px', height: '36px', verticalAlign: 'middle', display: 'inline-block' }}>
                                     {/* Enhanced reasoning tooltip */}
                                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-4 py-2.5 bg-gradient-to-r from-cyan-500/95 to-purple-500/95 text-white text-xs rounded-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-50 backdrop-blur-md border-2 border-white/30 shadow-2xl shadow-cyan-500/50">
                                       <div className="font-black text-white mb-1 flex items-center gap-2">
@@ -558,14 +532,14 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                       <div className="absolute inset-0 -m-6 rounded-full border-2 border-purple-300 will-change-transform shadow-[0_0_15px_rgba(168,85,247,0.7)]" style={{ animation: 'ringRotate 0.3s linear infinite reverse' }} />
                                       <div className="absolute inset-0 -m-8 rounded-full border border-pink-300 will-change-transform shadow-[0_0_10px_rgba(236,72,153,0.6)]" style={{ animation: 'ringRotate 0.25s linear infinite' }} />
 
-                                      {/* HYPER-SPEED spinning avatar */}
+                                      {/* COMPACT spinning avatar */}
                                       <div className="will-change-transform" style={{ animation: 'metamorphosis 0.2s linear infinite' }}>
-                                        <AIAvatarSwirl state="responding" size={42} />
+                                        <AIAvatarSwirl state="responding" size={28} />
                                       </div>
 
-                                      {/* OPTIMIZED CODE STORM - 24 elements for precision */}
-                                      {['const', 'fn', '=>', 'async', 'await', 'let', 'if', 'for', 'map', 'filter', 'reduce', 'find', '[]', '{}', '()', '<>', '&&', '||', '!', '==', '++', 'new', 'this', 'return'].map((code, i) => {
-                                        const angle = (i * 360 / 24)
+                                      {/* COMPACT CODE STORM - 18 elements */}
+                                      {['const', 'fn', '=>', 'async', 'let', 'if', 'map', 'filter', '[]', '{}', '()', '<>', '&&', '||', '!', '==', 'new', 'return'].map((code, i) => {
+                                        const angle = (i * 360 / 18)
                                         return (
                                           <div
                                             key={`code-${i}`}
@@ -573,11 +547,11 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                             style={{
                                               left: '50%',
                                               top: '50%',
-                                              fontSize: `${12 + (i % 3)}px`,
+                                              fontSize: `${10 + (i % 2)}px`,
                                               color: `hsl(${angle}, 100%, ${72 + (i % 3) * 4}%)`,
                                               animation: `codeStorm${i % 3} ${0.32 + (i % 3) * 0.06}s ease-in-out infinite`,
-                                              animationDelay: `${i * 0.018}s`,
-                                              textShadow: '0 0 25px currentColor, 0 0 50px currentColor, 0 0 75px currentColor',
+                                              animationDelay: `${i * 0.02}s`,
+                                              textShadow: '0 0 20px currentColor, 0 0 40px currentColor',
                                               filter: 'blur(0.2px) brightness(1.3)',
                                               fontWeight: 900,
                                             }}
@@ -587,62 +561,62 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                         )
                                       })}
 
-                                      {/* PRECISE particles - 14 elements */}
-                                      {[...Array(14)].map((_, i) => {
-                                        const hue = (i * 25.7) % 360
+                                      {/* COMPACT particles - 10 elements */}
+                                      {[...Array(10)].map((_, i) => {
+                                        const hue = (i * 36) % 360
                                         return (
                                           <div
                                             key={`particle-${i}`}
                                             className="absolute rounded-full will-change-transform"
                                             style={{
-                                              width: `${4 + (i % 3)}px`,
-                                              height: `${4 + (i % 3)}px`,
+                                              width: `${3 + (i % 2)}px`,
+                                              height: `${3 + (i % 2)}px`,
                                               background: `hsl(${hue}, 100%, 75%)`,
                                               left: '50%',
                                               top: '50%',
                                               animation: `particleExplosion${i % 3} ${0.36 + (i % 3) * 0.06}s ease-out infinite`,
-                                              animationDelay: `${i * 0.032}s`,
-                                              boxShadow: `0 0 25px hsl(${hue}, 100%, 75%), 0 0 40px hsl(${hue}, 100%, 75%)`,
+                                              animationDelay: `${i * 0.04}s`,
+                                              boxShadow: `0 0 20px hsl(${hue}, 100%, 75%)`,
                                               filter: 'brightness(1.4)',
                                             }}
                                           />
                                         )
                                       })}
 
-                                      {/* BLAZING lightning - 8 bolts */}
-                                      {[...Array(8)].map((_, i) => (
+                                      {/* COMPACT lightning - 6 bolts */}
+                                      {[...Array(6)].map((_, i) => (
                                         <div
                                           key={`lightning-${i}`}
-                                          className="absolute w-1 rounded-full will-change-transform"
+                                          className="absolute w-0.5 rounded-full will-change-transform"
                                           style={{
                                             left: '50%',
                                             top: '50%',
-                                            height: `${38 + i * 3}px`,
-                                            background: `linear-gradient(180deg, hsl(${i * 45}, 100%, 80%), transparent)`,
+                                            height: `${28 + i * 2}px`,
+                                            background: `linear-gradient(180deg, hsl(${i * 60}, 100%, 80%), transparent)`,
                                             transformOrigin: 'top',
                                             animation: `lightning ${0.35 + i * 0.06}s ease-in-out infinite`,
-                                            animationDelay: `${i * 0.06}s`,
-                                            boxShadow: '0 0 15px currentColor, 0 0 30px currentColor',
-                                            transform: `rotate(${i * 45}deg)`,
+                                            animationDelay: `${i * 0.07}s`,
+                                            boxShadow: '0 0 12px currentColor',
+                                            transform: `rotate(${i * 60}deg)`,
                                             filter: 'brightness(1.5)',
                                           }}
                                         />
                                       ))}
 
-                                      {/* Precise star burst effect */}
-                                      {[...Array(10)].map((_, i) => (
+                                      {/* COMPACT star burst - 8 rays */}
+                                      {[...Array(8)].map((_, i) => (
                                         <div
                                           key={`star-${i}`}
-                                          className="absolute w-0.5 h-3 will-change-transform"
+                                          className="absolute w-0.5 h-2 will-change-transform"
                                           style={{
                                             left: '50%',
                                             top: '50%',
-                                            background: `linear-gradient(180deg, hsl(${i * 36}, 100%, 85%), transparent)`,
+                                            background: `linear-gradient(180deg, hsl(${i * 45}, 100%, 85%), transparent)`,
                                             transformOrigin: 'center',
                                             animation: `starBurst 0.65s ease-in-out infinite`,
-                                            animationDelay: `${i * 0.055}s`,
-                                            transform: `rotate(${i * 36}deg) translateY(-20px)`,
-                                            boxShadow: '0 0 10px currentColor',
+                                            animationDelay: `${i * 0.06}s`,
+                                            transform: `rotate(${i * 45}deg) translateY(-15px)`,
+                                            boxShadow: '0 0 8px currentColor',
                                           }}
                                         />
                                       ))}

@@ -199,11 +199,11 @@ export function CodeGenerationIntro({ onComplete }: CodeGenerationIntroProps) {
             <div className="absolute inset-0 rounded-full border-2 border-pink-500/30 animate-ping" style={{ animationDuration: "5s", animationDelay: "1s" }} />
           </div>
 
-          {/* Massive Avatar with Code Storm */}
+          {/* Compact Avatar */}
           <div className="relative">
             <AIAvatarSwirl 
               state={stage === "awakening" ? "idle" : stage === "complete" ? "idle" : "responding"} 
-              size={200} 
+              size={80} 
             />
           </div>
 
@@ -216,98 +216,41 @@ export function CodeGenerationIntro({ onComplete }: CodeGenerationIntroProps) {
           </div>
         </div>
 
-        {/* Title */}
-        <div className="text-center mb-8 space-y-3">
-          <h1 className="text-6xl font-black bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-pulse">
+        {/* Compact Title */}
+        <div className="text-center mb-6 space-y-2">
+          <h1 className="text-3xl font-black bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
             CROWE LOGIC AI
           </h1>
-          <p className="text-xl text-gray-400 font-mono">
-            {stage === "awakening" && "Initializing consciousness..."}
-            {stage === "coding" && "Coding platform into existence..."}
-            {stage === "building" && "Assembling neural networks..."}
-            {stage === "complete" && "Ready to revolutionize mycology"}
+          <p className="text-sm text-gray-400 font-mono">
+            {stage === "awakening" && "Initializing..."}
+            {stage === "coding" && "Loading platform..."}
+            {stage === "building" && "Almost ready..."}
+            {stage === "complete" && "Ready!"}
           </p>
         </div>
 
-        {/* Terminal Window */}
-        <div className="w-full max-w-4xl relative">
-          <div className="bg-black/80 backdrop-blur-xl border-2 border-purple-500/50 rounded-2xl shadow-2xl overflow-hidden">
-            {/* Terminal Header */}
-            <div className="flex items-center gap-3 px-6 py-4 bg-gradient-to-r from-purple-900/50 to-cyan-900/50 border-b border-purple-500/30">
-              <div className="flex gap-2">
-                <div className="w-3 h-3 rounded-full bg-red-500 shadow-lg shadow-red-500/50" />
-                <div className="w-3 h-3 rounded-full bg-yellow-500 shadow-lg shadow-yellow-500/50" />
-                <div className="w-3 h-3 rounded-full bg-green-500 shadow-lg shadow-green-500/50" />
-              </div>
-              <span className="text-sm font-mono font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                crowe-logic-genesis.tsx
-              </span>
-            </div>
-
-            {/* Code Display */}
-            <div 
-              ref={terminalRef}
-              className="p-8 font-mono text-sm h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-purple-500/50 scrollbar-track-transparent"
+        {/* Compact Progress Bar */}
+        <div className="w-full max-w-md">
+          <div className="h-2 bg-gray-900 rounded-full overflow-hidden border border-purple-500/30">
+            <div
+              className="h-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 transition-all duration-500 relative overflow-hidden"
+              style={{ width: `${progress}%` }}
             >
-              {codeLines.map((line, i) => {
-                const lineStr = String(line || "")
-                return (
-                  <div
-                    key={i}
-                    className="leading-relaxed animate-in fade-in slide-in-from-right-4 duration-300"
-                    style={{ animationDelay: `${i * 0.05}s` }}
-                  >
-                    {lineStr.startsWith("//") ? (
-                      <span className="text-green-400 font-bold drop-shadow-[0_0_8px_rgba(74,222,128,0.8)]">
-                        {lineStr}
-                      </span>
-                    ) : lineStr.includes("import") || lineStr.includes("class") || lineStr.includes("async") ? (
-                      <span className="text-purple-400 font-bold drop-shadow-[0_0_8px_rgba(168,85,247,0.8)]">
-                        {lineStr}
-                      </span>
-                    ) : lineStr.includes("'") || lineStr.includes('"') ? (
-                      <span className="text-yellow-300 drop-shadow-[0_0_8px_rgba(250,204,21,0.6)]">
-                        {lineStr}
-                      </span>
-                    ) : lineStr.includes("✓") || lineStr.includes("LIVE") ? (
-                      <span className="text-cyan-400 font-bold drop-shadow-[0_0_12px_rgba(34,211,238,1)] animate-pulse">
-                        {lineStr}
-                      </span>
-                    ) : (
-                      <span className="text-gray-300">{lineStr || "\u00A0"}</span>
-                    )}
-                  </div>
-                )
-              })}
-              {stage === "coding" && (
-                <div className="inline-block w-2 h-5 bg-gradient-to-b from-cyan-400 to-purple-400 animate-pulse ml-1" />
-              )}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer" />
             </div>
-
-            {/* Epic Progress Bar */}
-            <div className="px-8 pb-6">
-              <div className="h-3 bg-gray-900 rounded-full overflow-hidden border border-purple-500/30">
-                <div
-                  className="h-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 transition-all duration-500 relative overflow-hidden"
-                  style={{ width: `${progress}%` }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer" />
-                </div>
-              </div>
-              <div className="flex justify-between mt-3 text-xs font-mono">
-                <span className="text-purple-400 font-bold">GENESIS IN PROGRESS...</span>
-                <span className="text-cyan-400 font-bold">{Math.round(progress)}%</span>
-              </div>
-            </div>
+          </div>
+          <div className="flex justify-between mt-2 text-xs font-mono">
+            <span className="text-purple-400">Loading...</span>
+            <span className="text-cyan-400">{Math.round(progress)}%</span>
           </div>
         </div>
 
-        {/* Skip Button */}
+        {/* Prominent Skip Button */}
         <button
           onClick={onComplete}
-          className="mt-8 text-sm text-gray-500 hover:text-gray-300 transition-colors font-mono hover:scale-110 transform duration-200"
+          className="mt-6 px-6 py-2 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 hover:from-purple-500/40 hover:to-cyan-500/40 border border-purple-500/50 rounded-lg text-sm text-white font-mono transition-all hover:scale-105 transform duration-200"
         >
-          Skip Genesis →
+          Skip Intro →
         </button>
       </div>
 
