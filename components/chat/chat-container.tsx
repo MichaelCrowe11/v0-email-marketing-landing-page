@@ -203,9 +203,9 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
         prev.map((m) =>
           m.id === assistantMessageId
             ? {
-                ...m,
-                content: `Sorry, I encountered an error: ${error instanceof Error ? error.message : "Unknown error"}. Please try again.`,
-              }
+              ...m,
+              content: `Sorry, I encountered an error: ${error instanceof Error ? error.message : "Unknown error"}. Please try again.`,
+            }
             : m,
         ),
       )
@@ -275,9 +275,9 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
               <Button variant="ghost" size="icon-sm" onClick={() => setShowSidebar(!showSidebar)} className="h-7 w-7">
                 {showSidebar ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
               </Button>
-              <AIAvatarSwirl state="idle" size={36} />
+              <AIAvatarSwirl state="idle" size={40} />
               <div>
-                <h1 className="text-sm font-bold text-foreground">
+                <h1 className="text-base font-bold text-foreground">
                   Crowe Logic Interface
                 </h1>
                 <p className="text-xs text-muted-foreground hidden sm:block">Neural Mycology Intelligence System</p>
@@ -434,10 +434,10 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                     const isAssistant = message.role === "assistant"
                     const isLastMessage = index === messages.length - 1
                     const isStreaming = isLastMessage && isLoading && isAssistant
-                    
+
                     // Determine avatar state based on streaming status
                     const hasContent = message.content.length > 0
-                    const avatarState = isStreaming 
+                    const avatarState = isStreaming
                       ? (hasContent ? "responding" : "thinking")  // "responding" when streaming content, "thinking" when waiting
                       : "idle"  // "idle" when message is complete
 
@@ -456,33 +456,21 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                         )}
                         <div className="flex-1">
                           <div
-                            className={`rounded-2xl px-5 py-4 shadow-sm ${
-                              isAssistant
+                            className={`rounded-2xl px-5 py-4 shadow-sm ${isAssistant
                                 ? "bg-card border border-border"
                                 : "bg-gradient-to-br from-amber-50 to-amber-100/50 dark:from-amber-950/30 dark:to-amber-900/20 border border-amber-200/50 dark:border-amber-800/50"
-                            }`}
+                              }`}
                           >
-                            <div className="relative overflow-visible">
-                              {/* Avatar zips around during streaming */}
-                              {isAssistant && isStreaming && hasContent && (
-                                <div className="absolute -left-24 -top-4 z-50 animate-pulse">
-                                  <div className="animate-bounce">
-                                    <AIAvatarSwirl state={avatarState} size={56} />
-                                  </div>
-                                </div>
+                            <div className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
+                              {message.content}
+                              {isAssistant && (
+                                <span className="inline-block align-middle ml-2">
+                                  <AIAvatarSwirl state={avatarState} size={32} />
+                                </span>
                               )}
-                              
-                              <div className="text-sm text-foreground leading-relaxed whitespace-pre-wrap relative z-10">
-                                {message.content}
-                                {isAssistant && !isStreaming && (
-                                  <span className="inline-block align-middle ml-3 relative" style={{ minWidth: '56px', minHeight: '56px' }}>
-                                    <AIAvatarSwirl state={avatarState} size={48} />
-                                  </span>
-                                )}
-                                {isStreaming && (
-                                  <span className="inline-block w-1.5 h-4 ml-0.5 bg-foreground animate-pulse align-middle" />
-                                )}
-                              </div>
+                              {isStreaming && (
+                                <span className="inline-block w-1 h-4 ml-1 bg-foreground animate-pulse align-middle" />
+                              )}
                             </div>
 
                             {/* Canvas buttons for code/documents */}
