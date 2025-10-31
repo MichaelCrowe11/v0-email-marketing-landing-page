@@ -4,19 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { MoreVertical, Play, Pause, Archive, Trash2, ExternalLink, Database, Lightbulb, FlaskConical } from "lucide-react"
 import { Button } from "@/components/ui/button"
-
-interface ResearchSession {
-  id: string
-  title: string
-  description: string
-  type: "contamination-analysis" | "substrate-optimization" | "yield-prediction" | "species-identification"
-  status: "active" | "paused" | "completed"
-  progress: number
-  lastActivity: string
-  datasets: number
-  hypotheses: number
-  insights: number
-}
+import { useSessionStore, ResearchSession } from "@/lib/stores/session-store"
 
 interface SessionCardProps {
   session: ResearchSession
@@ -54,8 +42,38 @@ const statusConfig = {
 
 export function SessionCard({ session, viewMode }: SessionCardProps) {
   const [showMenu, setShowMenu] = useState(false)
+  const { pauseSession, resumeSession, archiveSession, deleteSession } = useSessionStore()
   const config = typeConfig[session.type]
   const status = statusConfig[session.status]
+
+  const handleToggleStatus = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setShowMenu(false)
+    
+    if (session.status === 'active') {
+      await pauseSession(session.id)
+    } else {
+      await resumeSession(session.id)
+    }
+  }
+
+  const handleArchive = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setShowMenu(false)
+    await archiveSession(session.id)
+  }
+
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setShowMenu(false)
+    
+    if (confirm(`Are you sure you want to delete "${session.title}"? This action cannot be undone.`)) {
+      await deleteSession(session.id)
+    }
+  }
 
   if (viewMode === "list") {
     return (
@@ -146,15 +164,24 @@ export function SessionCard({ session, viewMode }: SessionCardProps) {
 
             {showMenu && (
               <div className="absolute right-0 mt-2 w-48 glass-card rounded-lg border border-border shadow-xl z-10">
-                <button className="w-full px-4 py-2 text-left text-sm hover:bg-accent/10 transition-colors flex items-center gap-2">
+                <button 
+                  onClick={handleToggleStatus}
+                  className="w-full px-4 py-2 text-left text-sm hover:bg-accent/10 transition-colors flex items-center gap-2"
+                >
                   {session.status === "active" ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
                   {session.status === "active" ? "Pause" : "Resume"}
                 </button>
-                <button className="w-full px-4 py-2 text-left text-sm hover:bg-accent/10 transition-colors flex items-center gap-2">
+                <button 
+                  onClick={handleArchive}
+                  className="w-full px-4 py-2 text-left text-sm hover:bg-accent/10 transition-colors flex items-center gap-2"
+                >
                   <Archive className="w-4 h-4" />
                   Archive
                 </button>
-                <button className="w-full px-4 py-2 text-left text-sm hover:bg-red-500/10 text-red-500 transition-colors flex items-center gap-2">
+                <button 
+                  onClick={handleDelete}
+                  className="w-full px-4 py-2 text-left text-sm hover:bg-red-500/10 text-red-500 transition-colors flex items-center gap-2"
+                >
                   <Trash2 className="w-4 h-4" />
                   Delete
                 </button>

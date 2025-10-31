@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { Dataset, DataRecord, ParsedData } from '@/lib/types/workbench'
+import { Dataset, DataRecord, ParsedData, ParseError } from '@/lib/types/workbench'
 
 interface DataStore {
   datasets: Dataset[]
@@ -8,6 +8,7 @@ interface DataStore {
   uploadProgress: number
   
   // Actions
+  fetchDatasets: () => Promise<void>
   uploadDataset: (file: File, sessionId: string) => Promise<void>
   deleteDataset: (id: string) => Promise<void>
   getDataset: (id: string) => Dataset | undefined
@@ -20,6 +21,11 @@ export const useDataStore = create<DataStore>((set, get) => ({
   loading: false,
   error: null,
   uploadProgress: 0,
+
+  fetchDatasets: async () => {
+    // TODO: Fetch from API/database
+    // For now, datasets are stored in memory
+  },
 
   uploadDataset: async (file: File, sessionId: string) => {
     set({ loading: true, error: null, uploadProgress: 0 })
@@ -35,7 +41,7 @@ export const useDataStore = create<DataStore>((set, get) => ({
         format: getFileFormat(file.name),
         size: file.size,
         uploaded: new Date(),
-        metadata: parsed.metadata,
+        metadata: { ...parsed.metadata, sessionId },
         records: parsed.records,
       }
       
@@ -142,6 +148,8 @@ function getFileFormat(filename: string): Dataset['format'] {
 
 function parseCSV(content: string): ParsedData {
   const lines = content.split('\n').filter(line => line.trim())
+  const errors: ParseError[] = []
+  const warnings: string[] = []
   
   if (lines.length === 0) {
     return {
@@ -153,31 +161,61 @@ function parseCSV(content: string): ParsedData {
   }
   
   // Parse header
-  const headers = lines[0].split(',').map(h => h.trim())
+  const headers = lines[0].split(',').map(h => h.trim().replace(/^["']|["']$/g, ''))
+  
+  if (headers.length === 0) {
+    return {
+      records: [],
+      metadata: {},
+      errors: [{ message: 'No columns found', severity: 'error' }],
+      warnings: [],
+    }
+  }
+  
+  // Check for duplicate headers
+  const duplicates = headers.filter((h, i) => headers.indexOf(h) !== i)
+  if (duplicates.length > 0) {
+    warnings.push(`Duplicate column names found: ${duplicates.join(', ')}`)
+  }
   
   // Parse rows
-  const records: DataRecord[] = lines.slice(1).map((line, index) => {
-    const values = line.split(',').map(v => v.trim())
-    const data: Record<string, any> = {}
+  const records: DataRecord[] = []
+  
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i]
+    const values = line.split(',').map(v => v.trim().replace(/^["']|["']$/g, ''))
     
-    headers.forEach((header, i) => {
-      data[header] = values[i] || ''
+    if (values.length !== headers.length) {
+      warnings.push(`Row ${i}: Expected ${headers.length} columns, found ${values.length}`)
+    }
+    
+    const data: Record<string, any> = {}
+    headers.forEach((header, j) => {
+      const value = values[j] || ''
+      
+      // Try to parse numbers
+      if (value && !isNaN(Number(value))) {
+        data[header] = Number(value)
+      } else {
+        data[header] = value
+      }
     })
     
-    return {
-      id: `record-${index}`,
+    records.push({
+      id: `record-${i - 1}`,
       data,
-    }
-  })
+    })
+  }
   
   return {
     records,
     metadata: {
       columns: headers,
       rowCount: records.length,
+      columnCount: headers.length,
     },
-    errors: [],
-    warnings: [],
+    errors,
+    warnings,
   }
 }
 
@@ -226,51 +264,94 @@ function parseJSON(content: string): ParsedData {
 function parseFASTA(content: string): ParsedData {
   const sequences: DataRecord[] = []
   const lines = content.split('\n')
+  const warnings: string[] = []
+  const errors: ParseError[] = []
   
   let currentHeader = ''
   let currentSequence = ''
+  let lineNumber = 0
   
   for (const line of lines) {
-    if (line.startsWith('>')) {
+    lineNumber++
+    const trimmedLine = line.trim()
+    
+    if (!trimmedLine) continue
+    
+    if (trimmedLine.startsWith('>')) {
       // Save previous sequence
       if (currentHeader) {
+        if (!currentSequence) {
+          warnings.push(`Sequence "${currentHeader}" has no sequence data`)
+        }
+        
         sequences.push({
           id: currentHeader,
           data: {
             header: currentHeader,
             sequence: currentSequence,
             length: currentSequence.length,
+            gcContent: calculateGCContent(currentSequence),
           },
         })
       }
       
       // Start new sequence
-      currentHeader = line.substring(1).trim()
+      currentHeader = trimmedLine.substring(1).trim()
+      if (!currentHeader) {
+        warnings.push(`Line ${lineNumber}: Empty sequence header`)
+        currentHeader = `sequence_${sequences.length + 1}`
+      }
       currentSequence = ''
     } else {
-      currentSequence += line.trim()
+      // Validate sequence characters
+      const validChars = /^[ACGTUNRYSWKMBDHV-]+$/i
+      if (!validChars.test(trimmedLine)) {
+        warnings.push(`Line ${lineNumber}: Invalid sequence characters found`)
+      }
+      currentSequence += trimmedLine.toUpperCase()
     }
   }
   
   // Save last sequence
   if (currentHeader) {
+    if (!currentSequence) {
+      warnings.push(`Sequence "${currentHeader}" has no sequence data`)
+    }
+    
     sequences.push({
       id: currentHeader,
       data: {
         header: currentHeader,
         sequence: currentSequence,
         length: currentSequence.length,
+        gcContent: calculateGCContent(currentSequence),
       },
     })
   }
+  
+  if (sequences.length === 0) {
+    errors.push({ message: 'No valid sequences found', severity: 'error' })
+  }
+  
+  const totalLength = sequences.reduce((sum, s) => sum + (s.data.length || 0), 0)
+  const avgLength = sequences.length > 0 ? Math.round(totalLength / sequences.length) : 0
   
   return {
     records: sequences,
     metadata: {
       sequenceCount: sequences.length,
-      totalLength: sequences.reduce((sum, s) => sum + s.data.length, 0),
+      totalLength,
+      averageLength: avgLength,
+      minLength: Math.min(...sequences.map(s => s.data.length || 0)),
+      maxLength: Math.max(...sequences.map(s => s.data.length || 0)),
     },
-    errors: [],
-    warnings: [],
+    errors,
+    warnings,
   }
+}
+
+function calculateGCContent(sequence: string): number {
+  if (!sequence) return 0
+  const gc = (sequence.match(/[GC]/gi) || []).length
+  return Math.round((gc / sequence.length) * 100 * 100) / 100
 }

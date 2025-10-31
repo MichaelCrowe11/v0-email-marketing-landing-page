@@ -1,9 +1,11 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { X, Microscope, Beaker, TrendingUp, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { AIAvatarSwirl } from "@/components/chat/ai-avatar-swirl"
+import { useSessionStore } from "@/lib/stores/session-store"
 
 interface CreateSessionDialogProps {
   onClose: () => void
@@ -45,15 +47,31 @@ const sessionTypes = [
 ]
 
 export function CreateSessionDialog({ onClose }: CreateSessionDialogProps) {
+  const router = useRouter()
+  const { createSession } = useSessionStore()
   const [selectedType, setSelectedType] = useState<string | null>(null)
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [step, setStep] = useState<"type" | "details">("type")
+  const [creating, setCreating] = useState(false)
 
-  const handleCreate = () => {
-    // TODO: Create session via API
-    console.log("Creating session:", { type: selectedType, title, description })
-    onClose()
+  const handleCreate = async () => {
+    if (!selectedType || !title.trim()) return
+    
+    setCreating(true)
+    try {
+      const newSession = await createSession({
+        type: selectedType as any,
+        title: title.trim(),
+        description: description.trim(),
+      })
+      
+      // Navigate to the new session
+      router.push(`/workbench/${newSession.id}`)
+    } catch (error) {
+      console.error("Failed to create session:", error)
+      setCreating(false)
+    }
   }
 
   return (
@@ -161,10 +179,10 @@ export function CreateSessionDialog({ onClose }: CreateSessionDialogProps) {
 
           <Button
             onClick={step === "type" ? () => setStep("details") : handleCreate}
-            disabled={step === "type" ? !selectedType : !title.trim()}
+            disabled={step === "type" ? !selectedType : !title.trim() || creating}
             className="bg-primary text-primary-foreground hover:bg-primary/90"
           >
-            {step === "type" ? "Continue" : "Create Session"}
+            {creating ? "Creating..." : step === "type" ? "Continue" : "Create Session"}
           </Button>
         </div>
       </div>

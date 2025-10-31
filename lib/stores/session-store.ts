@@ -2,87 +2,91 @@ import { create } from 'zustand'
 
 export interface ResearchSession {
   id: string
-  name: string
+  title: string
   description: string
-  owner: string
-  collaborators: string[]
-  created: Date
-  modified: Date
-  tags: string[]
-  experiments: string[]
-  datasets: string[]
-  hypotheses: string[]
+  type: "contamination-analysis" | "substrate-optimization" | "yield-prediction" | "species-identification"
+  status: "active" | "paused" | "completed"
+  progress: number
+  lastActivity: string
+  datasets: number
+  hypotheses: number
+  insights: number
+  createdAt: Date
+  updatedAt: Date
+  userId?: string
 }
 
 interface SessionStore {
   sessions: ResearchSession[]
-  activeSession: ResearchSession | null
+  currentSession: ResearchSession | null
   loading: boolean
   error: string | null
   
   // Actions
-  createSession: (name: string, description?: string) => Promise<void>
-  loadSession: (id: string) => Promise<void>
+  fetchSessions: () => Promise<void>
+  createSession: (data: Partial<ResearchSession>) => Promise<ResearchSession>
   updateSession: (id: string, updates: Partial<ResearchSession>) => Promise<void>
   deleteSession: (id: string) => Promise<void>
-  setActiveSession: (session: ResearchSession | null) => void
+  setCurrentSession: (session: ResearchSession | null) => void
+  pauseSession: (id: string) => Promise<void>
+  resumeSession: (id: string) => Promise<void>
+  archiveSession: (id: string) => Promise<void>
 }
 
 export const useSessionStore = create<SessionStore>((set, get) => ({
   sessions: [],
-  activeSession: null,
+  currentSession: null,
   loading: false,
   error: null,
 
-  createSession: async (name: string, description?: string) => {
+  fetchSessions: async () => {
     set({ loading: true, error: null })
     
     try {
-      // TODO: Replace with actual API call
-      const newSession: ResearchSession = {
-        id: crypto.randomUUID(),
-        name,
-        description: description || '',
-        owner: 'current-user', // TODO: Get from auth
-        collaborators: [],
-        created: new Date(),
-        modified: new Date(),
-        tags: [],
-        experiments: [],
-        datasets: [],
-        hypotheses: [],
+      const response = await fetch('/api/workbench/sessions')
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch sessions')
       }
       
-      set((state) => ({
-        sessions: [...state.sessions, newSession],
-        activeSession: newSession,
-        loading: false,
-      }))
+      const sessions = await response.json()
+      set({ sessions, loading: false })
     } catch (error) {
       set({ 
-        error: error instanceof Error ? error.message : 'Failed to create session',
+        error: error instanceof Error ? error.message : 'Failed to fetch sessions',
         loading: false 
       })
     }
   },
 
-  loadSession: async (id: string) => {
+  createSession: async (data: Partial<ResearchSession>) => {
     set({ loading: true, error: null })
     
     try {
-      // TODO: Replace with actual API call
-      const session = get().sessions.find(s => s.id === id)
+      const response = await fetch('/api/workbench/sessions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
       
-      if (!session) {
-        throw new Error('Session not found')
+      if (!response.ok) {
+        throw new Error('Failed to create session')
       }
       
-      set({ activeSession: session, loading: false })
+      const newSession = await response.json()
+      
+      set((state) => ({
+        sessions: [newSession, ...state.sessions],
+        loading: false,
+      }))
+      
+      return newSession
     } catch (error) {
       set({ 
-        error: error instanceof Error ? error.message : 'Failed to load session',
+        error: error instanceof Error ? error.message : 'Failed to create session',
         loading: false 
       })
+      throw error
     }
   },
 
@@ -90,16 +94,21 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
     set({ loading: true, error: null })
     
     try {
-      // TODO: Replace with actual API call
+      const response = await fetch(`/api/workbench/sessions/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates),
+      })
+      
+      if (!response.ok) {
+        throw new Error('Failed to update session')
+      }
+      
+      const updatedSession = await response.json()
+      
       set((state) => ({
-        sessions: state.sessions.map(s => 
-          s.id === id 
-            ? { ...s, ...updates, modified: new Date() }
-            : s
-        ),
-        activeSession: state.activeSession?.id === id
-          ? { ...state.activeSession, ...updates, modified: new Date() }
-          : state.activeSession,
+        sessions: state.sessions.map(s => s.id === id ? updatedSession : s),
+        currentSession: state.currentSession?.id === id ? updatedSession : state.currentSession,
         loading: false,
       }))
     } catch (error) {
@@ -114,10 +123,17 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
     set({ loading: true, error: null })
     
     try {
-      // TODO: Replace with actual API call
+      const response = await fetch(`/api/workbench/sessions/${id}`, {
+        method: 'DELETE',
+      })
+      
+      if (!response.ok) {
+        throw new Error('Failed to delete session')
+      }
+      
       set((state) => ({
         sessions: state.sessions.filter(s => s.id !== id),
-        activeSession: state.activeSession?.id === id ? null : state.activeSession,
+        currentSession: state.currentSession?.id === id ? null : state.currentSession,
         loading: false,
       }))
     } catch (error) {
@@ -128,7 +144,19 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
     }
   },
 
-  setActiveSession: (session: ResearchSession | null) => {
-    set({ activeSession: session })
+  setCurrentSession: (session: ResearchSession | null) => {
+    set({ currentSession: session })
+  },
+
+  pauseSession: async (id: string) => {
+    await get().updateSession(id, { status: 'paused' })
+  },
+
+  resumeSession: async (id: string) => {
+    await get().updateSession(id, { status: 'active' })
+  },
+
+  archiveSession: async (id: string) => {
+    await get().updateSession(id, { status: 'completed' })
   },
 }))
