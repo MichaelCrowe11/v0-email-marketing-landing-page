@@ -269,31 +269,33 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
         )}
 
         <div className="flex-1 flex flex-col">
-          {/* Header */}
-          <div className="px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between border-b border-border bg-card/50 backdrop-blur-sm">
+          {/* Enhanced Header */}
+          <div className="px-4 sm:px-6 py-3 flex items-center justify-between border-b border-border bg-card shadow-sm">
             <div className="flex items-center gap-3">
-              <Button variant="ghost" size="sm" onClick={() => setShowSidebar(!showSidebar)}>
+              <Button variant="ghost" size="sm" onClick={() => setShowSidebar(!showSidebar)} className="hover:bg-accent">
                 {showSidebar ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
               </Button>
               <AIAvatarSwirl state="idle" size={40} />
               <div>
-                <h1 className="text-base font-semibold text-foreground">
+                <h1 className="text-lg font-bold text-foreground tracking-tight">
                   Crowe Logic Interface
                 </h1>
-                <p className="text-xs text-muted-foreground hidden sm:block">Neural Mycology Intelligence System</p>
+                <p className="text-xs text-muted-foreground hidden sm:block font-medium">Neural Mycology Intelligence</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-2">
               {!isEmpty && (
-                <div className="flex items-center gap-1">
-                  <Button variant="ghost" size="icon-sm" onClick={handleCopyConversation} className="h-8 w-8">
+                <>
+                  <Button variant="ghost" size="sm" onClick={handleCopyConversation} className="gap-2 hidden sm:flex">
                     {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                    <span className="text-xs">Copy</span>
                   </Button>
-                  <Button variant="ghost" size="icon-sm" onClick={handleExportMarkdown} className="h-8 w-8">
+                  <Button variant="ghost" size="sm" onClick={handleExportMarkdown} className="gap-2 hidden sm:flex">
                     <Download className="w-4 h-4" />
+                    <span className="text-xs">Export</span>
                   </Button>
-                </div>
+                </>
               )}
 
               <Link
@@ -464,7 +466,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                             <div className="relative min-h-[80px]">
                               {/* PROFOUNDLY DAZZLING AVATAR - Zips and swirls during streaming */}
                               {isAssistant && isStreaming && hasContent && (
-                                <div 
+                                <div
                                   className="absolute -left-20 top-0 z-50"
                                   style={{
                                     animation: 'avatarFloat 4s ease-in-out infinite',
@@ -475,10 +477,10 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                     <div className="absolute inset-0 -m-6 rounded-full border-2 border-cyan-400/40 animate-ping" />
                                     <div className="absolute inset-0 -m-10 rounded-full border-2 border-purple-400/30 animate-ping" style={{ animationDuration: '2s', animationDelay: '0.5s' }} />
                                     <div className="absolute inset-0 -m-14 rounded-full border border-pink-400/20 animate-ping" style={{ animationDuration: '3s', animationDelay: '1s' }} />
-                                    
+
                                     {/* The magnificent avatar */}
                                     <AIAvatarSwirl state="responding" size={56} />
-                                    
+
                                     {/* Orbiting particles */}
                                     {[...Array(6)].map((_, i) => (
                                       <div
@@ -520,7 +522,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                   </div>
                                 )
                               })}
-                              
+
                               <div className="text-base text-foreground leading-relaxed whitespace-pre-wrap relative z-10 font-medium">
                                 {/* Each character materializes with color flash */}
                                 {message.content.split('').map((char, i) => {
@@ -545,8 +547,8 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                   </span>
                                 )}
                                 {isStreaming && (
-                                  <span 
-                                    className="inline-block w-2 h-5 ml-1 align-middle" 
+                                  <span
+                                    className="inline-block w-2 h-5 ml-1 align-middle"
                                     style={{
                                       background: 'linear-gradient(90deg, #22d3ee, #a855f7, #ec4899)',
                                       animation: 'cursorPulse 0.8s ease-in-out infinite',
@@ -682,10 +684,64 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
             </div>
           </div>
 
-          {/* Input */}
-          <div className="border-t border-border glass-panel">
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+          {/* Enhanced Input with Upload & Quick Actions */}
+          <div className="border-t border-border bg-card">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4">
+              {/* Quick Action Buttons */}
+              <div className="flex items-center gap-2 mb-3 overflow-x-auto pb-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setInputValue("Analyze this contamination image and identify the contaminant type")}
+                  className="gap-2 whitespace-nowrap text-xs"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  Contamination Analysis
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setInputValue("Generate a Python script for ")}
+                  className="gap-2 whitespace-nowrap text-xs"
+                >
+                  <Code className="w-3.5 h-3.5" />
+                  Generate Code
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setInputValue("Create an SOP for ")}
+                  className="gap-2 whitespace-nowrap text-xs"
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  Create SOP
+                </Button>
+              </div>
+
               <form onSubmit={handleSubmit} className="relative">
+                {/* Upload Button */}
+                <label className="absolute left-3 bottom-3 cursor-pointer">
+                  <input
+                    type="file"
+                    accept="image/*,.pdf,.doc,.docx,.txt"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0]
+                      if (file) {
+                        // TODO: Handle file upload
+                        console.log("File selected:", file.name)
+                      }
+                    }}
+                  />
+                  <div className="h-9 w-9 flex items-center justify-center rounded-lg hover:bg-accent transition-colors">
+                    <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                    </svg>
+                  </div>
+                </label>
+
                 <textarea
                   ref={textareaRef}
                   value={inputValue}
@@ -696,51 +752,35 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                       handleSubmit(e)
                     }
                   }}
-                  placeholder="Ask about scientific research, generate SOPs, create code, solve problems..."
-                  className="w-full min-h-[56px] sm:min-h-[60px] max-h-[200px] px-4 sm:px-5 py-3 sm:py-4 pr-16 glass-input rounded-2xl text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent/50 resize-none shadow-sm"
+                  placeholder="Ask about contamination, generate code, create SOPs, analyze data..."
+                  className="w-full min-h-[56px] max-h-[200px] pl-14 pr-14 py-3 bg-muted/50 border border-border rounded-xl text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary resize-none font-medium"
                   rows={2}
                   disabled={isLoading}
                 />
 
                 <button
                   type="submit"
-                  className="absolute right-2 sm:right-3 bottom-2 sm:bottom-3 h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-xl bg-accent text-accent-foreground hover:bg-accent/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                  className="absolute right-2 bottom-2 h-10 w-10 flex items-center justify-center rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
                   disabled={isLoading || !inputValue?.trim()}
                 >
                   {isLoading ? (
-                    <svg
-                      className="w-4 h-4 sm:w-5 sm:h-5 animate-spin"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
+                    <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                     </svg>
                   ) : (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="w-4 h-4 sm:w-5 sm:h-5"
-                    >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                       <path d="m5 12 7-7 7 7" />
                       <path d="M12 19V5" />
                     </svg>
                   )}
                 </button>
               </form>
-              <p className="text-xs text-muted-foreground mt-2 sm:mt-3 text-center">
-                Press Enter to send, Shift+Enter for new line
-              </p>
+              
+              <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
+                <span>Press Enter to send • Shift+Enter for new line</span>
+                <span className="hidden sm:inline">Upload images for analysis</span>
+              </div>
             </div>
           </div>
         </div>
