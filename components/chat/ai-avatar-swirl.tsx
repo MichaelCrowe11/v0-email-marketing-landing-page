@@ -91,10 +91,10 @@ export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
   }, [state])
 
   useEffect(() => {
-    // Scale particle count based on size for performance
-    const baseCount = size > 100 ? 1.5 : 1
+    // Optimized particle count - reduced by 30% for better performance
+    const baseCount = size > 100 ? 1.2 : 0.8
     const particleCount = Math.floor(
-      state === "thinking" ? 32 * baseCount : state === "responding" ? 48 * baseCount : 12 * baseCount
+      state === "thinking" ? 24 * baseCount : state === "responding" ? 32 * baseCount : 10 * baseCount
     )
     
     const newParticles: CodeParticle[] = Array.from({ length: particleCount }, (_, i) => ({
@@ -174,7 +174,7 @@ export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
   }, [state, size])
 
   return (
-    <div className="relative" style={{ width: size, height: size }}>
+    <div className="relative will-change-transform" style={{ width: size, height: size }}>
       <div className="absolute inset-0 flex items-center justify-center">
         {particles.map((particle) => (
           <div
@@ -203,9 +203,9 @@ export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
       <div
         className={`absolute inset-0 rounded-full p-0.5 transition-all duration-300 will-change-transform ${
           state === "thinking"
-            ? "shadow-[0_0_60px_rgba(168,85,247,0.8)] ring-4 ring-purple-500/40"
+            ? "shadow-[0_0_50px_rgba(168,85,247,0.7)] ring-3 ring-purple-500/30"
             : state === "responding"
-              ? "shadow-[0_0_80px_rgba(34,211,238,1)] ring-8 ring-cyan-500/60 animate-pulse"
+              ? "shadow-[0_0_70px_rgba(34,211,238,0.9)] ring-6 ring-cyan-500/50"
               : "shadow-lg shadow-accent/30"
         }`}
         style={{
@@ -214,9 +214,9 @@ export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
           filter: state === "responding" ? "brightness(1.2)" : "brightness(1)",
         }}
       >
-        {/* Inner glow */}
+        {/* Simplified inner glow - removed animate-pulse for performance */}
         {state === "responding" && (
-          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500/30 to-purple-500/30 blur-xl animate-pulse" />
+          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500/25 to-purple-500/25 blur-lg" />
         )}
         
         <Image

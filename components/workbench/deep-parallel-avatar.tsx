@@ -142,10 +142,10 @@ export function DeepParallelAvatar({
   }, [state, size, fieldIntensity])
 
   return (
-    <div className="relative" style={{ width: size, height: size }}>
-      {/* Quantum Field Background */}
+    <div className="relative will-change-transform" style={{ width: size, height: size }}>
+      {/* Quantum Field Background - GPU accelerated */}
       <div
-        className="absolute inset-0 rounded-full transition-all duration-500"
+        className="absolute inset-0 rounded-full transition-all duration-500 will-change-transform"
         style={{
           background: `radial-gradient(circle, ${primaryColor}${Math.floor(fieldIntensity * 30).toString(16).padStart(2, '0')} 0%, transparent 70%)`,
           filter: `blur(${20 * fieldIntensity}px)`,
@@ -153,12 +153,12 @@ export function DeepParallelAvatar({
         }}
       />
 
-      {/* Quantum Particles */}
+      {/* Quantum Particles - GPU accelerated */}
       <div className="absolute inset-0 flex items-center justify-center">
         {particles.map(p => (
           <div
             key={p.id}
-            className="absolute rounded-full"
+            className="absolute rounded-full will-change-transform"
             style={{
               width: p.size,
               height: p.size,
@@ -195,9 +195,9 @@ export function DeepParallelAvatar({
         </>
       )}
 
-      {/* Avatar */}
+      {/* Avatar - GPU accelerated */}
       <div
-        className="absolute inset-0 flex items-center justify-center transition-transform duration-300"
+        className="absolute inset-0 flex items-center justify-center transition-transform duration-300 will-change-transform"
         style={{
           transform: `scale(${1 + fieldIntensity * 0.1}) rotate(${state === "reasoning" ? "360deg" : "0deg"})`,
           transition: state === "reasoning" ? "transform 2s linear infinite" : "transform 0.3s ease",

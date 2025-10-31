@@ -505,10 +505,10 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                               }`}
                           >
                             <div className="relative min-h-[80px]" id={`message-${message.id}`}>
-                              {/* EPIC METAMORPHOSIS - Avatar spins into quantum field, then slows and transforms back */}
+                              {/* OPTIMIZED METAMORPHOSIS - Avatar spins into quantum field with GPU acceleration */}
                               {isAssistant && (isStreaming || isCompletingStream) && hasContent && (
                                 <div 
-                                  className="fixed z-50 pointer-events-none"
+                                  className="fixed z-50 pointer-events-none will-change-transform"
                                   style={{
                                     left: `${avatarPosition.x}px`,
                                     top: `${avatarPosition.y}px`,
@@ -521,9 +521,9 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                   }}
                                 >
                                   <div className="relative w-full h-full">
-                                    {/* Quantum field - fades during completion */}
+                                    {/* Quantum field - single layer, GPU accelerated */}
                                     <div
-                                      className="absolute inset-0 rounded-full"
+                                      className="absolute inset-0 rounded-full will-change-transform"
                                       style={{
                                         background: 'radial-gradient(circle, rgba(34, 211, 238, 0.4) 0%, rgba(168, 85, 247, 0.2) 50%, transparent 70%)',
                                         filter: 'blur(25px)',
@@ -534,9 +534,9 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                       }}
                                     />
 
-                                    {/* Spinning energy rings - slow down during completion */}
+                                    {/* Reduced energy rings - only 2 for performance */}
                                     <div 
-                                      className="absolute inset-0 -m-6 rounded-full border-2 border-cyan-400/70" 
+                                      className="absolute inset-0 -m-6 rounded-full border-2 border-cyan-400/70 will-change-transform" 
                                       style={{ 
                                         animation: isCompletingStream ? 'ringRotate 3s linear infinite' : 'ringRotate 1s linear infinite',
                                         opacity: isCompletingStream ? 0.3 : 1,
@@ -544,24 +544,17 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                       }} 
                                     />
                                     <div 
-                                      className="absolute inset-0 -m-8 rounded-full border-2 border-purple-400/60" 
+                                      className="absolute inset-0 -m-10 rounded-full border border-purple-400/50 will-change-transform" 
                                       style={{ 
                                         animation: isCompletingStream ? 'ringRotate 4s linear infinite reverse' : 'ringRotate 0.7s linear infinite reverse',
                                         opacity: isCompletingStream ? 0.2 : 1,
                                         transition: 'opacity 1.5s ease-out',
                                       }} 
                                     />
-                                    <div 
-                                      className="absolute inset-0 -m-10 rounded-full border border-pink-400/50" 
-                                      style={{ 
-                                        animation: isCompletingStream ? 'ringRotate 5s linear infinite' : 'ringRotate 0.5s linear infinite',
-                                        opacity: isCompletingStream ? 0.1 : 1,
-                                        transition: 'opacity 1.5s ease-out',
-                                      }} 
-                                    />
 
-                                    {/* Avatar - spins fast then SLOWS DOWN dramatically before transforming back */}
+                                    {/* Avatar - GPU accelerated spinning */}
                                     <div 
+                                      className="will-change-transform"
                                       style={{ 
                                         animation: isCompletingStream 
                                           ? 'slowdownTransform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
@@ -571,23 +564,23 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                       <AIAvatarSwirl state={isCompletingStream ? "idle" : "responding"} size={56} />
                                     </div>
 
-                                    {/* CODE STORM - fades out during completion */}
-                                    {!isCompletingStream && ['const', 'fn', '{...}', '=>', 'async', 'await', 'import', 'class', 'type', 'let', 'Map', '[]', '()', '<>', '&&', '||', 'new', 'void'].map((code, i) => {
-                                      const angle = (i * 360 / 18)
+                                    {/* Reduced CODE STORM - only 12 elements instead of 18 */}
+                                    {!isCompletingStream && ['const', 'fn', '=>', 'async', 'class', 'let', '[]', '<>', '&&', 'new', 'void', '{}'].map((code, i) => {
+                                      const angle = (i * 360 / 12)
                                       const speed = 0.5 + (i % 3) * 0.15
                                       return (
                                         <div
                                           key={`code-${i}`}
-                                          className="absolute font-mono font-black pointer-events-none"
+                                          className="absolute font-mono font-black pointer-events-none will-change-transform"
                                           style={{
                                             left: '50%',
                                             top: '50%',
-                                            fontSize: `${13 + (i % 3) * 3}px`,
-                                            color: `hsl(${angle}, 100%, ${65 + (i % 3) * 10}%)`,
+                                            fontSize: `${14 + (i % 2) * 2}px`,
+                                            color: `hsl(${angle}, 100%, 70%)`,
                                             animation: `codeStorm${i % 3} ${speed}s ease-in-out infinite`,
-                                            animationDelay: `${i * 0.03}s`,
-                                            textShadow: '0 0 15px currentColor, 0 0 30px currentColor, 0 0 50px currentColor',
-                                            filter: 'blur(0.4px)',
+                                            animationDelay: `${i * 0.04}s`,
+                                            textShadow: '0 0 20px currentColor, 0 0 40px currentColor',
+                                            filter: 'blur(0.3px)',
                                             fontWeight: 900,
                                           }}
                                         >
@@ -596,18 +589,18 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                       )
                                     })}
 
-                                    {/* Particle trails - fade during completion */}
-                                    {!isCompletingStream && [...Array(16)].map((_, i) => {
-                                      const hue = (i * 22.5) % 360
-                                      const delay = (i * 0.04)
+                                    {/* Reduced particles - 10 instead of 16 */}
+                                    {!isCompletingStream && [...Array(10)].map((_, i) => {
+                                      const hue = (i * 36) % 360
+                                      const delay = (i * 0.05)
                                       const duration = 0.5 + (i % 3) * 0.12
                                       return (
                                         <div
                                           key={`particle-${i}`}
-                                          className="absolute rounded-full"
+                                          className="absolute rounded-full will-change-transform"
                                           style={{
-                                            width: `${4 + (i % 3)}px`,
-                                            height: `${4 + (i % 3)}px`,
+                                            width: `${4 + (i % 2)}px`,
+                                            height: `${4 + (i % 2)}px`,
                                             background: `hsl(${hue}, 100%, 70%)`,
                                             left: '50%',
                                             top: '50%',
@@ -619,21 +612,21 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                       )
                                     })}
 
-                                    {/* Lightning bolts - fade during completion */}
-                                    {!isCompletingStream && [...Array(6)].map((_, i) => (
+                                    {/* Reduced lightning - 4 instead of 6 */}
+                                    {!isCompletingStream && [...Array(4)].map((_, i) => (
                                       <div
                                         key={`lightning-${i}`}
-                                        className="absolute w-1 rounded-full"
+                                        className="absolute w-1 rounded-full will-change-transform"
                                         style={{
                                           left: '50%',
                                           top: '50%',
-                                          height: `${35 + i * 6}px`,
-                                          background: `linear-gradient(180deg, hsl(${i * 60}, 100%, 75%), transparent)`,
+                                          height: `${40 + i * 8}px`,
+                                          background: `linear-gradient(180deg, hsl(${i * 90}, 100%, 75%), transparent)`,
                                           transformOrigin: 'top',
-                                          animation: `lightning ${0.6 + i * 0.08}s ease-in-out infinite`,
-                                          animationDelay: `${i * 0.1}s`,
+                                          animation: `lightning ${0.6 + i * 0.1}s ease-in-out infinite`,
+                                          animationDelay: `${i * 0.12}s`,
                                           boxShadow: '0 0 12px currentColor',
-                                          transform: `rotate(${i * 60}deg)`,
+                                          transform: `rotate(${i * 90}deg)`,
                                         }}
                                       />
                                     ))}
