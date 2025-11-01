@@ -54,6 +54,12 @@ export default function WorkbenchPage() {
             </div>
 
             <div className="flex items-center gap-3">
+              <Link href="/workbench/agents">
+                <Button variant="outline" size="sm">
+                  <Beaker className="w-4 h-4 mr-2" />
+                  AI Agents
+                </Button>
+              </Link>
               <Link href="/chat">
                 <Button variant="outline" size="sm">
                   Crowe Logic Interface
@@ -139,23 +145,62 @@ export default function WorkbenchPage() {
             <p className="text-muted-foreground">Try adjusting your search query</p>
           </div>
         ) : sessions.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="mb-6">
-              <AIAvatarSwirl state="idle" size={120} />
+          <div className="space-y-8">
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <div className="mb-6">
+                <AIAvatarSwirl state="idle" size={120} />
+              </div>
+              <h3 className="text-2xl font-semibold text-foreground mb-2">No Research Sessions Yet</h3>
+              <p className="text-muted-foreground mb-6 max-w-md">
+                Start your first research session to analyze contamination, optimize substrates, or predict yields with
+                AI-powered deep reasoning.
+              </p>
+              <Button
+                onClick={() => setShowCreateDialog(true)}
+                size="lg"
+                className="bg-primary text-primary-foreground hover:bg-primary/90"
+              >
+                <Plus className="w-5 h-5 mr-2" />
+                Create Your First Session
+              </Button>
             </div>
-            <h3 className="text-2xl font-semibold text-foreground mb-2">No Research Sessions Yet</h3>
-            <p className="text-muted-foreground mb-6 max-w-md">
-              Start your first research session to analyze contamination, optimize substrates, or predict yields with
-              AI-powered deep reasoning.
-            </p>
-            <Button
-              onClick={() => setShowCreateDialog(true)}
-              size="lg"
-              className="bg-primary text-primary-foreground hover:bg-primary/90"
-            >
-              <Plus className="w-5 h-5 mr-2" />
-              Create Your First Session
-            </Button>
+
+            {/* Quick Access Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
+              <Link href="/workbench/agents">
+                <div className="glass-card rounded-xl p-6 border border-border hover:border-accent/50 transition-all hover:scale-[1.02] cursor-pointer">
+                  <div className="flex items-center gap-4 mb-3">
+                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-cyan-500/10 to-purple-500/10 flex items-center justify-center">
+                      <Beaker className="w-6 h-6 text-cyan-400" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-foreground">AI Agent Chat</h4>
+                      <p className="text-xs text-muted-foreground">Talk to DeepParallel agents</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Chat with specialized AI agents for research assistance
+                  </p>
+                </div>
+              </Link>
+
+              <Link href="/chat">
+                <div className="glass-card rounded-xl p-6 border border-border hover:border-accent/50 transition-all hover:scale-[1.02] cursor-pointer">
+                  <div className="flex items-center gap-4 mb-3">
+                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500/10 to-pink-500/10 flex items-center justify-center">
+                      <TrendingUp className="w-6 h-6 text-purple-400" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-foreground">Crowe Logic</h4>
+                      <p className="text-xs text-muted-foreground">General AI assistant</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Access the main Crowe Logic AI interface
+                  </p>
+                </div>
+              </Link>
+            </div>
           </div>
         ) : (
           <div
