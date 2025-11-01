@@ -18,7 +18,7 @@ const sessionTypes = [
     description: "Identify and analyze contamination patterns with AI-powered vision and reasoning",
     icon: Microscope,
     color: "from-red-500 to-orange-500",
-    emoji: "🔬",
+    bgColor: "bg-red-500/10",
   },
   {
     id: "substrate-optimization",
@@ -26,7 +26,7 @@ const sessionTypes = [
     description: "Optimize substrate formulas for maximum yield and efficiency",
     icon: Beaker,
     color: "from-green-500 to-emerald-500",
-    emoji: "🧪",
+    bgColor: "bg-green-500/10",
   },
   {
     id: "yield-prediction",
@@ -34,7 +34,7 @@ const sessionTypes = [
     description: "Build predictive models for cultivation yields based on environmental factors",
     icon: TrendingUp,
     color: "from-blue-500 to-cyan-500",
-    emoji: "📊",
+    bgColor: "bg-blue-500/10",
   },
   {
     id: "species-identification",
@@ -42,7 +42,7 @@ const sessionTypes = [
     description: "Identify mushroom species using advanced computer vision and mycological knowledge",
     icon: Search,
     color: "from-purple-500 to-pink-500",
-    emoji: "🍄",
+    bgColor: "bg-purple-500/10",
   },
 ]
 
@@ -105,25 +105,30 @@ export function CreateSessionDialog({ onClose }: CreateSessionDialogProps) {
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {sessionTypes.map((type) => (
-                  <button
-                    key={type.id}
-                    onClick={() => setSelectedType(type.id)}
-                    className={`text-left p-6 rounded-xl border-2 transition-all hover:scale-[1.02] ${
-                      selectedType === type.id
-                        ? "border-accent bg-accent/10"
-                        : "border-border hover:border-accent/50"
-                    }`}
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className="text-4xl">{type.emoji}</div>
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-foreground mb-1">{type.title}</h3>
-                        <p className="text-sm text-muted-foreground">{type.description}</p>
+                {sessionTypes.map((type) => {
+                  const IconComponent = type.icon
+                  return (
+                    <button
+                      key={type.id}
+                      onClick={() => setSelectedType(type.id)}
+                      className={`text-left p-6 rounded-xl border-2 transition-all hover:scale-[1.02] ${
+                        selectedType === type.id
+                          ? "border-accent bg-accent/10"
+                          : "border-border hover:border-accent/50"
+                      }`}
+                    >
+                      <div className="flex items-start gap-4">
+                        <div className={`w-12 h-12 rounded-lg ${type.bgColor} flex items-center justify-center flex-shrink-0`}>
+                          <IconComponent className="w-6 h-6 text-foreground" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-foreground mb-1">{type.title}</h3>
+                          <p className="text-sm text-muted-foreground">{type.description}</p>
+                        </div>
                       </div>
-                    </div>
-                  </button>
-                ))}
+                    </button>
+                  )
+                })}
               </div>
             </div>
           )}
@@ -154,9 +159,15 @@ export function CreateSessionDialog({ onClose }: CreateSessionDialogProps) {
 
               <div className="glass-card rounded-lg p-4 border border-accent/30 bg-accent/5">
                 <div className="flex items-start gap-3">
-                  <div className="text-2xl">
-                    {sessionTypes.find((t) => t.id === selectedType)?.emoji}
-                  </div>
+                  {(() => {
+                    const selectedTypeData = sessionTypes.find((t) => t.id === selectedType)
+                    const IconComponent = selectedTypeData?.icon
+                    return IconComponent ? (
+                      <div className={`w-10 h-10 rounded-lg ${selectedTypeData.bgColor} flex items-center justify-center flex-shrink-0`}>
+                        <IconComponent className="w-5 h-5 text-foreground" />
+                      </div>
+                    ) : null
+                  })()}
                   <div>
                     <h4 className="font-semibold text-foreground mb-1">
                       {sessionTypes.find((t) => t.id === selectedType)?.title}

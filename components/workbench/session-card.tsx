@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { MoreVertical, Play, Pause, Archive, Trash2, ExternalLink, Database, Lightbulb, FlaskConical } from "lucide-react"
+import { MoreVertical, Play, Pause, Archive, Trash2, ExternalLink, Database, Lightbulb, FlaskConical, TrendingUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useSessionStore, ResearchSession } from "@/lib/stores/session-store"
 
@@ -15,22 +15,26 @@ const typeConfig = {
   "contamination-analysis": {
     label: "Contamination Analysis",
     color: "from-red-500 to-orange-500",
-    icon: "🔬",
+    icon: Database,
+    bgColor: "bg-red-500/10",
   },
   "substrate-optimization": {
     label: "Substrate Optimization",
     color: "from-green-500 to-emerald-500",
-    icon: "🧪",
+    icon: FlaskConical,
+    bgColor: "bg-green-500/10",
   },
   "yield-prediction": {
     label: "Yield Prediction",
     color: "from-blue-500 to-cyan-500",
-    icon: "📊",
+    icon: TrendingUp,
+    bgColor: "bg-blue-500/10",
   },
   "species-identification": {
     label: "Species ID",
     color: "from-purple-500 to-pink-500",
-    icon: "🍄",
+    icon: Database,
+    bgColor: "bg-purple-500/10",
   },
 }
 
@@ -45,6 +49,7 @@ export function SessionCard({ session, viewMode }: SessionCardProps) {
   const { pauseSession, resumeSession, archiveSession, deleteSession } = useSessionStore()
   const config = typeConfig[session.type]
   const status = statusConfig[session.status]
+  const IconComponent = config.icon
 
   const handleToggleStatus = async (e: React.MouseEvent) => {
     e.preventDefault()
@@ -81,7 +86,9 @@ export function SessionCard({ session, viewMode }: SessionCardProps) {
         <div className="glass-card rounded-xl p-6 border border-border hover:border-accent/50 transition-all group cursor-pointer">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4 flex-1">
-              <div className="text-4xl">{config.icon}</div>
+              <div className={`w-12 h-12 rounded-lg ${config.bgColor} flex items-center justify-center flex-shrink-0`}>
+                <IconComponent className="w-6 h-6 text-foreground" />
+              </div>
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-1">
                   <h3 className="text-lg font-semibold text-foreground group-hover:text-accent transition-colors">
@@ -140,7 +147,9 @@ export function SessionCard({ session, viewMode }: SessionCardProps) {
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
-            <div className="text-3xl">{config.icon}</div>
+            <div className={`w-10 h-10 rounded-lg ${config.bgColor} flex items-center justify-center flex-shrink-0`}>
+              <IconComponent className="w-5 h-5 text-foreground" />
+            </div>
             <div>
               <h3 className="font-semibold text-foreground group-hover:text-accent transition-colors">
                 {session.title}

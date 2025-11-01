@@ -6,7 +6,7 @@ import Link from "next/link"
 import { 
   ArrowLeft, Play, Pause, Settings, Share2, Download, 
   Database, FlaskConical, Lightbulb, TrendingUp, Upload,
-  Plus, Activity
+  Plus, Activity, Microscope
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { AIAvatarSwirl } from "@/components/chat/ai-avatar-swirl"
@@ -81,13 +81,30 @@ export default function SessionWorkspacePage() {
   }
 
   const typeConfig = {
-    "contamination-analysis": { icon: "🔬", color: "from-red-500 to-orange-500" },
-    "substrate-optimization": { icon: "🧪", color: "from-green-500 to-emerald-500" },
-    "yield-prediction": { icon: "📊", color: "from-blue-500 to-cyan-500" },
-    "species-identification": { icon: "🍄", color: "from-purple-500 to-pink-500" },
+    "contamination-analysis": { 
+      icon: Microscope, 
+      color: "from-red-500 to-orange-500",
+      bgColor: "bg-red-500/10"
+    },
+    "substrate-optimization": { 
+      icon: FlaskConical, 
+      color: "from-green-500 to-emerald-500",
+      bgColor: "bg-green-500/10"
+    },
+    "yield-prediction": { 
+      icon: TrendingUp, 
+      color: "from-blue-500 to-cyan-500",
+      bgColor: "bg-blue-500/10"
+    },
+    "species-identification": { 
+      icon: Database, 
+      color: "from-purple-500 to-pink-500",
+      bgColor: "bg-purple-500/10"
+    },
   }
 
   const config = typeConfig[currentSession.type]
+  const IconComponent = config.icon
 
   const tabs = [
     { id: "overview", label: "Overview", icon: Activity },
@@ -128,7 +145,9 @@ export default function SessionWorkspacePage() {
 
           <div className="flex items-start justify-between">
             <div className="flex items-start gap-4">
-              <div className="text-5xl">{config.icon}</div>
+              <div className={`w-14 h-14 rounded-xl ${config.bgColor} flex items-center justify-center`}>
+                <IconComponent className="w-7 h-7 text-foreground" />
+              </div>
               <div>
                 <h1 className="text-2xl font-bold text-foreground mb-1">
                   {currentSession.title}
