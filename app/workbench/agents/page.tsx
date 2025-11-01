@@ -85,28 +85,67 @@ export default function AgentsPage() {
     setInputValue("")
     setIsLoading(true)
 
-    // Simulate agent response
+    // Set agent to thinking state
     const agent = agents.find(a => a.name === selectedAgent)
     if (agent) {
       agent.setState("thinking")
-      setTimeout(() => agent.setState("reasoning"), 1000)
+      setTimeout(() => agent.setState("reasoning"), 500)
     }
 
-    // Simulate AI response
-    setTimeout(() => {
+    try {
+      // Call Azure OpenAI via our API
+      const response = await fetch('/api/workbench/agents/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          agent: selectedAgent,
+          messages: messages.map(m => ({
+            role: m.role,
+            content: m.content,
+          })).concat([{
+            role: 'user',
+            content: inputValue,
+          }]),
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to get response from agent')
+      }
+
+      const data = await response.json()
+
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: `As ${selectedAgent}, I've analyzed your query. ${agent?.description}. Let me provide insights based on my specialized reasoning approach.`,
+        content: data.message,
         agent: selectedAgent,
       }
+
       setMessages(prev => [...prev, assistantMessage])
-      setIsLoading(false)
+      
       if (agent) {
         agent.setState("complete")
         setTimeout(() => agent.setState("idle"), 2000)
       }
-    }, 3000)
+    } catch (error) {
+      console.error('Error getting agent response:', error)
+      
+      // Show error message
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: "I apologize, but I'm having trouble connecting right now. Please check that Azure OpenAI is configured and try again.",
+        agent: selectedAgent,
+      }
+      setMessages(prev => [...prev, errorMessage])
+      
+      if (agent) {
+        agent.setState("idle")
+      }
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -249,7 +288,7 @@ export default function AgentsPage() {
                       <DeepParallelAvatar
                         agentName={message.agent || selectedAgent}
                         avatarImage="/crowe-logic-logo.png"
-                        state={isLoading && message.id === messages[messages.length - 1].id ? "thinking" : "idle"}
+                        state="idle"
                         size={40}
                         primaryColor={agents.find(a => a.name === (message.agent || selectedAgent))?.primaryColor}
                         secondaryColor={agents.find(a => a.name === (message.agent || selectedAgent))?.secondaryColor}
@@ -266,6 +305,28 @@ export default function AgentsPage() {
                     </div>
                   </div>
                 ))}
+                
+                {/* Loading indicator */}
+                {isLoading && (
+                  <div className="flex gap-4 justify-start">
+                    <DeepParallelAvatar
+                      agentName={selectedAgent}
+                      avatarImage="/crowe-logic-logo.png"
+                      state="reasoning"
+                      size={40}
+                      primaryColor={agents.find(a => a.name === selectedAgent)?.primaryColor}
+                      secondaryColor={agents.find(a => a.name === selectedAgent)?.secondaryColor}
+                    />
+                    <div className="max-w-[70%] rounded-2xl px-4 py-3 bg-card border border-border">
+                      <div className="flex gap-2">
+                        <div className="w-2 h-2 rounded-full bg-foreground/40 animate-bounce" style={{ animationDelay: '0ms' }} />
+                        <div className="w-2 h-2 rounded-full bg-foreground/40 animate-bounce" style={{ animationDelay: '150ms' }} />
+                        <div className="w-2 h-2 rounded-full bg-foreground/40 animate-bounce" style={{ animationDelay: '300ms' }} />
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
                 <div ref={messagesEndRef} />
               </div>
             )}
