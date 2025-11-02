@@ -2,71 +2,42 @@ import type React from "react"
 import type { Metadata, Viewport } from "next"
 
 import "./globals.css"
-import "./mobile-optimizations.css"
-import "./mobile-performance.css"
 import { Suspense } from "react"
 import { SidebarNav } from "@/components/sidebar-nav"
 import { GlobalHeader } from "@/components/global-header"
 import { ThemeProvider } from "@/components/theme-provider"
-import { SkipLink } from "@/components/skip-link"
 import { HEADER_HEIGHT } from "@/components/global-header"
-import { WebVitals } from "@/components/web-vitals"
-import { Footer } from "@/components/footer"
-import { GlobalKeyboardHandler } from "@/components/global-keyboard-handler"
-import { AriaLiveAnnouncer } from "@/components/aria-live-announcer"
-import { AccessibilityProvider } from "@/components/accessibility-provider"
+import { PerformanceMonitorInit } from "@/components/performance-monitor-init"
 
-import { Inter, Fira_Code, Geist as V0_Font_Geist, Geist_Mono as V0_Font_Geist_Mono, Source_Serif_4 as V0_Font_Source_Serif_4 } from 'next/font/google'
+import { Inter, Fira_Code, Geist as V0_Font_Geist, Source_Serif_4 as V0_Font_Source_Serif_4 } from "next/font/google"
 
 // Initialize fonts
-const _geist = V0_Font_Geist({ subsets: ['latin'], weight: ["100","200","300","400","500","600","700","800","900"] })
-const _geistMono = V0_Font_Geist_Mono({ subsets: ['latin'], weight: ["100","200","300","400","500","600","700","800","900"] })
-const _sourceSerif_4 = V0_Font_Source_Serif_4({ subsets: ['latin'], weight: ["200","300","400","500","600","700","800","900"] })
+const _geist = V0_Font_Geist({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+})
+const _sourceSerif_4 = V0_Font_Source_Serif_4({
+  subsets: ["latin"],
+  weight: ["200", "300", "400", "500", "600", "700", "800", "900"],
+})
 
-// Inter font with optimized fallback stack to minimize layout shift
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
-  weight: ["400", "600", "700"],
   preload: true,
-  // System font fallback stack optimized for each platform
-  fallback: [
-    'system-ui',           // Modern system UI font
-    '-apple-system',       // macOS/iOS San Francisco
-    'BlinkMacSystemFont',  // macOS Chrome
-    'Segoe UI',            // Windows
-    'Roboto',              // Android
-    'Helvetica Neue',      // Older macOS
-    'Arial',               // Universal fallback
-    'sans-serif'           // Generic fallback
-  ],
-  // Automatically adjust fallback font metrics to match Inter
+  fallback: ["system-ui", "-apple-system", "sans-serif"],
   adjustFontFallback: true,
+  weight: ["400", "600", "700"],
 })
 
-// Fira Code font with optimized monospace fallback stack
 const firaCode = Fira_Code({
   subsets: ["latin"],
   variable: "--font-code",
   display: "swap",
-  weight: ["400", "500", "600"],
   preload: false,
-  // Monospace fallback stack optimized for code display
-  fallback: [
-    'ui-monospace',        // Modern system monospace
-    'SFMono-Regular',      // macOS/iOS monospace
-    'SF Mono',             // macOS system monospace
-    'Menlo',               // macOS Terminal default
-    'Monaco',              // Older macOS
-    'Cascadia Code',       // Windows Terminal
-    'Consolas',            // Windows
-    'Liberation Mono',     // Linux
-    'Courier New',         // Universal fallback
-    'monospace'            // Generic fallback
-  ],
-  // Automatically adjust fallback font metrics to match Fira Code
-  adjustFontFallback: true,
+  fallback: ["Courier New", "monospace"],
+  weight: ["400", "600"],
 })
 
 export const viewport: Viewport = {
@@ -111,22 +82,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
+      </head>
       <body className={`font-sans ${inter.variable} ${firaCode.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-          <AccessibilityProvider>
-            <WebVitals />
-            <GlobalKeyboardHandler />
-            <AriaLiveAnnouncer />
-            <SkipLink />
-            <SidebarNav />
-            <GlobalHeader />
-            <div className="md:ml-64" style={{ paddingTop: `${HEADER_HEIGHT}px` }}>
-              <main id="main-content" tabIndex={-1}>
-                <Suspense fallback={null}>{children}</Suspense>
-              </main>
-              <Footer />
-            </div>
-          </AccessibilityProvider>
+          <SidebarNav />
+          <GlobalHeader />
+          <div className="md:ml-64" style={{ paddingTop: `${HEADER_HEIGHT}px` }}>
+            <Suspense fallback={null}>{children}</Suspense>
+          </div>
+          <PerformanceMonitorInit />
         </ThemeProvider>
       </body>
     </html>

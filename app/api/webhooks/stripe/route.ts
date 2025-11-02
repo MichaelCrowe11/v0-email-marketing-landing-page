@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic"
 
 const stripe = process.env.STRIPE_SECRET_KEY
   ? new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: "2024-12-18.acacia",
+      apiVersion: "2025-09-30.clover",
     })
   : null
 
@@ -55,30 +55,29 @@ export async function POST(req: Request) {
         }
 
         // Get plan details from metadata
-        const tierName = session.metadata?.tier || 'pro'
-        const billingCycle = session.metadata?.billingCycle || 'monthly'
+        const planId = session.metadata?.plan_id
+
+        if (!planId) {
+          console.error("[v0] No plan_id in session metadata")
+          break
+        }
 
         // Create subscription record
-        const periodEnd = billingCycle === 'yearly'
-          ? new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
-          : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-
         await supabase.from("user_subscriptions").insert({
           user_id: user.id,
-          plan_id: tierName,
+          plan_id: planId,
           stripe_customer_id: session.customer as string,
           stripe_subscription_id: session.subscription as string,
           status: "active",
-          billing_cycle: billingCycle,
           current_period_start: new Date().toISOString(),
-          current_period_end: periodEnd.toISOString(),
+          current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days
         })
 
         // Update user subscription status
         await supabase
           .from("users")
           .update({
-            subscription_tier: tierName as "pro" | "expert" | "master",
+            subscription_tier: planId.includes("expert") ? "expert" : "pro",
             subscription_status: "active",
           })
           .eq("id", user.id)
@@ -87,15 +86,15 @@ export async function POST(req: Request) {
           const planNames: Record<string, string> = {
             pro: "Pro Access",
             expert: "Expert Access",
-            master: "Master Access",
+            master: "Master Grower",
           }
 
           await sendEmail({
             to: session.customer_email!,
-            subject: "Welcome to Crowe Logic " + planNames[tierName],
+            subject: "Order Confirmation - Crowe Logic",
             html: getOrderConfirmationEmailHTML({
               name: session.customer_details?.name || "Valued Customer",
-              productName: planNames[tierName] + " (" + billingCycle + ")",
+              productName: planNames[planId] || planId,
               amount: `$${(session.amount_total! / 100).toFixed(2)}`,
               orderId: session.id,
             }),
