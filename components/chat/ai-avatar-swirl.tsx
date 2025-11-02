@@ -91,12 +91,7 @@ export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
   }, [state])
 
   useEffect(() => {
-    // Optimized particle count - reduced by 30% for better performance
-    const baseCount = size > 100 ? 1.2 : 0.8
-    const particleCount = Math.floor(
-      state === "thinking" ? 24 * baseCount : state === "responding" ? 32 * baseCount : 10 * baseCount
-    )
-    
+    const particleCount = state === "thinking" ? 24 : state === "responding" ? 18 : 12
     const newParticles: CodeParticle[] = Array.from({ length: particleCount }, (_, i) => ({
       id: i,
       code: codeSnippets[Math.floor(Math.random() * codeSnippets.length)],
@@ -105,12 +100,12 @@ export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
       color: colors[i % colors.length],
       speed:
         state === "thinking"
-          ? 3 + Math.random() * 4
+          ? 2 + Math.random() * 3
           : state === "responding"
-            ? 5 + Math.random() * 6  // Even faster during responding
+            ? 0.5 + Math.random() * 1
             : 0.5 + Math.random() * 1,
-      angle: (i / particleCount) * Math.PI * 2 + Math.random() * 0.5,
-      radius: size * 0.8 + Math.random() * (size * 0.7),
+      angle: (i / particleCount) * Math.PI * 2,
+      radius: size * 0.8 + Math.random() * (size * 0.4),
       opacity: 1,
       scale: 1,
     }))
@@ -122,11 +117,11 @@ export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
     let time = 0
 
     const animate = () => {
-      time += state === "thinking" ? 0.08 : state === "responding" ? 0.12 : 0.02
+      time += state === "thinking" ? 0.05 : state === "responding" ? 0.03 : 0.02
 
       setParticles((prev) =>
         prev.map((p, index) => {
-          const newAngle = p.angle + p.speed * 0.03
+          const newAngle = p.angle + p.speed * 0.02
           let wobble = 0
           let newRadius = p.radius
           let newOpacity = p.opacity
@@ -134,20 +129,17 @@ export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
 
           if (state === "thinking") {
             // Aggressive storm mode - chaotic movement with pulsing
-            wobble = Math.sin(time * 4 + p.id) * (size * 0.5) + Math.cos(time * 3 + p.id * 0.5) * (size * 0.4)
-            newRadius = p.radius + Math.sin(time * 5 + p.id) * (size * 0.5)
-            newOpacity = 0.8 + Math.sin(time * 6 + p.id) * 0.2
-            newScale = 1.2 + Math.sin(time * 4 + p.id) * 0.5
+            wobble = Math.sin(time * 3 + p.id) * (size * 0.3) + Math.cos(time * 2 + p.id * 0.5) * (size * 0.2)
+            newRadius = p.radius + Math.sin(time * 4 + p.id) * (size * 0.3)
+            newOpacity = 0.7 + Math.sin(time * 5 + p.id) * 0.3
+            newScale = 1 + Math.sin(time * 3 + p.id) * 0.3
           } else if (state === "responding") {
-            // APOCALYPTIC STORM - particles explode outward with extreme chaos
-            const explosionWave = Math.sin(time * 4 + p.id * 0.2) * 2.0
-            const spiralChaos = Math.cos(time * 5 + p.id * 0.5) * 1.2
-            const pulseIntensity = Math.sin(time * 6 + p.id * 0.8) * 0.8
-            
-            wobble = Math.sin(time * 6 + p.id) * (size * 1.2) + Math.cos(time * 5 + p.id * 0.4) * (size * 0.9)
-            newRadius = p.radius * (1.5 + explosionWave + spiralChaos + pulseIntensity)
-            newOpacity = 0.95 + Math.sin(time * 8 + p.id) * 0.05
-            newScale = 1.5 + Math.sin(time * 6 + p.id) * 0.8
+            // Flowing into center - particles spiral inward
+            const spiralFactor = Math.sin(time * 2 + p.id * 0.5) * 0.3
+            newRadius = p.radius * (0.8 + spiralFactor)
+            newOpacity = 0.8 + Math.sin(time * 3 + p.id) * 0.2
+            newScale = 1 + Math.sin(time * 4 + p.id) * 0.2
+            wobble = Math.sin(time * 2 + p.id) * (size * 0.15)
           } else {
             // Idle mode - gentle rainbow swirl
             wobble = Math.sin(time * 2 + p.id) * (size * 0.15)
@@ -174,25 +166,18 @@ export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
   }, [state, size])
 
   return (
-    <div className="relative will-change-transform" style={{ width: size, height: size }}>
+    <div className="relative" style={{ width: size, height: size }}>
       <div className="absolute inset-0 flex items-center justify-center">
         {particles.map((particle) => (
           <div
             key={particle.id}
-            className="absolute font-mono text-[12px] font-black whitespace-nowrap pointer-events-none will-change-transform"
+            className="absolute font-mono text-[8px] font-bold whitespace-nowrap transition-all duration-100 pointer-events-none"
             style={{
-              transform: `translate(${particle.x}px, ${particle.y}px) scale(${particle.scale}) rotate(${particle.angle * 57.3}deg)`,
+              transform: `translate(${particle.x}px, ${particle.y}px) scale(${particle.scale})`,
               color: particle.color,
               opacity: particle.opacity * (isBlinking ? 0.3 : 1),
-              textShadow: state === "responding" 
-                ? `0 0 25px currentColor, 0 0 50px currentColor, 0 0 75px currentColor, 0 0 100px ${particle.color}40`
-                : state === "thinking"
-                  ? `0 0 18px currentColor, 0 0 36px currentColor, 0 0 54px currentColor`
-                  : `0 0 10px currentColor, 0 0 20px currentColor`,
-              filter: `blur(${state === "responding" ? "1px" : state === "thinking" ? "0.6px" : "0px"}) brightness(${state === "responding" ? "1.3" : "1"})`,
-              fontWeight: 900,
-              transition: state === "responding" ? "none" : "all 0.1s ease-out",
-              WebkitFontSmoothing: "antialiased",
+              textShadow: `0 0 ${state === "thinking" ? "10px" : "6px"} currentColor, 0 0 ${state === "thinking" ? "20px" : "12px"} currentColor`,
+              filter: `blur(${state === "thinking" ? "0.5px" : "0px"})`,
             }}
           >
             {particle.code}
@@ -201,37 +186,24 @@ export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
       </div>
 
       <div
-        className={`absolute inset-0 rounded-full p-0.5 transition-all duration-300 will-change-transform ${
+        className={`absolute inset-0 rounded-full p-0.5 transition-all duration-300 ${
           state === "thinking"
-            ? "shadow-[0_0_50px_rgba(168,85,247,0.7)] ring-3 ring-purple-500/30"
+            ? "shadow-lg shadow-purple-500/50"
             : state === "responding"
-              ? "shadow-[0_0_70px_rgba(34,211,238,0.9)] ring-6 ring-cyan-500/50"
+              ? "shadow-lg shadow-cyan-500/50"
               : "shadow-lg shadow-accent/30"
         }`}
         style={{
-          transform: state === "responding" ? "scale(1.15)" : state === "thinking" ? "scale(1.08)" : "scale(1)",
+          transform: state === "thinking" ? "scale(1.05)" : "scale(1)",
           opacity: avatarOpacity,
-          filter: state === "responding" ? "brightness(1.2)" : "brightness(1)",
         }}
       >
-        {/* Simplified inner glow - removed animate-pulse for performance */}
-        {state === "responding" && (
-          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500/25 to-purple-500/25 blur-lg" />
-        )}
-        
         <Image
           src="/crowe-logic-logo.png"
-          alt="Crowe Logic Interface"
+          alt="Crowe Logic AI"
           width={size}
           height={size}
-          className={`rounded-full border-4 relative z-10 ${
-            state === "responding" 
-              ? "border-cyan-400/90 shadow-[0_0_30px_rgba(34,211,238,0.8)]" 
-              : state === "thinking"
-                ? "border-purple-400/70 shadow-[0_0_20px_rgba(168,85,247,0.6)]"
-                : "border-accent/50"
-          }`}
-          priority={size > 100}
+          className="rounded-full border-2 border-accent/50"
         />
       </div>
     </div>

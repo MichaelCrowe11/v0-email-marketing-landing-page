@@ -1,57 +1,35 @@
-'use client'
+import Image from "next/image"
 
-import Image, { ImageProps } from 'next/image'
-import { useState } from 'react'
-import { cn } from '@/lib/utils'
-
-interface OptimizedImageProps extends Omit<ImageProps, 'placeholder'> {
-  blurDataURL?: string
-  showPlaceholder?: boolean
+interface OptimizedImageProps {
+  src: string
+  alt: string
+  width: number
+  height: number
+  priority?: boolean
+  quality?: number
+  className?: string
 }
 
 export function OptimizedImage({
   src,
   alt,
-  className,
-  blurDataURL,
-  showPlaceholder = true,
+  width,
+  height,
   priority = false,
-  loading,
-  ...props
+  quality = 85,
+  className,
 }: OptimizedImageProps) {
-  const [isLoading, setIsLoading] = useState(true)
-  const [hasError, setHasError] = useState(false)
-
   return (
-    <div className={cn('relative overflow-hidden', className)}>
-      {isLoading && showPlaceholder && (
-        <div className="absolute inset-0 bg-muted animate-pulse" />
-      )}
-      
-      {hasError ? (
-        <div className="absolute inset-0 flex items-center justify-center bg-muted text-muted-foreground text-sm">
-          Failed to load image
-        </div>
-      ) : (
-        <Image
-          src={src}
-          alt={alt}
-          className={cn(
-            'transition-opacity duration-300',
-            isLoading ? 'opacity-0' : 'opacity-100'
-          )}
-          placeholder={blurDataURL ? 'blur' : 'empty'}
-          blurDataURL={blurDataURL}
-          priority={priority}
-          loading={loading}
-          onLoad={() => setIsLoading(false)}
-          onError={() => {
-            setIsLoading(false)
-            setHasError(true)
-          }}
-          {...props}
-        />
-      )}
-    </div>
+    <Image
+      src={src || "/placeholder.svg"}
+      alt={alt}
+      width={width}
+      height={height}
+      quality={quality}
+      priority={priority}
+      loading={priority ? "eager" : "lazy"}
+      className={className}
+      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+    />
   )
 }
