@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Search, Thermometer, Droplets, TrendingUp, DollarSign, Beaker, ChefHat } from "lucide-react"
-import { createBrowserClient } from "@supabase/ssr"
+import { createClient } from "@/lib/supabase/client"
 
 export default function SpeciesLibraryPage() {
   const [species, setSpecies] = useState<any[]>([])
@@ -16,10 +16,7 @@ export default function SpeciesLibraryPage() {
   const [selectedDifficulty, setSelectedDifficulty] = useState("all")
   const [loading, setLoading] = useState(true)
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  )
+  const supabase = createClient()
 
   useEffect(() => {
     loadSpecies()
@@ -31,6 +28,14 @@ export default function SpeciesLibraryPage() {
 
   async function loadSpecies() {
     try {
+      if (!supabase) {
+        console.warn("[v0] Supabase not configured, using empty species data")
+        setSpecies([])
+        setFilteredSpecies([])
+        setLoading(false)
+        return
+      }
+
       const { data, error } = await supabase
         .from("mushroom_species_library")
         .select("*")

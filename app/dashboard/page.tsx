@@ -49,6 +49,19 @@ export default function DashboardPage() {
 
   async function loadDashboardData() {
     try {
+      // Check if Supabase is configured
+      if (!supabase) {
+        console.warn("[v0] Supabase not configured, using mock data")
+        setStats({
+          activeProjects: 0,
+          totalHarvests: 0,
+          avgYield: 0,
+          alertsCount: 0,
+        })
+        setLoading(false)
+        return
+      }
+
       // Get user
       const {
         data: { user },

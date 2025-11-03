@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Search, Clock, TrendingUp, AlertTriangle, CheckCircle2, Eye, BookOpen, Play } from "lucide-react"
-import { createBrowserClient } from "@supabase/ssr"
+import { createClient } from "@/lib/supabase/client"
 import Link from "next/link"
 
 export default function SOPsPage() {
@@ -18,10 +18,7 @@ export default function SOPsPage() {
   const [selectedDifficulty, setSelectedDifficulty] = useState("all")
   const [loading, setLoading] = useState(true)
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  )
+  const supabase = createClient()
 
   useEffect(() => {
     loadSOPs()
@@ -33,6 +30,14 @@ export default function SOPsPage() {
 
   async function loadSOPs() {
     try {
+      if (!supabase) {
+        console.warn("[v0] Supabase not configured, using empty SOPs")
+        setSops([])
+        setFilteredSops([])
+        setLoading(false)
+        return
+      }
+
       const { data, error } = await supabase
         .from("sops")
         .select("*")

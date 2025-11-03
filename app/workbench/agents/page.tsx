@@ -12,19 +12,19 @@ export default function AgentsPage() {
 
   const agents = [
     {
-      name: "DeepParallel",
-      subtitle: "The Strategist",
-      description: "Fast, efficient, tactical thinker for rapid analysis and quick insights",
+      name: "DeepParallel Genesis",
+      subtitle: "Compound Ideation Engine",
+      description: "Generate novel molecular candidates through parallel exploration of chemical spaces",
       avatar: "/crowe-logic-logo.png",
       primaryColor: "#22D3EE", // cyan
-      secondaryColor: "#3B82F6", // blue
+      secondaryColor: "#A855F7", // purple
       state: strategistState,
       setState: setStrategistState,
     },
     {
-      name: "DeepThought",
-      subtitle: "The Philosopher",
-      description: "Deep reasoning and complex problem-solving with profound insights",
+      name: "DeepParallel",
+      subtitle: "Core Orchestration System",
+      description: "Central coordination of 150+ specialized agents across parallel workflows",
       avatar: "/crowe-logic-logo.png",
       primaryColor: "#A855F7", // purple
       secondaryColor: "#EC4899", // pink
@@ -32,12 +32,22 @@ export default function AgentsPage() {
       setState: setPhilosopherState,
     },
     {
-      name: "DeepVision",
-      subtitle: "The Visionary",
-      description: "Visual analysis and pattern recognition with creative solutions",
+      name: "DeepParallel Quantum States",
+      subtitle: "Quantum Chemistry Engine",
+      description: "High-accuracy electronic structure calculations and molecular state predictions",
       avatar: "/crowe-logic-logo.png",
-      primaryColor: "#10B981", // green
-      secondaryColor: "#F59E0B", // amber
+      primaryColor: "#8B5CF6", // purple
+      secondaryColor: "#06B6D4", // cyan
+      state: visionaryState,
+      setState: setVisionaryState,
+    },
+    {
+      name: "DeepParallel Synthesis",
+      subtitle: "Retrosynthetic Planning Engine",
+      description: "AI-driven synthesis route design and optimization for scalable production",
+      avatar: "/crowe-logic-logo.png",
+      primaryColor: "#F59E0B", // gold
+      secondaryColor: "#8B5CF6", // purple
       state: visionaryState,
       setState: setVisionaryState,
     },
@@ -67,7 +77,7 @@ export default function AgentsPage() {
         </div>
 
         {/* Agents Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {agents.map((agent, index) => (
             <div key={index} className="flex flex-col items-center">
               <div className="glass-card rounded-2xl p-8 border border-border hover:border-accent/50 transition-all w-full">

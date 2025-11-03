@@ -1,10 +1,9 @@
 import { Resend } from "resend"
 
-if (!process.env.RESEND_API_KEY) {
-  throw new Error("RESEND_API_KEY is not set")
-}
+const RESEND_API_KEY = process.env.RESEND_API_KEY
+const isResendConfigured = Boolean(RESEND_API_KEY)
 
-export const resend = new Resend(process.env.RESEND_API_KEY)
+export const resend = isResendConfigured ? new Resend(RESEND_API_KEY) : null
 
 // Email configuration
 export const EMAIL_CONFIG = {
@@ -26,6 +25,11 @@ export async function sendEmail({
   text?: string
   replyTo?: string
 }) {
+  if (!isResendConfigured || !resend) {
+    console.warn("[v0] Resend not configured, skipping email send")
+    return { success: false, error: "Email service not configured" }
+  }
+
   try {
     const { data, error } = await resend.emails.send({
       from: EMAIL_CONFIG.from,

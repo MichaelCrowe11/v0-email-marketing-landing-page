@@ -10,13 +10,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Email and name are required" }, { status: 400 })
     }
 
-    await sendEmail({
+    const emailResult = await sendEmail({
       to: email,
       subject: "Welcome to Crowe Logic!",
       html: getWelcomeEmailHTML({ name }),
     })
 
-    return NextResponse.json({ success: true })
+    if (!emailResult.success) {
+      console.warn("[v0] Email service not configured, welcome email skipped")
+    }
+
+    return NextResponse.json({ success: true, emailSent: emailResult.success })
   } catch (error) {
     console.error("[v0] Welcome email error:", error)
     return NextResponse.json({ error: "Failed to send welcome email" }, { status: 500 })
