@@ -406,61 +406,61 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                       <button
                         onClick={() => handleSuggestionClick("Analyze this contamination and provide triage protocol with confidence levels")}
-                        className="group relative p-5 rounded-2xl bg-gradient-to-br from-red-500/10 to-orange-500/10 border-2 border-red-500/20 hover:border-red-500/50 transition-all text-left shadow-lg hover:shadow-red-500/20 hover:scale-105 transform duration-200"
+                        className="group relative p-5 rounded-2xl bg-zinc-800/90 border border-zinc-700 hover:border-zinc-600 transition-all text-left shadow-lg hover:shadow-zinc-900/50 hover:scale-105 transform duration-200 backdrop-blur-sm"
                       >
-                        <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="absolute inset-0 bg-zinc-700/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
                         <div className="relative">
-                          <div className="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                            <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <div className="w-10 h-10 rounded-xl bg-zinc-700/50 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                             </svg>
                           </div>
-                          <div className="text-sm font-bold text-foreground mb-1">Contamination Triage</div>
-                          <div className="text-xs text-muted-foreground">Vision-powered analysis</div>
+                          <div className="text-sm font-bold text-white mb-1">Contamination Triage</div>
+                          <div className="text-xs text-zinc-300">Vision-powered analysis</div>
                         </div>
                       </button>
 
                       <button
                         onClick={() => handleSuggestionClick("Optimize substrate formula for Pleurotus ostreatus with yield predictions")}
-                        className="group relative p-5 rounded-2xl bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-2 border-green-500/20 hover:border-green-500/50 transition-all text-left shadow-lg hover:shadow-green-500/20 hover:scale-105 transform duration-200"
+                        className="group relative p-5 rounded-2xl bg-zinc-800/90 border border-zinc-700 hover:border-zinc-600 transition-all text-left shadow-lg hover:shadow-zinc-900/50 hover:scale-105 transform duration-200 backdrop-blur-sm"
                       >
-                        <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="absolute inset-0 bg-zinc-700/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
                         <div className="relative">
-                          <div className="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                            <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <div className="w-10 h-10 rounded-xl bg-zinc-700/50 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                             </svg>
                           </div>
-                          <div className="text-sm font-bold text-foreground mb-1">Substrate Optimization</div>
-                          <div className="text-xs text-muted-foreground">Formula engineering</div>
+                          <div className="text-sm font-bold text-white mb-1">Substrate Optimization</div>
+                          <div className="text-xs text-zinc-300">Formula engineering</div>
                         </div>
                       </button>
 
                       <button
                         onClick={() => handleSuggestionClick("Generate production SOP for commercial oyster cultivation with safety protocols")}
-                        className="group relative p-5 rounded-2xl bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border-2 border-blue-500/20 hover:border-blue-500/50 transition-all text-left shadow-lg hover:shadow-blue-500/20 hover:scale-105 transform duration-200"
+                        className="group relative p-5 rounded-2xl bg-zinc-800/90 border border-zinc-700 hover:border-zinc-600 transition-all text-left shadow-lg hover:shadow-zinc-900/50 hover:scale-105 transform duration-200 backdrop-blur-sm"
                       >
-                        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="absolute inset-0 bg-zinc-700/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
                         <div className="relative">
-                          <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                            <FileText className="w-5 h-5 text-blue-400" />
+                          <div className="w-10 h-10 rounded-xl bg-zinc-700/50 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                            <FileText className="w-5 h-5 text-white" />
                           </div>
-                          <div className="text-sm font-bold text-foreground mb-1">SOP Generation</div>
-                          <div className="text-xs text-muted-foreground">Production protocols</div>
+                          <div className="text-sm font-bold text-white mb-1">SOP Generation</div>
+                          <div className="text-xs text-zinc-300">Production protocols</div>
                         </div>
                       </button>
 
                       <button
                         onClick={() => handleSuggestionClick("Write Python code to analyze growth data and predict harvest timing")}
-                        className="group relative p-5 rounded-2xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-2 border-purple-500/20 hover:border-purple-500/50 transition-all text-left shadow-lg hover:shadow-purple-500/20 hover:scale-105 transform duration-200"
+                        className="group relative p-5 rounded-2xl bg-zinc-800/90 border border-zinc-700 hover:border-zinc-600 transition-all text-left shadow-lg hover:shadow-zinc-900/50 hover:scale-105 transform duration-200 backdrop-blur-sm"
                       >
-                        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="absolute inset-0 bg-zinc-700/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
                         <div className="relative">
-                          <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                            <Code className="w-5 h-5 text-purple-400" />
+                          <div className="w-10 h-10 rounded-xl bg-zinc-700/50 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                            <Code className="w-5 h-5 text-white" />
                           </div>
-                          <div className="text-sm font-bold text-foreground mb-1">Code Generation</div>
-                          <div className="text-xs text-muted-foreground">Analysis automation</div>
+                          <div className="text-sm font-bold text-white mb-1">Code Generation</div>
+                          <div className="text-xs text-zinc-300">Analysis automation</div>
                         </div>
                       </button>
                     </div>

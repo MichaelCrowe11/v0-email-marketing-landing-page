@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import {
   Table,
   TableBody,
@@ -35,88 +35,46 @@ import {
 interface DataViewerProps {
   fileName?: string
   onGenerateCode?: (code: string) => void
+  data?: any[]
 }
 
-// Mock mushroom cultivation data
-const mushroomData = [
-  {
-    id: 1,
-    species: "Pleurotus ostreatus",
-    substrate: "Oak sawdust",
-    inoculation_date: "2024-01-15",
-    harvest_date: "2024-02-28",
-    temperature_avg: 72.3,
-    humidity_avg: 85.2,
-    co2_level: 1200,
-    yield_wet_g: 2456.7,
-    yield_dry_g: 245.2,
-    contamination_rate: 0.02,
-    ph_level: 6.8,
-    moisture_content: 0.65
-  },
-  {
-    id: 2,
-    species: "Shiitake",
-    substrate: "Oak logs",
-    inoculation_date: "2024-01-20",
-    harvest_date: "2024-04-15",
-    temperature_avg: 68.5,
-    humidity_avg: 78.9,
-    co2_level: 1100,
-    yield_wet_g: 1789.3,
-    yield_dry_g: 178.4,
-    contamination_rate: 0.01,
-    ph_level: 6.2,
-    moisture_content: 0.58
-  },
-  {
-    id: 3,
-    species: "Pleurotus eryngii",
-    substrate: "Cotton hulls",
-    inoculation_date: "2024-01-22",
-    harvest_date: "2024-03-08",
-    temperature_avg: 74.1,
-    humidity_avg: 88.7,
-    co2_level: 1350,
-    yield_wet_g: 3201.5,
-    yield_dry_g: 312.8,
-    contamination_rate: 0.03,
-    ph_level: 7.1,
-    moisture_content: 0.72
-  },
-  {
-    id: 4,
-    species: "Ganoderma lucidum",
-    substrate: "Hardwood chips",
-    inoculation_date: "2024-01-25",
-    harvest_date: "2024-06-12",
-    temperature_avg: 70.8,
-    humidity_avg: 82.4,
-    co2_level: 980,
-    yield_wet_g: 892.6,
-    yield_dry_g: 89.1,
-    contamination_rate: 0.01,
-    ph_level: 6.5,
-    moisture_content: 0.45
-  },
-  {
-    id: 5,
-    species: "Lions Mane",
-    substrate: "Beech sawdust",
-    inoculation_date: "2024-01-28",
-    harvest_date: "2024-03-20",
-    temperature_avg: 71.2,
-    humidity_avg: 84.6,
-    co2_level: 1250,
-    yield_wet_g: 1967.8,
-    yield_dry_g: 196.3,
-    contamination_rate: 0.02,
-    ph_level: 6.9,
-    moisture_content: 0.62
-  }
-]
+// Hook to load data from the uploaded dataset
+function useDataset(fileName: string | undefined, providedData?: any[]) {
+  const [data, setData] = useState<any[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-export function DataViewer({ fileName, onGenerateCode }: DataViewerProps) {
+  useEffect(() => {
+    if (providedData && providedData.length > 0) {
+      setData(providedData)
+      setLoading(false)
+      setError(null)
+      return
+    }
+
+    if (!fileName) {
+      setData([])
+      setLoading(false)
+      setError(null)
+      return
+    }
+
+    setLoading(true)
+    setError(null)
+
+    // In a real implementation, this would load data from your file system or API
+    // For now, we'll just show an empty state
+    setTimeout(() => {
+      setData([])
+      setLoading(false)
+      setError(null)
+    }, 100)
+  }, [fileName, providedData])
+
+  return { data, loading, error }
+}
+
+export function DataViewer({ fileName, onGenerateCode, data: providedData }: DataViewerProps) {
   const [searchTerm, setSearchTerm] = useState("")
   const [sortColumn, setSortColumn] = useState<string | null>(null)
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
@@ -124,17 +82,21 @@ export function DataViewer({ fileName, onGenerateCode }: DataViewerProps) {
   const [pageSize, setPageSize] = useState(10)
   const [selectedRows, setSelectedRows] = useState<number[]>([])
 
+  const { data: mushroomData, loading, error } = useDataset(fileName, providedData)
+
   // Get column names
   const columns = useMemo(() => {
     if (mushroomData.length === 0) return []
     return Object.keys(mushroomData[0]).filter(key => key !== 'id')
-  }, [])
+  }, [mushroomData])
 
   // Filter and sort data
   const filteredData = useMemo(() => {
+    if (!mushroomData.length) return []
+
     let filtered = mushroomData.filter(row =>
       Object.values(row).some(value =>
-        value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+        value?.toString().toLowerCase().includes(searchTerm.toLowerCase())
       )
     )
 
@@ -156,7 +118,7 @@ export function DataViewer({ fileName, onGenerateCode }: DataViewerProps) {
     }
 
     return filtered
-  }, [searchTerm, sortColumn, sortDirection])
+  }, [mushroomData, searchTerm, sortColumn, sortDirection])
 
   // Pagination
   const totalPages = Math.ceil(filteredData.length / pageSize)
@@ -164,6 +126,63 @@ export function DataViewer({ fileName, onGenerateCode }: DataViewerProps) {
     const start = (currentPage - 1) * pageSize
     return filteredData.slice(start, start + pageSize)
   }, [filteredData, currentPage, pageSize])
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="flex flex-col h-full bg-card border border-border rounded-lg">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading data...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="flex flex-col h-full bg-card border border-border rounded-lg">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <p className="text-destructive mb-2">Error loading data</p>
+            <p className="text-sm text-muted-foreground">{error}</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Show empty state
+  if (!mushroomData.length) {
+    return (
+      <div className="flex flex-col h-full bg-card border border-border rounded-lg">
+        <div className="flex items-center justify-between p-4 border-b border-border">
+          <div className="flex items-center gap-3">
+            <Database className="w-5 h-5 text-primary" />
+            <div>
+              <h3 className="text-lg font-semibold">
+                {fileName || "No dataset selected"}
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                No data available
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center justify-center flex-1">
+          <div className="text-center">
+            <Database className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+            <p className="text-muted-foreground">
+              {fileName ? "No data found in this file" : "Select a dataset to view data"}
+            </p>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   const handleSort = (column: string) => {
     if (sortColumn === column) {

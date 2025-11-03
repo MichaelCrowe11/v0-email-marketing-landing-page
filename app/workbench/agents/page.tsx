@@ -9,6 +9,7 @@ export default function AgentsPage() {
   const [strategistState, setStrategistState] = useState<"idle" | "thinking" | "reasoning" | "complete">("idle")
   const [philosopherState, setPhilosopherState] = useState<"idle" | "thinking" | "reasoning" | "complete">("idle")
   const [visionaryState, setVisionaryState] = useState<"idle" | "thinking" | "reasoning" | "complete">("idle")
+  const [croweLogicState, setCroweLogicState] = useState<"idle" | "thinking" | "reasoning" | "complete">("idle")
 
   const agents = [
     {
@@ -51,6 +52,16 @@ export default function AgentsPage() {
       state: visionaryState,
       setState: setVisionaryState,
     },
+    {
+      name: "Crowe Logic",
+      subtitle: "Agentic Coding Assistant",
+      description: "Advanced coding AI specialized in research-oriented development workflows",
+      avatar: "/crowe-logic-logo.png",
+      primaryColor: "#F97316", // orange
+      secondaryColor: "#DC2626", // red
+      state: croweLogicState,
+      setState: setCroweLogicState,
+    },
   ]
 
   const simulateReasoning = (setState: React.Dispatch<React.SetStateAction<"idle" | "thinking" | "reasoning" | "complete">>) => {
@@ -77,7 +88,7 @@ export default function AgentsPage() {
         </div>
 
         {/* Agents Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
           {agents.map((agent, index) => (
             <div key={index} className="flex flex-col items-center">
               <div className="glass-card rounded-2xl p-8 border border-border hover:border-accent/50 transition-all w-full">
@@ -166,6 +177,7 @@ export default function AgentsPage() {
               simulateReasoning(setStrategistState)
               setTimeout(() => simulateReasoning(setPhilosopherState), 500)
               setTimeout(() => simulateReasoning(setVisionaryState), 1000)
+              setTimeout(() => simulateReasoning(setCroweLogicState), 1500)
             }}
             size="lg"
             className="bg-gradient-to-r from-cyan-500 via-purple-500 to-green-500"
