@@ -1,6 +1,6 @@
 "use client"
 
-import { Brain, Eye, Zap, ChevronDown, Code2, Sparkles } from "lucide-react"
+import { Brain, Eye, Zap, ChevronDown, Code2, Sparkles, Cpu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-export type AgentType = "deepparallel" | "deepthought" | "deepvision" | "crowelogic" | "o1"
+export type AgentType = "deepparallel" | "deepthought" | "deepvision" | "crowelogic" | "o1" | "deepseek"
 
 interface Agent {
   id: AgentType
@@ -60,6 +60,14 @@ const agents: Agent[] = [
     icon: Sparkles,
     color: "from-violet-400 to-fuchsia-500",
     specialty: "Advanced Reasoning",
+  },
+  {
+    id: "deepseek",
+    name: "Crowe Logic DeepSeek",
+    description: "High-efficiency reasoning with advanced code generation",
+    icon: Cpu,
+    color: "from-blue-400 to-indigo-500",
+    specialty: "Efficient Reasoning",
   },
 ]
 

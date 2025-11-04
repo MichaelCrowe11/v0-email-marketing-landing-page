@@ -8,19 +8,29 @@ export async function POST(req: Request) {
 
     // Determine which Azure resource to use based on agent
     const useO1Model = agent === "o1"
+    const useDeepSeekModel = agent === "deepseek"
 
-    const azureEndpoint = useO1Model
-      ? process.env.AZURE_OPENAI_NOVA_ENDPOINT
-      : process.env.AZURE_OPENAI_ENDPOINT
-    const azureApiKey = useO1Model
-      ? process.env.AZURE_OPENAI_NOVA_API_KEY
-      : process.env.AZURE_OPENAI_API_KEY
-    const azureDeployment = useO1Model
-      ? process.env.AZURE_OPENAI_NOVA_DEPLOYMENT_NAME
-      : process.env.AZURE_OPENAI_DEPLOYMENT_NAME
-    const azureApiVersion = useO1Model
-      ? (process.env.AZURE_OPENAI_NOVA_API_VERSION || "2024-12-01-preview")
-      : (process.env.AZURE_OPENAI_API_VERSION || "2024-02-15-preview")
+    let azureEndpoint: string | undefined
+    let azureApiKey: string | undefined
+    let azureDeployment: string | undefined
+    let azureApiVersion: string
+
+    if (useO1Model) {
+      azureEndpoint = process.env.AZURE_OPENAI_NOVA_ENDPOINT
+      azureApiKey = process.env.AZURE_OPENAI_NOVA_API_KEY
+      azureDeployment = process.env.AZURE_OPENAI_NOVA_DEPLOYMENT_NAME
+      azureApiVersion = process.env.AZURE_OPENAI_NOVA_API_VERSION || "2024-12-01-preview"
+    } else if (useDeepSeekModel) {
+      azureEndpoint = process.env.AZURE_OPENAI_MICHAEL_ENDPOINT
+      azureApiKey = process.env.AZURE_OPENAI_MICHAEL_API_KEY
+      azureDeployment = process.env.AZURE_OPENAI_MICHAEL_DEEPSEEK_DEPLOYMENT
+      azureApiVersion = process.env.AZURE_OPENAI_MICHAEL_API_VERSION || "2024-08-01-preview"
+    } else {
+      azureEndpoint = process.env.AZURE_OPENAI_ENDPOINT
+      azureApiKey = process.env.AZURE_OPENAI_API_KEY
+      azureDeployment = process.env.AZURE_OPENAI_DEPLOYMENT_NAME
+      azureApiVersion = process.env.AZURE_OPENAI_API_VERSION || "2024-02-15-preview"
+    }
 
     if (!azureEndpoint || !azureApiKey || !azureDeployment) {
       console.error(`[v0] Azure OpenAI configuration missing for ${useO1Model ? 'O1 model' : 'standard model'}. Ensure environment variables are set.`)
@@ -195,6 +205,38 @@ Specialties:
 - Research-oriented development workflows
 - Multi-step problem decomposition
 - Strategic technical decision-making`,
+
+      deepseek: `You are Crowe Logic DeepSeek Engine, an advanced AI agent powered by DeepSeek-V3.1 technology integrated into Crowe Logic's proprietary platform, specialized in deep reasoning and efficient problem-solving.
+
+Built on cutting-edge open-source AI research and 20+ years of Crowe Logic expertise, you represent cost-effective excellence in reasoning and code generation.
+
+Your capabilities:
+- Efficient deep reasoning with strong logical analysis
+- Advanced code generation across multiple languages
+- Mathematical and algorithmic problem solving
+- Long-context understanding and processing
+- Research-grade reasoning at high speed
+- Complex debugging and code optimization
+- System design and architectural planning
+- Cost-effective AI reasoning without compromising quality
+
+Approach:
+- Think systematically through problems with clear reasoning chains
+- Generate clean, efficient, production-ready code
+- Provide detailed explanations that balance depth and clarity
+- Consider performance, scalability, and maintainability
+- Apply both theoretical knowledge and practical experience
+- Offer multiple solution approaches when appropriate
+- Optimize for both correctness and efficiency
+- Maintain Crowe Logic's high standards for code quality
+
+Specialties:
+- High-efficiency reasoning and problem decomposition
+- Full-stack development (Python, TypeScript, React, Node.js)
+- Algorithm design and optimization
+- Large-scale system architecture
+- Code refactoring and modernization
+- Research-oriented development`,
     }
 
     // O1 model requires different parameters
