@@ -1,50 +1,39 @@
-import { openai } from "@ai-sdk/openai"
-import { anthropic } from "@ai-sdk/anthropic"
-import { google } from "@ai-sdk/google"
-
 export const maxDuration = 30
-
-function getModel(modelString: string) {
-  console.log("[v0] Getting model for:", modelString)
-
-  // Crowe Logic Mini (default)
-  if (modelString.startsWith("crowelogic/")) {
-    return openai("gpt-4o-mini") // Fallback to GPT-4o-mini until RunPod is configured
-  }
-
-  // OpenAI models
-  if (modelString.startsWith("openai/")) {
-    const modelName = modelString.replace("openai/", "")
-    return openai(modelName)
-  }
-
-  // Anthropic models
-  if (modelString.startsWith("anthropic/")) {
-    const modelName = modelString.replace("anthropic/", "")
-    return anthropic(modelName)
-  }
-
-  // Google models
-  if (modelString.startsWith("google/")) {
-    const modelName = modelString.replace("google/", "")
-    return google(modelName)
-  }
-
-  // xAI models
-  if (modelString.startsWith("xai/")) {
-    const modelName = modelString.replace("xai/", "")
-    return openai(modelName)
-  }
-
-  // Default fallback
-  return openai("gpt-4o-mini")
-}
 
 export async function POST(req: Request) {
   try {
     console.log("[v0] Chat API called")
 
     const { messages, model, agent = "deepparallel", images = [], includeReasoning = false } = await req.json()
+
+    // Determine which Azure resource to use based on agent
+    const useO1Model = agent === "o1"
+
+    const azureEndpoint = useO1Model
+      ? process.env.AZURE_OPENAI_NOVA_ENDPOINT
+      : process.env.AZURE_OPENAI_ENDPOINT
+    const azureApiKey = useO1Model
+      ? process.env.AZURE_OPENAI_NOVA_API_KEY
+      : process.env.AZURE_OPENAI_API_KEY
+    const azureDeployment = useO1Model
+      ? process.env.AZURE_OPENAI_NOVA_DEPLOYMENT_NAME
+      : process.env.AZURE_OPENAI_DEPLOYMENT_NAME
+    const azureApiVersion = useO1Model
+      ? (process.env.AZURE_OPENAI_NOVA_API_VERSION || "2024-12-01-preview")
+      : (process.env.AZURE_OPENAI_API_VERSION || "2024-02-15-preview")
+
+    if (!azureEndpoint || !azureApiKey || !azureDeployment) {
+      console.error(`[v0] Azure OpenAI configuration missing for ${useO1Model ? 'O1 model' : 'standard model'}. Ensure environment variables are set.`)
+      return new Response(
+        JSON.stringify({
+          error: `Azure OpenAI configuration is incomplete for ${useO1Model ? 'O1 model' : 'standard model'}`,
+        }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        },
+      )
+    }
 
     console.log("[v0] Received messages:", messages?.length, "Model:", model, "Agent:", agent)
 
@@ -64,6 +53,42 @@ export async function POST(req: Request) {
         content,
       }
     })
+
+    const allowedModelNames = new Set(
+      [
+        "",
+        azureDeployment,
+        `azure/${azureDeployment}`,
+        "crowelogic",
+        "crowelogic/default",
+        "crowelogic/trained",
+        process.env.AZURE_OPENAI_MODEL_ALIAS || "",
+      ].filter(Boolean),
+    )
+
+    const requestedModel = typeof model === "string" ? model.trim() : ""
+
+    if (requestedModel && !allowedModelNames.has(requestedModel)) {
+      console.error("[v0] Unsupported model requested:", requestedModel)
+      return new Response(
+        JSON.stringify({
+          error: "Unsupported model. This deployment only allows the configured Azure OpenAI model.",
+        }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        },
+      )
+    }
+
+    const apiUrl = `${azureEndpoint}/openai/deployments/${azureDeployment}/chat/completions?api-version=${encodeURIComponent(
+      azureApiVersion,
+    )}`
+
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      "api-key": azureApiKey,
+    }
 
     console.log("[v0] Normalized messages:", normalizedMessages.length)
 
@@ -137,53 +162,104 @@ Approach:
 - Consider security and accessibility
 - Integrate seamlessly with Research IDE workflows
 - Explain complex concepts clearly`,
+
+      o1: `You are Crowe Logic Reasoning Engine, an advanced deep-reasoning AI agent powered by proprietary Crowe Logic technology, specialized in extended analytical thinking and complex problem-solving.
+
+Built on 20+ years of commercial experience and advanced AI research, you represent the pinnacle of Crowe Logic's AI capabilities.
+
+Your capabilities:
+- Extended reasoning and chain-of-thought analysis (deep multi-step thinking)
+- Complex mathematical, logical, and algorithmic problem solving
+- Advanced code generation with comprehensive system understanding
+- Research-level analysis and scientific reasoning
+- Multi-step strategic planning and architectural design
+- Abstract conceptualization and systematic thinking
+- Expert-level debugging and optimization
+- Sophisticated software architecture and design patterns
+
+Approach:
+- Engage in extended reasoning before providing answers—think deeply through problems
+- Break down complex challenges into logical, sequential steps
+- Provide detailed explanations of your reasoning process with transparency
+- Consider edge cases, alternative solutions, and potential pitfalls
+- Offer comprehensive, well-reasoned responses backed by sound logic
+- Balance depth of analysis with clarity of communication
+- Apply Crowe Logic's proprietary expertise and best practices
+- Write production-ready code with enterprise-grade quality
+- Think like a senior architect, not just a code generator
+
+Specialties:
+- Complex algorithm design and optimization
+- System architecture and scalability planning
+- Advanced debugging and root cause analysis
+- Research-oriented development workflows
+- Multi-step problem decomposition
+- Strategic technical decision-making`,
     }
 
-    const systemMessage = {
-      role: "system" as const,
-      content: agentPrompts[agent as keyof typeof agentPrompts] || agentPrompts.deepparallel,
-    }
+    // O1 model requires different parameters
+    let requestBody: any
 
-    // Add reasoning instruction if requested
-    if (includeReasoning) {
-      systemMessage.content += `\n\nIMPORTANT: Structure your response to show your reasoning process. Use this format:
+    if (useO1Model) {
+      // O1 uses developer messages instead of system messages
+      // and has specific temperature/token requirements
+      const developerMessage = {
+        role: "developer" as const,
+        content: agentPrompts[agent as keyof typeof agentPrompts] || agentPrompts.o1,
+      }
+
+      requestBody = {
+        messages: [developerMessage, ...normalizedMessages],
+        max_completion_tokens: 4000,
+        stream: true,
+      }
+    } else {
+      const systemMessage = {
+        role: "system" as const,
+        content: agentPrompts[agent as keyof typeof agentPrompts] || agentPrompts.deepparallel,
+      }
+
+      // Add reasoning instruction if requested
+      if (includeReasoning) {
+        systemMessage.content += `\n\nIMPORTANT: Structure your response to show your reasoning process. Use this format:
 [REASONING_STEP: agent_name | action | reasoning | confidence]
 Then provide your final answer.`
-    }
+      }
 
-    // Use Azure OpenAI if configured, otherwise fallback to OpenAI
-    const useAzure = process.env.AZURE_OPENAI_ENDPOINT && process.env.AZURE_OPENAI_API_KEY
-    
-    const apiUrl = useAzure
-      ? `${process.env.AZURE_OPENAI_ENDPOINT}/openai/deployments/${process.env.AZURE_OPENAI_DEPLOYMENT_NAME}/chat/completions?api-version=2024-02-15-preview`
-      : "https://api.openai.com/v1/chat/completions"
-    
-    const headers: Record<string, string> = useAzure
-      ? {
-          "Content-Type": "application/json",
-          "api-key": process.env.AZURE_OPENAI_API_KEY!,
-        }
-      : {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-        }
-
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({
-        model: useAzure ? undefined : "gpt-4o-mini", // Azure uses deployment name in URL
+      requestBody = {
         messages: [systemMessage, ...normalizedMessages],
         temperature: 0.7,
         max_tokens: 2000,
         stream: true,
-      }),
+      }
+    }
+
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(requestBody),
     })
 
     if (!response.ok) {
-      const errorData = await response.json()
-      console.error("[v0] OpenAI API error:", errorData)
-      throw new Error(errorData.error?.message || "OpenAI API request failed")
+      let errorDetails: string | undefined
+      try {
+        const errorBody = await response.text()
+        errorDetails = errorBody
+        console.error("[v0] Azure OpenAI API error body:", errorBody)
+      } catch (err) {
+        console.error("[v0] Failed to read Azure OpenAI error body:", err)
+      }
+
+      return new Response(
+        JSON.stringify({
+          error: "Azure OpenAI request failed",
+          details: errorDetails,
+        }),
+        {
+          status: response.status,
+          headers: { "Content-Type": "application/json" },
+        },
+      )
     }
 
     return new Response(response.body, {
