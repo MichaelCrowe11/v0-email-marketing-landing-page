@@ -63,11 +63,11 @@ const agents: Agent[] = [
   },
   {
     id: "deepseek",
-    name: "Crowe Logic DeepSeek",
-    description: "High-efficiency reasoning with advanced code generation",
+    name: "Crowe Code",
+    description: "High-speed code generation with deep reasoning capabilities",
     icon: Cpu,
     color: "from-blue-400 to-indigo-500",
-    specialty: "Efficient Reasoning",
+    specialty: "Fast Coding",
   },
 ]
 
