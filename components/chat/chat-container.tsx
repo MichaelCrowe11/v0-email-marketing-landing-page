@@ -12,9 +12,9 @@ import { AgentSwitcher, type AgentType } from "@/components/chat/agent-switcher"
 import { MultimodalInput } from "@/components/chat/multimodal-input"
 import { ReasoningTrace } from "@/components/chat/reasoning-trace"
 import { MarkdownRenderer } from "@/components/chat/markdown-renderer"
-import { FileUpload } from "@/components/chat/file-upload"
+import { CodeUpload } from "@/components/chat/code-upload"
 import { Button } from "@/components/ui/button"
-import { FileText, Code, Download, Copy, Check, Maximize2, Menu, X, FileCode } from "lucide-react"
+import { FileText, Code, Download, Copy, Check, Maximize2, Menu, X, FileCode2 } from "lucide-react"
 
 type Message = {
   id: string
@@ -322,7 +322,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
     setCanvasContent({ content, type, language })
   }
 
-  const handleFileProcess = (prompt: string, filename: string) => {
+  const handleCodeUploaded = (prompt: string, filename: string, language: string) => {
     // Send the generated prompt to the chat
     sendMessage(prompt)
     setShowFileUpload(false)
@@ -1017,7 +1017,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                     onClick={() => setShowFileUpload(!showFileUpload)}
                     className="gap-2 whitespace-nowrap text-xs bg-gradient-to-r from-blue-500/10 to-indigo-500/10 hover:from-blue-500/20 hover:to-indigo-500/20 border-blue-500/30"
                   >
-                    <FileCode className="w-3.5 h-3.5" />
+                    <FileCode2 className="w-3.5 h-3.5" />
                     {showFileUpload ? "Hide" : "Upload"} Code File
                   </Button>
                 </div>
@@ -1038,8 +1038,8 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
               {/* File Upload Component */}
               {showFileUpload && (
                 <div className="mb-4">
-                  <FileUpload
-                    onFileProcess={handleFileProcess}
+                  <CodeUpload
+                    onCodeUploaded={handleCodeUploaded}
                     disabled={isLoading}
                   />
                 </div>

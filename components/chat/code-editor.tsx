@@ -2,19 +2,23 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Play, Copy, Download, Check, X } from "lucide-react"
+import { Play, Copy, Download, Check, X, Upload, Save, RefreshCw } from "lucide-react"
 
 interface CodeEditorProps {
   initialCode: string
   language: string
   onClose: () => void
+  onSave?: (code: string) => void
+  filename?: string
 }
 
-export function CodeEditor({ initialCode, language, onClose }: CodeEditorProps) {
+export function CodeEditor({ initialCode, language, onClose, onSave, filename }: CodeEditorProps) {
   const [code, setCode] = useState(initialCode)
   const [output, setOutput] = useState("")
   const [isRunning, setIsRunning] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [saved, setSaved] = useState(false)
+  const [hasChanges, setHasChanges] = useState(false)
 
   const handleRun = async () => {
     setIsRunning(true)
@@ -52,9 +56,40 @@ export function CodeEditor({ initialCode, language, onClose }: CodeEditorProps) 
     const url = URL.createObjectURL(blob)
     const a = document.createElement("a")
     a.href = url
-    a.download = `code.${language === "python" ? "py" : language === "javascript" ? "js" : "txt"}`
+    const ext = getFileExtension(language)
+    a.download = filename || `code.${ext}`
     a.click()
     URL.revokeObjectURL(url)
+  }
+
+  const handleSave = () => {
+    onSave?.(code)
+    setSaved(true)
+    setHasChanges(false)
+    setTimeout(() => setSaved(false), 2000)
+  }
+
+  const handleReset = () => {
+    setCode(initialCode)
+    setHasChanges(false)
+    setOutput("")
+  }
+
+  const handleCodeChange = (newCode: string) => {
+    setCode(newCode)
+    setHasChanges(newCode !== initialCode)
+  }
+
+  const getFileExtension = (lang: string): string => {
+    const extensions: Record<string, string> = {
+      typescript: "ts",
+      javascript: "js",
+      python: "py",
+      go: "go",
+      rust: "rs",
+      java: "java",
+    }
+    return extensions[lang.toLowerCase()] || "txt"
   }
 
   return (
@@ -77,6 +112,24 @@ export function CodeEditor({ initialCode, language, onClose }: CodeEditorProps) 
           </div>
 
           <div className="flex items-center gap-2">
+            {onSave && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleSave}
+                disabled={!hasChanges}
+                className="gap-2"
+              >
+                {saved ? <Check className="w-4 h-4 text-green-500" /> : <Save className="w-4 h-4" />}
+                {saved ? "Saved" : "Save"}
+              </Button>
+            )}
+            {hasChanges && (
+              <Button variant="outline" size="sm" onClick={handleReset} className="gap-2">
+                <RefreshCw className="w-4 h-4" />
+                Reset
+              </Button>
+            )}
             <Button variant="outline" size="sm" onClick={handleCopy} className="gap-2">
               {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
               Copy
@@ -104,7 +157,7 @@ export function CodeEditor({ initialCode, language, onClose }: CodeEditorProps) 
             </div>
             <textarea
               value={code}
-              onChange={(e) => setCode(e.target.value)}
+              onChange={(e) => handleCodeChange(e.target.value)}
               className="flex-1 p-6 bg-muted/5 text-foreground font-mono text-sm leading-relaxed resize-none focus:outline-none"
               spellCheck={false}
               style={{
@@ -129,12 +182,14 @@ export function CodeEditor({ initialCode, language, onClose }: CodeEditorProps) 
         {/* Footer */}
         <div className="px-6 py-3 border-t border-border bg-muted/20 flex items-center justify-between">
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
+            {filename && <span className="font-medium text-foreground">{filename}</span>}
             <span>Lines: {code.split('\n').length}</span>
             <span>Characters: {code.length}</span>
             <span>Language: {language}</span>
+            {hasChanges && <span className="text-amber-500 font-medium">• Unsaved changes</span>}
           </div>
           <div className="text-xs text-muted-foreground">
-            Press Ctrl+Enter to run • ESC to close
+            {onSave && "Ctrl+S to save • "}Press Ctrl+Enter to run • ESC to close
           </div>
         </div>
       </div>
