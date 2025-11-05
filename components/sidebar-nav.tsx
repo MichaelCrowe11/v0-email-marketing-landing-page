@@ -269,6 +269,22 @@ export function SidebarNav() {
             })}
           </nav>
 
+          {/* AI Co-Pilot Button */}
+          <div className="px-4 pb-3">
+            <Button
+              size="sm"
+              onClick={() => {
+                setShowCopilot(true)
+                setCopilotMinimized(false)
+              }}
+              className="w-full justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-blue-500/25 transition-all h-11 font-semibold"
+            >
+              <Bot className="w-5 h-5" />
+              <span>Crowe Code Co-Pilot</span>
+              <Sparkles className="w-4 h-4 ml-auto" />
+            </Button>
+          </div>
+
           {/* Quick Action Buttons */}
           <div className="px-4 pb-3 space-y-2">
             <div className="grid grid-cols-2 gap-2">
@@ -337,6 +353,15 @@ export function SidebarNav() {
       {/* Overlay for mobile */}
       {isOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 md:hidden" onClick={() => setIsOpen(false)} />
+      )}
+
+      {/* Crowe Code Co-Pilot */}
+      {showCopilot && (
+        <CroweCodeCopilot
+          onClose={() => setShowCopilot(false)}
+          isMinimized={copilotMinimized}
+          onToggleMinimize={() => setCopilotMinimized(!copilotMinimized)}
+        />
       )}
     </>
   )
