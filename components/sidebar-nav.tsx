@@ -31,8 +31,11 @@ import {
   Plus,
   Upload,
   Beaker,
+  Code2,
+  Bot,
 } from "lucide-react"
 import { HEADER_HEIGHT } from "@/components/global-header"
+import { CroweCodeCopilot } from "@/components/chat/crowe-code-copilot"
 
 interface NavItem {
   href: string
@@ -51,6 +54,8 @@ interface NavSection {
 export function SidebarNav() {
   const [isOpen, setIsOpen] = useState(false)
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({})
+  const [showCopilot, setShowCopilot] = useState(false)
+  const [copilotMinimized, setCopilotMinimized] = useState(false)
   const pathname = usePathname()
 
   const navSections: NavSection[] = [
@@ -66,6 +71,7 @@ export function SidebarNav() {
       title: "AI Tools",
       items: [
         { href: "/chat", label: "Crowe Logic Interface", icon: MessageSquare },
+        { href: "/ide", label: "Research IDE", icon: Code2, isNew: true },
         { href: "/workbench", label: "DeepParallel Workbench", icon: Beaker, isNew: true },
         { href: "/crowe-vision", label: "Crowe Vision", icon: Camera, isNew: true },
         { href: "/video-studio", label: "Video Studio", icon: Video, isNew: true },
