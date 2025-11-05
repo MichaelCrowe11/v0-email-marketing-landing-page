@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crowe Logic, Inc | AI Systems Architecture</title>
+  <meta name="description" content="Crowe Logic - Advanced AI reasoning frameworks and multi-agent systems for enterprise solutions">
+  <link rel="stylesheet" href="src/styles/intro.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Preload critical assets -->
+  <link rel="preload" as="image" href="assets/images/crowe-logic-avatar.png">
+</head>
+<body>
+  <!-- 3D Canvas Container (Big Bang Background) -->
+  <div id="canvas-container"></div>
+
+  <!-- Brand Avatar Card -->
+  <div id="brand-avatar" class="brand-avatar">
+    <div class="avatar-container">
+      <img src="assets/images/crowe-logic-avatar.png" alt="Crowe Logic" class="avatar-image">
+    </div>
+    <h1 class="company-name">Michael Crowe</h1>
+    <p class="company-tagline">AI Systems Architect</p>
+  </div>
+
+  <!-- Skip Button -->
+  <button id="skip-intro" class="skip-button" aria-label="Skip introduction">
+    Skip Intro
+  </button>
+
+  <!-- Loading Indicator -->
+  <div id="loader" class="loader">
+    <div class="loader-spinner"></div>
+    <p class="loader-text">Initializing Crowe Logic...</p>
+  </div>
+
+  <!-- Three.js Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r158/three.min.js"></script>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
