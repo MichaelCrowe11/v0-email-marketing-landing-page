@@ -1,0 +1,152 @@
+{
+  "name": "crowe-code",
+  "displayName": "Crowe Code",
+  "description": "AI-powered code generation at the speed of thought. Lightning-fast coding with Crowe Logic's Research IDE.",
+  "version": "0.1.0",
+  "publisher": "crowelogic",
+  "icon": "images/icon.png",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Machine Learning",
+    "Snippets",
+    "Other"
+  ],
+  "keywords": [
+    "ai",
+    "code generation",
+    "copilot",
+    "autocomplete",
+    "crowe logic",
+    "deepseek",
+    "gpt-4",
+    "coding assistant"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "croweCode.generateCode",
+        "title": "Crowe Code: Generate Code"
+      },
+      {
+        "command": "croweCode.explainCode",
+        "title": "Crowe Code: Explain Code"
+      },
+      {
+        "command": "croweCode.refactorCode",
+        "title": "Crowe Code: Refactor Code"
+      },
+      {
+        "command": "croweCode.fixBug",
+        "title": "Crowe Code: Fix Bug"
+      },
+      {
+        "command": "croweCode.openChat",
+        "title": "Crowe Code: Open Chat"
+      },
+      {
+        "command": "croweCode.switchAgent",
+        "title": "Crowe Code: Switch AI Agent"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "croweCode.generateCode",
+        "key": "ctrl+shift+g",
+        "mac": "cmd+shift+g",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "croweCode.openChat",
+        "key": "ctrl+shift+c",
+        "mac": "cmd+shift+c"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "crowe-code",
+          "title": "Crowe Code",
+          "icon": "images/sidebar-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "crowe-code": [
+        {
+          "id": "croweCodeChat",
+          "name": "Chat"
+        },
+        {
+          "id": "croweCodeAgents",
+          "name": "AI Agents"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Crowe Code",
+      "properties": {
+        "croweCode.apiEndpoint": {
+          "type": "string",
+          "default": "https://crowelogic.ai/api",
+          "description": "Crowe Logic Research IDE API endpoint"
+        },
+        "croweCode.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Your Crowe Logic API key"
+        },
+        "croweCode.defaultAgent": {
+          "type": "string",
+          "enum": ["croweCode", "croweLogic", "o1", "deepParallel", "deepThought"],
+          "default": "croweCode",
+          "description": "Default AI agent for code generation"
+        },
+        "croweCode.enableInlineCompletions": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable inline code completions (like Copilot)"
+        },
+        "croweCode.completionDelay": {
+          "type": "number",
+          "default": 500,
+          "description": "Delay in milliseconds before triggering completions"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "lint": "eslint src --ext ts",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.x",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^6.x",
+    "@typescript-eslint/parser": "^6.x",
+    "eslint": "^8.x",
+    "typescript": "^5.3.0",
+    "@vscode/vsce": "^2.22.0"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/crowelogic/crowe-code-vscode"
+  },
+  "bugs": {
+    "url": "https://github.com/crowelogic/crowe-code-vscode/issues"
+  },
+  "homepage": "https://crowelogic.ai"
+}
