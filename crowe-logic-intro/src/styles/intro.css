@@ -266,6 +266,35 @@ body {
 }
 
 /* ===========================
+   Mute Button
+   =========================== */
+.mute-button {
+  position: fixed;
+  top: 2rem;
+  left: 2rem;
+  z-index: 100;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  color: var(--text-primary);
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.mute-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: scale(1.05);
+}
+
+.mute-button.muted .sound-icon::before {
+  content: '🔇';
+}
+
+/* ===========================
    Performance Optimizations
    =========================== */
 @media (prefers-reduced-motion: reduce) {

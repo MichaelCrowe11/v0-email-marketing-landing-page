@@ -1,10 +1,12 @@
 import BigBangParticleSystem from './components/BigBangParticles.js'
 import BrandAvatar from './components/BrandAvatar.js'
+import AudioManager from './components/AudioManager.js'
 
 class CroweLogicIntro {
   constructor() {
     this.particleSystem = null
     this.brandAvatar = null
+    this.audioManager = null
     this.loader = document.getElementById('loader')
     this.skipButton = document.getElementById('skip-intro')
     this.introCompleted = false
@@ -31,11 +33,17 @@ class CroweLogicIntro {
       // Initialize brand avatar
       this.brandAvatar = new BrandAvatar()
 
+      // Initialize audio manager (after particle system)
+      this.audioManager = new AudioManager()
+
       // Hide loader
       this.hideLoader()
 
       // Setup skip button
       this.setupSkipButton()
+
+      // Setup mute button
+      this.setupMuteButton()
 
       // Auto-advance after 8 seconds
       setTimeout(() => {
@@ -95,8 +103,23 @@ class CroweLogicIntro {
     })
   }
 
+  setupMuteButton() {
+    const muteButton = document.getElementById('mute-toggle')
+    if (muteButton && this.audioManager) {
+      muteButton.addEventListener('click', () => {
+        const isMuted = this.audioManager.toggle()
+        muteButton.classList.toggle('muted', isMuted)
+      })
+    }
+  }
+
   advance() {
     this.introCompleted = true
+
+    // Stop audio when transitioning
+    if (this.audioManager) {
+      this.audioManager.stop()
+    }
 
     // Add fade out animation
     document.body.style.transition = 'opacity 1s ease-out'
