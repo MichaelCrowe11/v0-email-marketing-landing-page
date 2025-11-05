@@ -11,6 +11,7 @@ import { VoiceInput } from "@/components/chat/voice-input"
 import { AgentSwitcher, type AgentType } from "@/components/chat/agent-switcher"
 import { MultimodalInput } from "@/components/chat/multimodal-input"
 import { ReasoningTrace } from "@/components/chat/reasoning-trace"
+import { MarkdownRenderer } from "@/components/chat/markdown-renderer"
 import { Button } from "@/components/ui/button"
 import { FileText, Code, Download, Copy, Check, Maximize2, Menu, X } from "lucide-react"
 
@@ -503,24 +504,31 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                           >
                             <div className="relative min-h-[80px]" id={`message-${message.id}`}>
 
-                              <div className="text-base text-foreground leading-relaxed whitespace-pre-wrap relative z-10 font-medium">
-                                {/* Each character materializes with color flash */}
-                                {message.content.split('').map((char, i) => {
-                                  const isNew = isStreaming && i >= message.content.length - 25
-                                  return (
-                                    <span
-                                      key={`char-${i}`}
-                                      className={isNew ? "inline-block" : ""}
-                                      style={isNew ? {
-                                        animation: 'charSparkle 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
-                                        animationDelay: `${(i - (message.content.length - 25)) * 0.03}s`,
-                                        opacity: 0,
-                                      } : {}}
-                                    >
-                                      {char}
-                                    </span>
-                                  )
-                                })}
+                              <div className="text-base text-foreground leading-relaxed relative z-10 font-medium">
+                                {/* Use MarkdownRenderer for code blocks, fallback to animated text for plain content */}
+                                {hasCode ? (
+                                  <MarkdownRenderer content={message.content} />
+                                ) : (
+                                  <div className="whitespace-pre-wrap">
+                                    {/* Each character materializes with color flash */}
+                                    {message.content.split('').map((char, i) => {
+                                      const isNew = isStreaming && i >= message.content.length - 25
+                                      return (
+                                        <span
+                                          key={`char-${i}`}
+                                          className={isNew ? "inline-block" : ""}
+                                          style={isNew ? {
+                                            animation: 'charSparkle 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+                                            animationDelay: `${(i - (message.content.length - 25)) * 0.03}s`,
+                                            opacity: 0,
+                                          } : {}}
+                                        >
+                                          {char}
+                                        </span>
+                                      )
+                                    })}
+                                  </div>
+                                )}
                                 
                                 {/* COMPACT STABLE AVATAR - small and precise */}
                                 {isAssistant && isStreaming && hasContent && (
