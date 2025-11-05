@@ -12,8 +12,9 @@ import { AgentSwitcher, type AgentType } from "@/components/chat/agent-switcher"
 import { MultimodalInput } from "@/components/chat/multimodal-input"
 import { ReasoningTrace } from "@/components/chat/reasoning-trace"
 import { MarkdownRenderer } from "@/components/chat/markdown-renderer"
+import { FileUpload } from "@/components/chat/file-upload"
 import { Button } from "@/components/ui/button"
-import { FileText, Code, Download, Copy, Check, Maximize2, Menu, X } from "lucide-react"
+import { FileText, Code, Download, Copy, Check, Maximize2, Menu, X, FileCode } from "lucide-react"
 
 type Message = {
   id: string
@@ -45,6 +46,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
   const [attachedImages, setAttachedImages] = useState<File[]>([])
   const [showReasoningTrace, setShowReasoningTrace] = useState(false)
   const [reasoningSteps, setReasoningSteps] = useState<any[]>([])
+  const [showFileUpload, setShowFileUpload] = useState(false)
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const isEmpty = messages.length === 0
@@ -318,6 +320,12 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
 
   const handleOpenCanvas = (content: string, type: "code" | "document", language?: string) => {
     setCanvasContent({ content, type, language })
+  }
+
+  const handleFileProcess = (prompt: string, filename: string) => {
+    // Send the generated prompt to the chat
+    sendMessage(prompt)
+    setShowFileUpload(false)
   }
 
   return (
@@ -1003,6 +1011,15 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                     </svg>
                     {showReasoningTrace ? "Hide" : "Show"} Reasoning
                   </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowFileUpload(!showFileUpload)}
+                    className="gap-2 whitespace-nowrap text-xs bg-gradient-to-r from-blue-500/10 to-indigo-500/10 hover:from-blue-500/20 hover:to-indigo-500/20 border-blue-500/30"
+                  >
+                    <FileCode className="w-3.5 h-3.5" />
+                    {showFileUpload ? "Hide" : "Upload"} Code File
+                  </Button>
                 </div>
                 <div className="flex items-center gap-2">
                   <VoiceInput
@@ -1017,6 +1034,16 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                 onImagesChange={setAttachedImages}
                 disabled={isLoading}
               />
+
+              {/* File Upload Component */}
+              {showFileUpload && (
+                <div className="mb-4">
+                  <FileUpload
+                    onFileProcess={handleFileProcess}
+                    disabled={isLoading}
+                  />
+                </div>
+              )}
 
               <form onSubmit={handleSubmit} className="relative">
                 {/* Upload Button */}
