@@ -77,7 +77,7 @@ export async function getSecret(
   let secretValue: string | undefined
 
   // Initialize client if not already done
-  if (secretClient === null && !keyVaultEnabled) {
+  if (secretClient === null) {
     secretClient = initializeKeyVaultClient()
   }
 

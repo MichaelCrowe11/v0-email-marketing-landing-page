@@ -150,7 +150,7 @@ async function checkHealthEndpoint(url) {
     console.log('\n🏥 Checking Health Endpoint...\n');
     console.log(`  Checking: ${url}/api/health`);
     
-    const protocol = url.startsWith('https') ? https : http;
+    const protocol = url.startsWith('https:') ? https : http;
     
     protocol.get(`${url}/api/health`, (res) => {
       let data = '';

@@ -240,10 +240,14 @@ export function clearConfigCache(): void {
 export async function getConfigValue<T>(path: string): Promise<T | undefined> {
   const config = await getConfig()
   const keys = path.split(".")
-  let value: any = config
+  let value: AppConfig | unknown = config
 
   for (const key of keys) {
-    value = value?.[key]
+    if (value && typeof value === 'object' && key in value) {
+      value = (value as Record<string, unknown>)[key]
+    } else {
+      return undefined
+    }
   }
 
   return value as T | undefined
