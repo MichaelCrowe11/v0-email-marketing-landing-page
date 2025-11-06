@@ -53,7 +53,7 @@ if (Test-Path ".env.railway") {
     $envVars = Get-Content ".env.railway" | Where-Object { $_ -match "^[^#]" -and $_ -match "=" }
 
     foreach ($line in $envVars) {
-        if ($line -match "^([^=]+)=(.*)$") {
+        if ($line -match '^([^=]+)=(.*)$') {
             $key = $matches[1].Trim()
             $value = $matches[2].Trim()
 
