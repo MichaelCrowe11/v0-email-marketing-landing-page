@@ -14,7 +14,6 @@ const nextConfig = {
     dangerouslyAllowSVG: false,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
-  swcMinify: true,
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.optimization.splitChunks = {
