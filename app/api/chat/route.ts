@@ -5,6 +5,45 @@ import { streamText } from "ai"
 
 export const maxDuration = 30
 
+function getModelObject(modelString: string) {
+  console.log("[v0] Converting model string to object:", modelString)
+
+  // Crowe Logic Mini (default)
+  if (modelString.startsWith("crowelogic/")) {
+    return openai("gpt-4o-mini")
+  }
+
+  // OpenAI models
+  if (modelString.startsWith("openai/")) {
+    const modelName = modelString.replace("openai/", "")
+    return openai(modelName)
+  }
+
+  // Anthropic models
+  if (modelString.startsWith("anthropic/")) {
+    const modelName = modelString.replace("anthropic/", "")
+    return anthropic(modelName)
+  }
+
+  // Google models
+  if (modelString.startsWith("google/")) {
+    const modelName = modelString.replace("google/", "")
+    return google(modelName)
+  }
+
+  // xAI models (uses OpenAI-compatible endpoint)
+  if (modelString.startsWith("xai/")) {
+    const modelName = modelString.replace("xai/", "")
+    return openai(modelName, {
+      baseURL: "https://api.x.ai/v1",
+    })
+  }
+
+  // Default fallback
+  console.log("[v0] Using default model: gpt-4o-mini")
+  return openai("gpt-4o-mini")
+}
+
 export async function POST(req: Request) {
   try {
     console.log("[v0] Chat API called")
@@ -23,6 +62,7 @@ export async function POST(req: Request) {
 
     // Get the selected model or use default
     const selectedModel = model || "openai/gpt-4o-mini"
+    const modelObject = getModelObject(selectedModel)
 
     console.log("[v0] Using model:", selectedModel)
 
@@ -52,9 +92,9 @@ Approach:
 - Provide actionable insights
 - Be clear and precise`
 
-    // Use the AI SDK streamText with the selected model (pass as string)
+    // Use the AI SDK streamText with the model object
     const result = await streamText({
-      model: selectedModel,
+      model: modelObject,
       system: systemPrompt,
       messages: normalizedMessages,
       temperature: 0.7,
