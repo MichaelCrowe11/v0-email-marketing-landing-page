@@ -1,9 +1,8 @@
 "use client"
 
-import type React from "react"
-
-import { useState, useRef, useEffect } from "react"
-import { Play, Save, Download, Upload, Terminal, Database } from "lucide-react"
+import { useState, useRef } from "react"
+import Editor from "@monaco-editor/react"
+import { Play, Download, Terminal, Database, Square, Code2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 
@@ -19,16 +18,12 @@ export function CodeEditor({ sessionId, initialCode = "", language = "python", o
   const [output, setOutput] = useState("")
   const [isExecuting, setIsExecuting] = useState(false)
   const [executionTime, setExecutionTime] = useState<number | null>(null)
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const editorRef = useRef<any>(null)
   const outputRef = useRef<HTMLDivElement>(null)
 
-  // Auto-resize textarea
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto"
-      textareaRef.current.style.height = textareaRef.current.scrollHeight + "px"
-    }
-  }, [code])
+  const handleEditorDidMount = (editor: any) => {
+    editorRef.current = editor
+  }
 
   const executeCode = async () => {
     if (!code.trim()) return
@@ -41,7 +36,6 @@ export function CodeEditor({ sessionId, initialCode = "", language = "python", o
         const result = await onExecute(code)
         setOutput(result.output || JSON.stringify(result, null, 2))
       } else {
-        // Call the real API endpoint
         const response = await fetch("/api/execute-code", {
           method: "POST",
           headers: {
@@ -70,26 +64,9 @@ export function CodeEditor({ sessionId, initialCode = "", language = "python", o
     }
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
-      e.preventDefault()
-      executeCode()
-    }
-
-    // Handle tab indentation
-    if (e.key === "Tab") {
-      e.preventDefault()
-      const start = e.currentTarget.selectionStart
-      const end = e.currentTarget.selectionEnd
-      const newValue = code.substring(0, start) + "    " + code.substring(end)
-      setCode(newValue)
-
-      setTimeout(() => {
-        if (textareaRef.current) {
-          textareaRef.current.selectionStart = textareaRef.current.selectionEnd = start + 4
-        }
-      }, 0)
-    }
+  const stopExecution = () => {
+    setIsExecuting(false)
+    setOutput("Execution stopped by user")
   }
 
   const getLanguageBadgeColor = () => {
@@ -112,49 +89,34 @@ export function CodeEditor({ sessionId, initialCode = "", language = "python", o
       {/* Editor Header */}
       <div className="flex items-center justify-between border-b border-neutral-700 bg-neutral-900 px-4 py-2">
         <div className="flex items-center gap-3">
+          <Code2 className="h-4 w-4 text-[#4a90e2]" />
           <Badge variant="outline" className={getLanguageBadgeColor()}>
             {language.toUpperCase()}
           </Badge>
-          <span className="text-sm text-neutral-400">Session {sessionId || "default"}</span>
+          <span className="text-sm text-neutral-400">30GB Dataset Ready</span>
         </div>
 
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" className="text-neutral-300 hover:text-white hover:bg-neutral-800">
-            <Upload className="mr-2 h-4 w-4" />
-            Import
-          </Button>
-          <Button variant="ghost" size="sm" className="text-neutral-300 hover:text-white hover:bg-neutral-800">
             <Download className="mr-2 h-4 w-4" />
             Export
           </Button>
-          <Button variant="ghost" size="sm" className="text-neutral-300 hover:text-white hover:bg-neutral-800">
-            <Save className="mr-2 h-4 w-4" />
-            Save
-          </Button>
-          <Button
-            onClick={executeCode}
-            disabled={isExecuting}
-            size="sm"
-            className="bg-blue-600 hover:bg-blue-700 text-white"
-          >
-            {isExecuting ? (
-              <>
-                <Terminal className="mr-2 h-4 w-4 animate-pulse" />
-                Running...
-              </>
-            ) : (
-              <>
-                <Play className="mr-2 h-4 w-4" />
-                Execute
-              </>
-            )}
-          </Button>
+          {isExecuting ? (
+            <Button onClick={stopExecution} size="sm" className="bg-red-500 hover:bg-red-600 text-white">
+              <Square className="mr-2 h-4 w-4" />
+              Stop
+            </Button>
+          ) : (
+            <Button onClick={executeCode} size="sm" className="bg-[#98c379] hover:bg-[#a8d389] text-black">
+              <Play className="mr-2 h-4 w-4" />
+              Execute
+            </Button>
+          )}
         </div>
       </div>
 
       {/* Editor Content */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Code Input */}
         <div className="flex flex-1 flex-col border-r border-neutral-800">
           <div className="border-b border-neutral-800 bg-neutral-950 px-4 py-2">
             <div className="flex items-center justify-between">
@@ -163,31 +125,28 @@ export function CodeEditor({ sessionId, initialCode = "", language = "python", o
             </div>
           </div>
 
-          <textarea
-            ref={textareaRef}
+          <Editor
+            height="100%"
+            language={language}
             value={code}
-            onChange={(e) => setCode(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder={`# ${language === "python" ? "Python" : language.toUpperCase()} Research Terminal
-# Load your 30GB mushroom dataset and start analyzing
-${
-  language === "python"
-    ? `
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-
-# Load mushroom cultivation data
-df = pd.read_csv('mushroom_cultivation_data.csv')
-print(f"Dataset shape: {df.shape}")
-df.head()`
-    : `
-# Enter your ${language} code here
-# Connect to databases, analyze data, run ML models
-`
-}`}
-            className="w-full h-full p-4 bg-black border-none outline-none resize-none font-mono text-sm leading-relaxed text-white placeholder:text-neutral-600"
-            style={{ minHeight: "300px" }}
+            onChange={(value) => setCode(value || "")}
+            onMount={handleEditorDidMount}
+            theme="vs-dark"
+            options={{
+              minimap: { enabled: false },
+              fontSize: 14,
+              lineNumbers: "on",
+              scrollBeyondLastLine: false,
+              automaticLayout: true,
+              tabSize: 4,
+              wordWrap: "on",
+              fontFamily: "'JetBrains Mono', 'Fira Code', 'Consolas', monospace",
+              fontLigatures: true,
+              padding: { top: 16, bottom: 16 },
+              renderLineHighlight: "all",
+              cursorBlinking: "smooth",
+              smoothScrolling: true,
+            }}
           />
         </div>
 
@@ -228,7 +187,7 @@ df.head()`
             <Database className="h-3 w-3" />
             Database Connected
           </span>
-          <span className="text-blue-400">CROWE LOGIC Ready</span>
+          <span className="text-[#4a90e2]">CROWE CODE Ready</span>
         </div>
       </div>
     </div>

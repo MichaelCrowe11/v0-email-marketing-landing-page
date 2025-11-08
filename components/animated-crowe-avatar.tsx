@@ -1,10 +1,9 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import Image from "next/image"
 
 interface AnimatedCroweAvatarProps {
-  mode: "vision" | "neural" | "genetic" | "quantum" | "processing" | "idle"
+  mode: "vision" | "code" | "processing" | "idle"
   size?: number
   showLabel?: boolean
 }
@@ -28,45 +27,31 @@ export function AnimatedCroweAvatar({ mode, size = 48, showLabel = false }: Anim
     switch (mode) {
       case "vision":
         return {
-          label: "Vision Analysis",
+          label: "Crowe Vision",
           borderColor: "border-cyan-500",
           glowColor: "shadow-cyan-500/50",
           particleColor: "bg-cyan-400",
         }
-      case "neural":
+      case "code":
         return {
-          label: "Neural Processing",
-          borderColor: "border-purple-500",
-          glowColor: "shadow-purple-500/50",
-          particleColor: "bg-purple-400",
-        }
-      case "genetic":
-        return {
-          label: "Genetic Analysis",
-          borderColor: "border-green-500",
-          glowColor: "shadow-green-500/50",
-          particleColor: "bg-green-400",
-        }
-      case "quantum":
-        return {
-          label: "Quantum Computing",
-          borderColor: "border-pink-500",
-          glowColor: "shadow-pink-500/50",
-          particleColor: "bg-pink-400",
+          label: "Crowe Code",
+          borderColor: "border-[#4a90e2]",
+          glowColor: "shadow-[#4a90e2]/50",
+          particleColor: "bg-[#4a90e2]",
         }
       case "processing":
         return {
           label: "Processing",
-          borderColor: "border-amber-500",
-          glowColor: "shadow-amber-500/50",
-          particleColor: "bg-amber-400",
+          borderColor: "border-[#98c379]",
+          glowColor: "shadow-[#98c379]/50",
+          particleColor: "bg-[#98c379]",
         }
       default:
         return {
           label: "Idle",
-          borderColor: "border-foreground/20",
+          borderColor: "border-[#485063]",
           glowColor: "",
-          particleColor: "bg-foreground/20",
+          particleColor: "bg-[#485063]",
         }
     }
   }
@@ -101,27 +86,24 @@ export function AnimatedCroweAvatar({ mode, size = 48, showLabel = false }: Anim
 
         {/* Avatar */}
         <div className="relative">
-          <Image
-            src="/crowe-avatar.png"
-            alt="Crowe AI"
-            width={size}
-            height={size}
-            className={`relative rounded-full border-2 ${config.borderColor} ${mode !== "idle" ? "animate-spin-slow" : ""} transition-all duration-300`}
-          />
+          <div
+            className={`relative rounded-full border-2 ${config.borderColor} ${mode !== "idle" ? "animate-pulse" : ""} transition-all duration-300 flex items-center justify-center bg-[#1a1f2e]`}
+            style={{ width: size, height: size }}
+          >
+            <span className="text-2xl font-bold text-white">CL</span>
+          </div>
 
           {/* Status indicator */}
           {mode !== "idle" && (
-            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-background animate-pulse" />
+            <div
+              className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-[#0a0e14] animate-pulse ${config.particleColor}`}
+            />
           )}
         </div>
       </div>
 
       {/* Label */}
-      {showLabel && (
-        <span className="text-xs font-mono font-semibold bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-          {config.label}
-        </span>
-      )}
+      {showLabel && <span className="text-sm font-semibold text-white">{config.label}</span>}
     </div>
   )
 }
