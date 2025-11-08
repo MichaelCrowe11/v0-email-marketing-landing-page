@@ -1,12 +1,16 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 
 export function AdvancedTerminal() {
   const [lines, setLines] = useState<string[]>([])
   const [mode, setMode] = useState<"dark" | "light">("dark")
+  const timerRef = useRef<number | null>(null)
+  const resetRef = useRef<number | null>(null)
+  const indexRef = useRef(0)
 
-  const terminalOutput = [
+  // Immutable script lines
+  const terminalOutput: readonly string[] = [
     "[SYSTEM] Initializing Crowe Logic AI Engine v3.0...",
     "[GENETIC] Loading genetic algorithm optimizer...",
     "[GENETIC] Population size: 100 | Mutation rate: 0.01 | Generations: 1000",
@@ -31,21 +35,32 @@ export function AdvancedTerminal() {
     "[SYSTEM] ✓ All systems operational | Ready for production",
   ]
 
+  // Streaming logic with defensive guards
   useEffect(() => {
-    let currentLine = 0
-    const interval = setInterval(() => {
-      if (currentLine < terminalOutput.length) {
-        setLines((prev) => [...prev, terminalOutput[currentLine]])
-        currentLine++
+    function pushNext() {
+      const i = indexRef.current
+      if (i < terminalOutput.length) {
+        const nextLine = terminalOutput[i]
+        if (typeof nextLine === 'string') {
+          setLines(prev => prev.concat(nextLine))
+        }
+        indexRef.current = i + 1
+        timerRef.current = window.setTimeout(pushNext, 300)
       } else {
-        setTimeout(() => {
+        // restart after pause
+        resetRef.current = window.setTimeout(() => {
           setLines([])
-          currentLine = 0
+          indexRef.current = 0
+          pushNext()
         }, 3000)
       }
-    }, 300)
-    return () => clearInterval(interval)
-  }, [])
+    }
+    pushNext()
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current)
+      if (resetRef.current) clearTimeout(resetRef.current)
+    }
+  }, [terminalOutput])
 
   const isDark = mode === "dark"
   const containerStyle: React.CSSProperties = {
@@ -75,12 +90,18 @@ export function AdvancedTerminal() {
     letterSpacing: 0.5
   }
 
-  const lineColor = (line: string) => {
-    if (line.includes("✓")) return isDark ? "#ffffff" : "#000000"
-    if (line.includes("[SYSTEM]")) return isDark ? "#d0d0d0" : "#1a1a1a"
-    if (line.includes("[PIPELINE]")) return isDark ? "#bcbcbc" : "#222"
-    if (line.includes("[GENETIC]") || line.includes("[DNA]") || line.includes("[NEURAL]") || line.includes("[QUANTUM]")) return isDark ? "#c8c8c8" : "#202020"
-    return isDark ? "#b5b5b5" : "#2a2a2a"
+  const lineColor = (raw: unknown) => {
+    if (typeof raw !== 'string') return isDark ? '#666' : '#555'
+    const line = raw
+    try {
+      if (line.includes("✓")) return isDark ? "#ffffff" : "#000000"
+      if (line.startsWith("[SYSTEM]")) return isDark ? "#d0d0d0" : "#1a1a1a"
+      if (line.startsWith("[PIPELINE]")) return isDark ? "#bcbcbc" : "#222"
+      if (line.startsWith("[GENETIC]") || line.startsWith("[DNA]") || line.startsWith("[NEURAL]") || line.startsWith("[QUANTUM]")) return isDark ? "#c8c8c8" : "#202020"
+      return isDark ? "#b5b5b5" : "#2a2a2a"
+    } catch {
+      return isDark ? '#777' : '#444'
+    }
   }
 
   return (
@@ -115,7 +136,7 @@ export function AdvancedTerminal() {
             key={i}
             style={{
               color: lineColor(line),
-              fontWeight: line.includes("[SYSTEM]") || line.includes("✓") ? 600 : 500,
+              fontWeight: typeof line === 'string' && (line.startsWith("[SYSTEM]") || line.includes("✓")) ? 600 : 500,
               opacity: 1,
               lineHeight: 1.4,
               animation: "fade-in 0.3s ease",
