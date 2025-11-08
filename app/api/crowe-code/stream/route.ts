@@ -1,4 +1,3 @@
-import { StreamingTextResponse } from "ai"
 import { streamText } from "ai"
 import { createClient } from "@/lib/supabase/server"
 
@@ -31,28 +30,28 @@ export async function POST(req: Request) {
     let inputTokens = 0
     let outputTokens = 0
 
-    const stream = await streamText({
+    const result = streamText({
       model: "anthropic/claude-sonnet-4.5",
       messages: [
         {
           role: "system",
-          content: `You are Crowe Code, an elite autonomous AI developer specialized in biological systems, agricultural data science, and scientific programming.
+          content: `You are Crowe Code, an elite AI developer for biological systems programming.
 
-You generate production-ready code with deep domain expertise in:
-- Synapse-lang (scientific programming with uncertainty quantification)
-- Python for biological data analysis (pandas, numpy, scipy, matplotlib)
-- Database queries for research data (PostgreSQL/Supabase)
-- Statistical analysis and hypothesis testing
-- Environmental sensor data processing
-- Yield prediction models
+Core Expertise:
+- Synapse-lang (uncertainty quantification, hypothesis testing, quantum computing)
+- Python for agricultural data science (pandas, scipy, matplotlib)
+- PostgreSQL/Supabase queries for research databases
+- Statistical analysis and environmental sensor data
+- Biological data visualization and yield prediction
 
-Always include:
-1. Clear explanation of the scientific approach
-2. Complete, executable code with proper error handling
-3. Inline comments explaining key logic and scientific reasoning
-4. Example usage with realistic biological data
+When asked to generate code:
+1. Provide clear scientific explanation
+2. Write complete, production-ready code with error handling
+3. Include inline comments explaining scientific reasoning
+4. Add example usage with realistic biological data
+5. Wrap code in markdown code blocks with language identifier
 
-Format responses with markdown code blocks. Be concise but thorough.`,
+Be concise, accurate, and production-focused. Format all code in triple backtick markdown blocks.`,
         },
         ...(context || []).map((msg: any) => ({
           role: msg.role,
@@ -64,18 +63,18 @@ Format responses with markdown code blocks. Be concise but thorough.`,
         },
       ],
       temperature: 0.7,
-      maxTokens: 2000,
-      onFinish: async (result) => {
-        totalTokens = result.usage.totalTokens
-        inputTokens = result.usage.promptTokens
-        outputTokens = result.usage.completionTokens
+      maxOutputTokens: 2000,
+      onFinish: async (completion) => {
+        totalTokens = completion.usage.totalTokens
+        inputTokens = completion.usage.promptTokens
+        outputTokens = completion.usage.completionTokens
 
         const duration = Date.now() - startTime
 
-        const inputCostPer1k = 0.003 // $3 per 1M tokens
-        const outputCostPer1k = 0.015 // $15 per 1M tokens
+        const inputCostPer1k = 0.003
+        const outputCostPer1k = 0.015
         const providerCost = (inputTokens / 1000) * inputCostPer1k + (outputTokens / 1000) * outputCostPer1k
-        const markup = providerCost * 0.5 // 50% markup
+        const markup = providerCost * 0.5
         const userCharge = providerCost + markup
 
         await supabase.from("ai_usage_analytics").insert({
@@ -104,7 +103,7 @@ Format responses with markdown code blocks. Be concise but thorough.`,
       },
     })
 
-    return new StreamingTextResponse(stream.toDataStream())
+    return result.toTextStreamResponse()
   } catch (error) {
     console.error("[v0] Streaming error:", error)
     return new Response("Error generating code", { status: 500 })

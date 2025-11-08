@@ -89,10 +89,10 @@ export function CroweCodeChatPanel({ onCodeGenerated, selectedText, onUsageUpdat
           const { done, value } = await reader.read()
           if (done) break
 
-          const chunk = decoder.decode(value)
+          const chunk = decoder.decode(value, { stream: true })
           fullResponse += chunk
 
-          // Update streaming message
+          // Update streaming message in real-time
           setMessages((prev) => {
             const newMessages = [...prev]
             const lastMessage = newMessages[newMessages.length - 1]

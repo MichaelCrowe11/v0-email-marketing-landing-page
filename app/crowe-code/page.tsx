@@ -157,6 +157,7 @@ quantum[2] {
       })
       const data = await response.json()
       setOutput(data.output || data.error || "Code executed successfully")
+      setUncommittedChanges((prev) => prev + 1)
     } catch (error) {
       setOutput(`Error: ${error}`)
     }
@@ -486,7 +487,10 @@ console.log("Hello from JavaScript");`)
               height="100%"
               defaultLanguage={language === "synapse" ? "python" : language}
               value={code}
-              onChange={(value) => setCode(value || "")}
+              onChange={(value) => {
+                setCode(value || "")
+                setUncommittedChanges((prev) => prev + 1)
+              }}
               theme="vs-dark"
               onMount={(editor, monaco) => {
                 monaco.languages.register({ id: "synapse" })
@@ -501,12 +505,18 @@ console.log("Hello from JavaScript");`)
                     "outputs",
                     "uncertainty",
                     "experiment",
+                    "measure",
+                    "H",
+                    "CNOT",
+                    "evaluate",
+                    "optimize_for",
                   ],
                   tokenizer: {
                     root: [
-                      [/\b(uncertain|hypothesis|quantum|parallel|agent)\b/, "keyword"],
+                      [/\b(uncertain|hypothesis|quantum|parallel|agent|measure|evaluate|optimize_for)\b/, "keyword"],
                       [/\d+\s*±\s*\d+/, "number"],
                       [/#.*$/, "comment"],
+                      [/H|CNOT/, "function"],
                     ],
                   },
                 })
@@ -524,6 +534,7 @@ console.log("Hello from JavaScript");`)
                     setShowChatPanel(true)
                   },
                 })
+
                 editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyK, () => {
                   setShowCommandPalette(true)
                 })
@@ -536,6 +547,8 @@ console.log("Hello from JavaScript");`)
                 lineNumbers: "on",
                 folding: true,
                 automaticLayout: true,
+                suggestOnTriggerCharacters: true,
+                quickSuggestions: true,
               }}
             />
           </div>
