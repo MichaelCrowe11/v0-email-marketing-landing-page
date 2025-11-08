@@ -13,11 +13,12 @@ export function SynapseLangShowcase() {
         <div className="text-center space-y-4">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full border border-primary/20">
             <Code className="w-4 h-4 text-primary" />
-            <span className="text-sm font-mono font-semibold text-primary">Synapse-lang</span>
+            <span className="text-sm font-mono font-semibold text-primary">Synapse-lang v2.3.1</span>
           </div>
           <h2 className="text-4xl font-bold text-foreground">Code That Thinks Like a Scientist</h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Express uncertainty. Run parallel experiments. Deploy directly.
+            The world's first scientific programming language with native uncertainty, quantum computing, and AI
+            assistance.
           </p>
         </div>
 
@@ -29,21 +30,32 @@ export function SynapseLangShowcase() {
           <CardContent>
             <pre className="text-sm overflow-x-auto p-4 bg-muted rounded-lg">
               <code className="text-foreground font-mono">
-                {`# Hypothesis graph
+                {`# Uncertainty quantification
+uncertain temperature = 300 ± 10
+uncertain pressure = 1.5 ± 0.1
+
+# Hypothesis-driven programming
 hypothesis substrate_optimization {
   inputs: [sawdust, coffee_grounds, gypsum]
   outputs: biological_efficiency
   uncertainty: high
   
-  // Parallel experiment branches
+  # Parallel experiment branches
   experiment_1: ratio(70:30:2)
   experiment_2: ratio(60:40:2)
   
-  // AI agent evaluation
+  # AI agent evaluation
   agent CriOS_Substrate_Analyst {
     evaluate: contamination_risk
     optimize_for: yield_per_kg
   }
+}
+
+# Quantum computing support
+quantum[2] {
+  H(q0)          # Superposition
+  CNOT(q0, q1)   # Entanglement
+  measure(q0, q1)
 }`}
               </code>
             </pre>
@@ -51,32 +63,36 @@ hypothesis substrate_optimization {
         </Card>
 
         {/* Features Grid */}
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-4 gap-6">
           <Card className="border-border/50">
             <CardContent className="p-6 space-y-3">
               <GitBranch className="w-8 h-8 text-primary" />
-              <h3 className="font-bold">Express Scientific Reasoning</h3>
-              <p className="text-sm text-muted-foreground">
-                Write hypothesis-driven code with built-in uncertainty quantification
-              </p>
+              <h3 className="font-bold text-sm">Uncertainty Quantification</h3>
+              <p className="text-xs text-muted-foreground">Built-in uncertain types with automatic error propagation</p>
             </CardContent>
           </Card>
 
           <Card className="border-border/50">
             <CardContent className="p-6 space-y-3">
               <Zap className="w-8 h-8 text-primary" />
-              <h3 className="font-bold">Parallel Experimentation</h3>
-              <p className="text-sm text-muted-foreground">Run multiple experiment branches simultaneously</p>
+              <h3 className="font-bold text-sm">Quantum Computing</h3>
+              <p className="text-xs text-muted-foreground">Visual circuit designer and hybrid algorithms</p>
             </CardContent>
           </Card>
 
           <Card className="border-border/50">
             <CardContent className="p-6 space-y-3">
               <Cpu className="w-8 h-8 text-primary" />
-              <h3 className="font-bold">AI Agent Orchestration</h3>
-              <p className="text-sm text-muted-foreground">
-                Integrate specialized AI agents directly in your scientific workflows
-              </p>
+              <h3 className="font-bold text-sm">Parallel Execution</h3>
+              <p className="text-xs text-muted-foreground">Distributed computing with automatic load balancing</p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-border/50">
+            <CardContent className="p-6 space-y-3">
+              <Code className="w-8 h-8 text-primary" />
+              <h3 className="font-bold text-sm">Hypothesis-Driven</h3>
+              <p className="text-xs text-muted-foreground">Express scientific reasoning directly in code</p>
             </CardContent>
           </Card>
         </div>
@@ -90,7 +106,12 @@ hypothesis substrate_optimization {
             </CardContent>
           </Card>
           <Button size="lg" asChild>
-            <Link href="/synapse-lang">View Documentation</Link>
+            <Link href="/crowe-code">Try in Crowe Code</Link>
+          </Button>
+          <Button size="lg" variant="outline" asChild>
+            <Link href="https://github.com/MichaelCrowe11/synapse-lang" target="_blank">
+              View on GitHub
+            </Link>
           </Button>
         </div>
       </div>

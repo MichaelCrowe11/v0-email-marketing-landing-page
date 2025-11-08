@@ -24,21 +24,40 @@ import {
 import { CroweCodeChatPanel } from "@/components/crowe-code-chat-panel"
 
 export default function CroweCodePage() {
-  const [code, setCode] = useState(`# Crowe Code - Autonomous Agricultural Software Developer
-# VS Code-powered environment with GitHub integration
+  const [code, setCode] = useState(`# Synapse-lang - Scientific Programming Language
+# Express uncertainty, run parallel experiments, deploy directly
 
-import pandas as pd
-import numpy as np
-from datetime import datetime
+uncertain temperature = 300 ± 10  // Uncertainty quantification
+uncertain pressure = 1.5 ± 0.1
 
-def analyze_cultivation_data():
-    """Professional-grade data analysis"""
-    print("Crowe Code Analysis System Ready")
-    print("Connect to: Supabase, GitHub, VS Code Marketplace")
-    
-# Start building...
+# Hypothesis-driven code
+hypothesis substrate_optimization {
+  inputs: [sawdust, coffee_grounds, gypsum]
+  outputs: biological_efficiency
+  uncertainty: high
+  
+  # Parallel experiment branches
+  experiment_1: ratio(70:30:2)
+  experiment_2: ratio(60:40:2)
+  
+  # AI agent evaluation
+  agent CriOS_Substrate_Analyst {
+    evaluate: contamination_risk
+    optimize_for: yield_per_kg
+  }
+}
+
+# Quantum computing integration
+quantum[2] {
+  H(q0)          # Superposition
+  CNOT(q0, q1)   # Entanglement
+  measure(q0, q1)
+}
+
+# Start experimenting with Synapse-lang...
 `)
   const [output, setOutput] = useState("")
+  const [language, setLanguage] = useState<"python" | "javascript" | "synapse">("synapse")
   const [leftPanelWidth, setLeftPanelWidth] = useState(20)
   const [bottomPanelHeight, setBottomPanelHeight] = useState(30)
   const [rightPanelWidth, setRightPanelWidth] = useState(30)
@@ -101,7 +120,7 @@ def analyze_cultivation_data():
       const response = await fetch("/api/crowe-code/execute", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code, language: "python" }),
+        body: JSON.stringify({ code, language }),
       })
       const data = await response.json()
       setOutput(data.output || data.error || "Code executed successfully")
@@ -121,7 +140,6 @@ def analyze_cultivation_data():
 
   const handleSaveToGitHub = async () => {
     setOutput("Saving to GitHub...\n")
-    // GitHub integration logic here
     setUncommittedChanges(0)
     setOutput("Saved to GitHub successfully")
   }
@@ -168,6 +186,7 @@ def analyze_cultivation_data():
         </div>
       )}
 
+      {/* Header */}
       <div className="h-12 bg-[#323233] border-b border-[#1e1e1e] flex items-center justify-between px-4 flex-shrink-0">
         <div className="flex items-center gap-3">
           <Image
@@ -226,10 +245,53 @@ def analyze_cultivation_data():
             <MessageSquare className="w-3 h-3 mr-1" />
             Chat
           </Button>
+          <div className="flex items-center gap-1 ml-4">
+            <Button
+              size="sm"
+              variant={language === "synapse" ? "default" : "ghost"}
+              onClick={() => {
+                setLanguage("synapse")
+                setCode(`# Synapse-lang - Scientific Programming
+uncertain temp = 300 ± 10
+hypothesis test { /* ... */ }
+quantum[2] { H(q0); CNOT(q0, q1) }`)
+              }}
+              className="text-xs h-7"
+            >
+              Synapse
+            </Button>
+            <Button
+              size="sm"
+              variant={language === "python" ? "default" : "ghost"}
+              onClick={() => {
+                setLanguage("python")
+                setCode(`# Python
+import numpy as np
+print("Hello from Python")`)
+              }}
+              className="text-xs h-7"
+            >
+              Python
+            </Button>
+            <Button
+              size="sm"
+              variant={language === "javascript" ? "default" : "ghost"}
+              onClick={() => {
+                setLanguage("javascript")
+                setCode(`// JavaScript
+console.log("Hello from JavaScript");`)
+              }}
+              className="text-xs h-7"
+            >
+              JavaScript
+            </Button>
+          </div>
         </div>
       </div>
 
+      {/* Main Content Area */}
       <div className="flex-1 flex overflow-hidden">
+        {/* Icon Sidebar */}
         <div className="w-12 bg-[#333333] border-r border-[#1e1e1e] flex flex-col items-center py-2 gap-2">
           <Button
             size="icon"
@@ -273,6 +335,7 @@ def analyze_cultivation_data():
           </Button>
         </div>
 
+        {/* Left Panel */}
         <div className="bg-[#252526] border-r border-[#1e1e1e] overflow-y-auto" style={{ width: `${leftPanelWidth}%` }}>
           {activeTab === "files" && (
             <div className="p-3">
@@ -280,23 +343,11 @@ def analyze_cultivation_data():
               <div className="space-y-1 text-sm">
                 <div className="p-2 hover:bg-[#2a2d2e] rounded cursor-pointer text-[#4fc1ff] flex items-center gap-2">
                   <FileCode className="w-4 h-4" />
-                  main.py
+                  main.syn
                 </div>
                 <div className="p-2 hover:bg-[#2a2d2e] rounded cursor-pointer text-[#cccccc] flex items-center gap-2">
                   <FileCode className="w-4 h-4" />
-                  cultivation_analysis.py
-                </div>
-                <div className="p-2 hover:bg-[#2a2d2e] rounded cursor-pointer text-[#cccccc] flex items-center gap-2">
-                  <FileCode className="w-4 h-4" />
-                  sop_generator.py
-                </div>
-                <div className="p-2 hover:bg-[#2a2d2e] rounded cursor-pointer text-[#cccccc] flex items-center gap-2">
-                  <FileCode className="w-4 h-4" />
-                  batch_reports.py
-                </div>
-                <div className="p-2 hover:bg-[#2a2d2e] rounded cursor-pointer text-[#cccccc] flex items-center gap-2">
-                  <Database className="w-4 h-4" />
-                  data/
+                  hypothesis.syn
                 </div>
               </div>
             </div>
@@ -311,16 +362,6 @@ def analyze_cultivation_data():
                     <span className="text-xs text-[#858585]">Changes</span>
                     <span className="text-xs bg-[#1e1e1e] px-2 py-0.5 rounded">{uncommittedChanges}</span>
                   </div>
-                  <div className="space-y-1">
-                    <div className="p-2 hover:bg-[#2a2d2e] rounded text-xs flex items-center gap-2">
-                      <span className="text-[#f14c4c]">M</span>
-                      <span>main.py</span>
-                    </div>
-                    <div className="p-2 hover:bg-[#2a2d2e] rounded text-xs flex items-center gap-2">
-                      <span className="text-[#89d185]">A</span>
-                      <span>new_analysis.py</span>
-                    </div>
-                  </div>
                 </div>
                 <Button size="sm" className="w-full bg-[#0e639c] hover:bg-[#1177bb] text-white text-xs">
                   <Upload className="w-3 h-3 mr-1" />
@@ -329,70 +370,46 @@ def analyze_cultivation_data():
               </div>
             </div>
           )}
-
-          {activeTab === "extensions" && (
-            <div className="p-3">
-              <h3 className="text-xs font-semibold text-[#cccccc] mb-3 uppercase tracking-wider">Extensions</h3>
-              <div className="space-y-2 text-sm">
-                <div className="p-2 bg-[#1e1e1e] rounded">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Package className="w-4 h-4 text-[#4fc1ff]" />
-                    <span className="text-[#cccccc] font-medium">Python</span>
-                  </div>
-                  <p className="text-xs text-[#858585]">IntelliSense, linting</p>
-                </div>
-                <div className="p-2 bg-[#1e1e1e] rounded">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Package className="w-4 h-4 text-[#89d185]" />
-                    <span className="text-[#cccccc] font-medium">Pylance</span>
-                  </div>
-                  <p className="text-xs text-[#858585]">Fast language support</p>
-                </div>
-                <div className="p-2 bg-[#1e1e1e] rounded">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Package className="w-4 h-4 text-[#f1fa8c]" />
-                    <span className="text-[#cccccc] font-medium">Agricultural AI</span>
-                  </div>
-                  <p className="text-xs text-[#858585]">Crowe Logic extensions</p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === "data" && (
-            <div className="p-3">
-              <h3 className="text-xs font-semibold text-[#cccccc] mb-3 uppercase tracking-wider">Data Sources</h3>
-              <div className="space-y-2 text-sm">
-                <div className="p-2 hover:bg-[#2a2d2e] rounded cursor-pointer">
-                  <div className="flex items-center gap-2">
-                    <Database className="w-4 h-4 text-[#2ea043]" />
-                    <span className="text-[#cccccc]">Supabase</span>
-                  </div>
-                  <p className="text-xs text-[#858585] mt-1">Connected</p>
-                </div>
-                <Button size="sm" variant="outline" className="w-full text-xs bg-transparent">
-                  <Database className="w-3 h-3 mr-1" />
-                  Add Data Source
-                </Button>
-              </div>
-            </div>
-          )}
         </div>
 
+        {/* Horizontal Resizer */}
         <div
           className="w-1 bg-[#1e1e1e] hover:bg-[#0078d4] cursor-col-resize transition-colors"
           onMouseDown={() => setIsResizingHorizontal(true)}
         />
 
+        {/* Editor Area */}
         <div className="flex-1 flex flex-col overflow-hidden">
           <div className="flex-1 overflow-hidden" style={{ height: `${100 - bottomPanelHeight}%` }}>
             <Editor
               height="100%"
-              defaultLanguage="python"
+              defaultLanguage={language === "synapse" ? "python" : language}
               value={code}
               onChange={(value) => setCode(value || "")}
               theme="vs-dark"
               onMount={(editor, monaco) => {
+                monaco.languages.register({ id: "synapse" })
+                monaco.languages.setMonarchTokensProvider("synapse", {
+                  keywords: [
+                    "uncertain",
+                    "hypothesis",
+                    "quantum",
+                    "parallel",
+                    "agent",
+                    "inputs",
+                    "outputs",
+                    "uncertainty",
+                    "experiment",
+                  ],
+                  tokenizer: {
+                    root: [
+                      [/\b(uncertain|hypothesis|quantum|parallel|agent)\b/, "keyword"],
+                      [/\d+\s*±\s*\d+/, "number"],
+                      [/#.*$/, "comment"],
+                    ],
+                  },
+                })
+
                 editor.addAction({
                   id: "ask-crowe-code",
                   label: "Ask Crowe Code",
@@ -418,20 +435,17 @@ def analyze_cultivation_data():
                 lineNumbers: "on",
                 folding: true,
                 automaticLayout: true,
-                bracketPairColorization: { enabled: true },
-                inlineSuggest: { enabled: true },
-                suggestOnTriggerCharacters: true,
-                quickSuggestions: true,
-                wordBasedSuggestions: "matchingDocuments",
               }}
             />
           </div>
 
+          {/* Vertical Resizer */}
           <div
             className="h-1 bg-[#1e1e1e] hover:bg-[#0078d4] cursor-row-resize transition-colors"
             onMouseDown={() => setIsResizingVertical(true)}
           />
 
+          {/* Terminal */}
           <div
             className="bg-[#1e1e1e] border-t border-[#1e1e1e] overflow-y-auto"
             style={{ height: `${bottomPanelHeight}%` }}
@@ -439,7 +453,7 @@ def analyze_cultivation_data():
             <div className="flex items-center gap-2 px-4 py-2 bg-[#252526] border-b border-[#1e1e1e]">
               <TerminalIcon className="w-4 h-4 text-[#4fc1ff]" />
               <span className="text-xs font-semibold text-[#cccccc]">Terminal</span>
-              <span className="text-xs text-[#858585]">python</span>
+              <span className="text-xs text-[#858585]">{language}</span>
             </div>
             <pre className="p-4 text-sm font-mono text-[#cccccc] whitespace-pre-wrap">
               {output || "$ Ready for execution..."}
@@ -447,6 +461,7 @@ def analyze_cultivation_data():
           </div>
         </div>
 
+        {/* Chat Panel */}
         {showChatPanel && (
           <>
             <div
