@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server"
 export const runtime = "edge"
 
 export async function POST(req: Request) {
-  const { prompt, context } = await req.json()
+  const { prompt, context, mode = "generate" } = await req.json()
 
   try {
     const supabase = await createClient()
@@ -30,28 +30,53 @@ export async function POST(req: Request) {
     let inputTokens = 0
     let outputTokens = 0
 
-    const result = streamText({
-      model: "anthropic/claude-sonnet-4.5",
-      messages: [
-        {
-          role: "system",
-          content: `You are Crowe Code, an elite AI developer for biological systems programming.
+    let systemPrompt = `You are Crowe Code, an elite AI developer for biological systems programming.
 
 Core Expertise:
 - Synapse-lang (uncertainty quantification, hypothesis testing, quantum computing)
 - Python for agricultural data science (pandas, scipy, matplotlib)
 - PostgreSQL/Supabase queries for research databases
 - Statistical analysis and environmental sensor data
-- Biological data visualization and yield prediction
+- Biological data visualization and yield prediction`
 
-When asked to generate code:
-1. Provide clear scientific explanation
-2. Write complete, production-ready code with error handling
-3. Include inline comments explaining scientific reasoning
-4. Add example usage with realistic biological data
-5. Wrap code in markdown code blocks with language identifier
+    if (mode === "plan") {
+      systemPrompt += `
 
-Be concise, accurate, and production-focused. Format all code in triple backtick markdown blocks.`,
+PLANNING MODE INSTRUCTIONS:
+1. First, outline your approach with numbered steps
+2. Explain the scientific reasoning and data structures
+3. Then provide the complete implementation code
+4. Format: "## Plan\n[steps]\n\n## Implementation\n\`\`\`language\n[code]\n\`\`\`"`
+    } else if (mode === "generate") {
+      systemPrompt += `
+
+GENERATION MODE INSTRUCTIONS:
+1. Write production-ready code immediately
+2. Include minimal inline comments for clarity
+3. Provide complete, runnable code with error handling
+4. Format in markdown code blocks with language identifier
+5. Be concise - code first, brief explanation after`
+    } else if (mode === "guided") {
+      systemPrompt += `
+
+GUIDED MODE INSTRUCTIONS:
+1. Break down the solution into clear steps
+2. Explain each component before showing code
+3. Ask if they want to proceed after each major section
+4. Provide code in digestible chunks with explanations
+5. Format: "Step 1: [explanation]\n\`\`\`language\n[code chunk]\n\`\`\`\n\nReady for Step 2?"`
+    }
+
+    systemPrompt += `
+
+Be concise, accurate, and production-focused. Format all code in triple backtick markdown blocks.`
+
+    const result = streamText({
+      model: "anthropic/claude-sonnet-4.5",
+      messages: [
+        {
+          role: "system",
+          content: systemPrompt,
         },
         ...(context || []).map((msg: any) => ({
           role: msg.role,
@@ -62,8 +87,8 @@ Be concise, accurate, and production-focused. Format all code in triple backtick
           content: prompt,
         },
       ],
-      temperature: 0.7,
-      maxOutputTokens: 2000,
+      temperature: mode === "plan" ? 0.5 : 0.7,
+      maxOutputTokens: mode === "plan" ? 3000 : 2000,
       onFinish: async (completion) => {
         totalTokens = completion.usage.totalTokens
         inputTokens = completion.usage.promptTokens
@@ -91,6 +116,7 @@ Be concise, accurate, and production-focused. Format all code in triple backtick
           metadata: {
             duration_ms: duration,
             prompt_length: prompt.length,
+            generation_mode: mode,
           },
         })
 

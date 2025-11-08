@@ -75,6 +75,7 @@ quantum[2] {
   const [currentRepository, setCurrentRepository] = useState<any>(null)
   const [githubConnected, setGithubConnected] = useState(false)
   const [editorInstance, setEditorInstance] = useState<any>(null)
+  const [generationMode, setGenerationMode] = useState<"plan" | "generate" | "guided">("generate")
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -348,45 +349,33 @@ quantum[2] {
             <MessageSquare className="w-3 h-3 mr-1" />
             Chat
           </Button>
-          <div className="flex items-center gap-1 ml-4">
+          <div className="ml-4 flex items-center gap-1 bg-[#2d2d30] rounded-md p-1">
             <Button
               size="sm"
-              variant={language === "synapse" ? "default" : "ghost"}
-              onClick={() => {
-                setLanguage("synapse")
-                setCode(`# Synapse-lang - Scientific Programming
-uncertain temp = 300 ± 10
-hypothesis test { /* ... */ }
-quantum[2] { H(q0); CNOT(q0, q1) }`)
-              }}
-              className="text-xs h-7"
+              variant={generationMode === "plan" ? "default" : "ghost"}
+              onClick={() => setGenerationMode("plan")}
+              className="text-xs h-6 px-2"
+              title="Plan then code - AI explains approach before writing"
             >
-              Synapse
+              Plan
             </Button>
             <Button
               size="sm"
-              variant={language === "python" ? "default" : "ghost"}
-              onClick={() => {
-                setLanguage("python")
-                setCode(`# Python
-import numpy as np
-print("Hello from Python")`)
-              }}
-              className="text-xs h-7"
+              variant={generationMode === "generate" ? "default" : "ghost"}
+              onClick={() => setGenerationMode("generate")}
+              className="text-xs h-6 px-2"
+              title="Direct code generation - AI writes code immediately"
             >
-              Python
+              Generate
             </Button>
             <Button
               size="sm"
-              variant={language === "javascript" ? "default" : "ghost"}
-              onClick={() => {
-                setLanguage("javascript")
-                setCode(`// JavaScript
-console.log("Hello from JavaScript");`)
-              }}
-              className="text-xs h-7"
+              variant={generationMode === "guided" ? "default" : "ghost"}
+              onClick={() => setGenerationMode("guided")}
+              className="text-xs h-6 px-2"
+              title="Guided mode - Step-by-step with confirmation"
             >
-              JavaScript
+              Guided
             </Button>
           </div>
         </div>
@@ -599,7 +588,11 @@ console.log("Hello from JavaScript");`)
                   />
                   <div>
                     <span className="text-sm font-semibold text-[#e0e0e0]">Crowe Code</span>
-                    <p className="text-[10px] text-[#969696]">AI Agent • {usageQuota.remaining} requests left</p>
+                    <p className="text-[10px] text-[#969696]">
+                      {generationMode === "plan" && "Plan Mode • Explains before coding"}
+                      {generationMode === "generate" && "Generate Mode • Direct code output"}
+                      {generationMode === "guided" && "Guided Mode • Step-by-step assistance"}
+                    </p>
                   </div>
                 </div>
                 <Button
@@ -630,6 +623,7 @@ console.log("Hello from JavaScript");`)
                 selectedText={selectedText}
                 onUsageUpdate={(newQuota) => setUsageQuota(newQuota)}
                 editorInstance={editorInstance}
+                generationMode={generationMode}
               />
             </div>
           </>

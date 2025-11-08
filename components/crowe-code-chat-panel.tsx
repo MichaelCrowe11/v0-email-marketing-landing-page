@@ -21,9 +21,16 @@ interface Props {
   selectedText: string
   onUsageUpdate?: (quota: { used: number; remaining: number; quota: number }) => void
   editorInstance?: any
+  generationMode: "plan" | "generate" | "guided" // Add generation mode prop
 }
 
-export function CroweCodeChatPanel({ onCodeGenerated, selectedText, onUsageUpdate, editorInstance }: Props) {
+export function CroweCodeChatPanel({
+  onCodeGenerated,
+  selectedText,
+  onUsageUpdate,
+  editorInstance,
+  generationMode,
+}: Props) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const [isGenerating, setIsGenerating] = useState(false)
@@ -96,7 +103,11 @@ export function CroweCodeChatPanel({ onCodeGenerated, selectedText, onUsageUpdat
       const response = await fetch("/api/crowe-code/stream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: input, context: messages }),
+        body: JSON.stringify({
+          prompt: input,
+          context: messages,
+          mode: generationMode, // Pass the current mode
+        }),
       })
 
       if (response.status === 429) {
@@ -242,7 +253,9 @@ export function CroweCodeChatPanel({ onCodeGenerated, selectedText, onUsageUpdat
             <div className="space-y-2">
               <p className="text-[#cccccc] font-semibold">Crowe Code Agent</p>
               <p className="text-[#858585] text-xs max-w-sm">
-                Ask me to generate code, explain functions, debug errors, or optimize your agricultural data analysis
+                {generationMode === "plan" && "I'll explain my approach before writing code"}
+                {generationMode === "generate" && "I'll write code directly into your editor"}
+                {generationMode === "guided" && "I'll guide you step-by-step through the solution"}
               </p>
             </div>
             <div className="space-y-2 w-full text-xs">
