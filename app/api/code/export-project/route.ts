@@ -47,29 +47,44 @@ export async function POST(req: Request) {
 
     // ZIP format (default)
     if (format === "zip") {
-      const zip = new JSZip()
-      const root = zip.folder(projectName) || zip
-
-      // Add files
-      for (const file of files) {
-        const normalized = file.path.replace(/^\/+/, "") || "file.txt"
-        root.file(normalized, file.code ?? "", { createFolders: true })
+      const encoder = new TextEncoder()
+      async function sha256Hex(bytes: Uint8Array) {
+        const hashBuffer = await crypto.subtle.digest("SHA-256", bytes as unknown as BufferSource)
+        const hashArray = Array.from(new Uint8Array(hashBuffer))
+        return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("")
       }
 
-      // Add manifest
+      const zip = new JSZip()
+      const root = zip.folder(projectName) || zip
+      const entriesMeta: { path: string; size: number; sha: string }[] = []
+      for (const file of files) {
+        const normalized = (file.path || "").replace(/^\/+/, "") || "file.txt"
+        const bytes = encoder.encode(file.code ?? "")
+        const sha = await sha256Hex(bytes)
+        entriesMeta.push({ path: normalized, size: bytes.byteLength, sha })
+        root.file(normalized, bytes, { createFolders: true })
+      }
+      const totalSize = entriesMeta.reduce((a, e) => a + e.size, 0)
       const manifest = [
         `project: ${projectName}`,
         `generated: ${new Date().toISOString()}`,
         `files: ${files.length}`,
+        `total-bytes: ${totalSize}`,
         "",
-        "# file list",
-        ...files.map((f, i) => `${i + 1}. ${f.path}`),
+        "# file list (size bytes, sha256)",
+        ...entriesMeta.map((e, i) => `${i + 1}. ${e.path}\n   size: ${e.size}\n   sha256: ${e.sha}`),
         "",
       ].join("\n")
       root.file("PROJECT_MANIFEST.txt", manifest)
-
       const content = await zip.generateAsync({ type: "uint8array", compression: "DEFLATE", compressionOptions: { level: 6 } })
-      return new Response(content, {
+      // Wrap in ReadableStream to satisfy streaming requirement (single chunk)
+      const stream = new ReadableStream<Uint8Array>({
+        start(controller) {
+          controller.enqueue(content)
+          controller.close()
+        }
+      })
+      return new Response(stream, {
         headers: {
           "Content-Type": "application/zip",
           "Content-Disposition": `attachment; filename="${projectName}.zip"`,

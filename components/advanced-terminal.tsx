@@ -2,7 +2,11 @@
 
 import { useEffect, useState, useRef } from "react"
 
-export function AdvancedTerminal() {
+interface AdvancedTerminalProps {
+  onCycleComplete?: () => void
+}
+
+export function AdvancedTerminal({ onCycleComplete }: AdvancedTerminalProps) {
   const [lines, setLines] = useState<string[]>([])
   const [mode, setMode] = useState<"dark" | "light">("dark")
   const timerRef = useRef<number | null>(null)
@@ -37,6 +41,7 @@ export function AdvancedTerminal() {
 
   // Streaming logic with defensive guards
   useEffect(() => {
+    let cycleCount = 0
     function pushNext() {
       const i = indexRef.current
       if (i < terminalOutput.length) {
@@ -47,6 +52,10 @@ export function AdvancedTerminal() {
         indexRef.current = i + 1
         timerRef.current = window.setTimeout(pushNext, 300)
       } else {
+        cycleCount += 1
+        if (cycleCount === 1 && onCycleComplete) {
+          try { onCycleComplete() } catch {}
+        }
         // restart after pause
         resetRef.current = window.setTimeout(() => {
           setLines([])
@@ -60,7 +69,7 @@ export function AdvancedTerminal() {
       if (timerRef.current) clearTimeout(timerRef.current)
       if (resetRef.current) clearTimeout(resetRef.current)
     }
-  }, [terminalOutput])
+  }, [terminalOutput, onCycleComplete])
 
   const isDark = mode === "dark"
   const containerStyle: React.CSSProperties = {
