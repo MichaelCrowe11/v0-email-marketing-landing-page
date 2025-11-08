@@ -10,6 +10,7 @@ export async function updateSession(request: NextRequest) {
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   if (!supabaseUrl || !supabaseAnonKey) {
+    console.log("[v0] Supabase credentials missing in middleware")
     return supabaseResponse
   }
 
@@ -19,7 +20,7 @@ export async function updateSession(request: NextRequest) {
         return request.cookies.getAll()
       },
       setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
+        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
         supabaseResponse = NextResponse.next({
           request,
         })
@@ -28,36 +29,41 @@ export async function updateSession(request: NextRequest) {
     },
   })
 
-  try {
-    // Refresh session if expired - required for Server Components
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
-    const protectedPaths = [
-      "/dashboard",
-      "/profile",
-      "/projects",
-      "/documents/new",
-      "/forum/new",
-      "/analytics",
-      "/crowe-vision",
-      "/video-studio",
-      "/sops",
-      "/docs",
-    ]
+  console.log("[v0] Middleware check - path:", request.nextUrl.pathname, "user:", !!user)
 
-    const isProtectedPath = protectedPaths.some((path) => request.nextUrl.pathname.startsWith(path))
+  const protectedPaths = [
+    "/dashboard",
+    "/profile",
+    "/projects",
+    "/documents/new",
+    "/forum/new",
+    "/analytics",
+    "/crowe-vision",
+    "/video-studio",
+    "/sops",
+    "/crowe-code",
+  ]
 
-    if (!user && isProtectedPath) {
-      const url = request.nextUrl.clone()
-      url.pathname = "/auth/login"
-      url.searchParams.set("redirectTo", request.nextUrl.pathname)
-      return NextResponse.redirect(url)
-    }
-  } catch (error) {
-    console.error("[v0] Error in middleware auth check:", error)
-    // Continue without blocking the request
+  const isProtectedPath = protectedPaths.some((path) => request.nextUrl.pathname.startsWith(path))
+  const isAuthPath = request.nextUrl.pathname.startsWith("/auth")
+
+  if (!user && isProtectedPath) {
+    console.log("[v0] Redirecting to login - no user for protected path")
+    const url = request.nextUrl.clone()
+    url.pathname = "/auth/login"
+    url.searchParams.set("redirectTo", request.nextUrl.pathname)
+    return NextResponse.redirect(url)
+  }
+
+  if (user && isAuthPath && !request.nextUrl.pathname.includes("/auth/callback")) {
+    console.log("[v0] Redirecting to dashboard - user already logged in")
+    const url = request.nextUrl.clone()
+    url.pathname = "/dashboard"
+    return NextResponse.redirect(url)
   }
 
   return supabaseResponse
