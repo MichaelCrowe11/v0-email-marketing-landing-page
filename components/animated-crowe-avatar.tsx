@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import Image from "next/image"
 
 interface AnimatedCroweAvatarProps {
   mode: "vision" | "code" | "processing" | "idle"
@@ -28,30 +29,26 @@ export function AnimatedCroweAvatar({ mode, size = 48, showLabel = false }: Anim
       case "vision":
         return {
           label: "Crowe Vision",
-          borderColor: "border-cyan-500",
-          glowColor: "shadow-cyan-500/50",
-          particleColor: "bg-cyan-400",
+          image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG_0059-uidEXFLqOMKCV8KKSQzX49Du7xOv3w.png",
+          borderColor: "border-primary",
         }
       case "code":
         return {
           label: "Crowe Code",
-          borderColor: "border-[#4a90e2]",
-          glowColor: "shadow-[#4a90e2]/50",
-          particleColor: "bg-[#4a90e2]",
+          image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG_0091-mxP3KS7g1RzzgkqgHPOoq4RnAMeSQ3.png",
+          borderColor: "border-[#7c3aed]",
         }
       case "processing":
         return {
           label: "Processing",
-          borderColor: "border-[#98c379]",
-          glowColor: "shadow-[#98c379]/50",
-          particleColor: "bg-[#98c379]",
+          image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG_0059-uidEXFLqOMKCV8KKSQzX49Du7xOv3w.png",
+          borderColor: "border-green-500",
         }
       default:
         return {
           label: "Idle",
-          borderColor: "border-[#485063]",
-          glowColor: "",
-          particleColor: "bg-[#485063]",
+          image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG_0059-uidEXFLqOMKCV8KKSQzX49Du7xOv3w.png",
+          borderColor: "border-border",
         }
     }
   }
@@ -61,49 +58,27 @@ export function AnimatedCroweAvatar({ mode, size = 48, showLabel = false }: Anim
   return (
     <div className="relative inline-flex flex-col items-center gap-2">
       <div className="relative" style={{ width: size, height: size }}>
-        {/* Animated particles for active modes */}
-        {mode !== "idle" &&
-          particles.map((particle) => (
-            <div
-              key={particle.id}
-              className={`absolute w-1.5 h-1.5 rounded-full ${config.particleColor} animate-pulse`}
-              style={{
-                left: "50%",
-                top: "50%",
-                transform: `translate(${particle.x}px, ${particle.y}px)`,
-                animationDelay: `${particle.delay}s`,
-              }}
-            />
-          ))}
-
-        {/* Glow effect */}
-        {mode !== "idle" && (
-          <div
-            className={`absolute inset-0 rounded-full blur-xl ${config.glowColor} animate-pulse`}
-            style={{ boxShadow: `0 0 ${size / 2}px currentColor` }}
-          />
-        )}
-
         {/* Avatar */}
         <div className="relative">
-          <div
-            className={`relative rounded-full border-2 ${config.borderColor} ${mode !== "idle" ? "animate-pulse" : ""} transition-all duration-300 flex items-center justify-center bg-[#1a1f2e]`}
-            style={{ width: size, height: size }}
-          >
-            <span className="text-2xl font-bold text-white">CL</span>
-          </div>
+          <Image
+            src={config.image || "/placeholder.svg"}
+            alt={config.label}
+            width={size}
+            height={size}
+            className={`rounded-full border-2 ${config.borderColor} object-cover`}
+          />
 
           {/* Status indicator */}
           {mode !== "idle" && (
             <div
-              className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-[#0a0e14] animate-pulse ${config.particleColor}`}
+              className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-background bg-green-500`}
             />
           )}
         </div>
       </div>
 
       {/* Label */}
-      {showLabel && <span className="text-sm font-semibold text-white">{config.label}</span>}
+      {showLabel && <span className="text-sm font-semibold text-foreground">{config.label}</span>}
     </div>
   )
 }
