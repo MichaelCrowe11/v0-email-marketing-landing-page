@@ -78,7 +78,7 @@ export default function Home() {
               </div>
             </div>
             <div className="text-center sm:text-left">
-              <div className="text-lg sm:text-xl md:text-2xl font-black text-foreground mb-1">Crowe Logic AI</div>
+              <div className="text-lg sm:text-xl md:text-2xl font-black text-foreground mb-1">Crowe Logic</div>
               <div className="text-xs sm:text-sm md:text-base text-muted-foreground">
                 Powered by Southwest Mushrooms
               </div>

@@ -40,7 +40,8 @@ const navGroups = [
     label: "AI Tools",
     items: [
       { href: "/chat", label: "AI Assistant", icon: MessageSquare },
-      { href: "/workbench", label: "Research IDE", icon: Code }, // Added workbench link
+      { href: "/crowe-code", label: "Crowe Code", icon: Code }, // Added Crowe Code as primary AI tool
+      { href: "/workbench", label: "Research IDE", icon: Code },
       { href: "/crowe-vision", label: "Crowe Vision", icon: Camera },
       { href: "/video-studio", label: "Video Studio", icon: Video },
     ],
