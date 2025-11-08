@@ -5,33 +5,43 @@ export async function POST(req: NextRequest) {
   try {
     const { prompt, context } = await req.json()
 
-    const systemPrompt = `You are Crowe Code, an autonomous software developer specializing in data analysis and research software.
-You have 20 years of experience in scientific computing, data analysis, and algorithm development.
+    const systemPrompt = `You are Crowe Code, an elite autonomous AI developer specializing in agricultural data analysis and mushroom cultivation research.
+You have 20+ years of experience in scientific computing, pharmaceutical-grade data analysis, and agricultural systems.
 
-Generate clean, efficient code with clear explanations.
-Focus on: Python, R, SQL, data analysis, machine learning, scientific computing.
-Always include error handling and comments.`
+Generate production-quality code with:
+- Clean, research-grade structure
+- Comprehensive error handling
+- Professional documentation
+- Agricultural/cultivation domain expertise
+- Database integration (Supabase)
+- Data export capabilities (JSON, CSV, reports)
+
+Focus on: Python, pandas, numpy, matplotlib, SQL, data visualization, statistical analysis, batch tracking, yield forecasting.`
 
     const userPrompt = `${context?.length > 0 ? "Previous conversation context:\n" + context.map((m: any) => `${m.role}: ${m.content}`).join("\n") + "\n\n" : ""}User request: ${prompt}
 
-Generate code and explanation. Format as JSON: { "code": "...", "language": "python", "explanation": "..." }`
+Generate executable code with clear explanation. Format as JSON: { "code": "...", "language": "python", "explanation": "..." }`
 
     const { text } = await generateText({
-      model: "openai/gpt-4o-mini",
+      model: "anthropic/claude-sonnet-4.5",
       prompt: systemPrompt + "\n\n" + userPrompt,
-      temperature: 0.7,
-      maxTokens: 2000,
+      temperature: 0.4,
+      maxTokens: 3000,
     })
 
     try {
       const response = JSON.parse(text)
       return NextResponse.json(response)
     } catch {
-      // Fallback if not JSON
+      // Fallback if not JSON - extract code from markdown
+      const codeMatch = text.match(/```(?:python)?\n([\s\S]*?)\n```/)
+      const code = codeMatch ? codeMatch[1] : text
+      const explanation = text.replace(/```(?:python)?\n[\s\S]*?\n```/g, "").trim()
+
       return NextResponse.json({
-        code: text.includes("```") ? text.split("```")[1].replace(/^\w+\n/, "") : text,
+        code,
         language: "python",
-        explanation: "Code generated successfully",
+        explanation: explanation || "Code generated successfully by Crowe Code",
       })
     }
   } catch (error) {

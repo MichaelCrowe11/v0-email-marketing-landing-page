@@ -17,15 +17,19 @@ export function ResearchTerminal() {
   const [commands, setCommands] = useState<TerminalCommand[]>([
     {
       id: "1",
-      command: "ls -la",
-      output: `total 48
-drwxr-xr-x 8 researcher staff 256 Nov 2 16:30 .
-drwxr-xr-x 5 researcher staff 160 Nov 2 16:29 ..
--rw-r--r-- 1 researcher staff 30GB Nov 2 16:30 mushroom_cultivation_data.csv
-drwxr-xr-x 3 researcher staff 96 Nov 2 16:30 analysis_scripts/
-drwxr-xr-x 4 researcher staff 128 Nov 2 16:30 models/
--rw-r--r-- 1 researcher staff 2.1M Nov 2 16:30 species_library.json
-drwxr-xr-x 2 researcher staff 64 Nov 2 16:30 results/`,
+      command: "help",
+      output: `CROWE CODE Research Terminal v2.1
+Available Commands:
+  ls              - List files and directories
+  cd [dir]        - Change directory
+  python [file]   - Run Python script
+  crowe [prompt]  - Invoke Crowe Code autonomous coding assistant
+  analyze [type]  - Run data analysis (batches, contamination, yield)
+  help            - Show this help message
+  clear           - Clear terminal
+  
+Type 'crowe' followed by what you want to build and Crowe Code will write the code for you.
+Example: crowe analyze contamination patterns`,
       timestamp: new Date(),
       type: "success",
     },
@@ -81,8 +85,36 @@ drwxr-xr-x 2 researcher staff 64 Nov 2 16:30 results/`,
     let output = ""
     let type: "success" | "error" | "info" = "success"
 
-    // Simulate different commands
-    if (cmd.startsWith("ls")) {
+    if (cmd.startsWith("crowe ")) {
+      const prompt = cmd.substring(6).trim()
+      output = `🧬 CROWE CODE ACTIVATED
+Analyzing request: "${prompt}"
+Generating code...
+
+▓▓▓▓▓▓▓▓▓▓ 100%
+
+✓ Code generation complete
+✓ Optimized for research data
+✓ Ready for execution
+
+To view generated code, switch to the "Crowe Code" tab.`
+      type = "success"
+
+      // Trigger code generation in background
+      fetch("/api/crowe-code/autonomous", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt }),
+      }).catch(console.error)
+    } else if (cmd.startsWith("analyze ")) {
+      const analysisType = cmd.substring(8).trim()
+      output = `🔬 Running ${analysisType} analysis...
+📊 Querying database...
+✓ Retrieved ${Math.floor(Math.random() * 10000)} records
+✓ Analysis complete
+
+Results saved to: /results/${analysisType}_${Date.now()}.json`
+    } else if (cmd.startsWith("ls")) {
       output = `mushroom_cultivation_data.csv  30GB  Nov 2 16:30
 analysis_scripts/               4KB   Nov 2 16:25
 models/                         128MB Nov 2 16:28
@@ -99,12 +131,18 @@ results/                        256KB Nov 2 16:32`
 ✓ Memory usage: 2.8 GB
 Ready for analysis`
     } else if (cmd === "help" || cmd === "?") {
-      output = `Available Commands:
+      output = `CROWE CODE Research Terminal v2.1
+Available Commands:
   ls              - List files and directories
   cd [dir]        - Change directory
   python [file]   - Run Python script
+  crowe [prompt]  - Invoke Crowe Code autonomous coding assistant
+  analyze [type]  - Run data analysis (batches, contamination, yield)
   help            - Show this help message
-  clear           - Clear terminal`
+  clear           - Clear terminal
+  
+Type 'crowe' followed by what you want to build and Crowe Code will write the code for you.
+Example: crowe analyze contamination patterns`
     } else if (cmd === "clear") {
       setCommands([])
       setIsProcessing(false)

@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card } from "@/components/ui/card"
 import { Send, Database, FileText, TrendingUp, Download, BarChart3, Clock, AlertCircle } from "lucide-react"
-import { AnimatedCroweAvatar } from "@/components/animated-crowe-avatar"
 import { createClient } from "@/lib/supabase/client"
+import Image from "next/image"
 
 interface Message {
   role: "user" | "assistant"
@@ -329,17 +329,22 @@ for batch in batches:
 
   return (
     <div className="flex flex-col h-full bg-black border border-[#485063] rounded-lg">
-      {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 bg-[#1a1f2e] border-b border-[#485063]">
         <div className="flex items-center gap-3">
-          <AnimatedCroweAvatar mode="code" size={32} />
+          <Image
+            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG_0091-mxP3KS7g1RzzgkqgHPOoq4RnAMeSQ3.png"
+            alt="Crowe Code"
+            width={40}
+            height={40}
+            className="rounded-full"
+          />
           <div>
             <h3 className="text-sm font-semibold text-white">Crowe Code</h3>
-            <span className="text-xs text-[#a0a4a8]">Autonomous Agricultural Data Analyst</span>
+            <span className="text-xs text-[#a0a4a8]">Autonomous Agricultural AI Developer</span>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-[#4a90e2] font-mono">READY</span>
+          <span className="text-xs text-[#4a90e2] font-mono">Claude 4.5 + GPT-5 Codex</span>
           <div className="w-2 h-2 rounded-full bg-[#4a90e2] animate-pulse" />
         </div>
       </div>
@@ -348,12 +353,18 @@ for batch in batches:
       <div className="flex-1 overflow-y-auto p-4 space-y-4 font-mono text-sm">
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center space-y-4">
-            <AnimatedCroweAvatar mode="code" size={64} />
+            <Image
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG_0091-mxP3KS7g1RzzgkqgHPOoq4RnAMeSQ3.png"
+              alt="Crowe Code"
+              width={80}
+              height={80}
+              className="rounded-full"
+            />
             <div className="space-y-2">
               <p className="text-white font-semibold">Crowe Code Ready</p>
               <p className="text-[#a0a4a8] text-xs max-w-md">
-                Autonomous agricultural data analysis system. Analyze batches, track contamination, forecast yields,
-                generate SOPs, and export comprehensive reports.
+                Autonomous AI developer powered by Claude 4.5 & GPT-5 Codex. Write code via terminal command:{" "}
+                <span className="text-[#4a90e2] font-bold">crowe [your request]</span>
               </p>
             </div>
             <div className="grid grid-cols-2 gap-2 mt-4 w-full max-w-lg">

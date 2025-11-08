@@ -10,6 +10,7 @@ import { FileExplorer } from "@/components/research-ide/file-explorer"
 import { DataViewer } from "@/components/research-ide/data-viewer"
 import { CroweCodeAssistant } from "@/components/crowe-code-assistant"
 import Link from "next/link"
+import Image from "next/image"
 
 interface FileNode {
   id: string
@@ -103,12 +104,16 @@ print("File selected: ${selectedFile.name}")`
       <div className="flex items-center justify-between border-b border-[#485063] bg-[#1a1f2e] px-6 py-4">
         <div className="flex items-center gap-4">
           <Link href="/chat" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded bg-[#2d3648] border border-[#485063]">
-              <Brain className="h-5 w-5 text-[#4a90e2]" />
-            </div>
+            <Image
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG_0091-mxP3KS7g1RzzgkqgHPOoq4RnAMeSQ3.png"
+              alt="Crowe Code"
+              width={32}
+              height={32}
+              className="rounded-full"
+            />
             <div>
               <h1 className="text-xl font-bold text-white">Research IDE</h1>
-              <p className="text-xs text-[#a0a4a8]">Data Analysis Environment</p>
+              <p className="text-xs text-[#a0a4a8]">Powered by Crowe Code</p>
             </div>
           </Link>
         </div>
