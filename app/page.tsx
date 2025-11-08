@@ -63,17 +63,15 @@ export default function Home() {
       <ScrollReveal delay={100}>
         <BrandFamilyBanner />
       </ScrollReveal>
-      <footer className="relative py-12 sm:py-16 md:py-20 text-center overflow-hidden border-t border-border/50">
-        <div className="absolute inset-0 bg-gradient-to-t from-muted/30 via-muted/10 to-transparent" />
+      <footer className="relative py-12 sm:py-16 md:py-20 text-center overflow-hidden border-t border-border">
         <div className="relative z-10 space-y-4 sm:space-y-6 px-4">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6 mb-4 sm:mb-6 md:mb-8">
             <div className="relative group flex-shrink-0">
-              <div className="absolute inset-0 bg-primary/10 rounded-full blur-xl group-hover:blur-2xl transition-all duration-300" />
               <div className="relative w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20">
                 <img
-                  src="/crowe-avatar.png"
+                  src="/crowe-logic-logo.png"
                   alt="Crowe Logic"
-                  className="w-full h-full rounded-full ring-4 ring-border shadow-xl hover:ring-primary/20 transition-all duration-300 object-cover"
+                  className="w-full h-full rounded-full ring-2 ring-border shadow-lg object-cover"
                 />
               </div>
             </div>

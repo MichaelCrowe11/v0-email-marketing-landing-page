@@ -32,21 +32,19 @@ export function BrandFamilyBanner() {
     },
   ]
 
-  // Duplicate brands for seamless infinite scroll
   const duplicatedBrands = [...brands, ...brands, ...brands]
 
   return (
-    <div className="relative w-full overflow-hidden bg-gradient-to-r from-background via-primary/5 to-background py-12 backdrop-blur-sm border-y border-border/50">
-      <div className="absolute left-0 top-0 bottom-0 w-48 bg-gradient-to-r from-background via-background/80 to-transparent z-10 pointer-events-none" />
-      <div className="absolute right-0 top-0 bottom-0 w-48 bg-gradient-to-l from-background via-background/80 to-transparent z-10 pointer-events-none" />
+    <div className="relative w-full overflow-hidden bg-muted/20 py-12 border-y border-border">
+      <div className="absolute left-0 top-0 bottom-0 w-48 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+      <div className="absolute right-0 top-0 bottom-0 w-48 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
 
-      {/* Scrolling content */}
       <div className="flex animate-scroll-brands items-center">
         {duplicatedBrands.map((brand, index) => (
           <div key={`${brand.name}-${index}`} className="flex items-center gap-6 mx-16 min-w-[350px] group">
             <div
-              className={`relative w-20 h-20 rounded-2xl overflow-hidden backdrop-blur-md border-2 border-border/50 flex items-center justify-center p-3 transition-all duration-300 group-hover:scale-110 group-hover:border-primary/50 group-hover:shadow-lg ${
-                brand.needsWhiteBg ? "bg-white" : "bg-card/60"
+              className={`relative w-20 h-20 rounded-lg overflow-hidden border border-border flex items-center justify-center p-3 transition-all duration-300 ${
+                brand.needsWhiteBg ? "bg-white" : "bg-card"
               }`}
             >
               <Image
@@ -58,9 +56,7 @@ export function BrandFamilyBanner() {
               />
             </div>
             <div className="flex flex-col gap-1">
-              <h3 className="text-xl font-bold text-foreground tracking-tight group-hover:text-primary transition-colors">
-                {brand.name}
-              </h3>
+              <h3 className="text-xl font-bold text-foreground tracking-tight">{brand.name}</h3>
               <p className="text-sm text-muted-foreground font-medium">{brand.tagline}</p>
             </div>
           </div>
