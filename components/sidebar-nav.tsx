@@ -7,7 +7,6 @@ import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import {
   User,
-  MessageSquare,
   DollarSign,
   BookOpen,
   Menu,
@@ -24,7 +23,6 @@ import {
   Video,
   Home,
   Calendar,
-  Code,
 } from "lucide-react"
 import { HEADER_HEIGHT } from "@/components/global-header"
 
@@ -39,9 +37,17 @@ const navGroups = [
   {
     label: "AI Tools",
     items: [
-      { href: "/chat", label: "AI Assistant", icon: MessageSquare },
-      { href: "/crowe-code", label: "Crowe Code", icon: Code }, // Added Crowe Code as primary AI tool
-      { href: "/workbench", label: "Research IDE", icon: Code },
+      {
+        href: "/chat",
+        label: "Talk to Crowe Logic",
+        customIcon: "/crowe-logic-logo.png",
+      },
+      {
+        href: "/crowe-code",
+        label: "Crowe Code",
+        customIcon: "/crowe-code-avatar.png",
+      },
+      { href: "/workbench", label: "Research IDE", icon: Microscope },
       { href: "/crowe-vision", label: "Crowe Vision", icon: Camera },
       { href: "/video-studio", label: "Video Studio", icon: Video },
     ],
@@ -146,7 +152,6 @@ export function SidebarNav() {
                 </h3>
                 <div className="space-y-1">
                   {group.items.map((item) => {
-                    const Icon = item.icon
                     const active = isActive(item.href)
                     return (
                       <Link
@@ -160,7 +165,19 @@ export function SidebarNav() {
                         onClick={() => setIsOpen(false)}
                         aria-current={active ? "page" : undefined}
                       >
-                        <Icon className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
+                        {item.customIcon ? (
+                          <div className="relative w-5 h-5 flex-shrink-0">
+                            <Image
+                              src={item.customIcon || "/placeholder.svg"}
+                              alt={item.label}
+                              fill
+                              className="object-contain rounded-full"
+                              sizes="20px"
+                            />
+                          </div>
+                        ) : item.icon ? (
+                          <item.icon className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
+                        ) : null}
                         <span className="truncate">{item.label}</span>
                       </Link>
                     )
