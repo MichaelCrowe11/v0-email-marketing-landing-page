@@ -629,6 +629,7 @@ console.log("Hello from JavaScript");`)
                 }}
                 selectedText={selectedText}
                 onUsageUpdate={(newQuota) => setUsageQuota(newQuota)}
+                editorInstance={editorInstance}
               />
             </div>
           </>
