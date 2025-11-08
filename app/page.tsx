@@ -1,129 +1,114 @@
-import { CroweWordmark } from "@/components/crowe-wordmark"
-import { Button } from "@/components/ui/button"
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowRight, Database, Code2, Microscope, Video } from "lucide-react"
-import Link from "next/link"
+"use client"
 
-export default function HomePage() {
+import { useState, useEffect } from "react"
+import { Hero } from "@/components/hero"
+import { BenefitsBand } from "@/components/benefits-band"
+import { ProofSection } from "@/components/proof-section"
+import { Features } from "@/components/features"
+import { FAQ } from "@/components/faq"
+import { ScrollReveal } from "@/components/scroll-reveal"
+import { CodeGenerationIntro } from "@/components/code-generation-intro"
+import { BrandFamilyBanner } from "@/components/brand-family-banner"
+
+export default function Home() {
+  const [showIntro, setShowIntro] = useState(true)
+  const [hasSeenIntro, setHasSeenIntro] = useState(false)
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const demo = params.get("demo")
+    const resetIntro = params.get("reset-intro")
+
+    if (resetIntro === "true") {
+      localStorage.removeItem("crowe-intro-seen")
+      window.location.href = "/"
+      return
+    }
+
+    const introSeen = localStorage.getItem("crowe-intro-seen")
+    if (introSeen === "true" || demo === "true") {
+      setShowIntro(false)
+      setHasSeenIntro(true)
+    }
+  }, [])
+
+  const handleIntroComplete = () => {
+    setShowIntro(false)
+    setHasSeenIntro(true)
+    localStorage.setItem("crowe-intro-seen", "true")
+  }
+
+  if (showIntro && !hasSeenIntro) {
+    return <CodeGenerationIntro onComplete={handleIntroComplete} />
+  }
+
   return (
-    <div className="flex flex-col">
-      {/* Hero Section */}
-      <section className="flex min-h-[70vh] flex-col items-center justify-center px-4 py-16 text-center">
-        <div className="mb-8">
-          <CroweWordmark variant="full" className="scale-150" />
-        </div>
-
-        <h1 className="mb-4 font-mono text-4xl font-bold tracking-tight text-white lg:text-6xl">
-          CriOS Discovery Engine
-        </h1>
-
-        <p className="mb-8 max-w-2xl font-mono text-lg text-white/70">
-          Pharmaceutical-grade agricultural research platform powered by autonomous AI for mushroom cultivation and
-          discovery.
-        </p>
-
-        <div className="flex flex-wrap gap-4 justify-center">
-          <Button asChild size="lg">
-            <Link href="/chat">
-              Talk to Crowe Logic
-              <ArrowRight className="ml-2 size-4" />
-            </Link>
-          </Button>
-          <Button asChild variant="outline" size="lg">
-            <Link href="/crowe-code">Launch Crowe Code</Link>
-          </Button>
-        </div>
-      </section>
-
-      {/* Research Metrics */}
-      <section className="border-t border-white/10 bg-black/40 px-4 py-12">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            <Card className="bg-black/60 border-white/10">
-              <CardHeader>
-                <CardTitle className="font-mono text-2xl tabular-nums">30GB+</CardTitle>
-                <CardDescription>Cultivation Dataset</CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="bg-black/60 border-white/10">
-              <CardHeader>
-                <CardTitle className="font-mono text-2xl tabular-nums">1,247</CardTitle>
-                <CardDescription>Species Analyzed</CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="bg-black/60 border-white/10">
-              <CardHeader>
-                <CardTitle className="font-mono text-2xl tabular-nums">98.7%</CardTitle>
-                <CardDescription>Analysis Accuracy</CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="bg-black/60 border-white/10">
-              <CardHeader>
-                <CardTitle className="font-mono text-2xl tabular-nums">24/7</CardTitle>
-                <CardDescription>Autonomous Operation</CardDescription>
-              </CardHeader>
-            </Card>
+    <main className="min-h-screen" id="main-content">
+      <Hero />
+      <ScrollReveal>
+        <BrandFamilyBanner />
+      </ScrollReveal>
+      <ScrollReveal>
+        <BenefitsBand />
+      </ScrollReveal>
+      <ScrollReveal delay={200}>
+        <ProofSection />
+      </ScrollReveal>
+      <ScrollReveal delay={100}>
+        <Features />
+      </ScrollReveal>
+      <ScrollReveal delay={100}>
+        <FAQ />
+      </ScrollReveal>
+      <ScrollReveal delay={100}>
+        <BrandFamilyBanner />
+      </ScrollReveal>
+      <footer className="relative py-12 sm:py-16 md:py-20 text-center overflow-hidden border-t border-border">
+        <div className="relative z-10 space-y-4 sm:space-y-6 px-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6 mb-4 sm:mb-6 md:mb-8">
+            <div className="relative group flex-shrink-0">
+              <div className="relative w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20">
+                <img
+                  src="/crowe-logic-logo.png"
+                  alt="Crowe Logic"
+                  className="w-full h-full rounded-full ring-2 ring-border shadow-lg object-cover"
+                />
+              </div>
+            </div>
+            <div className="text-center sm:text-left">
+              <div className="text-lg sm:text-xl md:text-2xl font-black text-foreground mb-1">Crowe Logic</div>
+              <div className="text-xs sm:text-sm md:text-base text-muted-foreground">
+                Powered by Southwest Mushrooms
+              </div>
+            </div>
+          </div>
+          <p className="text-xs sm:text-sm md:text-base text-muted-foreground max-w-2xl mx-auto px-4 leading-relaxed">
+            20+ years of professional mycology expertise, powered by advanced AI.
+            <br className="hidden sm:block" />
+            <span className="sm:hidden"> </span>
+            From substrate formulation to contamination analysis.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 md:gap-8 pt-4 sm:pt-6">
+            <a
+              href="https://southwestmushrooms.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs sm:text-sm md:text-base font-semibold text-foreground hover:text-primary transition-colors"
+            >
+              Southwest Mushrooms
+            </a>
+            <span className="hidden sm:inline text-muted-foreground">•</span>
+            <a
+              href="mailto:michael@crowelogic.com"
+              className="text-xs sm:text-sm md:text-base font-semibold text-foreground hover:text-primary transition-colors"
+            >
+              Contact Michael
+            </a>
+            <span className="hidden sm:inline text-muted-foreground">•</span>
+            <span className="text-xs sm:text-sm md:text-base text-muted-foreground">© 2025 All Rights Reserved</span>
           </div>
         </div>
-      </section>
-
-      {/* Platform Features */}
-      <section className="px-4 py-16">
-        <div className="mx-auto max-w-7xl">
-          <h2 className="mb-12 text-center font-mono text-3xl font-bold text-white">Research Tools</h2>
-
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-            <Link href="/chat" className="group">
-              <Card className="h-full transition-all hover:border-[#C4A05C] bg-black/60 border-white/10">
-                <CardHeader>
-                  <Database className="mb-4 size-10 text-[#C4A05C]" />
-                  <CardTitle className="font-mono">Crowe Logic</CardTitle>
-                  <CardDescription>
-                    Conversational AI assistant trained on 30GB mushroom cultivation data
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-            </Link>
-
-            <Link href="/crowe-code" className="group">
-              <Card className="h-full transition-all hover:border-[#C4A05C] bg-black/60 border-white/10">
-                <CardHeader>
-                  <Code2 className="mb-4 size-10 text-[#C4A05C]" />
-                  <CardTitle className="font-mono">Crowe Code</CardTitle>
-                  <CardDescription>
-                    Autonomous software developer with VS Code IDE and GitHub integration
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-            </Link>
-
-            <Link href="/workbench" className="group">
-              <Card className="h-full transition-all hover:border-[#C4A05C] bg-black/60 border-white/10">
-                <CardHeader>
-                  <Microscope className="mb-4 size-10 text-[#C4A05C]" />
-                  <CardTitle className="font-mono">Research IDE</CardTitle>
-                  <CardDescription>Python execution environment with data analysis and batch logging</CardDescription>
-                </CardHeader>
-              </Card>
-            </Link>
-
-            <Link href="/crowe-vision" className="group">
-              <Card className="h-full transition-all hover:border-[#C4A05C] bg-black/60 border-white/10">
-                <CardHeader>
-                  <Video className="mb-4 size-10 text-[#C4A05C]" />
-                  <CardTitle className="font-mono">Crowe Vision</CardTitle>
-                  <CardDescription>
-                    Advanced image analysis for mushroom identification and quality assessment
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-            </Link>
-          </div>
-        </div>
-      </section>
-    </div>
+      </footer>
+    </main>
   )
 }
