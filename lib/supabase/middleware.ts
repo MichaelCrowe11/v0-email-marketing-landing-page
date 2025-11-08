@@ -9,9 +9,7 @@ export async function updateSession(request: NextRequest) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-  // If Supabase credentials are not available, skip auth check
   if (!supabaseUrl || !supabaseAnonKey) {
-    console.warn("[v0] Supabase credentials not found in middleware, skipping auth check")
     return supabaseResponse
   }
 
