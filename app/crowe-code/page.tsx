@@ -22,7 +22,6 @@ import {
   X,
 } from "lucide-react"
 import { CroweCodeChatPanel } from "@/components/crowe-code-chat-panel"
-import monaco from "monaco-editor"
 
 export default function CroweCodePage() {
   const [code, setCode] = useState(`# Crowe Code - Autonomous Agricultural Software Developer
@@ -393,7 +392,7 @@ def analyze_cultivation_data():
               value={code}
               onChange={(value) => setCode(value || "")}
               theme="vs-dark"
-              onMount={(editor) => {
+              onMount={(editor, monaco) => {
                 editor.addAction({
                   id: "ask-crowe-code",
                   label: "Ask Crowe Code",
