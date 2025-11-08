@@ -1,4 +1,5 @@
 import { streamText } from "ai"
+import { anthropic } from "@ai-sdk/anthropic"
 import { createClient } from "@/lib/supabase/server"
 
 export const runtime = "edge"
@@ -72,7 +73,7 @@ GUIDED MODE INSTRUCTIONS:
 Be concise, accurate, and production-focused. Format all code in triple backtick markdown blocks.`
 
     const result = streamText({
-      model: "anthropic/claude-sonnet-4.5",
+      model: anthropic("claude-sonnet-4-20250514"),
       messages: [
         {
           role: "system",
@@ -88,7 +89,7 @@ Be concise, accurate, and production-focused. Format all code in triple backtick
         },
       ],
       temperature: mode === "plan" ? 0.5 : 0.7,
-      maxOutputTokens: mode === "plan" ? 3000 : 2000,
+      maxTokens: mode === "plan" ? 3000 : 2000,
       onFinish: async (completion) => {
         totalTokens = completion.usage.totalTokens
         inputTokens = completion.usage.promptTokens
@@ -129,7 +130,8 @@ Be concise, accurate, and production-focused. Format all code in triple backtick
       },
     })
 
-    return result.toTextStreamResponse()
+    // Return proper AI SDK v5 data stream response
+    return result.toDataStreamResponse()
   } catch (error) {
     console.error("[v0] Streaming error:", error)
     return new Response("Error generating code", { status: 500 })

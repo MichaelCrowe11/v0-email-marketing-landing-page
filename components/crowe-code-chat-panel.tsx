@@ -5,7 +5,7 @@ import type React from "react"
 import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { Send, Copy, Check, Sparkles, Mic, MicOff } from "lucide-react"
+import { Send, Copy, Check, Sparkles } from "lucide-react"
 import Image from "next/image"
 
 interface Message {
@@ -20,25 +20,14 @@ interface Props {
   onCodeGenerated: (code: string) => void
   selectedText: string
   onUsageUpdate?: (quota: { used: number; remaining: number; quota: number }) => void
-  editorInstance?: any
-  generationMode: "plan" | "generate" | "guided" // Add generation mode prop
 }
 
-export function CroweCodeChatPanel({
-  onCodeGenerated,
-  selectedText,
-  onUsageUpdate,
-  editorInstance,
-  generationMode,
-}: Props) {
+export function CroweCodeChatPanel({ onCodeGenerated, selectedText, onUsageUpdate }: Props) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const [isGenerating, setIsGenerating] = useState(false)
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-
-  const [isListening, setIsListening] = useState(false)
-  const [recognition, setRecognition] = useState<any>(null)
 
   // Auto-scroll to bottom on new messages
   useEffect(() => {
@@ -51,36 +40,6 @@ export function CroweCodeChatPanel({
       setInput(`Explain this code:\n\n${selectedText}`)
     }
   }, [selectedText])
-
-  useEffect(() => {
-    if (typeof window !== "undefined" && ("SpeechRecognition" in window || "webkitSpeechRecognition" in window)) {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
-      const recognitionInstance = new SpeechRecognition()
-      recognitionInstance.continuous = true
-      recognitionInstance.interimResults = true
-      recognitionInstance.lang = "en-US"
-
-      recognitionInstance.onresult = (event: any) => {
-        const transcript = Array.from(event.results)
-          .map((result: any) => result[0])
-          .map((result) => result.transcript)
-          .join("")
-
-        setInput(transcript)
-      }
-
-      recognitionInstance.onerror = (event: any) => {
-        console.error("[v0] Speech recognition error:", event.error)
-        setIsListening(false)
-      }
-
-      recognitionInstance.onend = () => {
-        setIsListening(false)
-      }
-
-      setRecognition(recognitionInstance)
-    }
-  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -103,11 +62,7 @@ export function CroweCodeChatPanel({
       const response = await fetch("/api/crowe-code/stream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt: input,
-          context: messages,
-          mode: generationMode, // Pass the current mode
-        }),
+        body: JSON.stringify({ prompt: input, context: messages }),
       })
 
       if (response.status === 429) {
@@ -129,63 +84,73 @@ export function CroweCodeChatPanel({
 
       if (reader) {
         let fullResponse = ""
-        let hasInsertedCode = false
+        let buffer = ""
 
         while (true) {
           const { done, value } = await reader.read()
           if (done) break
 
-          const chunk = decoder.decode(value, { stream: true })
-          fullResponse += chunk
+          // Decode the chunk and add to buffer
+          buffer += decoder.decode(value, { stream: true })
 
-          // Update streaming message in real-time
-          setMessages((prev) => {
-            const newMessages = [...prev]
-            const lastMessage = newMessages[newMessages.length - 1]
-            if (lastMessage.role === "assistant") {
-              lastMessage.content = fullResponse
-              // Extract code block if present
-              const codeMatch = fullResponse.match(/```(\w+)?\n([\s\S]*?)```/)
-              if (codeMatch) {
-                lastMessage.code = codeMatch[2]
-                lastMessage.language = codeMatch[1] || "python"
+          // Process complete lines from buffer
+          const lines = buffer.split("\n")
+          buffer = lines.pop() || "" // Keep incomplete line in buffer
 
-                if (!hasInsertedCode && editorInstance && lastMessage.code) {
-                  const selection = editorInstance.getSelection()
-                  const position = editorInstance.getPosition()
+          for (const line of lines) {
+            if (!line.trim()) continue
 
-                  // Insert at cursor position
-                  editorInstance.executeEdits("crowe-code-ai", [
-                    {
-                      range: new (window as any).monaco.Range(
-                        position.lineNumber,
-                        position.column,
-                        position.lineNumber,
-                        position.column,
-                      ),
-                      text: lastMessage.code,
-                    },
-                  ])
+            // AI SDK data stream format: each chunk is prefixed with type identifier
+            // Format: 0:"text" for text chunks, 2:"{json}" for data, etc.
+            try {
+              // Text chunks from AI SDK start with '0:' followed by JSON-encoded string
+              if (line.startsWith("0:")) {
+                const textChunk = JSON.parse(line.slice(2))
+                fullResponse += textChunk
 
-                  // Move cursor to end of inserted code
-                  const lines = lastMessage.code.split("\n")
-                  const newPosition = {
-                    lineNumber: position.lineNumber + lines.length - 1,
-                    column: lines[lines.length - 1].length + 1,
+                // Update streaming message in real-time (token by token)
+                setMessages((prev) => {
+                  const newMessages = [...prev]
+                  const lastMessage = newMessages[newMessages.length - 1]
+                  if (lastMessage.role === "assistant") {
+                    lastMessage.content = fullResponse
+                    // Extract code block if present
+                    const codeMatch = fullResponse.match(/```(\w+)?\n([\s\S]*?)```/)
+                    if (codeMatch) {
+                      lastMessage.code = codeMatch[2]
+                      lastMessage.language = codeMatch[1] || "python"
+                    }
                   }
-                  editorInstance.setPosition(newPosition)
-                  editorInstance.revealPosition(newPosition)
-                  editorInstance.focus()
-
-                  hasInsertedCode = true
-                  console.log("[v0] Auto-inserted code into editor")
-                }
+                  return newMessages
+                })
               }
+              // Handle error chunks (e.g., "3:{error json}")
+              else if (line.startsWith("3:")) {
+                const errorData = JSON.parse(line.slice(2))
+                console.error("[Crowe Code] Stream error:", errorData)
+              }
+              // Handle finish/metadata chunks (e.g., "d:{metadata}")
+              else if (line.startsWith("d:")) {
+                const metadata = JSON.parse(line.slice(2))
+                console.log("[Crowe Code] Stream metadata:", metadata)
+              }
+            } catch (parseError) {
+              // If parsing fails, treat as raw text (fallback for non-standard streams)
+              console.warn("[Crowe Code] Failed to parse stream chunk:", line, parseError)
+              fullResponse += line
+              setMessages((prev) => {
+                const newMessages = [...prev]
+                const lastMessage = newMessages[newMessages.length - 1]
+                if (lastMessage.role === "assistant") {
+                  lastMessage.content = fullResponse
+                }
+                return newMessages
+              })
             }
-            return newMessages
-          })
+          }
         }
 
+        // Update usage quota after stream completes
         const usageResponse = await fetch("/api/usage/quota")
         if (usageResponse.ok) {
           const newQuota = await usageResponse.json()
@@ -226,21 +191,6 @@ export function CroweCodeChatPanel({
     onCodeGenerated(code)
   }
 
-  const toggleVoiceInput = () => {
-    if (!recognition) {
-      alert("Speech recognition is not supported in your browser. Try Chrome or Edge.")
-      return
-    }
-
-    if (isListening) {
-      recognition.stop()
-      setIsListening(false)
-    } else {
-      recognition.start()
-      setIsListening(true)
-    }
-  }
-
   return (
     <div className="flex flex-col h-full">
       {/* Messages */}
@@ -253,9 +203,7 @@ export function CroweCodeChatPanel({
             <div className="space-y-2">
               <p className="text-[#cccccc] font-semibold">Crowe Code Agent</p>
               <p className="text-[#858585] text-xs max-w-sm">
-                {generationMode === "plan" && "I'll explain my approach before writing code"}
-                {generationMode === "generate" && "I'll write code directly into your editor"}
-                {generationMode === "guided" && "I'll guide you step-by-step through the solution"}
+                Ask me to generate code, explain functions, debug errors, or optimize your agricultural data analysis
               </p>
             </div>
             <div className="space-y-2 w-full text-xs">
@@ -364,7 +312,7 @@ export function CroweCodeChatPanel({
           <Textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask Crowe Code to generate, explain, or optimize code... Or click the mic to speak"
+            placeholder="Ask Crowe Code to generate, explain, or optimize code..."
             className="flex-1 bg-[#1e1e1e] border-[#3e3e42] text-[#e0e0e0] text-sm resize-none focus:border-[#007acc] focus:ring-1 focus:ring-[#007acc] font-mono placeholder:text-[#6a6a6a]"
             rows={3}
             disabled={isGenerating}
@@ -375,39 +323,21 @@ export function CroweCodeChatPanel({
               }
             }}
           />
-          <div className="flex flex-col gap-2">
-            <Button
-              type="button"
-              onClick={toggleVoiceInput}
-              size="icon"
-              className={`${
-                isListening ? "bg-red-600 hover:bg-red-700 animate-pulse" : "bg-[#2a2d2e] hover:bg-[#3e3e42]"
-              } text-white h-10 w-10 shadow-lg`}
-            >
-              {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-            </Button>
-            <Button
-              type="submit"
-              disabled={!input.trim() || isGenerating}
-              size="icon"
-              className="bg-[#007acc] hover:bg-[#1084d8] text-white h-10 w-10 shadow-lg disabled:opacity-40"
-            >
-              {isGenerating ? (
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <Send className="w-4 h-4" />
-              )}
-            </Button>
-          </div>
+          <Button
+            type="submit"
+            disabled={!input.trim() || isGenerating}
+            size="icon"
+            className="bg-[#007acc] hover:bg-[#1084d8] text-white self-end h-10 w-10 shadow-lg disabled:opacity-40"
+          >
+            {isGenerating ? (
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <Send className="w-4 h-4" />
+            )}
+          </Button>
         </div>
         <div className="text-[10px] text-[#6a6a6a] mt-2 flex items-center justify-between">
-          <span>
-            {isListening ? (
-              <span className="text-red-500 font-semibold animate-pulse">● Listening...</span>
-            ) : (
-              <>Press {navigator.platform.includes("Mac") ? "Cmd" : "Ctrl"}+Enter to send • Click mic to speak</>
-            )}
-          </span>
+          <span>Press {navigator.platform.includes("Mac") ? "Cmd" : "Ctrl"}+Enter to send</span>
           <span className="font-mono tabular-nums">Powered by Claude 4.5 Sonnet</span>
         </div>
       </form>

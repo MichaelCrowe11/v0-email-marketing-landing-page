@@ -1,0 +1,208 @@
+{
+  "name": "crowe-code",
+  "displayName": "Crowe Code",
+  "description": "Autonomous AI developer for biological systems and agricultural data science",
+  "version": "1.0.0",
+  "publisher": "crowe-logic",
+  "icon": "assets/icon.png",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Machine Learning",
+    "Programming Languages",
+    "Snippets",
+    "Data Science"
+  ],
+  "keywords": [
+    "ai",
+    "claude",
+    "code generation",
+    "agriculture",
+    "biology",
+    "data science",
+    "synapse-lang"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "croweCode.openChat",
+        "title": "Open Chat Panel",
+        "category": "Crowe Code",
+        "icon": "$(comment-discussion)"
+      },
+      {
+        "command": "croweCode.generate",
+        "title": "Generate Code",
+        "category": "Crowe Code",
+        "icon": "$(sparkle)"
+      },
+      {
+        "command": "croweCode.explain",
+        "title": "Explain Selected Code",
+        "category": "Crowe Code",
+        "icon": "$(question)"
+      },
+      {
+        "command": "croweCode.refactor",
+        "title": "Refactor Code",
+        "category": "Crowe Code"
+      },
+      {
+        "command": "croweCode.optimize",
+        "title": "Optimize Code",
+        "category": "Crowe Code"
+      },
+      {
+        "command": "croweCode.addComments",
+        "title": "Add Documentation Comments",
+        "category": "Crowe Code"
+      },
+      {
+        "command": "croweCode.fixBug",
+        "title": "Fix Bug",
+        "category": "Crowe Code"
+      },
+      {
+        "command": "croweCode.signIn",
+        "title": "Sign In",
+        "category": "Crowe Code"
+      },
+      {
+        "command": "croweCode.signOut",
+        "title": "Sign Out",
+        "category": "Crowe Code"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "crowe-code-sidebar",
+          "title": "Crowe Code",
+          "icon": "assets/sidebar-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "crowe-code-sidebar": [
+        {
+          "type": "webview",
+          "id": "croweCode.chatView",
+          "name": "AI Assistant",
+          "icon": "assets/sidebar-icon.svg"
+        }
+      ]
+    },
+    "menus": {
+      "editor/context": [
+        {
+          "command": "croweCode.explain",
+          "when": "editorHasSelection",
+          "group": "croweCode@1"
+        },
+        {
+          "command": "croweCode.refactor",
+          "when": "editorHasSelection",
+          "group": "croweCode@2"
+        },
+        {
+          "command": "croweCode.optimize",
+          "when": "editorHasSelection",
+          "group": "croweCode@3"
+        },
+        {
+          "command": "croweCode.addComments",
+          "when": "editorHasSelection",
+          "group": "croweCode@4"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "croweCode.explain",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "croweCode.refactor",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "croweCode.optimize",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "croweCode.addComments",
+          "when": "editorHasSelection"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "croweCode.openChat",
+        "key": "ctrl+shift+c",
+        "mac": "cmd+shift+c"
+      },
+      {
+        "command": "croweCode.explain",
+        "key": "ctrl+shift+e",
+        "mac": "cmd+shift+e",
+        "when": "editorHasSelection"
+      },
+      {
+        "command": "croweCode.generate",
+        "key": "ctrl+shift+g",
+        "mac": "cmd+shift+g"
+      }
+    ],
+    "configuration": {
+      "title": "Crowe Code",
+      "properties": {
+        "croweCode.apiEndpoint": {
+          "type": "string",
+          "default": "https://crowelogic.com",
+          "description": "Crowe Code API endpoint URL"
+        },
+        "croweCode.autoComplete": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable AI-powered code completion"
+        },
+        "croweCode.temperature": {
+          "type": "number",
+          "default": 0.7,
+          "minimum": 0,
+          "maximum": 1,
+          "description": "AI creativity level (0-1)"
+        },
+        "croweCode.maxTokens": {
+          "type": "number",
+          "default": 2000,
+          "description": "Maximum tokens per response"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "lint": "eslint src --ext ts",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.50.0",
+    "typescript": "^5.2.2",
+    "@vscode/vsce": "^2.22.0"
+  },
+  "dependencies": {
+    "eventsource-parser": "^1.1.2"
+  }
+}

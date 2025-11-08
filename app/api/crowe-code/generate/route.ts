@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { generateText } from "ai"
+import { anthropic } from "@ai-sdk/anthropic"
 
 export async function POST(req: NextRequest) {
   try {
@@ -23,7 +24,7 @@ Focus on: Python, pandas, numpy, matplotlib, SQL, data visualization, statistica
 Generate executable code with clear explanation. Format as JSON: { "code": "...", "language": "python", "explanation": "..." }`
 
     const { text } = await generateText({
-      model: "anthropic/claude-sonnet-4.5",
+      model: anthropic("claude-sonnet-4-20250514"),
       prompt: systemPrompt + "\n\n" + userPrompt,
       temperature: 0.4,
       maxTokens: 3000,
