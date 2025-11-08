@@ -5,7 +5,7 @@ import type React from "react"
 import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { Send, Copy, Check, Sparkles } from "lucide-react"
+import { Send, Copy, Check, Sparkles, Mic, MicOff } from "lucide-react"
 import Image from "next/image"
 
 interface Message {
@@ -29,6 +29,9 @@ export function CroweCodeChatPanel({ onCodeGenerated, selectedText, onUsageUpdat
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
+  const [isListening, setIsListening] = useState(false)
+  const [recognition, setRecognition] = useState<any>(null)
+
   // Auto-scroll to bottom on new messages
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -40,6 +43,36 @@ export function CroweCodeChatPanel({ onCodeGenerated, selectedText, onUsageUpdat
       setInput(`Explain this code:\n\n${selectedText}`)
     }
   }, [selectedText])
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && ("SpeechRecognition" in window || "webkitSpeechRecognition" in window)) {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+      const recognitionInstance = new SpeechRecognition()
+      recognitionInstance.continuous = true
+      recognitionInstance.interimResults = true
+      recognitionInstance.lang = "en-US"
+
+      recognitionInstance.onresult = (event: any) => {
+        const transcript = Array.from(event.results)
+          .map((result: any) => result[0])
+          .map((result) => result.transcript)
+          .join("")
+
+        setInput(transcript)
+      }
+
+      recognitionInstance.onerror = (event: any) => {
+        console.error("[v0] Speech recognition error:", event.error)
+        setIsListening(false)
+      }
+
+      recognitionInstance.onend = () => {
+        setIsListening(false)
+      }
+
+      setRecognition(recognitionInstance)
+    }
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -147,6 +180,21 @@ export function CroweCodeChatPanel({ onCodeGenerated, selectedText, onUsageUpdat
 
   const handleInsertCode = (code: string) => {
     onCodeGenerated(code)
+  }
+
+  const toggleVoiceInput = () => {
+    if (!recognition) {
+      alert("Speech recognition is not supported in your browser. Try Chrome or Edge.")
+      return
+    }
+
+    if (isListening) {
+      recognition.stop()
+      setIsListening(false)
+    } else {
+      recognition.start()
+      setIsListening(true)
+    }
   }
 
   return (
@@ -270,7 +318,7 @@ export function CroweCodeChatPanel({ onCodeGenerated, selectedText, onUsageUpdat
           <Textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask Crowe Code to generate, explain, or optimize code..."
+            placeholder="Ask Crowe Code to generate, explain, or optimize code... Or click the mic to speak"
             className="flex-1 bg-[#1e1e1e] border-[#3e3e42] text-[#e0e0e0] text-sm resize-none focus:border-[#007acc] focus:ring-1 focus:ring-[#007acc] font-mono placeholder:text-[#6a6a6a]"
             rows={3}
             disabled={isGenerating}
@@ -281,21 +329,39 @@ export function CroweCodeChatPanel({ onCodeGenerated, selectedText, onUsageUpdat
               }
             }}
           />
-          <Button
-            type="submit"
-            disabled={!input.trim() || isGenerating}
-            size="icon"
-            className="bg-[#007acc] hover:bg-[#1084d8] text-white self-end h-10 w-10 shadow-lg disabled:opacity-40"
-          >
-            {isGenerating ? (
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-            ) : (
-              <Send className="w-4 h-4" />
-            )}
-          </Button>
+          <div className="flex flex-col gap-2">
+            <Button
+              type="button"
+              onClick={toggleVoiceInput}
+              size="icon"
+              className={`${
+                isListening ? "bg-red-600 hover:bg-red-700 animate-pulse" : "bg-[#2a2d2e] hover:bg-[#3e3e42]"
+              } text-white h-10 w-10 shadow-lg`}
+            >
+              {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+            </Button>
+            <Button
+              type="submit"
+              disabled={!input.trim() || isGenerating}
+              size="icon"
+              className="bg-[#007acc] hover:bg-[#1084d8] text-white h-10 w-10 shadow-lg disabled:opacity-40"
+            >
+              {isGenerating ? (
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <Send className="w-4 h-4" />
+              )}
+            </Button>
+          </div>
         </div>
         <div className="text-[10px] text-[#6a6a6a] mt-2 flex items-center justify-between">
-          <span>Press {navigator.platform.includes("Mac") ? "Cmd" : "Ctrl"}+Enter to send</span>
+          <span>
+            {isListening ? (
+              <span className="text-red-500 font-semibold animate-pulse">● Listening...</span>
+            ) : (
+              <>Press {navigator.platform.includes("Mac") ? "Cmd" : "Ctrl"}+Enter to send • Click mic to speak</>
+            )}
+          </span>
           <span className="font-mono tabular-nums">Powered by Claude 4.5 Sonnet</span>
         </div>
       </form>

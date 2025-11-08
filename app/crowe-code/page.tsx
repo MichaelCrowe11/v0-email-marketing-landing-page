@@ -74,6 +74,7 @@ quantum[2] {
   const [showCloneDialog, setShowCloneDialog] = useState(false)
   const [currentRepository, setCurrentRepository] = useState<any>(null)
   const [githubConnected, setGithubConnected] = useState(false)
+  const [editorInstance, setEditorInstance] = useState<any>(null)
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -493,6 +494,7 @@ console.log("Hello from JavaScript");`)
               }}
               theme="vs-dark"
               onMount={(editor, monaco) => {
+                setEditorInstance(editor)
                 monaco.languages.register({ id: "synapse" })
                 monaco.languages.setMonarchTokensProvider("synapse", {
                   keywords: [
@@ -610,7 +612,21 @@ console.log("Hello from JavaScript");`)
                 </Button>
               </div>
               <CroweCodeChatPanel
-                onCodeGenerated={(code) => setCode(code)}
+                onCodeGenerated={(code) => {
+                  if (editorInstance) {
+                    const selection = editorInstance.getSelection()
+                    editorInstance.executeEdits("", [
+                      {
+                        range: selection,
+                        text: code,
+                      },
+                    ])
+                    editorInstance.focus()
+                  } else {
+                    setCode((prev) => prev + "\n\n" + code)
+                  }
+                  setUncommittedChanges((prev) => prev + 1)
+                }}
                 selectedText={selectedText}
                 onUsageUpdate={(newQuota) => setUsageQuota(newQuota)}
               />
