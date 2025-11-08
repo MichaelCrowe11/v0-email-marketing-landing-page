@@ -112,8 +112,14 @@ export function GlobalHeader() {
       >
         <div className="flex items-center justify-between h-full px-3 sm:px-4 md:px-6 max-w-screen-2xl mx-auto gap-2 sm:gap-3 md:gap-4">
           <div className="hidden lg:flex items-center gap-3 shrink-0">
-            <div className="relative w-11 h-11 shrink-0">
-              <Image src="/crowe-logic-logo.png" alt="Crowe Logic" fill className="object-contain" priority />
+            <div className="relative w-11 h-11 shrink-0 rounded-full overflow-hidden bg-background">
+              <Image
+                src="/crowe-logic-logo.png"
+                alt="Crowe Logic"
+                fill
+                className="object-contain mix-blend-multiply dark:mix-blend-screen"
+                priority
+              />
             </div>
             <div className="flex flex-col justify-center">
               <div className="text-base font-bold text-foreground tracking-wide leading-tight font-mono">
