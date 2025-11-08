@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Hero } from "@/components/hero"
+import { OrchestratedHero } from "@/components/orchestrated-hero"
 import { BenefitsBand } from "@/components/benefits-band"
 import { ProofSection } from "@/components/proof-section"
 import { Features } from "@/components/features"
@@ -45,7 +45,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen" id="main-content">
-      <Hero />
+      <OrchestratedHero />
       <ScrollReveal>
         <BrandFamilyBanner />
       </ScrollReveal>
@@ -67,49 +67,43 @@ export default function Home() {
       <ScrollReveal delay={100}>
         <BrandFamilyBanner />
       </ScrollReveal>
-      <footer className="relative py-12 sm:py-16 md:py-20 text-center overflow-hidden border-t border-border">
-        <div className="relative z-10 space-y-4 sm:space-y-6 px-4">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6 mb-4 sm:mb-6 md:mb-8">
-            <div className="relative group flex-shrink-0">
-              <div className="relative w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20">
-                <img
-                  src="/crowe-logic-logo.png"
-                  alt="Crowe Logic"
-                  className="w-full h-full rounded-full ring-2 ring-border shadow-lg object-cover"
-                />
-              </div>
+      <footer className="relative py-16 md:py-20 text-center border-t border-border bg-card/30">
+        <div className="relative z-10 space-y-6 px-4 max-w-4xl mx-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-8">
+            <div className="relative">
+              <img
+                src="/crowe-logic-logo.png"
+                alt="Crowe Logic"
+                className="w-20 h-20 rounded-full ring-1 ring-border shadow-lg object-cover"
+              />
             </div>
             <div className="text-center sm:text-left">
-              <div className="text-lg sm:text-xl md:text-2xl font-black text-foreground mb-1">Crowe Logic</div>
-              <div className="text-xs sm:text-sm md:text-base text-muted-foreground">
-                The AI Platform for Biological Systems
-              </div>
+              <div className="text-2xl font-bold text-foreground tracking-tight mb-1">Crowe Logic</div>
+              <div className="text-sm text-muted-foreground">The Platform for Biological Systems</div>
             </div>
           </div>
-          <p className="text-xs sm:text-sm md:text-base text-muted-foreground max-w-2xl mx-auto px-4 leading-relaxed">
-            Production-validated AI models, developer tools, and datasets.
-            <br className="hidden sm:block" />
-            <span className="sm:hidden"> </span>
-            Built on 18 years of domain expertise and commercial scale operations.
+          <p className="text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            Production-validated AI models, developer tools, and datasets built on 18 years of domain expertise and
+            commercial scale operations.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 md:gap-8 pt-4 sm:pt-6">
+          <div className="flex flex-wrap items-center justify-center gap-6 pt-6 border-t border-border/50">
             <a
               href="https://southwestmushrooms.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs sm:text-sm md:text-base font-semibold text-foreground hover:text-primary transition-colors"
+              className="text-sm font-medium text-foreground hover:text-primary transition-colors"
             >
               Southwest Mushrooms
             </a>
-            <span className="hidden sm:inline text-muted-foreground">•</span>
+            <span className="text-muted-foreground">•</span>
             <a
               href="mailto:michael@crowelogic.com"
-              className="text-xs sm:text-sm md:text-base font-semibold text-foreground hover:text-primary transition-colors"
+              className="text-sm font-medium text-foreground hover:text-primary transition-colors"
             >
               Contact Michael
             </a>
-            <span className="hidden sm:inline text-muted-foreground">•</span>
-            <span className="text-xs sm:text-sm md:text-base text-muted-foreground">© 2025 All Rights Reserved</span>
+            <span className="text-muted-foreground">•</span>
+            <span className="text-sm text-muted-foreground">© 2025 All Rights Reserved</span>
           </div>
         </div>
       </footer>
