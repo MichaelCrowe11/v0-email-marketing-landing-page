@@ -23,6 +23,7 @@ import {
   Video,
   Home,
   Calendar,
+  Code,
 } from "lucide-react"
 import { HEADER_HEIGHT } from "@/components/global-header"
 import { CLMonogramAnimated } from "@/components/cl-monogram-animated"
@@ -39,6 +40,11 @@ const navGroups = [
   {
     label: "Developer Tools",
     items: [
+      {
+        href: "/synapse-lang",
+        label: "Synapse-lang",
+        icon: Code,
+      },
       {
         href: "/crowe-code",
         label: "Crowe Code",
@@ -66,6 +72,7 @@ const navGroups = [
     label: "Resources",
     items: [
       { href: "/docs", label: "Documentation", icon: BookOpen },
+      { href: "/about", label: "About", icon: User },
       { href: "/sops", label: "SOPs & Guides", icon: ClipboardList },
       { href: "/contamination-guide", label: "Contamination ID", icon: Leaf },
       { href: "/forum", label: "Community", icon: Users },

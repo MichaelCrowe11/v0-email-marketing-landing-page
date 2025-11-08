@@ -9,6 +9,7 @@ import { FAQ } from "@/components/faq"
 import { ScrollReveal } from "@/components/scroll-reveal"
 import { CodeGenerationIntro } from "@/components/code-generation-intro"
 import { BrandFamilyBanner } from "@/components/brand-family-banner"
+import { SynapseLangShowcase } from "@/components/synapse-lang-showcase"
 
 export default function Home() {
   const [showIntro, setShowIntro] = useState(true)
@@ -47,6 +48,9 @@ export default function Home() {
       <Hero />
       <ScrollReveal>
         <BrandFamilyBanner />
+      </ScrollReveal>
+      <ScrollReveal>
+        <SynapseLangShowcase />
       </ScrollReveal>
       <ScrollReveal>
         <Features />
