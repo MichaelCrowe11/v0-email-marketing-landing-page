@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { UserMenu } from "@/components/user-menu"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { CroweLogic3DWordmark } from "@/components/crowe-logic-3d-wordmark"
 
 interface WeatherData {
   temp: number | null
@@ -113,6 +114,10 @@ export function GlobalHeader() {
         role="banner"
       >
         <div className="flex items-center justify-between h-full px-3 sm:px-4 md:px-6 md:pl-[272px] max-w-screen-2xl mx-auto gap-2 sm:gap-3 md:gap-4">
+          <div className="hidden md:block mr-4 shrink-0">
+            <CroweLogic3DWordmark size="sm" />
+          </div>
+
           {/* Search Bar */}
           <form onSubmit={handleSearch} className="flex-1 max-w-md md:max-w-2xl" role="search">
             <div

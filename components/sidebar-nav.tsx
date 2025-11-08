@@ -25,6 +25,7 @@ import {
   Calendar,
 } from "lucide-react"
 import { HEADER_HEIGHT } from "@/components/global-header"
+import { CroweLogic3DWordmark } from "@/components/crowe-logic-3d-wordmark"
 
 const navGroups = [
   {
@@ -124,25 +125,12 @@ export function SidebarNav() {
         aria-label="Main navigation"
       >
         <div className="flex flex-col h-full pb-4">
-          <a
-            href="https://southwestmushrooms.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-center px-6 py-4 border-b border-sidebar-border group shrink-0 hover:bg-sidebar-accent/50 transition-colors"
+          <div
+            className="flex items-center justify-center px-6 py-4 border-b border-sidebar-border"
             style={{ height: `${HEADER_HEIGHT}px` }}
-            aria-label="Southwest Mushrooms - Opens in new tab"
           >
-            <div className="relative w-14 h-14 flex-shrink-0">
-              <Image
-                src="/images/design-mode/v0_image-2.png"
-                alt="Southwest Mushrooms"
-                fill
-                className="object-contain transition-transform group-hover:scale-105"
-                priority
-                sizes="56px"
-              />
-            </div>
-          </a>
+            <CroweLogic3DWordmark size="md" />
+          </div>
 
           <nav className="flex-1 p-4 space-y-6 overflow-y-auto" aria-label="Main menu">
             {navGroups.map((group) => (
