@@ -22,6 +22,7 @@ import {
   X,
 } from "lucide-react"
 import { CroweCodeChatPanel } from "@/components/crowe-code-chat-panel"
+import { GitHubCloneDialog } from "@/components/github-clone-dialog"
 
 export default function CroweCodePage() {
   const [code, setCode] = useState(`# Synapse-lang - Scientific Programming Language
@@ -70,6 +71,9 @@ quantum[2] {
   const [selectedText, setSelectedText] = useState("")
   const [uncommittedChanges, setUncommittedChanges] = useState(3)
   const [usageQuota, setUsageQuota] = useState({ used: 0, remaining: 10, quota: 10 })
+  const [showCloneDialog, setShowCloneDialog] = useState(false)
+  const [currentRepository, setCurrentRepository] = useState<any>(null)
+  const [githubConnected, setGithubConnected] = useState(false)
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -98,6 +102,19 @@ quantum[2] {
       }
     }
     fetchUsageQuota()
+  }, [])
+
+  useEffect(() => {
+    const checkGitHubConnection = async () => {
+      try {
+        const response = await fetch("/api/github/status")
+        const data = await response.json()
+        setGithubConnected(data.connected)
+      } catch (error) {
+        console.error("[v0] Failed to check GitHub connection:", error)
+      }
+    }
+    checkGitHubConnection()
   }, [])
 
   const handleMouseMoveHorizontal = (e: MouseEvent) => {
@@ -154,10 +171,51 @@ quantum[2] {
     a.click()
   }
 
-  const handleSaveToGitHub = async () => {
-    setOutput("Saving to GitHub...\n")
+  const handleConnectGitHub = () => {
+    const clientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID
+    const redirectUri = `${window.location.origin}/api/github/auth/callback`
+    const scope = "repo,user"
+    window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`
+  }
+
+  const handleCloneSuccess = (repository: any) => {
+    setCurrentRepository(repository)
+    setOutput(`✓ Successfully cloned ${repository.repo_full_name}\n${repository.filesCloned} files loaded`)
     setUncommittedChanges(0)
-    setOutput("Saved to GitHub successfully")
+  }
+
+  const handleSaveToGitHub = async () => {
+    if (!currentRepository) {
+      setOutput("No repository connected. Clone a repository first.")
+      return
+    }
+
+    const commitMessage = prompt("Enter commit message:")
+    if (!commitMessage) return
+
+    setOutput("Pushing to GitHub...\n")
+
+    try {
+      const response = await fetch("/api/github/push", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          repositoryId: currentRepository.id,
+          commitMessage,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setOutput(`✓ Pushed ${data.filesCommitted} file(s) to GitHub\n${commitMessage}`)
+        setUncommittedChanges(0)
+      } else {
+        setOutput(`✗ Failed to push: ${data.error}`)
+      }
+    } catch (error) {
+      setOutput(`✗ Error: ${error}`)
+    }
   }
 
   return (
@@ -219,11 +277,32 @@ quantum[2] {
         </div>
 
         <div className="flex items-center gap-2">
+          {!githubConnected ? (
+            <Button
+              size="sm"
+              onClick={handleConnectGitHub}
+              className="bg-[#238636] hover:bg-[#2ea043] text-white text-xs h-8"
+            >
+              <GitBranch className="w-3 h-3 mr-1" />
+              Connect GitHub
+            </Button>
+          ) : (
+            <Button
+              size="sm"
+              onClick={() => setShowCloneDialog(true)}
+              variant="ghost"
+              className="text-[#cccccc] hover:bg-[#2a2d2e] text-xs h-8"
+            >
+              <GitBranch className="w-3 h-3 mr-1" />
+              Clone Repo
+            </Button>
+          )}
+
+          {currentRepository && (
+            <div className="text-xs text-[#858585] font-mono">{currentRepository.repo_full_name}</div>
+          )}
+
           <Button size="sm" variant="ghost" className="text-[#cccccc] hover:bg-[#2a2d2e] text-xs h-8">
-            <GitBranch className="w-3 h-3 mr-1" />
-            main
-          </Button>
-          <Button size="sm" variant="ghost" className="text-[#f14c4c] hover:bg-[#2a2d2e] text-xs h-8">
             <GitCommit className="w-3 h-3 mr-1" />
             {uncommittedChanges} changes
           </Button>
@@ -526,6 +605,9 @@ console.log("Hello from JavaScript");`)
           </>
         )}
       </div>
+
+      {/* GitHub Clone Dialog */}
+      <GitHubCloneDialog open={showCloneDialog} onOpenChange={setShowCloneDialog} onCloneSuccess={handleCloneSuccess} />
     </div>
   )
 }
