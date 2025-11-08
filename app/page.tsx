@@ -12,13 +12,14 @@ import { BrandFamilyBanner } from "@/components/brand-family-banner"
 import { SynapseLangShowcase } from "@/components/synapse-lang-showcase"
 
 export default function Home() {
-  const [showIntro, setShowIntro] = useState(true)
-  const [hasSeenIntro, setHasSeenIntro] = useState(false)
+  const [showIntro, setShowIntro] = useState(false)
+  const [hasSeenIntro, setHasSeenIntro] = useState(true)
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const demo = params.get("demo")
     const resetIntro = params.get("reset-intro")
+    const enableIntro = params.get("intro")
 
     if (resetIntro === "true") {
       localStorage.removeItem("crowe-intro-seen")
@@ -26,10 +27,12 @@ export default function Home() {
       return
     }
 
-    const introSeen = localStorage.getItem("crowe-intro-seen")
-    if (introSeen === "true" || demo === "true") {
-      setShowIntro(false)
-      setHasSeenIntro(true)
+    if (enableIntro === "true") {
+      const introSeen = localStorage.getItem("crowe-intro-seen")
+      if (introSeen !== "true" && demo !== "true") {
+        setShowIntro(true)
+        setHasSeenIntro(false)
+      }
     }
   }, [])
 
