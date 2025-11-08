@@ -115,7 +115,7 @@ export function GlobalHeader() {
       >
         <div className="flex items-center justify-between h-full px-3 sm:px-4 md:px-6 md:pl-[272px] max-w-screen-2xl mx-auto gap-2 sm:gap-3 md:gap-4">
           <div className="hidden md:block mr-4 shrink-0">
-            <CroweLogic3DWordmark size="sm" />
+            <CroweLogic3DWordmark size="sm" showTagline={false} />
           </div>
 
           {/* Search Bar */}

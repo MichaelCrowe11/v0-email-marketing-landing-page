@@ -126,10 +126,10 @@ export function SidebarNav() {
       >
         <div className="flex flex-col h-full pb-4">
           <div
-            className="flex items-center justify-center px-6 py-4 border-b border-sidebar-border"
-            style={{ height: `${HEADER_HEIGHT}px` }}
+            className="flex items-center justify-center px-4 py-6 border-b border-sidebar-border bg-sidebar/50"
+            style={{ minHeight: `${HEADER_HEIGHT + 20}px` }}
           >
-            <CroweLogic3DWordmark size="md" />
+            <CroweLogic3DWordmark size="lg" showTagline={true} />
           </div>
 
           <nav className="flex-1 p-4 space-y-6 overflow-y-auto" aria-label="Main menu">
