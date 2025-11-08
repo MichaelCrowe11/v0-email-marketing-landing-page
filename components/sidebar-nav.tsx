@@ -23,7 +23,6 @@ import {
   Camera,
   Video,
   Home,
-  Sparkles,
   Calendar,
 } from "lucide-react"
 import { HEADER_HEIGHT } from "@/components/global-header"
@@ -42,7 +41,6 @@ const navGroups = [
       { href: "/chat", label: "AI Assistant", icon: MessageSquare },
       { href: "/crowe-vision", label: "Crowe Vision", icon: Camera },
       { href: "/video-studio", label: "Video Studio", icon: Video },
-      { href: "/gpts", label: "AI GPT Modules", icon: Sparkles },
     ],
   },
   {

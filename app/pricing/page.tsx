@@ -32,14 +32,13 @@ const plans = [
   {
     id: "expert",
     name: "Expert Access",
-    description: "Everything in Pro plus all GPT modules and priority support",
+    description: "Everything in Pro plus priority support and advanced features", // Updated description to remove GPT modules reference
     monthlyPrice: 197,
     yearlyPrice: 1997,
     savings: 367,
     icon: Sparkles,
     features: [
       "Everything in Pro Access",
-      "All GPT modules included ($391 value)",
       "Priority support",
       "Monthly group consulting calls",
       "Early access to new features",
@@ -120,9 +119,16 @@ export default function PricingPage() {
             const savings = billingCycle === "yearly" ? plan.savings : 0
 
             return (
-              <Card key={plan.id} className={`relative p-8 ${plan.popular ? "border-primary shadow-lg" : ""} ${plan.premium ? "border-amber-500 shadow-2xl bg-gradient-to-br from-amber-50/5 to-background dark:from-amber-950/10" : ""}`}>
+              <Card
+                key={plan.id}
+                className={`relative p-8 ${plan.popular ? "border-primary shadow-lg" : ""} ${plan.premium ? "border-amber-500 shadow-2xl bg-gradient-to-br from-amber-50/5 to-background dark:from-amber-950/10" : ""}`}
+              >
                 {plan.popular && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">Most Popular</Badge>}
-                {plan.premium && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-amber-600">Premium</Badge>}
+                {plan.premium && (
+                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-amber-600">
+                    Premium
+                  </Badge>
+                )}
 
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 rounded-lg bg-primary/10">
@@ -167,23 +173,17 @@ export default function PricingPage() {
               <Badge variant="outline" className="mb-4">
                 Premium Consulting Services
               </Badge>
-              <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-                Need Direct Expert Guidance?
-              </h2>
+              <h2 className="text-3xl sm:text-4xl font-bold mb-4">Need Direct Expert Guidance?</h2>
               <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-                Book a consultation with Michael Crowe for facility design, contamination troubleshooting, or strategic guidance.
-                From 1-hour sessions to premium monthly retainers.
+                Book a consultation with Michael Crowe for facility design, contamination troubleshooting, or strategic
+                guidance. From 1-hour sessions to premium monthly retainers.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" asChild>
-                  <Link href="/consultations">
-                    View Consultation Packages
-                  </Link>
+                  <Link href="/consultations">View Consultation Packages</Link>
                 </Button>
                 <Button size="lg" variant="outline" asChild>
-                  <Link href="/contact">
-                    Request Enterprise Quote
-                  </Link>
+                  <Link href="/contact">Request Enterprise Quote</Link>
                 </Button>
               </div>
               <p className="text-sm text-muted-foreground mt-6">
@@ -205,13 +205,6 @@ export default function PricingPage() {
               </p>
             </div>
             <div>
-              <h3 className="font-semibold mb-2">What's included in the GPT modules?</h3>
-              <p className="text-muted-foreground">
-                Expert Access includes all 4 specialized GPT assistants: Core AI, Spawn Master, Substrate Tech, and
-                Inoculation AI - a $391 value.
-              </p>
-            </div>
-            <div>
               <h3 className="font-semibold mb-2">Is there a free trial?</h3>
               <p className="text-muted-foreground">
                 We offer a 7-day money-back guarantee. If you're not satisfied, we'll refund your first payment in full.
@@ -227,16 +220,16 @@ export default function PricingPage() {
             <div>
               <h3 className="font-semibold mb-2">What's included in Master Grower?</h3>
               <p className="text-muted-foreground">
-                Master Grower is designed for commercial operations. It includes quarterly 1-on-1 consultations with Michael Crowe,
-                white-label capability, multi-facility management, team collaboration for up to 10 users, API access,
-                and dedicated account management.
+                Master Grower is designed for commercial operations. It includes quarterly 1-on-1 consultations with
+                Michael Crowe, white-label capability, multi-facility management, team collaboration for up to 10 users,
+                API access, and dedicated account management.
               </p>
             </div>
             <div>
               <h3 className="font-semibold mb-2">Do you offer enterprise pricing?</h3>
               <p className="text-muted-foreground">
-                Yes! For large-scale operations (10+ grow rooms), research institutions, or custom implementations,
-                we offer enterprise pricing and custom solutions. Contact us for a quote.
+                Yes! For large-scale operations (10+ grow rooms), research institutions, or custom implementations, we
+                offer enterprise pricing and custom solutions. Contact us for a quote.
               </p>
             </div>
           </div>
