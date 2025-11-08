@@ -54,6 +54,177 @@
   --glass-shadow: rgba(0, 0, 0, 0.1);
 }
 
+/* =============================================================
+   Professional Research Theme Tokens (Non-marketing surfaces)
+   These do NOT replace existing marketing palette; instead they
+   provide a restrained, scientific visual language for the core
+   platform (hero, research dashboards, activity cards, sidebar).
+   ============================================================= */
+:root {
+  /* Core surfaces */
+  --primary-dark: #1a1f2e;
+  --primary-mid: #2d3648;
+  --primary-light: #3d4758;
+  --surface-elevated: #232936; /* Slight elevation */
+
+  /* Accents (purpose-scoped) */
+  --accent-blue: #3d7bd9; /* Primary actions */
+  --accent-teal: #58a7a7; /* Secondary info */
+  --accent-purple: #8b7fb8; /* AI / neural indicators */
+
+  /* Text hierarchy */
+  --text-primary: #e8eaed;
+  --text-secondary: #a0a4a8;
+  --text-tertiary: #7b838e;
+
+  /* Status */
+  --success: #52c41a;
+  --warning: #faad14;
+  --error: #f5222d;
+
+  /* Structure */
+  --border-subtle: #485063;
+  --outline-focus: #8ab4f8;
+  --shadow-1: 0 2px 8px rgba(0,0,0,0.1);
+  --shadow-2: 0 6px 24px rgba(0,0,0,0.18);
+  --radius-1: 6px;
+  --radius-2: 8px;
+  --radius-3: 12px;
+
+  /* Typography scale (rem / line-height) */
+  --h1-size: 2rem; --h1-line: 2.0; --h1-weight: 700;
+  --h2-size: 1.5rem; --h2-line: 1.6; --h2-weight: 600;
+  --h3-size: 1.125rem; --h3-line: 1.6; --h3-weight: 600;
+  --body-size: 0.9375rem; --body-line: 1.6; --body-weight: 400;
+  --small-size: 0.8125rem; --small-line: 1.5; --small-weight: 400;
+  --mono-size: 0.875rem; --mono-line: 1.4; --mono-weight: 400;
+}
+
+/* Research layout scaffolding */
+.main-content { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.hero-section { max-width: 1080px; margin: 0 auto; padding: 64px 24px; text-align: center; }
+
+/* Hero typography */
+.platform-title {
+  font-size: var(--h1-size);
+  line-height: var(--h1-line);
+  font-weight: var(--h1-weight);
+  font-family: var(--font-sans, Inter, system-ui, sans-serif);
+  color: var(--text-primary);
+  margin: 0 0 8px;
+}
+.platform-subtitle {
+  font-size: var(--h2-size);
+  line-height: var(--h2-line);
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin: 0 0 32px;
+}
+
+.metrics-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin: 32px 0; }
+.metric-card { background: var(--primary-mid); border: 1px solid var(--border-subtle); border-radius: var(--radius-2); padding: 16px; box-shadow: var(--shadow-1); text-align: left; }
+.metric-label { font-size: var(--small-size); line-height: var(--small-line); color: var(--text-tertiary); margin-bottom: 4px; }
+.metric-value { font-size: 1.125rem; font-weight: 600; color: var(--text-primary); font-feature-settings: "tnum" 1; }
+
+.creator-credit { margin-top: 24px; font-size: var(--small-size); line-height: var(--small-line); color: var(--text-tertiary); }
+
+.profile-photo { width: 120px; height: 120px; object-fit: cover; border-radius: 50%; border: 2px solid var(--border-subtle); box-shadow: var(--shadow-1); margin: 0 auto 24px; display: block; }
+
+/* Research Activity Card */
+.research-card { background: var(--primary-mid); border: 1px solid var(--border-subtle); border-radius: var(--radius-2); padding: 20px; box-shadow: var(--shadow-1); display: flex; flex-direction: column; gap: 12px; }
+.research-card + .research-card { margin-top: 24px; }
+.research-card-header { display: flex; align-items: center; gap: 12px; justify-content: space-between; }
+.research-card-title { font-size: var(--h3-size); line-height: var(--h3-line); font-weight: var(--h3-weight); color: var(--text-primary); margin: 0; }
+.status-badge { display: inline-flex; align-items: center; gap: 6px; font-size: var(--small-size); line-height: var(--small-line); padding: 4px 8px; border-radius: var(--radius-1); background: var(--primary-light); color: var(--text-secondary); }
+.status-badge[data-status="active"] { background: rgba(82,196,26,0.15); color: var(--success); }
+.status-badge[data-status="paused"] { background: rgba(250,173,20,0.15); color: var(--warning); }
+.status-badge[data-status="error"] { background: rgba(245,34,45,0.15); color: var(--error); }
+.status-badge[data-status="completed"] { background: rgba(82,196,26,0.15); color: var(--success); }
+
+.progress-wrap { width: 100%; background: var(--primary-light); border-radius: var(--radius-1); height: 8px; overflow: hidden; }
+.progress-bar { height: 100%; background: var(--accent-blue); transition: width 0.3s ease; }
+
+.research-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.research-list li { font-size: var(--small-size); line-height: var(--small-line); color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.card-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.card-button { appearance: none; border: 1px solid var(--border-subtle); background: var(--primary-light); color: var(--text-primary); padding: 6px 12px; font-size: var(--small-size); line-height: var(--small-line); border-radius: var(--radius-1); cursor: pointer; transition: background 120ms ease-in-out, border-color 120ms ease-in-out; }
+.card-button:hover { background: var(--surface-elevated); border-color: var(--accent-blue); }
+.card-button.primary { background: var(--accent-blue); color: #fff; border-color: var(--accent-blue); }
+.card-button.primary:hover { background: #2f68b9; }
+
+/* Sidebar refinements */
+.sidebar { background: var(--primary-dark); border-right: 1px solid var(--border-subtle); width: var(--sidebar-expanded, 264px); transition: width 120ms ease-in-out; }
+.sidebar.collapsed { width: var(--sidebar-collapsed, 72px); }
+.nav-item { display: flex; align-items: center; gap: 12px; color: var(--text-secondary); padding: 12px 16px; text-decoration: none; font-size: var(--body-size); line-height: var(--body-line); transition: background 120ms ease-in-out, color 120ms ease-in-out; }
+.nav-item:hover { background: var(--primary-light); color: var(--text-primary); }
+.nav-item.active { background: var(--surface-elevated); color: var(--accent-blue); border-left: 3px solid var(--accent-blue); padding-left: 13px; }
+.nav-icon { opacity: 0.7; filter: grayscale(100%); transition: opacity 120ms ease-in-out, filter 120ms ease-in-out; }
+.nav-item:hover .nav-icon, .nav-item.active .nav-icon { opacity: 1; filter: grayscale(0%); }
+
+/* ===================================
+   Monochrome Mode (Premium B/W only)
+   =================================== */
+.monochrome {
+  /* Surfaces */
+  --primary-dark: #000000;
+  --primary-mid: #0d0d0d;
+  --primary-light: #1a1a1a;
+  --surface-elevated: #141414;
+
+  /* Text */
+  --text-primary: #ffffff;
+  --text-secondary: #d9d9d9;
+  --text-tertiary: #a6a6a6;
+
+  /* Structure */
+  --border-subtle: #242424;
+  --outline-focus: #ffffff;
+
+  /* Accents and statuses collapse to white */
+  --accent-blue: #ffffff;
+  --accent-teal: #ffffff;
+  --accent-purple: #ffffff;
+  --success: #ffffff;
+  --warning: #ffffff;
+  --error: #ffffff;
+}
+
+/* Component-level monochrome refinements */
+.monochrome .status-badge { background: #111111; color: #ffffff; }
+.monochrome .status-badge[data-status="active"],
+.monochrome .status-badge[data-status="paused"],
+.monochrome .status-badge[data-status="error"],
+.monochrome .status-badge[data-status="completed"] { background: #111111; color: #ffffff; }
+
+.monochrome .progress-wrap { background: #1a1a1a; }
+.monochrome .progress-bar { background: #ffffff; }
+
+.monochrome .card-button { background: #111111; color: #ffffff; border-color: #242424; }
+.monochrome .card-button:hover { background: #141414; border-color: #ffffff; }
+.monochrome .card-button.primary { background: #ffffff; color: #000000; border-color: #ffffff; }
+.monochrome .card-button.primary:hover { background: #e6e6e6; }
+
+.monochrome .nav-item.active { color: #ffffff; border-left-color: #ffffff; }
+.monochrome .nav-item:hover { background: #1a1a1a; color: #ffffff; }
+.monochrome .nav-icon { filter: none; opacity: 1; }
+
+/* Focus outline override for research UI */
+.research-card :focus-visible,
+.hero-section :focus-visible,
+.sidebar :focus-visible,
+.nav-item:focus-visible { outline: 2px solid var(--outline-focus); outline-offset: 2px; }
+
+@media (max-width: 768px) {
+  .hero-section { padding: 48px 20px; }
+  .metrics-grid { grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); }
+  .profile-photo { width: 96px; height: 96px; margin-bottom: 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress-bar { transition: none; }
+}
+
 .dark {
   /* Dark mode with pure blacks and subtle grays */
   --background: oklch(0.1 0 0);

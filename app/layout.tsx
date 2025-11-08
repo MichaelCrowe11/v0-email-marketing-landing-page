@@ -111,7 +111,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`font-sans ${inter.variable} ${firaCode.variable} antialiased`}>
+      <body className={`font-sans ${inter.variable} ${firaCode.variable} antialiased monochrome`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           <AccessibilityProvider>
             <WebVitals />

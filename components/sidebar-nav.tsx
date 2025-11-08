@@ -182,7 +182,7 @@ export function SidebarNav() {
 
       {/* Sidebar - locked to top with header height offset */}
       <aside
-        className={`fixed left-0 h-screen w-64 bg-sidebar/95 backdrop-blur-xl border-r border-sidebar-border z-40 transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        className={`sidebar fixed left-0 h-screen w-64 bg-sidebar/95 backdrop-blur-xl border-r border-sidebar-border z-40 transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
           }`}
         style={{ top: 0 }}
       >
@@ -234,13 +234,13 @@ export function SidebarNav() {
                           <Link
                             key={item.href}
                             href={item.href}
-                            className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg transition-all group ${active
+                            className={`nav-item flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg transition-all group ${active
                                 ? "bg-sidebar-accent text-sidebar-foreground shadow-sm ring-1 ring-primary/20"
                                 : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50 active:bg-sidebar-accent"
                               }`}
                             onClick={() => setIsOpen(false)}
                           >
-                            <Icon className={`w-5 h-5 flex-shrink-0 transition-transform ${active ? "scale-110" : "group-hover:scale-105"
+                            <Icon className={`nav-icon w-5 h-5 flex-shrink-0 transition-transform ${active ? "scale-110" : "group-hover:scale-105"
                               }`} />
                             <span className="truncate flex-1">{item.label}</span>
                             {item.isNew && (
@@ -277,7 +277,8 @@ export function SidebarNav() {
                 setShowCopilot(true)
                 setCopilotMinimized(false)
               }}
-              className="w-full justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-blue-500/25 transition-all h-11 font-semibold"
+              className="w-full justify-center gap-2 text-white transition-all h-11 font-semibold"
+              style={{ background: "var(--accent-blue)" }}
             >
               <Bot className="w-5 h-5" />
               <span>Crowe Code Co-Pilot</span>

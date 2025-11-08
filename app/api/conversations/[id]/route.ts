@@ -18,7 +18,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
     // Fetch conversation with messages
     const { data: conversation, error: convError } = await supabase
-      .from("ai_conversations")
+      .from("chat_conversations")
       .select("*")
       .eq("id", id)
       .eq("user_id", user.id)
@@ -31,7 +31,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
     // Fetch messages for this conversation
     const { data: messages, error: msgError } = await supabase
-      .from("ai_messages")
+      .from("chat_messages")
       .select("*")
       .eq("conversation_id", id)
       .order("created_at", { ascending: true })
@@ -64,7 +64,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     }
 
     // Delete conversation (messages will be cascade deleted if FK is set up)
-    const { error } = await supabase.from("ai_conversations").delete().eq("id", id).eq("user_id", user.id)
+    const { error } = await supabase.from("chat_conversations").delete().eq("id", id).eq("user_id", user.id)
 
     if (error) {
       console.error("[v0] Error deleting conversation:", error)

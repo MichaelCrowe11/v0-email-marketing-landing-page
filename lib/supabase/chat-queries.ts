@@ -20,7 +20,7 @@ export async function createConversation(userId: string, title: string): Promise
   const supabase = createClient()
 
   const { data, error } = await supabase
-    .from("ai_conversations")
+    .from("chat_conversations")
     .insert({
       user_id: userId,
       conversation_title: title,
@@ -44,7 +44,7 @@ export async function saveMessage(
   const supabase = createClient()
 
   const { data, error } = await supabase
-    .from("ai_messages")
+    .from("chat_messages")
     .insert({
       conversation_id: conversationId,
       role,
@@ -59,7 +59,7 @@ export async function saveMessage(
   }
 
   // Update conversation timestamp
-  await supabase.from("ai_conversations").update({ updated_at: new Date().toISOString() }).eq("id", conversationId)
+  await supabase.from("chat_conversations").update({ updated_at: new Date().toISOString() }).eq("id", conversationId)
 
   return data
 }
@@ -68,7 +68,7 @@ export async function getConversations(userId: string): Promise<Conversation[]> 
   const supabase = createClient()
 
   const { data, error } = await supabase
-    .from("ai_conversations")
+    .from("chat_conversations")
     .select("*")
     .eq("user_id", userId)
     .order("updated_at", { ascending: false })
@@ -85,7 +85,7 @@ export async function getMessages(conversationId: string): Promise<Message[]> {
   const supabase = createClient()
 
   const { data, error } = await supabase
-    .from("ai_messages")
+    .from("chat_messages")
     .select("*")
     .eq("conversation_id", conversationId)
     .order("created_at", { ascending: true })
@@ -102,10 +102,10 @@ export async function deleteConversation(conversationId: string): Promise<boolea
   const supabase = createClient()
 
   // Delete messages first
-  await supabase.from("ai_messages").delete().eq("conversation_id", conversationId)
+  await supabase.from("chat_messages").delete().eq("conversation_id", conversationId)
 
   // Delete conversation
-  const { error } = await supabase.from("ai_conversations").delete().eq("id", conversationId)
+  const { error } = await supabase.from("chat_conversations").delete().eq("id", conversationId)
 
   if (error) {
     console.error("[v0] Error deleting conversation:", error)
@@ -119,7 +119,7 @@ export async function updateConversationTitle(conversationId: string, title: str
   const supabase = createClient()
 
   const { error } = await supabase
-    .from("ai_conversations")
+    .from("chat_conversations")
     .update({ conversation_title: title })
     .eq("id", conversationId)
 

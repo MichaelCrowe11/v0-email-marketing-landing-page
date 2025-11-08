@@ -20,7 +20,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
     // Verify conversation belongs to user
     const { data: conversation, error: convError } = await supabase
-      .from("ai_conversations")
+      .from("chat_conversations")
       .select("id")
       .eq("id", conversationId)
       .eq("user_id", user.id)
@@ -32,7 +32,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
     // Insert message
     const { data: message, error } = await supabase
-      .from("ai_messages")
+      .from("chat_messages")
       .insert({
         conversation_id: conversationId,
         role,
@@ -47,7 +47,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     }
 
     // Update conversation updated_at timestamp
-    await supabase.from("ai_conversations").update({ updated_at: new Date().toISOString() }).eq("id", conversationId)
+    await supabase.from("chat_conversations").update({ updated_at: new Date().toISOString() }).eq("id", conversationId)
 
     return NextResponse.json({ message })
   } catch (error) {

@@ -2,14 +2,16 @@
 
 import { useState, useEffect } from "react"
 import dynamic from "next/dynamic"
-import { OrchestratedHero } from "@/components/orchestrated-hero"
+// Replacing flashy orchestrated hero with professional research hero
+import { AdvancedTerminal } from "@/components/advanced-terminal"
+import { HeroSection } from "@/components/HeroSection"
 import { ScrollReveal } from "@/components/scroll-reveal"
 import { TrustIndicators } from "@/components/trust-indicators"
 
 // Lazy load heavy components with code splitting
-const CodeGenerationIntro = dynamic(() => import("@/components/code-generation-intro").then(mod => ({ default: mod.CodeGenerationIntro })), {
+const BigBangIntro = dynamic(() => import("@/components/big-bang-intro").then(mod => ({ default: mod.BigBangIntro })), {
   ssr: false,
-  loading: () => <div className="min-h-screen flex items-center justify-center bg-black"><div className="text-white">Loading...</div></div>
+  loading: () => <div className="min-h-screen bg-black" />
 })
 
 const BrandFamilyBanner = dynamic(() => import("@/components/brand-family-banner").then(mod => ({ default: mod.BrandFamilyBanner })), {
@@ -48,13 +50,13 @@ export default function Home() {
 
     // Admin: Reset intro if requested
     if (resetIntro === "true") {
-      localStorage.removeItem("crowe-intro-seen")
+      localStorage.removeItem("crowe-bigbang-intro-seen")
       window.location.href = "/"
       return
     }
 
     // Check if user has seen intro before
-    const introSeen = localStorage.getItem("crowe-intro-seen")
+    const introSeen = localStorage.getItem("crowe-bigbang-intro-seen")
     if (introSeen === "true" || demo === "true") {
       setShowIntro(false)
       setHasSeenIntro(true)
@@ -64,20 +66,24 @@ export default function Home() {
   const handleIntroComplete = () => {
     setShowIntro(false)
     setHasSeenIntro(true)
-    localStorage.setItem("crowe-intro-seen", "true")
+    localStorage.setItem("crowe-bigbang-intro-seen", "true")
   }
 
   // Show intro if user hasn't seen it yet
   if (showIntro && !hasSeenIntro) {
-    return <CodeGenerationIntro onComplete={handleIntroComplete} />
+    return <BigBangIntro onComplete={handleIntroComplete} />
   }
 
   // Users can explore the platform and sign up when ready
   return (
     <main className="min-h-screen">
       {/* Above-the-fold: Critical content loads immediately */}
-      <div className="critical-content">
-        <OrchestratedHero />
+      <div className="critical-content" style={{ padding: "24px 24px 48px", maxWidth: 1080, margin: "0 auto" }}>
+        {/* Monochrome hero (reintroduced) */}
+        <HeroSection />
+        <div style={{ height: 24 }} />
+        {/* Terminal-focused intro (monochrome, with local light/dark toggle) */}
+        <AdvancedTerminal />
       </div>
       
       {/* Below-the-fold: Lazy loaded with CSS containment for performance */}

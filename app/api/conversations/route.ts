@@ -17,7 +17,7 @@ export async function GET() {
 
     // Fetch conversations for the user
     const { data: conversations, error } = await supabase
-      .from("ai_conversations")
+      .from("chat_conversations")
       .select("*")
       .eq("user_id", user.id)
       .order("updated_at", { ascending: false })
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
 
     // Create new conversation
     const { data: conversation, error } = await supabase
-      .from("ai_conversations")
+      .from("chat_conversations")
       .insert({
         user_id: user.id,
         conversation_title: title || "New Conversation",
