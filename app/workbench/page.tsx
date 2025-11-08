@@ -8,7 +8,6 @@ import { CodeEditor } from "@/components/research-ide/code-editor"
 import { ResearchTerminal } from "@/components/research-ide/research-terminal"
 import { FileExplorer } from "@/components/research-ide/file-explorer"
 import { DataViewer } from "@/components/research-ide/data-viewer"
-import { AIAvatarSwirl } from "@/components/chat/ai-avatar-swirl"
 import Link from "next/link"
 
 interface FileNode {
@@ -122,8 +121,8 @@ print("File selected: ${selectedFile.name}")`
       <div className="flex items-center justify-between border-b bg-card/50 px-6 py-4">
         <div className="flex items-center gap-4">
           <Link href="/chat" className="flex items-center gap-2">
-            <div className="h-8 w-8">
-              <AIAvatarSwirl size="sm" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent/20">
+              <Brain className="h-5 w-5 text-accent" />
             </div>
             <div>
               <h1 className="text-xl font-bold">🧬 CROWE LOGIC Research IDE</h1>

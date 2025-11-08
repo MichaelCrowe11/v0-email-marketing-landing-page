@@ -19,11 +19,12 @@ interface CodeParticle {
 type AvatarState = "idle" | "thinking" | "responding"
 
 interface AIAvatarSwirlProps {
-  state: AvatarState
-  size?: number
+  state?: AvatarState
+  size?: "sm" | "md" | "lg" | number
 }
 
-export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
+export function AIAvatarSwirl({ state = "idle", size = "md" }: AIAvatarSwirlProps) {
+  const sizeInPixels = typeof size === "number" ? size : size === "sm" ? 32 : size === "lg" ? 56 : 40
   const [particles, setParticles] = useState<CodeParticle[]>([])
   const [isBlinking, setIsBlinking] = useState(false)
   const [avatarOpacity, setAvatarOpacity] = useState(1)
@@ -105,12 +106,12 @@ export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
             ? 0.5 + Math.random() * 1
             : 0.5 + Math.random() * 1,
       angle: (i / particleCount) * Math.PI * 2,
-      radius: size * 0.8 + Math.random() * (size * 0.4),
+      radius: sizeInPixels * 0.8 + Math.random() * (sizeInPixels * 0.4),
       opacity: 1,
       scale: 1,
     }))
     setParticles(newParticles)
-  }, [state, size])
+  }, [state, sizeInPixels])
 
   useEffect(() => {
     let animationFrame: number
@@ -128,21 +129,19 @@ export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
           let newScale = 1
 
           if (state === "thinking") {
-            // Aggressive storm mode - chaotic movement with pulsing
-            wobble = Math.sin(time * 3 + p.id) * (size * 0.3) + Math.cos(time * 2 + p.id * 0.5) * (size * 0.2)
-            newRadius = p.radius + Math.sin(time * 4 + p.id) * (size * 0.3)
+            wobble =
+              Math.sin(time * 3 + p.id) * (sizeInPixels * 0.3) + Math.cos(time * 2 + p.id * 0.5) * (sizeInPixels * 0.2)
+            newRadius = p.radius + Math.sin(time * 4 + p.id) * (sizeInPixels * 0.3)
             newOpacity = 0.7 + Math.sin(time * 5 + p.id) * 0.3
             newScale = 1 + Math.sin(time * 3 + p.id) * 0.3
           } else if (state === "responding") {
-            // Flowing into center - particles spiral inward
             const spiralFactor = Math.sin(time * 2 + p.id * 0.5) * 0.3
             newRadius = p.radius * (0.8 + spiralFactor)
             newOpacity = 0.8 + Math.sin(time * 3 + p.id) * 0.2
             newScale = 1 + Math.sin(time * 4 + p.id) * 0.2
-            wobble = Math.sin(time * 2 + p.id) * (size * 0.15)
+            wobble = Math.sin(time * 2 + p.id) * (sizeInPixels * 0.15)
           } else {
-            // Idle mode - gentle rainbow swirl
-            wobble = Math.sin(time * 2 + p.id) * (size * 0.15)
+            wobble = Math.sin(time * 2 + p.id) * (sizeInPixels * 0.15)
             newOpacity = 0.6 + Math.sin(time * 1.5 + p.id) * 0.4
             newScale = 1 + Math.sin(time * 2 + p.id) * 0.1
           }
@@ -163,10 +162,10 @@ export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
 
     animate()
     return () => cancelAnimationFrame(animationFrame)
-  }, [state, size])
+  }, [state, sizeInPixels])
 
   return (
-    <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
+    <div className="relative flex-shrink-0" style={{ width: sizeInPixels, height: sizeInPixels }}>
       <div className="absolute inset-0 flex items-center justify-center">
         {particles.map((particle) => (
           <div
@@ -201,8 +200,8 @@ export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
         <Image
           src="/crowe-logic-logo.png"
           alt="Crowe Logic AI"
-          width={size}
-          height={size}
+          width={sizeInPixels}
+          height={sizeInPixels}
           className="rounded-full border-2 border-accent/50 object-cover"
           priority
           quality={95}
