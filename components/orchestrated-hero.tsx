@@ -64,15 +64,8 @@ export function OrchestratedHero() {
           </div>
 
           <div className="text-center space-y-3">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm font-medium text-primary mb-2">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-              </span>
-              Production-Validated • $470K Annual Revenue
-            </div>
             <h1 className="text-5xl md:text-6xl font-bold text-foreground tracking-tight">
-              The AI Platform for
+              The Platform for
               <br />
               <span className="bg-gradient-to-r from-primary via-blue-500 to-green-500 bg-clip-text text-transparent">
                 Biological Systems
