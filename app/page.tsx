@@ -4,7 +4,6 @@ import { useState, useEffect } from "react"
 import { Hero } from "@/components/hero"
 import { BenefitsBand } from "@/components/benefits-band"
 import { ProofSection } from "@/components/proof-section"
-import { StreamingChatDemo } from "@/components/streaming-chat-demo"
 import { Features } from "@/components/features"
 import { FAQ } from "@/components/faq"
 import { ScrollReveal } from "@/components/scroll-reveal"
@@ -16,19 +15,16 @@ export default function Home() {
   const [hasSeenIntro, setHasSeenIntro] = useState(false)
 
   useEffect(() => {
-    // Check for demo mode URL parameter
     const params = new URLSearchParams(window.location.search)
     const demo = params.get("demo")
     const resetIntro = params.get("reset-intro")
 
-    // Admin: Reset intro if requested
     if (resetIntro === "true") {
       localStorage.removeItem("crowe-intro-seen")
       window.location.href = "/"
       return
     }
 
-    // Check if user has seen intro before
     const introSeen = localStorage.getItem("crowe-intro-seen")
     if (introSeen === "true" || demo === "true") {
       setShowIntro(false)
@@ -42,12 +38,10 @@ export default function Home() {
     localStorage.setItem("crowe-intro-seen", "true")
   }
 
-  // Show intro if user hasn't seen it yet
   if (showIntro && !hasSeenIntro) {
     return <CodeGenerationIntro onComplete={handleIntroComplete} />
   }
 
-  // Users can explore the platform and sign up when ready
   return (
     <main className="min-h-screen" id="main-content">
       <Hero />
@@ -56,9 +50,6 @@ export default function Home() {
       </ScrollReveal>
       <ScrollReveal>
         <BenefitsBand />
-      </ScrollReveal>
-      <ScrollReveal delay={100}>
-        <StreamingChatDemo />
       </ScrollReveal>
       <ScrollReveal delay={200}>
         <ProofSection />
@@ -94,10 +85,10 @@ export default function Home() {
             </div>
           </div>
           <p className="text-xs sm:text-sm md:text-base text-muted-foreground max-w-2xl mx-auto px-4 leading-relaxed">
-            20+ years of professional mycology expertise, distilled into an AI that thinks like Michael Crowe.
+            20+ years of professional mycology expertise, powered by advanced AI.
             <br className="hidden sm:block" />
             <span className="sm:hidden"> </span>
-            From substrate formulation to contamination triage, we've got you covered.
+            From substrate formulation to contamination analysis.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 md:gap-8 pt-4 sm:pt-6">
             <a
