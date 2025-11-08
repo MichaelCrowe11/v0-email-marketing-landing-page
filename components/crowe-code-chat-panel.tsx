@@ -20,9 +20,17 @@ interface Props {
   onCodeGenerated: (code: string) => void
   selectedText: string
   onUsageUpdate?: (quota: { used: number; remaining: number; quota: number }) => void
+  editorInstance?: any
+  generationMode: "plan" | "generate" | "guided"
 }
 
-export function CroweCodeChatPanel({ onCodeGenerated, selectedText, onUsageUpdate }: Props) {
+export function CroweCodeChatPanel({
+  onCodeGenerated,
+  selectedText,
+  onUsageUpdate,
+  editorInstance,
+  generationMode,
+}: Props) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const [isGenerating, setIsGenerating] = useState(false)
@@ -57,6 +65,8 @@ export function CroweCodeChatPanel({ onCodeGenerated, selectedText, onUsageUpdat
       streaming: true,
     }
     setMessages((prev) => [...prev, streamingMessage])
+
+    let hasInsertedCode = false
 
     try {
       const response = await fetch("/api/crowe-code/stream", {
@@ -119,6 +129,38 @@ export function CroweCodeChatPanel({ onCodeGenerated, selectedText, onUsageUpdat
                     if (codeMatch) {
                       lastMessage.code = codeMatch[2]
                       lastMessage.language = codeMatch[1] || "python"
+
+                      // AUTO-INSERT CODE INTO MONACO EDITOR (only once when code block completes)
+                      if (!hasInsertedCode && editorInstance && lastMessage.code) {
+                        const selection = editorInstance.getSelection()
+                        const position = editorInstance.getPosition()
+
+                        // Insert at cursor position
+                        editorInstance.executeEdits("crowe-code-ai", [
+                          {
+                            range: new (window as any).monaco.Range(
+                              position.lineNumber,
+                              position.column,
+                              position.lineNumber,
+                              position.column
+                            ),
+                            text: lastMessage.code,
+                          },
+                        ])
+
+                        // Move cursor to end of inserted code
+                        const lines = lastMessage.code.split("\n")
+                        const newPosition = {
+                          lineNumber: position.lineNumber + lines.length - 1,
+                          column: lines[lines.length - 1].length + 1,
+                        }
+                        editorInstance.setPosition(newPosition)
+                        editorInstance.revealPosition(newPosition)
+                        editorInstance.focus()
+
+                        hasInsertedCode = true
+                        console.log("[v0] Auto-inserted code into editor")
+                      }
                     }
                   }
                   return newMessages
