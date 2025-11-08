@@ -21,7 +21,7 @@ import {
   MessageSquare,
   X,
 } from "lucide-react"
-import CroweCodeChatPanel from "@/components/crowe-code-chat-panel"
+import { CroweCodeChatPanel } from "@/components/crowe-code-chat-panel"
 import monaco from "monaco-editor"
 
 export default function CroweCodePage() {
