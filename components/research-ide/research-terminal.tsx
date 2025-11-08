@@ -128,25 +128,27 @@ Type 'help' for available commands`
   }
 
   return (
-    <div className="flex h-full flex-col bg-black/90 font-mono text-sm">
+    <div className="flex h-full flex-col bg-black font-mono text-sm border border-neutral-800">
       {/* Terminal Header */}
-      <div className="flex items-center gap-2 border-b border-green-500/20 bg-green-950/30 px-4 py-2">
-        <Terminal className="h-4 w-4 text-green-500" />
-        <span className="text-xs text-green-400">CROWE LOGIC Research Terminal</span>
+      <div className="flex items-center gap-2 border-b border-neutral-700 bg-neutral-900 px-4 py-2">
+        <Terminal className="h-4 w-4 text-neutral-400" />
+        <span className="text-xs text-neutral-300 font-medium">CROWE LOGIC Research Terminal</span>
       </div>
 
       {/* Terminal Content */}
       <div ref={terminalRef} className="flex-1 overflow-auto p-4">
         {commands.map((cmd) => (
           <div key={cmd.id} className="mb-4">
-            <div className="flex items-center gap-2 text-green-400">
+            <div className="flex items-center gap-2 text-sm">
               <span className="text-blue-400">researcher@crowe-logic</span>
-              <span className="text-yellow-400">~{workingDirectory.replace("/home/researcher", "")}</span>
-              <ChevronRight className="h-3 w-3" />
+              <span className="text-yellow-300">~{workingDirectory.replace("/home/researcher", "")}</span>
+              <ChevronRight className="h-3 w-3 text-neutral-400" />
               <span className="text-white">{cmd.command}</span>
             </div>
             {cmd.output && (
-              <pre className={`mt-1 whitespace-pre-wrap ${cmd.type === "error" ? "text-red-400" : "text-gray-300"}`}>
+              <pre
+                className={`mt-1 whitespace-pre-wrap text-sm ${cmd.type === "error" ? "text-red-400" : "text-neutral-300"}`}
+              >
                 {cmd.output}
               </pre>
             )}
@@ -154,10 +156,10 @@ Type 'help' for available commands`
         ))}
 
         {/* Current Input */}
-        <div className="flex items-center gap-2 text-green-400">
+        <div className="flex items-center gap-2 text-sm">
           <span className="text-blue-400">researcher@crowe-logic</span>
-          <span className="text-yellow-400">~{workingDirectory.replace("/home/researcher", "")}</span>
-          <ChevronRight className="h-3 w-3" />
+          <span className="text-yellow-300">~{workingDirectory.replace("/home/researcher", "")}</span>
+          <ChevronRight className="h-3 w-3 text-neutral-400" />
           <input
             ref={inputRef}
             type="text"
@@ -165,7 +167,7 @@ Type 'help' for available commands`
             onChange={(e) => setCurrentCommand(e.target.value)}
             onKeyDown={handleKeyDown}
             disabled={isProcessing}
-            className="flex-1 bg-transparent outline-none text-white caret-green-400"
+            className="flex-1 bg-transparent outline-none text-white caret-white"
             autoFocus
           />
         </div>

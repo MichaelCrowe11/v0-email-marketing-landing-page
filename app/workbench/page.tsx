@@ -116,42 +116,48 @@ print("File selected: ${selectedFile.name}")`
   }
 
   return (
-    <div className="flex h-screen flex-col bg-background">
+    <div className="flex h-screen flex-col bg-black">
       {/* Header */}
-      <div className="flex items-center justify-between border-b bg-card/50 px-6 py-4">
+      <div className="flex items-center justify-between border-b border-neutral-800 bg-neutral-900 px-6 py-4">
         <div className="flex items-center gap-4">
           <Link href="/chat" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent/20">
-              <Brain className="h-5 w-5 text-accent" />
+            <div className="flex h-8 w-8 items-center justify-center rounded bg-neutral-800 border border-neutral-700">
+              <Brain className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold">🧬 CROWE LOGIC Research IDE</h1>
-              <p className="text-xs text-muted-foreground">Advanced Mushroom Data Analysis Environment</p>
+              <h1 className="text-xl font-bold text-white">CROWE LOGIC Research IDE</h1>
+              <p className="text-xs text-neutral-400">Advanced Mushroom Data Analysis Environment</p>
             </div>
           </Link>
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <div className="flex items-center gap-2 text-xs text-neutral-400">
             <Database className="h-3 w-3" />
             <span>30GB Dataset Connected</span>
           </div>
-          <div className="flex items-center gap-2 text-xs text-green-500">
-            <Brain className="h-3 w-3" />
-            <span>AI Ready</span>
+          <div className="flex items-center gap-2 text-xs text-emerald-400">
+            <div className="w-2 h-2 rounded-full bg-emerald-400" />
+            <span>System Ready</span>
           </div>
-          <div className="flex items-center gap-2 text-xs text-blue-500">
+          <div className="flex items-center gap-2 text-xs text-blue-400">
             <Zap className="h-3 w-3" />
             <span>GPU Active</span>
           </div>
 
-          <Button variant="ghost" size="icon" onClick={() => setIsFullscreen(!isFullscreen)}>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsFullscreen(!isFullscreen)}
+            className="text-neutral-400 hover:text-white"
+          >
             {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
           </Button>
 
           <Link href="/chat">
-            <Button size="sm">
-              <Brain className="mr-2 h-4 w-4" />🧠 Chat Assistant
+            <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
+              <Brain className="mr-2 h-4 w-4" />
+              Chat Assistant
             </Button>
           </Link>
         </div>
@@ -160,7 +166,7 @@ print("File selected: ${selectedFile.name}")`
       {/* IDE Interface */}
       <div className="flex flex-1 overflow-hidden">
         {/* File Explorer Sidebar */}
-        <div className="w-64 border-r bg-card/30">
+        <div className="w-64 border-r border-neutral-800 bg-neutral-950">
           <FileExplorer onFileSelect={handleFileSelect} selectedFile={selectedFile?.id} />
         </div>
 
@@ -168,17 +174,26 @@ print("File selected: ${selectedFile.name}")`
         <div className="flex flex-1 flex-col">
           {/* Tab Bar */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-            <div className="flex items-center justify-between border-b bg-muted/20 px-4">
-              <TabsList className="bg-transparent">
-                <TabsTrigger value="editor" className="gap-2">
+            <div className="flex items-center justify-between border-b border-neutral-800 bg-neutral-900 px-4">
+              <TabsList className="bg-transparent border-b-0">
+                <TabsTrigger
+                  value="editor"
+                  className="gap-2 data-[state=active]:bg-neutral-800 data-[state=active]:text-white text-neutral-400"
+                >
                   <Code className="h-4 w-4" />
                   Code Editor
                 </TabsTrigger>
-                <TabsTrigger value="terminal" className="gap-2">
+                <TabsTrigger
+                  value="terminal"
+                  className="gap-2 data-[state=active]:bg-neutral-800 data-[state=active]:text-white text-neutral-400"
+                >
                   <Terminal className="h-4 w-4" />
                   Terminal
                 </TabsTrigger>
-                <TabsTrigger value="data" className="gap-2">
+                <TabsTrigger
+                  value="data"
+                  className="gap-2 data-[state=active]:bg-neutral-800 data-[state=active]:text-white text-neutral-400"
+                >
                   <Database className="h-4 w-4" />
                   Data Viewer
                 </TabsTrigger>
@@ -186,12 +201,12 @@ print("File selected: ${selectedFile.name}")`
 
               <div className="flex items-center gap-2">
                 {selectedFile && (
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2 text-sm text-neutral-400">
                     <FileText className="h-4 w-4" />
                     <span>{selectedFile.name}</span>
                   </div>
                 )}
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" className="text-neutral-400 hover:text-white">
                   <Settings className="h-4 w-4" />
                 </Button>
               </div>

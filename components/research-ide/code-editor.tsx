@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState, useRef, useEffect } from "react"
-import { Play, Save, Download, Upload, Terminal, Database, Brain } from "lucide-react"
+import { Play, Save, Download, Upload, Terminal, Database } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 
@@ -95,43 +95,48 @@ export function CodeEditor({ sessionId, initialCode = "", language = "python", o
   const getLanguageBadgeColor = () => {
     switch (language) {
       case "python":
-        return "bg-blue-500/10 text-blue-400 border-blue-500/20"
+        return "bg-blue-500/20 text-blue-300 border-blue-500/40"
       case "r":
-        return "bg-purple-500/10 text-purple-400 border-purple-500/20"
+        return "bg-cyan-500/20 text-cyan-300 border-cyan-500/40"
       case "javascript":
-        return "bg-yellow-500/10 text-yellow-400 border-yellow-500/20"
+        return "bg-yellow-500/20 text-yellow-300 border-yellow-500/40"
       case "sql":
-        return "bg-green-500/10 text-green-400 border-green-500/20"
+        return "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
       default:
-        return "bg-accent/10 text-accent border-accent/20"
+        return "bg-neutral-500/20 text-neutral-300 border-neutral-500/40"
     }
   }
 
   return (
-    <div className="flex h-full flex-col bg-background">
+    <div className="flex h-full flex-col bg-black border border-neutral-800">
       {/* Editor Header */}
-      <div className="flex items-center justify-between border-b bg-muted/20 px-4 py-2">
+      <div className="flex items-center justify-between border-b border-neutral-700 bg-neutral-900 px-4 py-2">
         <div className="flex items-center gap-3">
           <Badge variant="outline" className={getLanguageBadgeColor()}>
             {language.toUpperCase()}
           </Badge>
-          <span className="text-sm text-muted-foreground">Research Terminal - Session {sessionId || "default"}</span>
+          <span className="text-sm text-neutral-400">Session {sessionId || "default"}</span>
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm">
+          <Button variant="ghost" size="sm" className="text-neutral-300 hover:text-white hover:bg-neutral-800">
             <Upload className="mr-2 h-4 w-4" />
             Import
           </Button>
-          <Button variant="ghost" size="sm">
+          <Button variant="ghost" size="sm" className="text-neutral-300 hover:text-white hover:bg-neutral-800">
             <Download className="mr-2 h-4 w-4" />
             Export
           </Button>
-          <Button variant="ghost" size="sm">
+          <Button variant="ghost" size="sm" className="text-neutral-300 hover:text-white hover:bg-neutral-800">
             <Save className="mr-2 h-4 w-4" />
             Save
           </Button>
-          <Button onClick={executeCode} disabled={isExecuting} size="sm" className="bg-green-600 hover:bg-green-700">
+          <Button
+            onClick={executeCode}
+            disabled={isExecuting}
+            size="sm"
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+          >
             {isExecuting ? (
               <>
                 <Terminal className="mr-2 h-4 w-4 animate-pulse" />
@@ -150,11 +155,11 @@ export function CodeEditor({ sessionId, initialCode = "", language = "python", o
       {/* Editor Content */}
       <div className="flex flex-1 overflow-hidden">
         {/* Code Input */}
-        <div className="flex flex-1 flex-col border-r">
-          <div className="border-b bg-muted/10 px-4 py-2">
+        <div className="flex flex-1 flex-col border-r border-neutral-800">
+          <div className="border-b border-neutral-800 bg-neutral-950 px-4 py-2">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-muted-foreground">Code Editor</span>
-              <span className="text-xs text-muted-foreground">Ctrl+Enter to execute</span>
+              <span className="text-xs font-medium text-neutral-400">Code Editor</span>
+              <span className="text-xs text-neutral-500">Ctrl+Enter to execute</span>
             </div>
           </div>
 
@@ -181,37 +186,37 @@ df.head()`
 # Connect to databases, analyze data, run ML models
 `
 }`}
-            className="w-full h-full p-4 bg-transparent border-none outline-none resize-none font-mono text-sm leading-relaxed text-foreground placeholder:text-muted-foreground/50"
+            className="w-full h-full p-4 bg-black border-none outline-none resize-none font-mono text-sm leading-relaxed text-white placeholder:text-neutral-600"
             style={{ minHeight: "300px" }}
           />
         </div>
 
         {/* Output Panel */}
         <div className="flex w-1/2 flex-col">
-          <div className="border-b bg-muted/10 px-4 py-2">
+          <div className="border-b border-neutral-800 bg-neutral-950 px-4 py-2">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-muted-foreground">Output</span>
-              {executionTime && <span className="text-xs text-green-500">Executed in {executionTime}ms</span>}
+              <span className="text-xs font-medium text-neutral-400">Output</span>
+              {executionTime && <span className="text-xs text-blue-400">Executed in {executionTime}ms</span>}
             </div>
           </div>
 
-          <div ref={outputRef} className="flex-1 overflow-auto p-4">
+          <div ref={outputRef} className="flex-1 overflow-auto p-4 bg-black">
             {output ? (
-              <pre className="text-xs font-mono whitespace-pre-wrap text-foreground/90">{output}</pre>
+              <pre className="text-xs font-mono whitespace-pre-wrap text-neutral-300">{output}</pre>
             ) : (
-              <div className="text-xs text-muted-foreground italic">Output will appear here after execution...</div>
+              <div className="text-xs text-neutral-600 italic">Output will appear here after execution...</div>
             )}
           </div>
         </div>
       </div>
 
       {/* Status Bar */}
-      <div className="flex items-center justify-between border-t bg-muted/20 px-4 py-1 text-xs text-muted-foreground">
+      <div className="flex items-center justify-between border-t border-neutral-800 bg-neutral-900 px-4 py-1 text-xs text-neutral-400">
         <div className="flex items-center gap-4">
           <span>Lines: {code.split("\n").length}</span>
           <span>Characters: {code.length}</span>
           {isExecuting && (
-            <span className="flex items-center gap-1 text-yellow-500">
+            <span className="flex items-center gap-1 text-yellow-400">
               <Terminal className="h-3 w-3 animate-pulse" />
               Executing...
             </span>
@@ -219,14 +224,11 @@ df.head()`
         </div>
 
         <div className="flex items-center gap-4">
-          <span className="flex items-center gap-1 text-green-500">
+          <span className="flex items-center gap-1 text-emerald-400">
             <Database className="h-3 w-3" />
-            Connected to Research Database
+            Database Connected
           </span>
-          <span className="flex items-center gap-1 text-blue-500">
-            <Brain className="h-3 w-3" />
-            CROWE LOGIC Assistant Ready
-          </span>
+          <span className="text-blue-400">CROWE LOGIC Ready</span>
         </div>
       </div>
     </div>
