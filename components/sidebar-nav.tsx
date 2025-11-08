@@ -29,47 +29,54 @@ import { CLMonogramAnimated } from "@/components/cl-monogram-animated"
 
 const navGroups = [
   {
-    label: "Main",
+    label: "Platform",
     items: [
       { href: "/", label: "Home", icon: Home },
       { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+      { href: "/marketplace", label: "AI Models", icon: ShoppingBag },
     ],
   },
   {
-    label: "AI Tools",
+    label: "Developer Tools",
     items: [
-      {
-        href: "/chat",
-        label: "Talk to Crowe Logic",
-        customIcon: "/crowe-logic-logo.png",
-      },
       {
         href: "/crowe-code",
         label: "Crowe Code",
         customIcon: "/crowe-code-avatar.png",
       },
       { href: "/workbench", label: "Research IDE", icon: Microscope },
+      {
+        href: "/chat",
+        label: "AI Chat",
+        customIcon: "/crowe-logic-logo.png",
+      },
       { href: "/crowe-vision", label: "Crowe Vision", icon: Camera },
       { href: "/video-studio", label: "Video Studio", icon: Video },
     ],
   },
   {
-    label: "Resources",
+    label: "Data & Hardware",
     items: [
+      { href: "/datasets", label: "Datasets", icon: BarChart3 },
+      { href: "/crowe-sense", label: "Crowe-Sense", icon: Leaf },
       { href: "/species-library", label: "Species Library", icon: Microscope },
-      { href: "/sops", label: "SOPs & Guides", icon: ClipboardList },
-      { href: "/contamination-guide", label: "Contamination ID", icon: Leaf },
-      { href: "/docs", label: "Documentation", icon: BookOpen },
     ],
   },
   {
-    label: "Community & Services",
+    label: "Resources",
     items: [
-      { href: "/analytics", label: "Analytics", icon: BarChart3 },
+      { href: "/docs", label: "Documentation", icon: BookOpen },
+      { href: "/sops", label: "SOPs & Guides", icon: ClipboardList },
+      { href: "/contamination-guide", label: "Contamination ID", icon: Leaf },
       { href: "/forum", label: "Community", icon: Users },
+    ],
+  },
+  {
+    label: "Services",
+    items: [
       { href: "/consultations", label: "Consultations", icon: Calendar },
       { href: "/pricing", label: "Pricing", icon: DollarSign },
-      { href: "/shop", label: "Shop", icon: ShoppingBag },
+      { href: "/analytics", label: "Analytics", icon: BarChart3 },
     ],
   },
 ]

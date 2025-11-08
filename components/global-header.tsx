@@ -122,18 +122,16 @@ export function GlobalHeader() {
                 priority
               />
             </div>
-            {/* </CHANGE> */}
             <div className="flex flex-col justify-center">
               <div className="text-base font-bold text-foreground tracking-wide leading-tight font-mono">
                 CROWE LOGIC
               </div>
               <span className="text-[9px] uppercase tracking-wider text-muted-foreground leading-tight">
-                Discovery Platform
+                AI Platform for Biology
               </span>
             </div>
           </div>
 
-          {/* Search Bar */}
           <form onSubmit={handleSearch} className="flex-1 max-w-md md:max-w-2xl" role="search">
             <div
               className={`relative flex items-center transition-all ${
@@ -146,7 +144,7 @@ export function GlobalHeader() {
               />
               <Input
                 type="search"
-                placeholder="Search datasets, analyses, strains..."
+                placeholder="Search models, datasets, docs..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setSearchFocused(true)}
@@ -166,7 +164,6 @@ export function GlobalHeader() {
             </div>
           </form>
 
-          {/* Weather Display */}
           {weather && (
             <div
               className="hidden lg:flex items-center gap-3 px-4 py-2 rounded-lg bg-muted/70 border border-border/50"
@@ -191,24 +188,23 @@ export function GlobalHeader() {
             </div>
           )}
 
-          {/* Quick Actions */}
           <nav className="flex items-center gap-1 sm:gap-2 ml-2 sm:ml-3 md:ml-4" aria-label="Quick actions">
             <ThemeToggle />
             <Button variant="ghost" size="sm" className="hidden xl:flex h-9 px-2 sm:px-3" asChild>
               <a href="/docs">Docs</a>
             </Button>
             <Button variant="ghost" size="sm" className="hidden xl:flex h-9 px-2 sm:px-3" asChild>
-              <a href="/chat">AI Chat</a>
+              <a href="/marketplace">Models</a>
             </Button>
             <Button variant="ghost" size="sm" className="hidden xl:flex h-9 px-2 sm:px-3" asChild>
-              <a href="/consultations">Consult</a>
+              <a href="/workbench">IDE</a>
             </Button>
             <Button
               size="sm"
               className="bg-primary hover:bg-primary/90 h-9 px-2 sm:px-3 md:px-4 text-xs sm:text-sm whitespace-nowrap"
               asChild
             >
-              <a href="/crowe-vision">Vision</a>
+              <a href="/crowe-code">Crowe Code</a>
             </Button>
             <UserMenu />
           </nav>

@@ -63,17 +63,32 @@ export function OrchestratedHero() {
             />
           </div>
 
-          <div className="text-center space-y-2">
-            <h1 className="text-5xl md:text-6xl font-bold text-foreground tracking-tight">Crowe Logic</h1>
-            <p className="text-xl font-medium text-muted-foreground">Professional Mycology Intelligence Platform</p>
+          <div className="text-center space-y-3">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm font-medium text-primary mb-2">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+              </span>
+              Production-Validated • $470K Annual Revenue
+            </div>
+            <h1 className="text-5xl md:text-6xl font-bold text-foreground tracking-tight">
+              The AI Platform for
+              <br />
+              <span className="bg-gradient-to-r from-primary via-blue-500 to-green-500 bg-clip-text text-transparent">
+                Biological Systems
+              </span>
+            </h1>
+            <p className="text-xl font-medium text-muted-foreground max-w-2xl">
+              Build, train, and deploy specialized AI agents with domain-expert precision.
+            </p>
             <p className="text-base text-muted-foreground/80 max-w-xl">
-              20+ years of cultivation expertise distilled into precision data analysis
+              From hypothesis to deployment—everything you need to build biological AI applications
             </p>
           </div>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-6 max-w-6xl mx-auto mb-12">
-          {/* Left: Research Data Overview */}
+          {/* Left: Platform Metrics */}
           <div className="relative group rounded-lg border border-border bg-card/50 backdrop-blur-sm overflow-hidden">
             <div className="p-6">
               <div className="flex items-center gap-3 mb-6 pb-4 border-b border-border">
@@ -85,48 +100,40 @@ export function OrchestratedHero() {
 
               <div className="space-y-4 text-sm">
                 <div className="flex items-center justify-between p-3 rounded bg-muted/30">
-                  <span className="text-muted-foreground">Active Datasets</span>
-                  <span className="text-foreground text-xl font-semibold tabular-nums">
-                    {dataMetrics.datasets.toLocaleString()}
-                  </span>
+                  <span className="text-muted-foreground">Pre-trained Agents</span>
+                  <span className="text-foreground text-xl font-semibold tabular-nums">150+</span>
                 </div>
 
                 <div className="flex items-center justify-between p-3 rounded bg-muted/30">
-                  <span className="text-muted-foreground">Cultivation Cycles</span>
-                  <span className="text-foreground text-xl font-semibold tabular-nums">
-                    {dataMetrics.cultivations.toLocaleString()}
-                  </span>
+                  <span className="text-muted-foreground">Discovery Timeline</span>
+                  <span className="text-foreground text-xl font-semibold tabular-nums">15y → 12w</span>
                 </div>
 
                 <div className="flex items-center justify-between p-3 rounded bg-muted/30">
-                  <span className="text-muted-foreground">Documented Strains</span>
-                  <span className="text-foreground text-xl font-semibold tabular-nums">
-                    {dataMetrics.strains.toLocaleString()}
-                  </span>
+                  <span className="text-muted-foreground">Validated Revenue</span>
+                  <span className="text-foreground text-xl font-semibold tabular-nums">$470K/yr</span>
                 </div>
 
                 <div className="flex items-center justify-between p-3 rounded bg-muted/30">
-                  <span className="text-muted-foreground">Completed Analyses</span>
-                  <span className="text-foreground text-xl font-semibold tabular-nums">
-                    {dataMetrics.analyses.toLocaleString()}
-                  </span>
+                  <span className="text-muted-foreground">Production Scale</span>
+                  <span className="text-foreground text-xl font-semibold tabular-nums">7 Continents</span>
                 </div>
               </div>
 
               <div className="mt-6 pt-4 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
-                <span>System Status</span>
-                <span className="text-green-500 font-semibold">OPERATIONAL</span>
+                <span>Platform Status</span>
+                <span className="text-green-500 font-semibold">PRODUCTION</span>
               </div>
             </div>
           </div>
 
-          {/* Right: Core Capabilities */}
+          {/* Right: Full-Stack Ecosystem */}
           <div className="relative group rounded-lg border border-border bg-card/50 backdrop-blur-sm overflow-hidden">
             <div className="p-6">
               <div className="flex items-center gap-3 mb-6 pb-4 border-border">
                 <Image src="/crowe-logic-logo.png" alt="Crowe Logic" width={24} height={24} className="rounded-full" />
                 <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-                  Core Capabilities
+                  Full-Stack Ecosystem
                 </h3>
               </div>
 
@@ -137,10 +144,10 @@ export function OrchestratedHero() {
                       <span className="text-primary font-mono text-sm font-bold">01</span>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-foreground mb-1">Environmental Analysis</h4>
+                      <h4 className="font-semibold text-foreground mb-1">AI Models Marketplace</h4>
                       <p className="text-sm text-muted-foreground leading-relaxed">
-                        Real-time monitoring and optimization of temperature, humidity, CO2, and contamination
-                        indicators
+                        150+ pre-trained specialist agents. CriOS Nova drug discovery, agricultural intelligence, and
+                        more
                       </p>
                     </div>
                   </div>
@@ -152,9 +159,10 @@ export function OrchestratedHero() {
                       <span className="text-primary font-mono text-sm font-bold">02</span>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-foreground mb-1">Strain Classification</h4>
+                      <h4 className="font-semibold text-foreground mb-1">Developer Tools</h4>
                       <p className="text-sm text-muted-foreground leading-relaxed">
-                        Automated species identification and genetic analysis with pharmaceutical-grade accuracy
+                        Synapse-lang, Research IDE, Crowe Code AI assistant. Express research hypotheses directly in
+                        code
                       </p>
                     </div>
                   </div>
@@ -166,10 +174,9 @@ export function OrchestratedHero() {
                       <span className="text-primary font-mono text-sm font-bold">03</span>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-foreground mb-1">Yield Forecasting</h4>
+                      <h4 className="font-semibold text-foreground mb-1">Data & Hardware</h4>
                       <p className="text-sm text-muted-foreground leading-relaxed">
-                        Statistical models predicting harvest outcomes based on substrate composition and environmental
-                        data
+                        Research-grade datasets from 18+ years. Crowe-Sense IoT sensors for real-time monitoring
                       </p>
                     </div>
                   </div>
@@ -182,15 +189,15 @@ export function OrchestratedHero() {
         {/* CTA Section */}
         <div className="text-center space-y-6">
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            From hobbyist to commercial operations. Professional cultivation intelligence powered by decades of field
-            research.
+            Not just AI. Domain intelligence. Every model is battle-tested at commercial scale with real-world
+            production validation.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Button size="lg" className="text-lg px-8" asChild>
-              <Link href="/pricing">Get Started</Link>
+              <Link href="/marketplace">Browse AI Models</Link>
             </Button>
             <Button size="lg" variant="outline" className="text-lg px-8 bg-transparent" asChild>
-              <Link href="/chat">Try Free Demo</Link>
+              <Link href="/workbench">Try Research IDE</Link>
             </Button>
           </div>
         </div>

@@ -49,13 +49,13 @@ export default function Home() {
         <BrandFamilyBanner />
       </ScrollReveal>
       <ScrollReveal>
-        <BenefitsBand />
-      </ScrollReveal>
-      <ScrollReveal delay={200}>
-        <ProofSection />
+        <Features />
       </ScrollReveal>
       <ScrollReveal delay={100}>
-        <Features />
+        <ProofSection />
+      </ScrollReveal>
+      <ScrollReveal delay={200}>
+        <BenefitsBand />
       </ScrollReveal>
       <ScrollReveal delay={100}>
         <FAQ />
@@ -78,15 +78,15 @@ export default function Home() {
             <div className="text-center sm:text-left">
               <div className="text-lg sm:text-xl md:text-2xl font-black text-foreground mb-1">Crowe Logic</div>
               <div className="text-xs sm:text-sm md:text-base text-muted-foreground">
-                Powered by Southwest Mushrooms
+                The AI Platform for Biological Systems
               </div>
             </div>
           </div>
           <p className="text-xs sm:text-sm md:text-base text-muted-foreground max-w-2xl mx-auto px-4 leading-relaxed">
-            20+ years of professional mycology expertise, powered by advanced AI.
+            Production-validated AI models, developer tools, and datasets.
             <br className="hidden sm:block" />
             <span className="sm:hidden"> </span>
-            From substrate formulation to contamination analysis.
+            Built on 18 years of domain expertise and commercial scale operations.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 md:gap-8 pt-4 sm:pt-6">
             <a
