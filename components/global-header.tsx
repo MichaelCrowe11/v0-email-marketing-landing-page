@@ -4,12 +4,12 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import { Search, Cloud, CloudRain, Sun, Wind, Snowflake, Command, MapPin } from "lucide-react"
+import Image from "next/image"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { UserMenu } from "@/components/user-menu"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { CroweLogic3DWordmark } from "@/components/crowe-logic-3d-wordmark"
 
 interface WeatherData {
   temp: number | null
@@ -114,9 +114,25 @@ export function GlobalHeader() {
         role="banner"
       >
         <div className="flex items-center justify-between h-full px-3 sm:px-4 md:px-6 md:pl-[272px] max-w-screen-2xl mx-auto gap-2 sm:gap-3 md:gap-4">
-          <div className="hidden md:block mr-4 shrink-0">
-            <CroweLogic3DWordmark size="sm" showTagline={false} />
+          <div className="hidden md:flex items-center gap-4 mr-6 shrink-0">
+            <div className="relative w-14 h-14 shrink-0">
+              <Image src="/crowe-logic-logo.png" alt="Crowe Logic" fill className="object-contain" priority />
+            </div>
+            <div className="flex flex-col">
+              <div className="flex items-baseline gap-2 font-mono">
+                <span className="text-2xl font-black text-[#d4af37] tracking-[0.15em] uppercase">CROWE</span>
+                <div className="flex gap-0.5">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500/50" />
+                </div>
+                <span className="text-2xl font-semibold text-foreground tracking-[0.15em] uppercase">LOGIC</span>
+              </div>
+              <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mt-0.5">
+                CriOS Discovery Engine
+              </span>
+            </div>
           </div>
+          {/* End of Enhanced header branding with larger wordmark and logo */}
 
           {/* Search Bar */}
           <form onSubmit={handleSearch} className="flex-1 max-w-md md:max-w-2xl" role="search">

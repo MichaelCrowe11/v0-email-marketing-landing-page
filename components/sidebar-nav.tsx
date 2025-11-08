@@ -25,7 +25,7 @@ import {
   Calendar,
 } from "lucide-react"
 import { HEADER_HEIGHT } from "@/components/global-header"
-import { CroweLogic3DWordmark } from "@/components/crowe-logic-3d-wordmark"
+import { CLMonogramAnimated } from "@/components/cl-monogram-animated"
 
 const navGroups = [
   {
@@ -129,7 +129,7 @@ export function SidebarNav() {
             className="flex items-center justify-center px-4 py-6 border-b border-sidebar-border bg-sidebar/50"
             style={{ minHeight: `${HEADER_HEIGHT + 20}px` }}
           >
-            <CroweLogic3DWordmark size="lg" showTagline={true} />
+            <CLMonogramAnimated size="lg" />
           </div>
 
           <nav className="flex-1 p-4 space-y-6 overflow-y-auto" aria-label="Main menu">
