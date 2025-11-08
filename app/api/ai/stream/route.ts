@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import OpenAI from "openai"
+import { AI_USER_ID } from "@/lib/constants"
 
 export const runtime = "edge"
 export const dynamic = "force-dynamic"
@@ -98,7 +99,7 @@ export async function POST(request: Request) {
             .insert({
               post_id: postId,
               parent_reply_id: replyId || null,
-              author_id: "ai-crowe-logic", // Special AI user ID
+              author_id: AI_USER_ID,
               content: fullResponse,
             })
             .select()

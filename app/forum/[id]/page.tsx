@@ -9,6 +9,7 @@ import { notFound } from "next/navigation"
 import ReplyForm from "@/components/reply-form"
 import LikeButton from "@/components/like-button"
 import AIAvatar from "@/components/ai-avatar"
+import { AI_USER_ID } from "@/lib/constants"
 
 export default async function ForumPostPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -101,7 +102,7 @@ export default async function ForumPostPage({ params }: { params: Promise<{ id: 
           </h2>
 
           {replies?.map((reply) => {
-            const isAIReply = reply.author_id === "ai-crowe-logic"
+            const isAIReply = reply.author_id === AI_USER_ID
 
             return (
               <Card

@@ -6,6 +6,7 @@ import Link from "next/link"
 import { MessageSquare, Plus, Eye, ThumbsUp, Clock, TrendingUp, Users, Sparkles } from "lucide-react"
 import ForumSearch from "@/components/forum-search"
 import AIMentionBadge from "@/components/ai-mention-badge"
+import { AI_USER_ID } from "@/lib/constants"
 
 export default async function ForumPage() {
   const supabase = await createClient()
@@ -32,7 +33,7 @@ export default async function ForumPage() {
       .from("forum_replies")
       .select("id")
       .eq("post_id", post.id)
-      .eq("author_id", "ai-crowe-logic")
+      .eq("author_id", AI_USER_ID)
       .limit(1)
 
     if (aiReplies && aiReplies.length > 0) {
