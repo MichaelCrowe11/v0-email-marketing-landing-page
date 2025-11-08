@@ -48,7 +48,7 @@ export function PlatformSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader className="flex items-center justify-center py-6">
+      <SidebarHeader className="flex items-center justify-center py-4">
         <CLMonogram />
       </SidebarHeader>
 
