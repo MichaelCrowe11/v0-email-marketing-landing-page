@@ -14,7 +14,6 @@ const nextConfig = {
     dangerouslyAllowSVG: false,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
-  swcMinify: true,
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.optimization.splitChunks = {
@@ -32,9 +31,13 @@ const nextConfig = {
           lib: {
             test: /[\\/]node_modules[\\/]/,
             name(module) {
-              const packageName = module.context.match(
+              const match = module.context.match(
                 /[\\/]node_modules[\\/](.*?)([\\/]|$)/
-              )[1]
+              )
+              if (!match) {
+                return 'npm.unknown'
+              }
+              const packageName = match[1]
               return `npm.${packageName.replace('@', '')}`
             },
             priority: 30,
