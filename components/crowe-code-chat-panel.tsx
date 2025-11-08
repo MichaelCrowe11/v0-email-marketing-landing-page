@@ -19,9 +19,10 @@ interface Message {
 interface Props {
   onCodeGenerated: (code: string) => void
   selectedText: string
+  onUsageUpdate?: (quota: { used: number; remaining: number; quota: number }) => void
 }
 
-export function CroweCodeChatPanel({ onCodeGenerated, selectedText }: Props) {
+export function CroweCodeChatPanel({ onCodeGenerated, selectedText, onUsageUpdate }: Props) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const [isGenerating, setIsGenerating] = useState(false)
@@ -64,12 +65,25 @@ export function CroweCodeChatPanel({ onCodeGenerated, selectedText }: Props) {
         body: JSON.stringify({ prompt: input, context: messages }),
       })
 
+      if (response.status === 429) {
+        setMessages((prev) => {
+          const newMessages = [...prev]
+          newMessages[newMessages.length - 1] = {
+            role: "assistant",
+            content:
+              "⚠️ Daily quota exceeded. You've reached your free tier limit of AI requests. Upgrade your plan or wait until tomorrow for quota reset.",
+          }
+          return newMessages
+        })
+        setIsGenerating(false)
+        return
+      }
+
       const reader = response.body?.getReader()
       const decoder = new TextDecoder()
 
       if (reader) {
         let fullResponse = ""
-        const codeBlock = ""
 
         while (true) {
           const { done, value } = await reader.read()
@@ -93,6 +107,12 @@ export function CroweCodeChatPanel({ onCodeGenerated, selectedText }: Props) {
             }
             return newMessages
           })
+        }
+
+        const usageResponse = await fetch("/api/usage/quota")
+        if (usageResponse.ok) {
+          const newQuota = await usageResponse.json()
+          onUsageUpdate?.(newQuota)
         }
       }
     } catch (error) {
@@ -245,14 +265,14 @@ export function CroweCodeChatPanel({ onCodeGenerated, selectedText }: Props) {
       </div>
 
       {/* Input */}
-      <form onSubmit={handleSubmit} className="p-3 bg-[#252526] border-t border-[#1e1e1e]">
+      <form onSubmit={handleSubmit} className="p-4 bg-[#252526] border-t border-[#2d2d30]">
         <div className="flex gap-2">
           <Textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask Crowe Code..."
-            className="flex-1 bg-[#1e1e1e] border-[#485063] text-[#cccccc] text-sm resize-none focus:border-[#0078d4] font-mono"
-            rows={2}
+            placeholder="Ask Crowe Code to generate, explain, or optimize code..."
+            className="flex-1 bg-[#1e1e1e] border-[#3e3e42] text-[#e0e0e0] text-sm resize-none focus:border-[#007acc] focus:ring-1 focus:ring-[#007acc] font-mono placeholder:text-[#6a6a6a]"
+            rows={3}
             disabled={isGenerating}
             onKeyDown={(e) => {
               if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
@@ -265,14 +285,18 @@ export function CroweCodeChatPanel({ onCodeGenerated, selectedText }: Props) {
             type="submit"
             disabled={!input.trim() || isGenerating}
             size="icon"
-            className="bg-[#0078d4] hover:bg-[#1084d8] text-white self-end"
+            className="bg-[#007acc] hover:bg-[#1084d8] text-white self-end h-10 w-10 shadow-lg disabled:opacity-40"
           >
-            <Send className="w-4 h-4" />
+            {isGenerating ? (
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <Send className="w-4 h-4" />
+            )}
           </Button>
         </div>
-        <div className="text-xs text-[#858585] mt-2">
-          Press {navigator.platform.includes("Mac") ? "Cmd" : "Ctrl"}+Enter to send • Right-click in editor → "Ask Crowe
-          Code"
+        <div className="text-[10px] text-[#6a6a6a] mt-2 flex items-center justify-between">
+          <span>Press {navigator.platform.includes("Mac") ? "Cmd" : "Ctrl"}+Enter to send</span>
+          <span className="font-mono tabular-nums">Powered by Claude 4.5 Sonnet</span>
         </div>
       </form>
     </div>

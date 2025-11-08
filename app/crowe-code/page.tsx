@@ -69,6 +69,7 @@ quantum[2] {
   const [showCommandPalette, setShowCommandPalette] = useState(false)
   const [selectedText, setSelectedText] = useState("")
   const [uncommittedChanges, setUncommittedChanges] = useState(3)
+  const [usageQuota, setUsageQuota] = useState({ used: 0, remaining: 10, quota: 10 })
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -82,6 +83,21 @@ quantum[2] {
     }
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [])
+
+  useEffect(() => {
+    const fetchUsageQuota = async () => {
+      try {
+        const response = await fetch("/api/usage/quota")
+        if (response.ok) {
+          const data = await response.json()
+          setUsageQuota(data)
+        }
+      } catch (error) {
+        console.error("[v0] Failed to fetch usage quota:", error)
+      }
+    }
+    fetchUsageQuota()
   }, [])
 
   const handleMouseMoveHorizontal = (e: MouseEvent) => {
@@ -187,18 +203,18 @@ quantum[2] {
       )}
 
       {/* Header */}
-      <div className="h-12 bg-[#323233] border-b border-[#1e1e1e] flex items-center justify-between px-4 flex-shrink-0">
+      <div className="h-12 bg-[#1e1e1e] border-b border-[#2d2d30] flex items-center justify-between px-4 flex-shrink-0 shadow-sm">
         <div className="flex items-center gap-3">
           <Image
             src="/crowe-code-avatar.png"
             alt="Crowe Code"
-            width={28}
-            height={28}
-            className="rounded-full border-2 border-[#6b46c1]"
+            width={32}
+            height={32}
+            className="rounded-full ring-2 ring-[#6b46c1] ring-offset-2 ring-offset-[#1e1e1e]"
           />
           <div>
-            <h1 className="text-sm font-semibold text-[#cccccc]">Crowe Code</h1>
-            <p className="text-xs text-[#858585]">Autonomous Developer</p>
+            <h1 className="text-sm font-semibold text-[#e0e0e0]">Crowe Code</h1>
+            <p className="text-[10px] text-[#969696]">Autonomous Developer</p>
           </div>
         </div>
 
@@ -219,7 +235,13 @@ quantum[2] {
             <Package className="w-3 h-3 mr-1" />
             Extensions
           </Button>
-          <div className="w-px h-6 bg-[#1e1e1e]" />
+          <div className="flex items-center gap-2 px-3 py-1 bg-[#2d2d30] rounded-md border border-[#3e3e42]">
+            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-[10px] text-[#969696] font-mono tabular-nums">
+              {usageQuota.remaining}/{usageQuota.quota} requests
+            </span>
+          </div>
+          <div className="w-px h-6 bg-[#3e3e42]" />
           <Button
             size="sm"
             onClick={handleSaveToGitHub}
@@ -465,37 +487,41 @@ console.log("Hello from JavaScript");`)
         {showChatPanel && (
           <>
             <div
-              className="w-1 bg-[#1e1e1e] hover:bg-[#0078d4] cursor-col-resize transition-colors"
+              className="w-1 bg-[#2d2d30] hover:bg-[#007acc] cursor-col-resize transition-colors duration-150"
               onMouseDown={() => setIsResizingRight(true)}
             />
             <div
-              className="bg-[#1e1e1e] border-l border-[#1e1e1e] flex flex-col"
+              className="bg-[#1e1e1e] border-l border-[#2d2d30] flex flex-col shadow-2xl"
               style={{ width: `${rightPanelWidth}%` }}
             >
-              <div className="flex items-center justify-between px-4 py-2 bg-[#252526] border-b border-[#1e1e1e]">
+              <div className="flex items-center justify-between px-4 py-3 bg-[#252526] border-b border-[#2d2d30]">
                 <div className="flex items-center gap-2">
                   <Image
                     src="/crowe-code-avatar.png"
                     alt="Crowe Code"
-                    width={24}
-                    height={24}
-                    className="rounded-full border-2 border-[#6b46c1]"
+                    width={28}
+                    height={28}
+                    className="rounded-full ring-2 ring-[#6b46c1]"
                   />
                   <div>
-                    <span className="text-sm font-semibold text-[#cccccc]">Crowe Code</span>
-                    <p className="text-xs text-[#858585]">AI Agent</p>
+                    <span className="text-sm font-semibold text-[#e0e0e0]">Crowe Code</span>
+                    <p className="text-[10px] text-[#969696]">AI Agent • {usageQuota.remaining} requests left</p>
                   </div>
                 </div>
                 <Button
                   size="icon"
                   variant="ghost"
                   onClick={() => setShowChatPanel(false)}
-                  className="text-[#858585] hover:text-[#cccccc]"
+                  className="text-[#969696] hover:text-[#e0e0e0] hover:bg-[#2d2d30]"
                 >
                   <X className="w-4 h-4" />
                 </Button>
               </div>
-              <CroweCodeChatPanel onCodeGenerated={(code) => setCode(code)} selectedText={selectedText} />
+              <CroweCodeChatPanel
+                onCodeGenerated={(code) => setCode(code)}
+                selectedText={selectedText}
+                onUsageUpdate={(newQuota) => setUsageQuota(newQuota)}
+              />
             </div>
           </>
         )}
