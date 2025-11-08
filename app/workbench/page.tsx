@@ -104,13 +104,8 @@ print("File selected: ${selectedFile.name}")`
       <div className="flex items-center justify-between border-b border-[#485063] bg-[#1a1f2e] px-6 py-4">
         <div className="flex items-center gap-4">
           <Link href="/chat" className="flex items-center gap-2">
-            <Image
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG_0091-mxP3KS7g1RzzgkqgHPOoq4RnAMeSQ3.png"
-              alt="Crowe Code"
-              width={32}
-              height={32}
-              className="rounded-full"
-            />
+            <Image src="/crowe-code-avatar.png" alt="Crowe Code" width={32} height={32} className="rounded-full" />
+            {/* </CHANGE> */}
             <div>
               <h1 className="text-xl font-bold text-white">Research IDE</h1>
               <p className="text-xs text-[#a0a4a8]">Powered by Crowe Code</p>

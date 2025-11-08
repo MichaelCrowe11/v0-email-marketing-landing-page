@@ -331,13 +331,7 @@ for batch in batches:
     <div className="flex flex-col h-full bg-black border border-[#485063] rounded-lg">
       <div className="flex items-center justify-between px-4 py-3 bg-[#1a1f2e] border-b border-[#485063]">
         <div className="flex items-center gap-3">
-          <Image
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG_0091-mxP3KS7g1RzzgkqgHPOoq4RnAMeSQ3.png"
-            alt="Crowe Code"
-            width={40}
-            height={40}
-            className="rounded-full"
-          />
+          <Image src="/crowe-code-avatar.png" alt="Crowe Code" width={40} height={40} className="rounded-full" />
           <div>
             <h3 className="text-sm font-semibold text-white">Crowe Code</h3>
             <span className="text-xs text-[#a0a4a8]">Autonomous Agricultural AI Developer</span>
@@ -353,13 +347,7 @@ for batch in batches:
       <div className="flex-1 overflow-y-auto p-4 space-y-4 font-mono text-sm">
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center space-y-4">
-            <Image
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG_0091-mxP3KS7g1RzzgkqgHPOoq4RnAMeSQ3.png"
-              alt="Crowe Code"
-              width={80}
-              height={80}
-              className="rounded-full"
-            />
+            <Image src="/crowe-code-avatar.png" alt="Crowe Code" width={80} height={80} className="rounded-full" />
             <div className="space-y-2">
               <p className="text-white font-semibold">Crowe Code Ready</p>
               <p className="text-[#a0a4a8] text-xs max-w-md">
