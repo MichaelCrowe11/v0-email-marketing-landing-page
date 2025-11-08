@@ -77,6 +77,7 @@ const navGroups = [
 export function SidebarNav() {
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
+  const [currentTime, setCurrentTime] = useState(new Date())
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/"
@@ -97,6 +98,29 @@ export function SidebarNav() {
       document.body.style.overflow = ""
     }
   }, [isOpen])
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date())
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [])
+
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    })
+  }
+
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    })
+  }
 
   return (
     <>
@@ -126,10 +150,18 @@ export function SidebarNav() {
       >
         <div className="flex flex-col h-full pb-4">
           <div
-            className="flex items-center justify-center px-4 py-6 border-b border-sidebar-border bg-sidebar/50"
+            className="flex flex-col items-center justify-center px-4 py-4 border-b border-sidebar-border bg-sidebar/50"
             style={{ minHeight: `${HEADER_HEIGHT + 20}px` }}
           >
-            <CLMonogramAnimated size="md" />
+            <div className="flex items-center justify-center mb-3">
+              <CLMonogramAnimated size="md" />
+            </div>
+            <div className="text-center space-y-0.5">
+              <div className="text-sm font-mono font-semibold tabular-nums text-sidebar-foreground">
+                {formatTime(currentTime)}
+              </div>
+              <div className="text-xs font-mono tabular-nums text-sidebar-foreground/60">{formatDate(currentTime)}</div>
+            </div>
           </div>
 
           <nav className="flex-1 p-4 space-y-6 overflow-y-auto" aria-label="Main menu">

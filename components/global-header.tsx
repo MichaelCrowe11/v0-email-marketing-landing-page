@@ -110,20 +110,18 @@ export function GlobalHeader() {
         style={{ height: `${HEADER_HEIGHT}px` }}
         role="banner"
       >
-        <div className="flex items-center justify-between h-full px-3 sm:px-4 md:px-6 md:pl-[272px] max-w-screen-2xl mx-auto gap-2 sm:gap-3 md:gap-4">
-          <div className="hidden md:flex items-center gap-3 shrink-0">
-            <div className="relative w-12 h-12 shrink-0">
-              <Image
-                src="/crowe-logic-logo.png"
-                alt="Crowe Logic"
-                fill
-                className="object-contain rounded-full border border-border/50"
-                priority
-              />
+        <div className="flex items-center justify-between h-full px-3 sm:px-4 md:px-6 max-w-screen-2xl mx-auto gap-2 sm:gap-3 md:gap-4">
+          <div className="hidden lg:flex items-center gap-3 shrink-0">
+            <div className="relative w-11 h-11 shrink-0">
+              <Image src="/crowe-logic-logo.png" alt="Crowe Logic" fill className="object-contain" priority />
             </div>
-            <div className="flex flex-col">
-              <div className="text-lg font-bold text-foreground tracking-tight">CROWE LOGIC</div>
-              <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Discovery Platform</span>
+            <div className="flex flex-col justify-center">
+              <div className="text-base font-bold text-foreground tracking-wide leading-tight font-mono">
+                CROWE LOGIC
+              </div>
+              <span className="text-[9px] uppercase tracking-wider text-muted-foreground leading-tight">
+                Discovery Platform
+              </span>
             </div>
           </div>
 
