@@ -45,16 +45,20 @@ export function UserMenu() {
   }
 
   if (loading) {
-    return <div className="w-8 h-8 rounded-full bg-muted animate-pulse" />
+    return <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-muted animate-pulse flex-shrink-0" />
   }
 
   if (!user) {
     return (
-      <div className="flex items-center gap-2">
-        <Button variant="ghost" size="sm" asChild>
+      <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+        <Button variant="ghost" size="sm" className="h-9 px-2 sm:px-3 text-xs sm:text-sm" asChild>
           <a href="/auth/login">Sign In</a>
         </Button>
-        <Button size="sm" className="bg-primary hover:bg-primary/90" asChild>
+        <Button
+          size="sm"
+          className="bg-primary hover:bg-primary/90 h-9 px-2 sm:px-3 text-xs sm:text-sm whitespace-nowrap"
+          asChild
+        >
           <a href="/auth/sign-up">Sign Up</a>
         </Button>
       </div>
@@ -66,10 +70,14 @@ export function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src={user.user_metadata?.avatar_url || "/placeholder.svg"} alt={user.email} />
-            <AvatarFallback>{initials}</AvatarFallback>
+        <Button variant="ghost" className="relative h-8 w-8 sm:h-9 sm:w-9 rounded-full flex-shrink-0 p-0">
+          <Avatar className="h-8 w-8 sm:h-9 sm:w-9">
+            <AvatarImage
+              src={user.user_metadata?.avatar_url || "/placeholder.svg"}
+              alt={user.email}
+              className="object-cover"
+            />
+            <AvatarFallback className="text-xs sm:text-sm">{initials}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>

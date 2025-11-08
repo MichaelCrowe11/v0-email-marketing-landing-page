@@ -166,7 +166,7 @@ export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
   }, [state, size])
 
   return (
-    <div className="relative" style={{ width: size, height: size }}>
+    <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
       <div className="absolute inset-0 flex items-center justify-center">
         {particles.map((particle) => (
           <div
@@ -203,7 +203,9 @@ export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
           alt="Crowe Logic AI"
           width={size}
           height={size}
-          className="rounded-full border-2 border-accent/50"
+          className="rounded-full border-2 border-accent/50 object-cover"
+          priority
+          quality={95}
         />
       </div>
     </div>

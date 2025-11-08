@@ -125,13 +125,16 @@ export function SidebarNav() {
             style={{ height: `${HEADER_HEIGHT}px` }}
             aria-label="Southwest Mushrooms - Opens in new tab"
           >
-            <Image
-              src="/southwest-mushrooms-logo.jpg"
-              alt="Southwest Mushrooms"
-              width={56}
-              height={56}
-              className="object-contain transition-transform group-hover:scale-105"
-            />
+            <div className="relative w-14 h-14 flex-shrink-0">
+              <Image
+                src="/images/design-mode/v0_image-2.png"
+                alt="Southwest Mushrooms"
+                fill
+                className="object-contain transition-transform group-hover:scale-105"
+                priority
+                sizes="56px"
+              />
+            </div>
           </a>
 
           <nav className="flex-1 p-4 space-y-6 overflow-y-auto" aria-label="Main menu">

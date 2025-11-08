@@ -112,9 +112,9 @@ export function GlobalHeader() {
         style={{ height: `${HEADER_HEIGHT}px` }}
         role="banner"
       >
-        <div className="flex items-center justify-between h-full px-3 sm:px-4 md:px-6 md:pl-[272px] max-w-screen-2xl mx-auto gap-2 sm:gap-4">
+        <div className="flex items-center justify-between h-full px-3 sm:px-4 md:px-6 md:pl-[272px] max-w-screen-2xl mx-auto gap-2 sm:gap-3 md:gap-4">
           {/* Search Bar */}
-          <form onSubmit={handleSearch} className="flex-1 max-w-2xl" role="search">
+          <form onSubmit={handleSearch} className="flex-1 max-w-md md:max-w-2xl" role="search">
             <div
               className={`relative flex items-center transition-all ${
                 searchFocused ? "ring-2 ring-primary/30" : ""
@@ -131,7 +131,7 @@ export function GlobalHeader() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setSearchFocused(true)}
                 onBlur={() => setSearchFocused(false)}
-                className="pl-8 sm:pl-10 pr-2 sm:pr-20 h-9 sm:h-10 text-sm bg-muted/70 border-border focus-visible:ring-primary/30 focus-visible:border-primary/50"
+                className="pl-8 sm:pl-10 pr-2 sm:pr-20 h-9 sm:h-10 text-sm sm:text-base bg-muted/70 border-border focus-visible:ring-primary/30 focus-visible:border-primary/50"
                 aria-label="Search the platform"
               />
               <div className="absolute right-2 hidden sm:flex items-center gap-1">
@@ -172,18 +172,22 @@ export function GlobalHeader() {
           )}
 
           {/* Quick Actions */}
-          <nav className="flex items-center gap-1 sm:gap-2 ml-2 sm:ml-4" aria-label="Quick actions">
+          <nav className="flex items-center gap-1 sm:gap-2 ml-2 sm:ml-3 md:ml-4" aria-label="Quick actions">
             <ThemeToggle />
-            <Button variant="ghost" size="sm" className="hidden xl:flex h-9" asChild>
+            <Button variant="ghost" size="sm" className="hidden xl:flex h-9 px-2 sm:px-3" asChild>
               <a href="/docs">Docs</a>
             </Button>
-            <Button variant="ghost" size="sm" className="hidden xl:flex h-9" asChild>
+            <Button variant="ghost" size="sm" className="hidden xl:flex h-9 px-2 sm:px-3" asChild>
               <a href="/chat">AI Chat</a>
             </Button>
-            <Button variant="ghost" size="sm" className="hidden xl:flex h-9" asChild>
+            <Button variant="ghost" size="sm" className="hidden xl:flex h-9 px-2 sm:px-3" asChild>
               <a href="/consultations">Consult</a>
             </Button>
-            <Button size="sm" className="bg-primary hover:bg-primary/90 h-9 px-3 sm:px-4 text-xs sm:text-sm" asChild>
+            <Button
+              size="sm"
+              className="bg-primary hover:bg-primary/90 h-9 px-2 sm:px-3 md:px-4 text-xs sm:text-sm whitespace-nowrap"
+              asChild
+            >
               <a href="/crowe-vision">Vision</a>
             </Button>
             <UserMenu />

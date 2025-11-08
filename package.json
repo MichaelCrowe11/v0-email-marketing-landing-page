@@ -7,8 +7,7 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start",
-    "validate": "node scripts/validate-launch-readiness.js"
+    "start": "next start"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "latest",
@@ -16,8 +15,6 @@
     "@ai-sdk/google": "latest",
     "@ai-sdk/openai": "latest",
     "@ai-sdk/react": "latest",
-    "@azure/identity": "^4.13.0",
-    "@azure/keyvault-secrets": "^4.10.0",
     "@emotion/is-prop-valid": "latest",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "latest",
