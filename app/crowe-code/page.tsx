@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Image from "next/image"
 import Editor from "@monaco-editor/react"
 import { Button } from "@/components/ui/button"
@@ -18,7 +18,11 @@ import {
   FolderTree,
   Save,
   Upload,
+  MessageSquare,
+  X,
 } from "lucide-react"
+import CroweCodeChatPanel from "@/components/crowe-code-chat-panel"
+import monaco from "monaco-editor"
 
 export default function CroweCodePage() {
   const [code, setCode] = useState(`# Crowe Code - Autonomous Agricultural Software Developer
@@ -38,12 +42,59 @@ def analyze_cultivation_data():
   const [output, setOutput] = useState("")
   const [leftPanelWidth, setLeftPanelWidth] = useState(20)
   const [bottomPanelHeight, setBottomPanelHeight] = useState(30)
+  const [rightPanelWidth, setRightPanelWidth] = useState(30)
+  const [showChatPanel, setShowChatPanel] = useState(true)
   const [isResizingHorizontal, setIsResizingHorizontal] = useState(false)
   const [isResizingVertical, setIsResizingVertical] = useState(false)
+  const [isResizingRight, setIsResizingRight] = useState(false)
   const [activeTab, setActiveTab] = useState("files")
-
-  const [gitBranch, setGitBranch] = useState("main")
+  const [showCommandPalette, setShowCommandPalette] = useState(false)
+  const [selectedText, setSelectedText] = useState("")
   const [uncommittedChanges, setUncommittedChanges] = useState(3)
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault()
+        setShowCommandPalette(true)
+      }
+      if (e.key === "Escape") {
+        setShowCommandPalette(false)
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [])
+
+  const handleMouseMoveHorizontal = (e: MouseEvent) => {
+    if (!isResizingHorizontal) return
+    const newWidth = (e.clientX / window.innerWidth) * 100
+    if (newWidth > 15 && newWidth < 35) {
+      setLeftPanelWidth(newWidth)
+    }
+  }
+
+  const handleMouseMoveVertical = (e: MouseEvent) => {
+    if (!isResizingVertical) return
+    const newHeight = ((window.innerHeight - e.clientY) / window.innerHeight) * 100
+    if (newHeight > 20 && newHeight < 60) {
+      setBottomPanelHeight(newHeight)
+    }
+  }
+
+  const handleMouseMoveRight = (e: MouseEvent) => {
+    if (!isResizingRight) return
+    const newWidth = ((window.innerWidth - e.clientX) / window.innerWidth) * 100
+    if (newWidth > 20 && newWidth < 50) {
+      setRightPanelWidth(newWidth)
+    }
+  }
+
+  const handleMouseUp = () => {
+    setIsResizingHorizontal(false)
+    setIsResizingVertical(false)
+    setIsResizingRight(false)
+  }
 
   const handleRunCode = async () => {
     setOutput("Running code...\n")
@@ -76,37 +127,48 @@ def analyze_cultivation_data():
     setOutput("Saved to GitHub successfully")
   }
 
-  const handleMouseMoveHorizontal = (e: MouseEvent) => {
-    if (!isResizingHorizontal) return
-    const newWidth = (e.clientX / window.innerWidth) * 100
-    if (newWidth > 15 && newWidth < 35) {
-      setLeftPanelWidth(newWidth)
-    }
-  }
-
-  const handleMouseMoveVertical = (e: MouseEvent) => {
-    if (!isResizingVertical) return
-    const newHeight = ((window.innerHeight - e.clientY) / window.innerHeight) * 100
-    if (newHeight > 20 && newHeight < 60) {
-      setBottomPanelHeight(newHeight)
-    }
-  }
-
-  const handleMouseUp = () => {
-    setIsResizingHorizontal(false)
-    setIsResizingVertical(false)
-  }
-
   return (
     <div
       className="h-screen flex flex-col overflow-hidden bg-[#1e1e1e]"
       onMouseMove={(e) => {
         handleMouseMoveHorizontal(e.nativeEvent)
         handleMouseMoveVertical(e.nativeEvent)
+        handleMouseMoveRight(e.nativeEvent)
       }}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
     >
+      {showCommandPalette && (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-start justify-center pt-32">
+          <div className="w-full max-w-2xl bg-[#252526] border border-[#485063] rounded-lg shadow-2xl">
+            <input
+              type="text"
+              placeholder="Type 'crowe' to ask Crowe Code anything..."
+              className="w-full bg-transparent border-none outline-none text-white px-4 py-3 text-lg"
+              autoFocus
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  setShowCommandPalette(false)
+                  setShowChatPanel(true)
+                }
+              }}
+            />
+            <div className="px-4 py-2 border-t border-[#1e1e1e] space-y-1">
+              <div className="text-xs text-[#858585] px-2 py-1">Quick Commands</div>
+              <div className="text-sm text-[#cccccc] hover:bg-[#2a2d2e] px-2 py-2 rounded cursor-pointer">
+                crowe analyze contamination patterns
+              </div>
+              <div className="text-sm text-[#cccccc] hover:bg-[#2a2d2e] px-2 py-2 rounded cursor-pointer">
+                crowe generate yield forecast model
+              </div>
+              <div className="text-sm text-[#cccccc] hover:bg-[#2a2d2e] px-2 py-2 rounded cursor-pointer">
+                crowe create database migration
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="h-12 bg-[#323233] border-b border-[#1e1e1e] flex items-center justify-between px-4 flex-shrink-0">
         <div className="flex items-center gap-3">
           <Image
@@ -125,14 +187,12 @@ def analyze_cultivation_data():
         <div className="flex items-center gap-2">
           <Button size="sm" variant="ghost" className="text-[#cccccc] hover:bg-[#2a2d2e] text-xs h-8">
             <GitBranch className="w-3 h-3 mr-1" />
-            {gitBranch}
+            main
           </Button>
-          {uncommittedChanges > 0 && (
-            <Button size="sm" variant="ghost" className="text-[#f14c4c] hover:bg-[#2a2d2e] text-xs h-8">
-              <GitCommit className="w-3 h-3 mr-1" />
-              {uncommittedChanges} changes
-            </Button>
-          )}
+          <Button size="sm" variant="ghost" className="text-[#f14c4c] hover:bg-[#2a2d2e] text-xs h-8">
+            <GitCommit className="w-3 h-3 mr-1" />
+            {uncommittedChanges} changes
+          </Button>
           <Button size="sm" variant="ghost" className="text-[#cccccc] hover:bg-[#2a2d2e] text-xs h-8">
             <GitPullRequest className="w-3 h-3 mr-1" />
             PR
@@ -157,6 +217,15 @@ def analyze_cultivation_data():
           <Button size="sm" onClick={handleRunCode} className="bg-[#0078d4] hover:bg-[#1084d8] text-white text-xs h-8">
             <Play className="w-3 h-3 mr-1" />
             Run
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => setShowChatPanel(!showChatPanel)}
+            className={`${showChatPanel ? "bg-[#0e639c]" : ""} text-[#cccccc] hover:bg-[#2a2d2e] text-xs h-8`}
+          >
+            <MessageSquare className="w-3 h-3 mr-1" />
+            Chat
           </Button>
         </div>
       </div>
@@ -311,15 +380,12 @@ def analyze_cultivation_data():
           )}
         </div>
 
-        {/* Horizontal Resize Handle */}
         <div
           className="w-1 bg-[#1e1e1e] hover:bg-[#0078d4] cursor-col-resize transition-colors"
           onMouseDown={() => setIsResizingHorizontal(true)}
         />
 
-        {/* Right Panel - Editor and Terminal */}
         <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Code Editor */}
           <div className="flex-1 overflow-hidden" style={{ height: `${100 - bottomPanelHeight}%` }}>
             <Editor
               height="100%"
@@ -327,6 +393,24 @@ def analyze_cultivation_data():
               value={code}
               onChange={(value) => setCode(value || "")}
               theme="vs-dark"
+              onMount={(editor) => {
+                editor.addAction({
+                  id: "ask-crowe-code",
+                  label: "Ask Crowe Code",
+                  keybindings: [],
+                  contextMenuGroupId: "navigation",
+                  contextMenuOrder: 1.5,
+                  run: (ed) => {
+                    const selection = ed.getSelection()
+                    const selectedText = ed.getModel()?.getValueInRange(selection!)
+                    setSelectedText(selectedText || "")
+                    setShowChatPanel(true)
+                  },
+                })
+                editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyK, () => {
+                  setShowCommandPalette(true)
+                })
+              }}
               options={{
                 fontSize: 14,
                 fontFamily: "'Cascadia Code', 'Fira Code', 'Consolas', 'Courier New', monospace",
@@ -338,17 +422,17 @@ def analyze_cultivation_data():
                 bracketPairColorization: { enabled: true },
                 inlineSuggest: { enabled: true },
                 suggestOnTriggerCharacters: true,
+                quickSuggestions: true,
+                wordBasedSuggestions: "matchingDocuments",
               }}
             />
           </div>
 
-          {/* Vertical Resize Handle */}
           <div
             className="h-1 bg-[#1e1e1e] hover:bg-[#0078d4] cursor-row-resize transition-colors"
             onMouseDown={() => setIsResizingVertical(true)}
           />
 
-          {/* Terminal Output */}
           <div
             className="bg-[#1e1e1e] border-t border-[#1e1e1e] overflow-y-auto"
             style={{ height: `${bottomPanelHeight}%` }}
@@ -363,6 +447,44 @@ def analyze_cultivation_data():
             </pre>
           </div>
         </div>
+
+        {showChatPanel && (
+          <>
+            <div
+              className="w-1 bg-[#1e1e1e] hover:bg-[#0078d4] cursor-col-resize transition-colors"
+              onMouseDown={() => setIsResizingRight(true)}
+            />
+            <div
+              className="bg-[#1e1e1e] border-l border-[#1e1e1e] flex flex-col"
+              style={{ width: `${rightPanelWidth}%` }}
+            >
+              <div className="flex items-center justify-between px-4 py-2 bg-[#252526] border-b border-[#1e1e1e]">
+                <div className="flex items-center gap-2">
+                  <Image
+                    src="/crowe-code-avatar.png"
+                    alt="Crowe Code"
+                    width={24}
+                    height={24}
+                    className="rounded-full border-2 border-[#6b46c1]"
+                  />
+                  <div>
+                    <span className="text-sm font-semibold text-[#cccccc]">Crowe Code</span>
+                    <p className="text-xs text-[#858585]">AI Agent</p>
+                  </div>
+                </div>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => setShowChatPanel(false)}
+                  className="text-[#858585] hover:text-[#cccccc]"
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+              <CroweCodeChatPanel onCodeGenerated={(code) => setCode(code)} selectedText={selectedText} />
+            </div>
+          </>
+        )}
       </div>
     </div>
   )
