@@ -9,29 +9,8 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { HEADER_HEIGHT } from "@/components/global-header"
 import { PerformanceMonitorInit } from "@/components/performance-monitor-init"
 
-import { Inter, Fira_Code, Geist_Mono as V0_Font_Geist_Mono } from 'next/font/google'
-
-// Initialize fonts
-const _geistMono = V0_Font_Geist_Mono({ subsets: ['latin'], weight: ["100","200","300","400","500","600","700","800","900"] })
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap",
-  preload: true,
-  fallback: ["system-ui", "-apple-system", "sans-serif"],
-  adjustFontFallback: true,
-  weight: ["400", "500", "600", "700"],
-})
-
-const firaCode = Fira_Code({
-  subsets: ["latin"],
-  variable: "--font-code",
-  display: "swap",
-  preload: false,
-  fallback: ["Courier New", "monospace"],
-  weight: ["400", "500", "600"],
-})
+import { GeistSans } from 'geist/font/sans'
+import { GeistMono } from 'geist/font/mono'
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -79,7 +58,7 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
       </head>
-      <body className={`${inter.variable} ${firaCode.variable} font-sans antialiased`}>
+      <body className={`${GeistSans.variable} ${GeistMono.variable} font-sans antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           <SidebarNav />
           <GlobalHeader />

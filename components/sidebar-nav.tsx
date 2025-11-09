@@ -41,7 +41,7 @@ const navGroups = [
     label: "Developer Tools",
     items: [
       {
-        href: "https://michaelcrowemycology.com/synapse-lang",
+        href: "https://synapse-lang-docs.fly.dev",
         label: "Synapse-lang",
         icon: Code,
         external: true,
