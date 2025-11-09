@@ -174,57 +174,100 @@ export class ChatPanel {
       box-sizing: border-box;
     }
 
+    :root {
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+      --spacing-1: 4px;
+      --spacing-2: 8px;
+      --spacing-3: 12px;
+      --spacing-4: 16px;
+      --spacing-5: 20px;
+      --spacing-6: 24px;
+      --spacing-8: 32px;
+      --radius-sm: 3px;
+      --radius-md: 6px;
+      --transition-fast: 120ms cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
     body {
-      font-family: var(--vscode-font-family);
-      font-size: var(--vscode-font-size);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      line-height: 1.5;
       color: var(--vscode-foreground);
       background-color: var(--vscode-editor-background);
-      padding: 0;
       height: 100vh;
       display: flex;
       flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     #messages {
       flex: 1;
       overflow-y: auto;
-      padding: 16px;
+      overflow-x: hidden;
+      padding: var(--spacing-4) var(--spacing-4) var(--spacing-6);
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: var(--spacing-6);
+    }
+
+    #messages::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    #messages::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    #messages::-webkit-scrollbar-thumb {
+      background: var(--vscode-scrollbarSlider-background);
+      border-radius: 4px;
+    }
+
+    #messages::-webkit-scrollbar-thumb:hover {
+      background: var(--vscode-scrollbarSlider-hoverBackground);
     }
 
     .message {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: var(--spacing-3);
+      opacity: 0;
+      animation: fadeIn var(--transition-normal) forwards;
     }
 
-    .message-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 600;
-      font-size: 12px;
-      opacity: 0.8;
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .avatar {
-      width: 18px;
-      height: 18px;
-      border-radius: 2px;
+      width: 24px;
+      height: 24px;
+      border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.5px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      flex-shrink: 0;
+      margin-top: 2px;
     }
 
     .user-avatar {
-      background: var(--vscode-editor-background);
+      background: var(--vscode-input-background);
       border: 1px solid var(--vscode-input-border);
       color: var(--vscode-foreground);
+      opacity: 0.8;
     }
 
     .assistant-avatar {
@@ -233,69 +276,105 @@ export class ChatPanel {
       color: var(--vscode-focusBorder);
     }
 
+    .message-body {
+      min-width: 0;
+    }
+
+    .message-author {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      margin-bottom: var(--spacing-2);
+      opacity: 0.6;
+      text-transform: uppercase;
+    }
+
     .message-content {
-      padding: 12px 0;
+      font-size: 13px;
       line-height: 1.6;
       white-space: pre-wrap;
       word-wrap: break-word;
-    }
-
-    .user-message .message-content {
       color: var(--vscode-foreground);
     }
 
     .assistant-message .message-content {
-      color: var(--vscode-foreground);
-      opacity: 0.95;
+      font-weight: 400;
     }
 
     .code-block {
-      margin-top: 12px;
+      margin-top: var(--spacing-3);
       border: 1px solid var(--vscode-panel-border);
-      border-radius: 4px;
+      border-radius: var(--radius-md);
       overflow: hidden;
+      background: var(--vscode-textCodeBlock-background);
     }
 
     .code-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 8px 12px;
+      padding: var(--spacing-2) var(--spacing-3);
       background: var(--vscode-editor-background);
       border-bottom: 1px solid var(--vscode-panel-border);
-      font-size: 11px;
-      opacity: 0.8;
+    }
+
+    .code-language {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      opacity: 0.5;
     }
 
     .code-actions {
       display: flex;
-      gap: 8px;
+      gap: var(--spacing-1);
     }
 
     .code-button {
-      background: none;
-      border: none;
+      background: transparent;
+      border: 1px solid transparent;
       color: var(--vscode-foreground);
       cursor: pointer;
-      padding: 4px 8px;
-      border-radius: 3px;
+      padding: var(--spacing-1) var(--spacing-2);
+      border-radius: var(--radius-sm);
       font-size: 11px;
-      opacity: 0.7;
+      font-weight: 500;
+      opacity: 0.5;
+      transition: all var(--transition-fast);
     }
 
     .code-button:hover {
       opacity: 1;
       background: var(--vscode-button-hoverBackground);
+      border-color: var(--vscode-input-border);
+    }
+
+    .code-button:active {
+      transform: scale(0.98);
     }
 
     pre {
       margin: 0;
-      padding: 12px;
-      background: var(--vscode-textCodeBlock-background);
+      padding: var(--spacing-3);
       overflow-x: auto;
-      font-family: var(--vscode-editor-font-family);
-      font-size: 13px;
+      font-family: var(--font-mono);
+      font-size: 12px;
       line-height: 1.5;
+    }
+
+    pre::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    pre::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    pre::-webkit-scrollbar-thumb {
+      background: var(--vscode-scrollbarSlider-background);
+      border-radius: 3px;
     }
 
     code {
@@ -308,9 +387,9 @@ export class ChatPanel {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 32px;
+      padding: var(--spacing-8);
       text-align: center;
-      gap: 16px;
+      gap: var(--spacing-6);
     }
 
     #empty-state.hidden {
@@ -318,54 +397,74 @@ export class ChatPanel {
     }
 
     .logo {
-      width: 48px;
-      height: 48px;
-      border-radius: 4px;
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius-md);
       background: var(--vscode-editor-background);
-      border: 1px solid var(--vscode-focusBorder);
+      border: 1.5px solid var(--vscode-focusBorder);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: -0.5px;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
       color: var(--vscode-focusBorder);
+    }
+
+    .welcome-text h3 {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-bottom: var(--spacing-1);
+    }
+
+    .welcome-text p {
+      font-size: 12px;
+      font-weight: 400;
+      opacity: 0.5;
+      letter-spacing: 0;
     }
 
     .suggestions {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: var(--spacing-2);
       width: 100%;
-      max-width: 300px;
+      max-width: 320px;
     }
 
     .suggestion-button {
       background: var(--vscode-editor-background);
       color: var(--vscode-foreground);
       border: 1px solid var(--vscode-input-border);
-      padding: 12px 16px;
-      border-radius: 4px;
+      padding: var(--spacing-3) var(--spacing-4);
+      border-radius: var(--radius-md);
       cursor: pointer;
       font-size: 12px;
+      font-weight: 400;
       text-align: left;
-      transition: border-color 0.15s ease;
+      transition: all var(--transition-fast);
+      position: relative;
     }
 
     .suggestion-button:hover {
       border-color: var(--vscode-focusBorder);
-      background: var(--vscode-editor-background);
+      transform: translateY(-1px);
+    }
+
+    .suggestion-button:active {
+      transform: translateY(0);
     }
 
     #input-area {
-      padding: 12px;
+      padding: var(--spacing-3);
       background: var(--vscode-editor-background);
       border-top: 1px solid var(--vscode-panel-border);
     }
 
     #input-container {
       display: flex;
-      gap: 8px;
+      gap: var(--spacing-2);
       align-items: flex-end;
     }
 
@@ -374,14 +473,15 @@ export class ChatPanel {
       background: var(--vscode-input-background);
       color: var(--vscode-input-foreground);
       border: 1px solid var(--vscode-input-border);
-      border-radius: 4px;
-      padding: 10px 12px;
-      font-family: var(--vscode-font-family);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-2) var(--spacing-3);
+      font-family: var(--font-sans);
       font-size: 13px;
+      line-height: 1.5;
       resize: none;
-      min-height: 38px;
+      min-height: 36px;
       max-height: 120px;
-      transition: border-color 0.15s ease;
+      transition: border-color var(--transition-fast);
     }
 
     #message-input:focus {
@@ -389,22 +489,31 @@ export class ChatPanel {
       border-color: var(--vscode-focusBorder);
     }
 
+    #message-input::placeholder {
+      color: var(--vscode-input-placeholderForeground);
+      opacity: 0.5;
+    }
+
     #send-button {
-      background: var(--vscode-editor-background);
-      color: var(--vscode-foreground);
-      border: 1px solid var(--vscode-input-border);
-      padding: 10px 18px;
-      border-radius: 4px;
+      background: var(--vscode-button-background);
+      color: var(--vscode-button-foreground);
+      border: none;
+      padding: var(--spacing-2) var(--spacing-4);
+      border-radius: var(--radius-md);
       cursor: pointer;
       font-weight: 500;
       font-size: 13px;
       white-space: nowrap;
-      transition: border-color 0.15s ease, background-color 0.15s ease;
+      transition: all var(--transition-fast);
+      height: 36px;
     }
 
     #send-button:hover:not(:disabled) {
-      border-color: var(--vscode-focusBorder);
-      background: var(--vscode-input-background);
+      background: var(--vscode-button-hoverBackground);
+    }
+
+    #send-button:active:not(:disabled) {
+      transform: scale(0.98);
     }
 
     #send-button:disabled {
@@ -412,27 +521,28 @@ export class ChatPanel {
       cursor: not-allowed;
     }
 
+    .hint {
+      font-size: 10px;
+      opacity: 0.4;
+      margin-top: var(--spacing-2);
+      letter-spacing: 0.01em;
+    }
+
     .streaming-cursor {
       display: inline-block;
-      width: 8px;
+      width: 2px;
       height: 16px;
       background: var(--vscode-editorCursor-foreground);
-      animation: blink 1s infinite;
+      animation: blink 1s steps(2, start) infinite;
       margin-left: 2px;
+      vertical-align: text-bottom;
     }
 
     @keyframes blink {
-      0%, 50% { opacity: 1; }
-      51%, 100% { opacity: 0; }
+      50% { opacity: 0; }
     }
 
-    .hint {
-      font-size: 11px;
-      opacity: 0.6;
-      margin-top: 4px;
-    }
-
-    /* Accessibility: Disable animations for users with reduced motion preference */
+    /* Accessibility */
     .vscode-reduce-motion .streaming-cursor {
       animation: none;
       opacity: 1;
@@ -440,16 +550,13 @@ export class ChatPanel {
 
     .vscode-reduce-motion * {
       animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
     }
 
-    /* Accessibility: Hide streaming cursor for screen readers */
     .vscode-using-screen-reader .streaming-cursor {
       display: none;
     }
 
-    /* Accessibility: Screen reader only text */
     .sr-only {
       position: absolute;
       width: 1px;
@@ -468,11 +575,9 @@ export class ChatPanel {
 
   <div id="empty-state" role="region" aria-label="Welcome screen">
     <div class="logo" aria-hidden="true">CC</div>
-    <div>
-      <h3 style="font-weight: 600; font-size: 14px;">Crowe Code</h3>
-      <p style="opacity: 0.6; margin-top: 6px; font-size: 11px; font-weight: 400;">
-        Autonomous AI developer for biological systems
-      </p>
+    <div class="welcome-text">
+      <h3>Crowe Code</h3>
+      <p>Autonomous AI developer for biological systems</p>
     </div>
     <div class="suggestions">
       <button class="suggestion-button" onclick="sendSuggestion('Generate a function to analyze contamination patterns across multiple test sites')">
@@ -491,13 +596,13 @@ export class ChatPanel {
     <div id="input-container">
       <textarea
         id="message-input"
-        placeholder="Message Crowe Code..."
+        placeholder="Message Crowe Code"
         rows="1"
         aria-label="Message input"
       ></textarea>
       <button id="send-button" aria-label="Send message">Send</button>
     </div>
-    <div class="hint" role="status" aria-label="Keyboard shortcuts hint">Press Enter to send, Shift+Enter for new line</div>
+    <div class="hint" role="status">Enter to send • Shift+Enter for new line</div>
   </div>
 
   <script nonce="${nonce}">
@@ -510,10 +615,8 @@ export class ChatPanel {
     const messageInput = document.getElementById('message-input');
     const sendButton = document.getElementById('send-button');
 
-    // Handle messages from extension
     window.addEventListener('message', event => {
       const message = event.data;
-
       if (message.type === 'updateMessages') {
         messages = message.messages;
         isStreaming = message.streaming;
@@ -534,7 +637,6 @@ export class ChatPanel {
         const isUser = msg.role === 'user';
         const isLast = idx === messages.length - 1;
 
-        // Extract code blocks
         const codeBlockRegex = /\`\`\`(\w+)?\n([\s\S]*?)\`\`\`/g;
         let content = msg.content;
         const codeBlocks = [];
@@ -547,41 +649,39 @@ export class ChatPanel {
           });
         }
 
-        // Remove code blocks from content
         content = content.replace(codeBlockRegex, '').trim();
 
         return \`
-          <div class="message \${isUser ? 'user-message' : 'assistant-message'}">
-            <div class="message-header">
-              <div class="avatar \${isUser ? 'user-avatar' : 'assistant-avatar'}">
-                \${isUser ? 'U' : 'CC'}
+          <div class="message \${isUser ? 'user-message' : 'assistant-message'}" style="animation-delay: \${idx * 50}ms">
+            <div class="avatar \${isUser ? 'user-avatar' : 'assistant-avatar'}">
+              \${isUser ? 'U' : 'CC'}
+            </div>
+            <div class="message-body">
+              <div class="message-author">\${isUser ? 'You' : 'Crowe Code'}</div>
+              <div class="message-content">
+                \${content}\${isLast && isStreaming ? '<span class="streaming-cursor"></span>' : ''}
               </div>
-              <span>\${isUser ? 'You' : 'Crowe Code'}</span>
-            </div>
-            <div class="message-content">
-              \${content}\${isLast && isStreaming ? '<span class="streaming-cursor"></span>' : ''}
-            </div>
-            \${codeBlocks.map((block, blockIdx) => \`
-              <div class="code-block">
-                <div class="code-header">
-                  <span>\${block.language}</span>
-                  <div class="code-actions">
-                    <button class="code-button" onclick="copyCodeByIndex(\${idx}, \${blockIdx})">
-                      Copy
-                    </button>
-                    <button class="code-button" onclick="insertCodeByIndex(\${idx}, \${blockIdx})">
-                      Insert
-                    </button>
+              \${codeBlocks.map((block, blockIdx) => \`
+                <div class="code-block">
+                  <div class="code-header">
+                    <span class="code-language">\${block.language}</span>
+                    <div class="code-actions">
+                      <button class="code-button" onclick="copyCodeByIndex(\${idx}, \${blockIdx})">
+                        Copy
+                      </button>
+                      <button class="code-button" onclick="insertCodeByIndex(\${idx}, \${blockIdx})">
+                        Insert
+                      </button>
+                    </div>
                   </div>
+                  <pre><code>\${escapeHtml(block.code)}</code></pre>
                 </div>
-                <pre><code>\${escapeHtml(block.code)}</code></pre>
-              </div>
-            \`).join('')}
+              \`).join('')}
+            </div>
           </div>
         \`;
       }).join('');
 
-      // Scroll to bottom
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
@@ -650,7 +750,6 @@ export class ChatPanel {
       return div.innerHTML;
     }
 
-    // Event listeners
     sendButton.addEventListener('click', sendMessage);
 
     messageInput.addEventListener('input', (e) => {
@@ -666,7 +765,6 @@ export class ChatPanel {
       }
     });
 
-    // Auto-focus input
     messageInput.focus();
   </script>
 </body>
