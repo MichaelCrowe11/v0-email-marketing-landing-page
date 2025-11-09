@@ -1,13 +1,16 @@
 "use client"
 
-import { useState } from "react"
+import Link from "next/link"
+import { useEffect, useState } from "react"
+import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Slider } from "@/components/ui/slider"
 import { Badge } from "@/components/ui/badge"
-import { Play, Copy, Download, Settings, Zap, Code, Microscope } from "lucide-react"
+import { workspacePlans } from "@/lib/workspaces"
+import type { WorkspaceTier } from "@/lib/workspaces"
+import { Play, Copy, Download, Settings, Microscope, LayoutDashboard } from "lucide-react"
 
 const models = [
   {
@@ -47,6 +50,15 @@ export default function PlaygroundPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [temperature, setTemperature] = useState([0.7])
   const [maxTokens, setMaxTokens] = useState([2000])
+  const [workspaceTier, setWorkspaceTier] = useState<WorkspaceTier>("solo")
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    const workspaceParam = searchParams.get("workspace")
+    if (workspaceParam === "solo" || workspaceParam === "team" || workspaceParam === "business") {
+      setWorkspaceTier(workspaceParam)
+    }
+  }, [searchParams])
 
   const handleRun = async () => {
     setIsLoading(true)
@@ -61,6 +73,7 @@ export default function PlaygroundPage() {
           prompt,
           temperature: temperature[0],
           maxTokens: maxTokens[0],
+          workspaceTier,
         }),
       })
 
@@ -74,6 +87,7 @@ export default function PlaygroundPage() {
   }
 
   const currentModel = models.find(m => m.id === selectedModel)
+  const currentWorkspacePlan = workspacePlans.find((plan) => plan.type === workspaceTier)
 
   return (
     <div className="min-h-screen bg-background">
@@ -138,6 +152,27 @@ export default function PlaygroundPage() {
               <CardContent className="space-y-6">
                 <div>
                   <label className="text-xs font-medium text-foreground uppercase tracking-wide mb-2 block">
+                    Workspace Context
+                  </label>
+                  <Select value={workspaceTier} onValueChange={(value: WorkspaceTier) => setWorkspaceTier(value)}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Choose workspace" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {workspacePlans.map((plan) => (
+                        <SelectItem key={plan.type} value={plan.type}>
+                          {plan.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="text-[11px] text-muted-foreground mt-2">
+                    Outputs inherit storage, governance, and sharing policies from the selected workspace tier.
+                  </p>
+                </div>
+
+                <div>
+                  <label className="text-xs font-medium text-foreground uppercase tracking-wide mb-2 block">
                     Temperature: <span className="metric-display">{temperature[0]}</span>
                   </label>
                   <Slider
@@ -186,6 +221,48 @@ export default function PlaygroundPage() {
                       <p className="text-sm text-muted-foreground">{currentModel.description}</p>
                     </div>
                     <Badge className="sci-badge">{currentModel.category}</Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {currentWorkspacePlan && (
+              <Card className="lab-card">
+                <CardHeader>
+                  <CardTitle className="text-base data-heading flex items-center gap-2">
+                    <LayoutDashboard className="w-4 h-4" aria-hidden="true" />
+                    {currentWorkspacePlan.title} Workspace Context
+                  </CardTitle>
+                  <CardDescription>
+                    {currentWorkspacePlan.description}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex flex-wrap gap-2">
+                    <Badge className="sci-badge text-[10px]">{currentWorkspacePlan.price}</Badge>
+                    <Badge variant="outline" className="text-[10px]">
+                      Tier: {currentWorkspacePlan.type.toUpperCase()}
+                    </Badge>
+                  </div>
+                  <ul className="grid sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
+                    {currentWorkspacePlan.features.slice(0, 6).map((feature) => (
+                      <li key={feature} className="flex gap-2">
+                        <span aria-hidden="true">•</span>
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="flex gap-2">
+                    <Button asChild variant="outline" size="sm" className="pharma-btn-outline">
+                      <Link href="/workspaces?tab=workspaces">
+                        Manage Workspace
+                      </Link>
+                    </Button>
+                    <Button asChild size="sm" className="pharma-btn">
+                      <Link href={`/workspaces?tab=create&plan=${currentWorkspacePlan.type}`}>
+                        Duplicate Plan
+                      </Link>
+                    </Button>
                   </div>
                 </CardContent>
               </Card>

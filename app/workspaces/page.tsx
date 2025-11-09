@@ -1,109 +1,40 @@
 "use client"
 
-import { useState } from "react"
+import Link from "next/link"
+import { useEffect, useMemo, useState } from "react"
+import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
-import {
-  Plus,
-  Users,
-  Building2,
-  User,
-  Settings,
-  FolderOpen,
-  Database,
-  Code,
-  BarChart3,
-  Clock,
-  CheckCircle2
-} from "lucide-react"
-
-const workspaceTypes = [
-  {
-    type: "solo",
-    icon: User,
-    title: "Solo Researcher",
-    description: "Individual research and experimentation",
-    features: [
-      "5 GB storage",
-      "Unlimited models",
-      "Private workspace",
-      "Basic analytics",
-      "Community support",
-    ],
-    price: "Free",
-    color: "text-secondary"
-  },
-  {
-    type: "team",
-    icon: Users,
-    title: "Team",
-    description: "Collaborative research for small teams",
-    features: [
-      "100 GB shared storage",
-      "Unlimited models",
-      "5 team members",
-      "Advanced analytics",
-      "Shared datasets",
-      "Priority support",
-    ],
-    price: "$49/month",
-    color: "text-primary",
-    popular: true
-  },
-  {
-    type: "business",
-    icon: Building2,
-    title: "Business",
-    description: "Enterprise-grade research platform",
-    features: [
-      "1 TB storage",
-      "Custom models",
-      "Unlimited members",
-      "Enterprise analytics",
-      "Dedicated support",
-      "SLA guarantee",
-      "SSO & RBAC",
-    ],
-    price: "Custom",
-    color: "text-warning"
-  },
-]
-
-interface Workspace {
-  id: string
-  name: string
-  type: "solo" | "team" | "business"
-  members: number
-  projects: number
-  storage: string
-  lastActive: string
-}
-
-const sampleWorkspaces: Workspace[] = [
-  {
-    id: "1",
-    name: "Oyster Cultivation Research",
-    type: "solo",
-    members: 1,
-    projects: 3,
-    storage: "2.4 GB / 5 GB",
-    lastActive: "2 hours ago"
-  },
-  {
-    id: "2",
-    name: "Contamination Analysis Lab",
-    type: "team",
-    members: 4,
-    projects: 12,
-    storage: "45 GB / 100 GB",
-    lastActive: "30 minutes ago"
-  },
-]
+import { PlatformArchitecture } from "@/components/platform-architecture"
+import { workspacePlans, workspaceSummaries, workspaceFeatureRows } from "@/lib/workspaces"
+import { Plus, Settings, FolderOpen, Clock, CheckCircle2, Microscope, Play, Share2 } from "lucide-react"
 
 export default function WorkspacesPage() {
   const [activeTab, setActiveTab] = useState("workspaces")
+  const [preferredPlan, setPreferredPlan] = useState<string | null>(null)
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    const tabParam = searchParams.get("tab")
+    if (tabParam === "create" || tabParam === "workspaces") {
+      setActiveTab(tabParam)
+    }
+
+    const planParam = searchParams.get("plan")
+    if (planParam === "solo" || planParam === "team" || planParam === "business") {
+      setPreferredPlan(planParam)
+      setActiveTab("create")
+    } else {
+      setPreferredPlan(null)
+    }
+  }, [searchParams])
+
+  const planByType = useMemo(
+    () => Object.fromEntries(workspacePlans.map((plan) => [plan.type, plan])),
+    [],
+  )
 
   return (
     <div className="min-h-screen bg-background">
@@ -125,7 +56,66 @@ export default function WorkspacesPage() {
         </div>
       </div>
 
-      <div className="container mx-auto px-6 py-8">
+      <div className="container mx-auto px-6 py-8 space-y-12">
+        <PlatformArchitecture />
+
+        <Card className="lab-card">
+          <CardHeader>
+            <CardTitle className="text-lg">Workspace & Playground Integration</CardTitle>
+            <CardDescription>
+              Sync experiments between collaborative workspaces and the AI playground for rapid validation.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-6 md:grid-cols-3">
+            <div className="rounded-xl border border-border/50 p-5 bg-background/40">
+              <div className="flex items-center gap-3 mb-3">
+                <Microscope className="w-4 h-4 text-foreground" aria-hidden="true" />
+                <span className="text-sm font-medium text-foreground">Launch Playground</span>
+              </div>
+              <p className="text-sm text-muted-foreground mb-4">
+                Generate SOPs and reasoned outputs with workspace-specific datasets.
+              </p>
+              <Button asChild className="pharma-btn w-full">
+                <Link href="/playground">
+                  Open Playground
+                  <Play className="w-4 h-4 ml-2" aria-hidden="true" />
+                </Link>
+              </Button>
+            </div>
+
+            <div className="rounded-xl border border-border/50 p-5 bg-background/40">
+              <div className="flex items-center gap-3 mb-3">
+                <Share2 className="w-4 h-4 text-foreground" aria-hidden="true" />
+                <span className="text-sm font-medium text-foreground">Sync with Workspaces</span>
+              </div>
+              <p className="text-sm text-muted-foreground mb-4">
+                Export validated runs into shared folders for teams, business units, or solo research logs.
+              </p>
+              <Button asChild variant="outline" className="pharma-btn-outline w-full">
+                <Link href="/workbench">Open Research IDE</Link>
+              </Button>
+            </div>
+
+            <div className="rounded-xl border border-border/50 p-5 bg-background/40">
+              <div className="flex items-center gap-3 mb-3">
+                <CheckCircle2 className="w-4 h-4 text-secondary" aria-hidden="true" />
+                <span className="text-sm font-medium text-foreground">Plan-Aware Governance</span>
+              </div>
+              <p className="text-sm text-muted-foreground mb-4">
+                Confidence scoring, lineage, and RBAC adjust automatically based on workspace tier.
+              </p>
+              <div className="grid grid-cols-3 gap-2 text-xs text-muted-foreground">
+                {workspacePlans.map((plan) => (
+                  <div key={plan.type} className="rounded-md border border-border/60 px-3 py-2 text-center">
+                    <span className="font-medium text-foreground block">{plan.title}</span>
+                    <span>{plan.price}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="mb-6">
             <TabsTrigger value="workspaces">My Workspaces</TabsTrigger>
@@ -134,7 +124,7 @@ export default function WorkspacesPage() {
 
           {/* My Workspaces */}
           <TabsContent value="workspaces" className="space-y-6">
-            {sampleWorkspaces.length === 0 ? (
+            {workspaceSummaries.length === 0 ? (
               <Card className="lab-card">
                 <CardContent className="p-12 text-center">
                   <FolderOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
@@ -150,9 +140,9 @@ export default function WorkspacesPage() {
               </Card>
             ) : (
               <div className="grid md:grid-cols-2 gap-6">
-                {sampleWorkspaces.map((workspace) => {
-                  const typeConfig = workspaceTypes.find(t => t.type === workspace.type)
-                  const Icon = typeConfig?.icon || FolderOpen
+                {workspaceSummaries.map((workspace) => {
+                  const plan = planByType[workspace.type]
+                  const Icon = plan?.icon || FolderOpen
 
                   return (
                     <Card key={workspace.id} className="lab-card hover:border-foreground transition-all cursor-pointer">
@@ -165,7 +155,7 @@ export default function WorkspacesPage() {
                             <div>
                               <CardTitle className="text-base mb-1">{workspace.name}</CardTitle>
                               <CardDescription className="text-xs">
-                                {typeConfig?.title} Workspace
+                                {plan?.title} Workspace
                               </CardDescription>
                             </div>
                           </div>
@@ -201,10 +191,26 @@ export default function WorkspacesPage() {
                             <Clock className="w-3 h-3" />
                             <span>Active {workspace.lastActive}</span>
                           </div>
-                          <Button variant="ghost" size="sm" className="h-7 text-xs">
-                            <Settings className="w-3 h-3 mr-1" />
-                            Manage
-                          </Button>
+                          <div className="flex gap-2">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-7 text-xs"
+                              onClick={() => {
+                                setActiveTab("create")
+                                setPreferredPlan(workspace.type)
+                              }}
+                            >
+                              <Settings className="w-3 h-3 mr-1" />
+                              Configure
+                            </Button>
+                            <Button variant="ghost" size="sm" className="h-7 text-xs" asChild>
+                              <Link href={`/playground?workspace=${workspace.type}`}>
+                                <Microscope className="w-3 h-3 mr-1" />
+                                Launch
+                              </Link>
+                            </Button>
+                          </div>
                         </div>
                       </CardContent>
                     </Card>
@@ -225,14 +231,15 @@ export default function WorkspacesPage() {
               </div>
 
               <div className="grid md:grid-cols-3 gap-6">
-                {workspaceTypes.map((workspace) => {
-                  const Icon = workspace.icon
+                {workspacePlans.map((workspace) => {
+                  const IconComponent = workspace.icon ?? FolderOpen
+                  const isPreferred = preferredPlan === workspace.type
 
                   return (
                     <Card
                       key={workspace.type}
                       className={`lab-card hover:border-foreground transition-all relative ${
-                        workspace.popular ? "border-foreground" : ""
+                        workspace.popular || isPreferred ? "border-foreground" : ""
                       }`}
                     >
                       {workspace.popular && (
@@ -244,7 +251,7 @@ export default function WorkspacesPage() {
                       )}
                       <CardHeader>
                         <div className="w-12 h-12 rounded-md bg-foreground/5 flex items-center justify-center mb-4">
-                          <Icon className={`w-6 h-6 ${workspace.color}`} />
+                          <IconComponent className={`w-6 h-6 ${workspace.color ?? ""}`} />
                         </div>
                         <CardTitle className="text-xl mb-2">{workspace.title}</CardTitle>
                         <CardDescription>{workspace.description}</CardDescription>
@@ -266,8 +273,9 @@ export default function WorkspacesPage() {
 
                         <Button
                           className={`w-full ${
-                            workspace.popular ? "pharma-btn" : "pharma-btn-outline"
+                            workspace.popular || isPreferred ? "pharma-btn" : "pharma-btn-outline"
                           }`}
+                          onClick={() => setPreferredPlan(workspace.type)}
                         >
                           Create {workspace.title} Workspace
                         </Button>
@@ -294,30 +302,14 @@ export default function WorkspacesPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td>Storage</td>
-                        <td className="text-center">5 GB</td>
-                        <td className="text-center">100 GB</td>
-                        <td className="text-center">1 TB</td>
-                      </tr>
-                      <tr>
-                        <td>Team Members</td>
-                        <td className="text-center">1</td>
-                        <td className="text-center">5</td>
-                        <td className="text-center">Unlimited</td>
-                      </tr>
-                      <tr>
-                        <td>AI Models</td>
-                        <td className="text-center">All</td>
-                        <td className="text-center">All + Priority</td>
-                        <td className="text-center">All + Custom</td>
-                      </tr>
-                      <tr>
-                        <td>Support</td>
-                        <td className="text-center">Community</td>
-                        <td className="text-center">Priority</td>
-                        <td className="text-center">Dedicated</td>
-                      </tr>
+                      {workspaceFeatureRows.map((row) => (
+                        <tr key={row.feature}>
+                          <td>{row.feature}</td>
+                          <td className="text-center">{row.solo}</td>
+                          <td className="text-center">{row.team}</td>
+                          <td className="text-center">{row.business}</td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </CardContent>
