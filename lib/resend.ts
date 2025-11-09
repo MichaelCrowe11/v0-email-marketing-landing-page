@@ -1,10 +1,19 @@
 import { Resend } from "resend"
 
-if (!process.env.RESEND_API_KEY) {
-  throw new Error("RESEND_API_KEY is not set")
+// Lazy initialization - only create client when needed
+let resendClient: Resend | null = null
+
+function getResendClient() {
+  if (!process.env.RESEND_API_KEY) {
+    throw new Error("RESEND_API_KEY is not set")
+  }
+  if (!resendClient) {
+    resendClient = new Resend(process.env.RESEND_API_KEY)
+  }
+  return resendClient
 }
 
-export const resend = new Resend(process.env.RESEND_API_KEY)
+export const resend = getResendClient
 
 // Email configuration
 export const EMAIL_CONFIG = {
@@ -27,7 +36,8 @@ export async function sendEmail({
   replyTo?: string
 }) {
   try {
-    const { data, error } = await resend.emails.send({
+    const client = getResendClient()
+    const { data, error } = await client.emails.send({
       from: EMAIL_CONFIG.from,
       to,
       subject,
