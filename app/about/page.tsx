@@ -52,6 +52,77 @@ export default function AboutPage() {
           </CardContent>
         </Card>
 
+        {/* Photo Gallery */}
+        <div className="space-y-6">
+          <h2 className="text-2xl font-bold text-foreground text-center">From Lab to Code</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="relative aspect-square overflow-hidden rounded-lg border border-border">
+              <Image
+                src="/crowe-logic-avatar-conducting-research-in-laborato.jpg"
+                alt="Michael Crowe conducting research in laboratory"
+                fill
+                className="object-cover hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+            <div className="relative aspect-square overflow-hidden rounded-lg border border-border">
+              <Image
+                src="/crowe-logic-avatar-mixing-substrate-ingredients-wi.jpg"
+                alt="Michael Crowe mixing substrate ingredients"
+                fill
+                className="object-cover hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+            <div className="relative aspect-square overflow-hidden rounded-lg border border-border">
+              <Image
+                src="/crowe-logic-avatar-performing-sterile-inoculation-.jpg"
+                alt="Michael Crowe performing sterile inoculation"
+                fill
+                className="object-cover hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+            <div className="relative aspect-square overflow-hidden rounded-lg border border-border">
+              <Image
+                src="/crowe-logic-avatar-analyzing-mushroom-data-on-holo.jpg"
+                alt="Michael Crowe analyzing mushroom data"
+                fill
+                className="object-cover hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+            <div className="relative aspect-square overflow-hidden rounded-lg border border-border">
+              <Image
+                src="/crowe-logic-avatar-managing-facility-dashboard-wit.jpg"
+                alt="Michael Crowe managing facility dashboard"
+                fill
+                className="object-cover hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+            <div className="relative aspect-square overflow-hidden rounded-lg border border-border">
+              <Image
+                src="/crowe-logic-avatar-orchestrating-multiple-ai-syste.jpg"
+                alt="Michael Crowe orchestrating AI systems"
+                fill
+                className="object-cover hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+            <div className="relative aspect-square overflow-hidden rounded-lg border border-border">
+              <Image
+                src="/crowe-logic-avatar-in-command-center-managing-ente.jpg"
+                alt="Michael Crowe in command center"
+                fill
+                className="object-cover hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+            <div className="relative aspect-square overflow-hidden rounded-lg border border-border">
+              <Image
+                src="/crowe-logic-avatar-writing-business-plan-with-mush.jpg"
+                alt="Michael Crowe writing business plan"
+                fill
+                className="object-cover hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+          </div>
+        </div>
+
         {/* Key Milestones */}
         <div className="grid md:grid-cols-3 gap-6">
           <Card className="border-border/50">

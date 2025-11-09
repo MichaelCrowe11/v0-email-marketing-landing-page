@@ -4,56 +4,56 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Enterprise Dark Foundation - Anthropic/Vercel Inspired */
-  --background: #0a0a0a;
-  --foreground: #ededed;
+  /* Clean Light Foundation - Vercel/OpenAI Inspired */
+  --background: #ffffff;
+  --foreground: #171717;
 
-  /* Card System - Clean separation */
-  --card: #1a1a1a;
-  --card-foreground: #ededed;
-  --popover: #1a1a1a;
-  --popover-foreground: #ededed;
+  /* Card System - Subtle separation */
+  --card: #fafafa;
+  --card-foreground: #171717;
+  --popover: #ffffff;
+  --popover-foreground: #171717;
 
-  /* Biological AI Color System */
-  --primary: #22d3ee; /* Teal - AI/Tech */
-  --primary-foreground: #0a0a0a;
-  --secondary: #10b981; /* Green - Biology/Nature */
-  --secondary-foreground: #0a0a0a;
+  /* Minimal Color System */
+  --primary: #171717; /* Neutral black */
+  --primary-foreground: #ffffff;
+  --secondary: #10b981; /* Green - Biology/Nature accent */
+  --secondary-foreground: #ffffff;
 
   /* Neutral System */
-  --muted: #262626;
-  --muted-foreground: #a3a3a3;
-  --accent: #22d3ee;
-  --accent-foreground: #0a0a0a;
+  --muted: #f5f5f5;
+  --muted-foreground: #737373;
+  --accent: #f5f5f5;
+  --accent-foreground: #171717;
 
   /* Status Colors */
   --destructive: #ef4444;
-  --destructive-foreground: #fef2f2;
+  --destructive-foreground: #ffffff;
   --success: #10b981;
-  --success-foreground: #ecfdf5;
+  --success-foreground: #ffffff;
   --warning: #f59e0b;
-  --warning-foreground: #fffbeb;
+  --warning-foreground: #ffffff;
 
   /* Border & Input */
-  --border: #262626;
-  --input: #1a1a1a;
-  --ring: #22d3ee;
+  --border: #e5e5e5;
+  --input: #ffffff;
+  --ring: #171717;
   --radius: 0.5rem;
 
   /* Sidebar System */
-  --sidebar: #0a0a0a;
-  --sidebar-foreground: #ededed;
-  --sidebar-primary: #22d3ee;
-  --sidebar-primary-foreground: #0a0a0a;
-  --sidebar-accent: #1a1a1a;
-  --sidebar-accent-foreground: #ededed;
-  --sidebar-border: #262626;
-  --sidebar-ring: #22d3ee;
+  --sidebar: #fafafa;
+  --sidebar-foreground: #171717;
+  --sidebar-primary: #171717;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f5f5f5;
+  --sidebar-accent-foreground: #171717;
+  --sidebar-border: #e5e5e5;
+  --sidebar-ring: #171717;
 
   /* Brand Colors */
   --brand-gold: #f59e0b;
-  --brand-teal: #22d3ee;
   --brand-green: #10b981;
+  --brand-neutral: #171717;
 }
 
 .dark {
@@ -233,11 +233,11 @@
 
 /* Biological Gradient Accents */
 .bio-gradient {
-  background: linear-gradient(135deg, var(--brand-teal) 0%, var(--brand-green) 100%);
+  background: linear-gradient(135deg, var(--brand-green) 0%, var(--brand-gold) 100%);
 }
 
 .bio-gradient-subtle {
-  background: linear-gradient(135deg, rgba(34, 211, 238, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(245, 158, 11, 0.05) 100%);
 }
 
 /* Professional Button System */
@@ -249,7 +249,7 @@
 }
 
 .btn-primary:hover {
-  background: #06b6d4;
+  background: #404040;
   transform: translateY(-1px);
 }
 
@@ -269,7 +269,7 @@
 /* Custom Scrollbars */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #485063 #1a1f2e;
+  scrollbar-color: #d4d4d4 #fafafa;
 }
 
 *::-webkit-scrollbar {
@@ -278,18 +278,18 @@
 }
 
 *::-webkit-scrollbar-track {
-  background: #1a1f2e;
+  background: #fafafa;
   border-radius: 6px;
 }
 
 *::-webkit-scrollbar-thumb {
-  background: #485063;
+  background: #d4d4d4;
   border-radius: 6px;
-  border: 2px solid #1a1f2e;
+  border: 2px solid #fafafa;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: #4a90e2;
+  background: #a3a3a3;
 }
 
 /* Resizable panels */
