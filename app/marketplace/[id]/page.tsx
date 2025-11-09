@@ -1,6 +1,5 @@
 "use client"
 
-import { use } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -164,8 +163,8 @@ print(f"Action: {result.recommendation}")`,
   },
 }
 
-export default function ModelDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params)
+export default function ModelDetailPage({ params }: { params: { id: string } }) {
+  const { id } = params
   const model = modelDetails[id]
 
   if (!model) {
