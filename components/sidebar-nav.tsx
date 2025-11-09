@@ -41,9 +41,10 @@ const navGroups = [
     label: "Developer Tools",
     items: [
       {
-        href: "/synapse-lang",
+        href: "https://michaelcrowemycology.com/synapse-lang",
         label: "Synapse-lang",
         icon: Code,
+        external: true,
       },
       {
         href: "/crowe-code",
@@ -185,20 +186,10 @@ export function SidebarNav() {
                   {group.label}
                 </h3>
                 <div className="space-y-1">
-                  {group.items.map((item) => {
+                  {group.items.map((item: any) => {
                     const active = isActive(item.href)
-                    return (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        className={`flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 ${
-                          active
-                            ? "bg-sidebar-accent text-sidebar-foreground shadow-sm"
-                            : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50 active:bg-sidebar-accent"
-                        }`}
-                        onClick={() => setIsOpen(false)}
-                        aria-current={active ? "page" : undefined}
-                      >
+                    const linkContent = (
+                      <>
                         {item.customIcon ? (
                           <div className="relative w-5 h-5 flex-shrink-0">
                             <Image
@@ -213,6 +204,36 @@ export function SidebarNav() {
                           <item.icon className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
                         ) : null}
                         <span className="truncate">{item.label}</span>
+                        {item.external && <ExternalLink className="w-3 h-3 ml-auto flex-shrink-0 opacity-50" />}
+                      </>
+                    )
+
+                    const linkClassName = `flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 ${
+                      active
+                        ? "bg-sidebar-accent text-sidebar-foreground shadow-sm"
+                        : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50 active:bg-sidebar-accent"
+                    }`
+
+                    return item.external ? (
+                      <a
+                        key={item.href}
+                        href={item.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={linkClassName}
+                        onClick={() => setIsOpen(false)}
+                      >
+                        {linkContent}
+                      </a>
+                    ) : (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className={linkClassName}
+                        onClick={() => setIsOpen(false)}
+                        aria-current={active ? "page" : undefined}
+                      >
+                        {linkContent}
                       </Link>
                     )
                   })}
