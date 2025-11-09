@@ -233,7 +233,7 @@ export async function handleSignIn(context: vscode.ExtensionContext, api: CroweC
   });
 
   if (token) {
-    api.setAccessToken(token);
+    await api.setAccessToken(token);
     vscode.window.showInformationMessage('Successfully signed in to Crowe Code!');
 
     // Update status bar
@@ -249,7 +249,7 @@ export async function handleSignOut(context: vscode.ExtensionContext, api: Crowe
   );
 
   if (confirm === 'Sign Out') {
-    api.clearAccessToken();
+    await api.clearAccessToken();
     vscode.window.showInformationMessage('Signed out from Crowe Code');
 
     // Update status bar

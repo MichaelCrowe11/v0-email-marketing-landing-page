@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { CroweCodeAPI } from './api/CroweCodeAPI';
+import { logger } from './utils/logger';
 
 export class StatusBarManager {
   private statusBarItem: vscode.StatusBarItem;
@@ -17,11 +18,6 @@ export class StatusBarManager {
     this.statusBarItem.show();
 
     this.updateQuota();
-
-    // Register update command
-    vscode.commands.registerCommand('croweCode.updateQuota', async () => {
-      await this.updateQuota();
-    });
   }
 
   public async updateQuota() {
@@ -50,7 +46,7 @@ export class StatusBarManager {
         this.statusBarItem.backgroundColor = undefined;
       }
     } catch (error) {
-      console.error('Failed to update quota:', error);
+      logger.error('Failed to update quota:', error);
       this.statusBarItem.text = '$(warning) Crowe Code';
       this.statusBarItem.tooltip = 'Failed to connect to Crowe Code';
     }

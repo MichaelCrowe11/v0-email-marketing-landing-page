@@ -213,10 +213,12 @@ This creates `crowe-code-1.0.0.vsix` for distribution.
 
 ## Privacy & Security
 
-- Access tokens stored in VS Code SecretStorage
+- Access tokens stored securely using VS Code Secrets API (encrypted storage)
 - All requests use HTTPS
 - No code is stored on servers (streaming only)
 - Chat history stored locally in extension state
+- Full input validation on all webview messages
+- Content Security Policy enforced with nonce-based scripts
 
 ## Support
 

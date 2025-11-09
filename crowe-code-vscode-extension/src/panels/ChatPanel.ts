@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { CroweCodeAPI, Message } from '../api/CroweCodeAPI';
 import { getNonce } from '../utils/getNonce';
+import { logger } from '../utils/logger';
 
 export class ChatPanel {
   private context: vscode.ExtensionContext;
@@ -31,20 +32,40 @@ export class ChatPanel {
     // Handle messages from webview
     this.webviewView.webview.onDidReceiveMessage(
       async (message) => {
+        // Validate message structure
+        if (!message || typeof message !== 'object' || !message.type) {
+          logger.error('Invalid message received from webview:', message);
+          return;
+        }
+
         switch (message.type) {
           case 'sendMessage':
+            if (typeof message.text !== 'string' || !message.text.trim()) {
+              logger.error('Invalid sendMessage: text must be a non-empty string');
+              return;
+            }
             await this.handleSendMessage(message.text);
             break;
           case 'clearChat':
             this.handleClearChat();
             break;
           case 'insertCode':
+            if (typeof message.code !== 'string') {
+              logger.error('Invalid insertCode: code must be a string');
+              return;
+            }
             this.handleInsertCode(message.code);
             break;
           case 'copyCode':
+            if (typeof message.code !== 'string') {
+              logger.error('Invalid copyCode: code must be a string');
+              return;
+            }
             vscode.env.clipboard.writeText(message.code);
             vscode.window.showInformationMessage('Code copied to clipboard');
             break;
+          default:
+            logger.error('Unknown message type received from webview:', message.type);
         }
       }
     );
@@ -67,29 +88,39 @@ export class ChatPanel {
 
     let fullResponse = '';
 
-    await this.api.streamChat(
-      text,
-      this.messages.slice(0, -1), // Don't include the empty assistant message
-      (chunk) => {
-        // On chunk received
-        fullResponse += chunk;
-        this.messages[this.messages.length - 1].content = fullResponse;
-        this.updateMessages(true); // streaming = true
+    // Show progress indicator while streaming
+    await vscode.window.withProgress(
+      {
+        location: vscode.ProgressLocation.Notification,
+        title: 'Crowe Code is thinking...',
+        cancellable: false
       },
-      () => {
-        // On complete
-        this.messages[this.messages.length - 1].content = fullResponse;
-        this.updateMessages(false); // streaming = false
-        this.saveMessages();
+      async () => {
+        await this.api.streamChat(
+          text,
+          this.messages.slice(0, -1), // Don't include the empty assistant message
+          (chunk) => {
+            // On chunk received
+            fullResponse += chunk;
+            this.messages[this.messages.length - 1].content = fullResponse;
+            this.updateMessages(true); // streaming = true
+          },
+          () => {
+            // On complete
+            this.messages[this.messages.length - 1].content = fullResponse;
+            this.updateMessages(false); // streaming = false
+            this.saveMessages();
 
-        // Update quota in status bar
-        vscode.commands.executeCommand('croweCode.updateQuota');
-      },
-      (error) => {
-        // On error
-        this.messages[this.messages.length - 1].content = `⚠️ Error: ${error}`;
-        this.updateMessages(false);
-        vscode.window.showErrorMessage(`Crowe Code: ${error}`);
+            // Update quota in status bar
+            vscode.commands.executeCommand('croweCode.updateQuota');
+          },
+          (error) => {
+            // On error
+            this.messages[this.messages.length - 1].content = `⚠️ Error: ${error}`;
+            this.updateMessages(false);
+            vscode.window.showErrorMessage(`Crowe Code: ${error}`);
+          }
+        );
       }
     );
   }
@@ -134,9 +165,9 @@ export class ChatPanel {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'nonce-${nonce}';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'nonce-${nonce}'; script-src 'nonce-${nonce}';">
   <title>Crowe Code</title>
-  <style>
+  <style nonce="${nonce}">
     * {
       margin: 0;
       padding: 0;
@@ -389,13 +420,43 @@ export class ChatPanel {
       opacity: 0.6;
       margin-top: 4px;
     }
+
+    /* Accessibility: Disable animations for users with reduced motion preference */
+    .vscode-reduce-motion .streaming-cursor {
+      animation: none;
+      opacity: 1;
+    }
+
+    .vscode-reduce-motion * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+
+    /* Accessibility: Hide streaming cursor for screen readers */
+    .vscode-using-screen-reader .streaming-cursor {
+      display: none;
+    }
+
+    /* Accessibility: Screen reader only text */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
   </style>
 </head>
 <body>
-  <div id="messages"></div>
+  <div id="messages" role="log" aria-live="polite" aria-label="Chat messages"></div>
 
-  <div id="empty-state">
-    <div class="logo">🤖</div>
+  <div id="empty-state" role="region" aria-label="Welcome screen">
+    <div class="logo" aria-hidden="true">🤖</div>
     <div>
       <h3>Crowe Code Assistant</h3>
       <p style="opacity: 0.7; margin-top: 8px; font-size: 12px;">
@@ -415,16 +476,17 @@ export class ChatPanel {
     </div>
   </div>
 
-  <div id="input-area">
+  <div id="input-area" role="form" aria-label="Chat input form">
     <div id="input-container">
       <textarea
         id="message-input"
         placeholder="Ask Crowe Code to generate, explain, or optimize code..."
         rows="1"
+        aria-label="Message input"
       ></textarea>
-      <button id="send-button">Send</button>
+      <button id="send-button" aria-label="Send message">Send</button>
     </div>
-    <div class="hint">Press Enter to send, Shift+Enter for new line</div>
+    <div class="hint" role="status" aria-label="Keyboard shortcuts hint">Press Enter to send, Shift+Enter for new line</div>
   </div>
 
   <script nonce="${nonce}">

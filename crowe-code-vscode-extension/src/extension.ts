@@ -2,16 +2,18 @@ import * as vscode from 'vscode';
 import { ChatPanel } from './panels/ChatPanel';
 import { CroweCodeAPI } from './api/CroweCodeAPI';
 import { StatusBarManager } from './statusBar';
+import { logger } from './utils/logger';
 import * as commands from './commands';
 
 let chatPanel: ChatPanel | undefined;
 let statusBarManager: StatusBarManager;
 
 export async function activate(context: vscode.ExtensionContext) {
-  console.log('Crowe Code extension is now active');
+  logger.info('Crowe Code extension is now active');
 
   // Initialize API client
   const api = new CroweCodeAPI(context);
+  await api.initialize();
 
   // Initialize status bar
   statusBarManager = new StatusBarManager(api);
@@ -24,12 +26,9 @@ export async function activate(context: vscode.ExtensionContext) {
       resolveWebviewView: (webviewView) => {
         chatPanel = new ChatPanel(context, webviewView, api);
       }
-    },
-    {
-      webviewOptions: {
-        retainContextWhenHidden: true
-      }
     }
+    // Note: Not using retainContextWhenHidden for better performance
+    // Chat state is persisted via globalState instead
   );
 
   // Register commands
@@ -69,6 +68,10 @@ export async function activate(context: vscode.ExtensionContext) {
     await commands.handleSignOut(context, api);
   });
 
+  const updateQuotaCommand = vscode.commands.registerCommand('croweCode.updateQuota', async () => {
+    await statusBarManager.updateQuota();
+  });
+
   // Add all to subscriptions
   context.subscriptions.push(
     chatPanelProvider,
@@ -80,8 +83,19 @@ export async function activate(context: vscode.ExtensionContext) {
     addCommentsCommand,
     fixBugCommand,
     signInCommand,
-    signOutCommand
+    signOutCommand,
+    updateQuotaCommand
   );
+
+  // Watch for configuration changes
+  const configWatcher = vscode.workspace.onDidChangeConfiguration(async (e) => {
+    if (e.affectsConfiguration('croweCode.apiEndpoint')) {
+      logger.info('API endpoint configuration changed, reinitializing...');
+      await statusBarManager.updateQuota();
+      vscode.window.showInformationMessage('Crowe Code: API endpoint updated');
+    }
+  });
+  context.subscriptions.push(configWatcher);
 
   // Update status bar on activation
   await statusBarManager.updateQuota();
@@ -107,5 +121,6 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate() {
-  console.log('Crowe Code extension is now deactivated');
+  logger.info('Crowe Code extension is now deactivated');
+  logger.dispose();
 }

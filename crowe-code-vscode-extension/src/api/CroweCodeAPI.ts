@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { createParser, ParsedEvent, ReconnectInterval } from 'eventsource-parser';
+import { logger } from '../utils/logger';
 
 export interface Message {
   role: 'user' | 'assistant';
@@ -15,10 +16,17 @@ export interface UsageQuota {
 export class CroweCodeAPI {
   private context: vscode.ExtensionContext;
   private accessToken: string | undefined;
+  private readonly TOKEN_KEY = 'croweCode.accessToken';
 
   constructor(context: vscode.ExtensionContext) {
     this.context = context;
-    this.accessToken = context.globalState.get('accessToken');
+  }
+
+  /**
+   * Initialize the API client by loading the access token from secure storage
+   */
+  public async initialize(): Promise<void> {
+    this.accessToken = await this.context.secrets.get(this.TOKEN_KEY);
   }
 
   private getApiEndpoint(): string {
@@ -26,14 +34,14 @@ export class CroweCodeAPI {
     return config.get('apiEndpoint', 'https://crowelogic.com');
   }
 
-  public setAccessToken(token: string) {
+  public async setAccessToken(token: string): Promise<void> {
     this.accessToken = token;
-    this.context.globalState.update('accessToken', token);
+    await this.context.secrets.store(this.TOKEN_KEY, token);
   }
 
-  public clearAccessToken() {
+  public async clearAccessToken(): Promise<void> {
     this.accessToken = undefined;
-    this.context.globalState.update('accessToken', undefined);
+    await this.context.secrets.delete(this.TOKEN_KEY);
   }
 
   public hasAccessToken(): boolean {
@@ -94,7 +102,7 @@ export class CroweCodeAPI {
               const textChunk = JSON.parse(line.slice(2));
               onChunk(textChunk);
             } catch (e) {
-              console.error('Failed to parse text chunk:', e);
+              logger.error('Failed to parse text chunk:', e);
             }
           } else if (line.startsWith('3:')) {
             // Error chunk
@@ -102,7 +110,7 @@ export class CroweCodeAPI {
               const errorData = JSON.parse(line.slice(2));
               onError(errorData.message || 'Stream error');
             } catch (e) {
-              console.error('Failed to parse error chunk:', e);
+              logger.error('Failed to parse error chunk:', e);
             }
           } else if (line.startsWith('d:')) {
             // Metadata/finish chunk
@@ -128,14 +136,14 @@ export class CroweCodeAPI {
                 const textChunk = JSON.parse(line.slice(2));
                 onChunk(textChunk);
               } catch (e) {
-                console.error('Failed to parse text chunk:', e);
+                logger.error('Failed to parse text chunk:', e);
               }
             } else if (line.startsWith('3:')) {
               try {
                 const errorData = JSON.parse(line.slice(2));
                 onError(errorData.message || 'Stream error');
               } catch (e) {
-                console.error('Failed to parse error chunk:', e);
+                logger.error('Failed to parse error chunk:', e);
               }
             } else if (line.startsWith('d:')) {
               // Finish chunk
@@ -171,7 +179,7 @@ export class CroweCodeAPI {
       const data = await response.json() as UsageQuota;
       return data;
     } catch (error) {
-      console.error('Failed to fetch usage quota:', error);
+      logger.error('Failed to fetch usage quota:', error);
       return null;
     }
   }
