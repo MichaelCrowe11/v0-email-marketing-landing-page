@@ -1,270 +1,242 @@
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import {
-  Book,
+  ArrowRight,
   Code,
-  Layers,
   Zap,
-  Shield,
-  GitBranch,
-  FileCode,
-  MessageSquare,
-  Rocket,
-  BookOpen,
   Terminal,
   Database,
-  Package,
-  Sparkles,
-  GraduationCap,
-  Video,
+  Microscope,
+  FileCode,
+  Rocket,
+  Play,
+  Book,
+  Sparkles
 } from "lucide-react"
 
 export default function DocsPage() {
-  const quickStart = [
-    {
-      title: "Getting Started",
-      description: "Installation, setup, and your first deployment in 5 minutes",
-      icon: Rocket,
-      href: "/docs/getting-started",
-      color: "text-secondary",
-    },
-    {
-      title: "Platform Overview",
-      description: "Understand the Crowe Logic ecosystem and architecture",
-      icon: Layers,
-      href: "/docs/overview",
-      color: "text-primary",
-    },
-    {
-      title: "Quick Start Tutorials",
-      description: "Step-by-step guides for common use cases",
-      icon: GraduationCap,
-      href: "/docs/tutorials",
-      color: "text-secondary",
-    },
-  ]
-
-  const coreFeatures = [
-    {
-      title: "AI Models",
-      description: "Deploy and manage specialist AI agents for biological systems",
-      icon: Sparkles,
-      href: "/docs/ai-models",
-      badge: "150+ Models",
-    },
-    {
-      title: "Synapse-lang",
-      description: "Scientific programming language for hypothesis-driven research",
-      icon: Code,
-      href: "/docs/synapse-lang",
-      badge: "New",
-    },
-    {
-      title: "Research IDE",
-      description: "Integrated development environment for biological AI applications",
-      icon: Terminal,
-      href: "/docs/research-ide",
-      badge: "Beta",
-    },
-    {
-      title: "Crowe Code",
-      description: "AI-powered code assistant for scientific programming",
-      icon: FileCode,
-      href: "/docs/crowe-code",
-      badge: "Featured",
-    },
-    {
-      title: "Datasets",
-      description: "Access research-grade datasets from 18 years of operations",
-      icon: Database,
-      href: "/docs/datasets",
-      badge: "847 Sets",
-    },
-    {
-      title: "Crowe-Sense Hardware",
-      description: "IoT sensors and monitoring systems for cultivation environments",
-      icon: Package,
-      href: "/docs/crowe-sense",
-      badge: "Hardware",
-    },
-  ]
-
-  const advanced = [
-    {
-      title: "Agents Guide",
-      description: "Specialized agents for SOPs, sensors, business optimization, and protocols",
-      icon: Zap,
-      href: "/docs/agents",
-      color: "text-secondary",
-    },
-    {
-      title: "Output Schemas",
-      description: "VRS, Evidence Ledger, and SOP Markdown formats",
-      icon: FileCode,
-      href: "/docs/schemas",
-      color: "text-primary",
-    },
-    {
-      title: "Quality Controls",
-      description: "Confidence scoring, staleness detection, and feedback loops",
-      icon: Shield,
-      href: "/docs/quality",
-      color: "text-secondary",
-    },
-    {
-      title: "Decision Trees",
-      description: "Visual flowcharts for contamination triage and troubleshooting",
-      icon: GitBranch,
-      href: "/docs/decision-trees",
-      color: "text-primary",
-    },
-  ]
-
   return (
-    <div className="min-h-screen bg-background pt-6">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        {/* Header */}
-        <div className="mb-12">
-          <div className="flex items-center gap-3 mb-4">
-            <BookOpen className="w-8 h-8 text-primary" />
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground">Documentation</h1>
+    <div className="max-w-4xl">
+      {/* Hero Section */}
+      <div className="mb-16">
+        <h1 className="text-5xl font-semibold text-foreground mb-6 tracking-tight">
+          Crowe Logic Documentation
+        </h1>
+        <p className="text-xl text-muted-foreground leading-relaxed max-w-3xl">
+          Build biological AI applications with production-validated models, datasets,
+          and tools from 18 years of commercial cultivation operations.
+        </p>
+      </div>
+
+      {/* Quick Links */}
+      <div className="grid md:grid-cols-2 gap-4 mb-16">
+        <Link
+          href="/docs/getting-started"
+          className="lab-card p-6 group hover:border-foreground transition-all"
+        >
+          <div className="flex items-start justify-between mb-4">
+            <Rocket className="w-6 h-6 text-foreground" />
+            <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all" />
           </div>
-          <p className="text-lg text-muted-foreground max-w-3xl">
-            Complete guide to the Crowe Logic platform. From getting started to advanced integrations and API
-            references.
+          <h3 className="text-lg font-semibold text-foreground mb-2">Quick Start</h3>
+          <p className="text-sm text-muted-foreground">
+            Get up and running in 5 minutes with your first AI model deployment
           </p>
-        </div>
+        </Link>
 
-        {/* Quick Start */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold text-foreground mb-6">Quick Start</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {quickStart.map((section) => {
-              const Icon = section.icon
-              return (
-                <Link key={section.href} href={section.href}>
-                  <div className="enterprise-card p-6 hover:border-primary/50 transition-all group h-full">
-                    <Icon className={`w-8 h-8 mb-4 ${section.color} group-hover:scale-110 transition-transform`} />
-                    <h3 className="text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
-                      {section.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground">{section.description}</p>
-                  </div>
-                </Link>
-              )
-            })}
+        <Link
+          href="/playground"
+          className="lab-card p-6 group hover:border-foreground transition-all"
+        >
+          <div className="flex items-start justify-between mb-4">
+            <Play className="w-6 h-6 text-foreground" />
+            <Badge className="sci-badge text-[10px]">NEW</Badge>
           </div>
-        </div>
-
-        {/* Core Features */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold text-foreground mb-6">Core Features</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {coreFeatures.map((section) => {
-              const Icon = section.icon
-              return (
-                <Link key={section.href} href={section.href}>
-                  <div className="enterprise-card p-6 hover:border-primary/50 transition-all group h-full">
-                    <div className="flex items-start justify-between mb-4">
-                      <Icon className="w-8 h-8 text-primary group-hover:scale-110 transition-transform" />
-                      {section.badge && (
-                        <Badge variant="secondary" className="bg-secondary/20 text-secondary border-secondary/30">
-                          {section.badge}
-                        </Badge>
-                      )}
-                    </div>
-                    <h3 className="text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
-                      {section.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground">{section.description}</p>
-                  </div>
-                </Link>
-              )
-            })}
-          </div>
-        </div>
-
-        {/* Advanced Topics */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold text-foreground mb-6">Advanced Topics</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {advanced.map((section) => {
-              const Icon = section.icon
-              return (
-                <Link key={section.href} href={section.href}>
-                  <div className="enterprise-card p-6 hover:border-primary/50 transition-all group h-full">
-                    <Icon className={`w-8 h-8 mb-4 ${section.color} group-hover:scale-110 transition-transform`} />
-                    <h3 className="text-base font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
-                      {section.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground">{section.description}</p>
-                  </div>
-                </Link>
-              )
-            })}
-          </div>
-        </div>
-
-        {/* Community Resources */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold text-foreground mb-6">Community & Support</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            <Link href="/docs/tutorials">
-              <div className="enterprise-card p-6 hover:border-primary/50 transition-all group">
-                <Video className="w-8 h-8 mb-4 text-primary group-hover:scale-110 transition-transform" />
-                <h3 className="text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
-                  Video Tutorials
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Step-by-step video guides for common workflows and integrations
-                </p>
-              </div>
-            </Link>
-
-            <Link href="/forum">
-              <div className="enterprise-card p-6 hover:border-primary/50 transition-all group">
-                <MessageSquare className="w-8 h-8 mb-4 text-primary group-hover:scale-110 transition-transform" />
-                <h3 className="text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
-                  Community Forum
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Join discussions, ask questions, and share tips with researchers
-                </p>
-              </div>
-            </Link>
-
-            <Link href="/documents">
-              <div className="enterprise-card p-6 hover:border-primary/50 transition-all group">
-                <Book className="w-8 h-8 mb-4 text-primary group-hover:scale-110 transition-transform" />
-                <h3 className="text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
-                  Community Docs
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  User-contributed guides, tutorials, and cultivation documentation
-                </p>
-              </div>
-            </Link>
-          </div>
-        </div>
-
-        {/* API Reference CTA */}
-        <div className="enterprise-card p-8 md:p-12 text-center bg-gradient-to-br from-primary/5 to-secondary/5">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Code className="w-8 h-8 text-primary" />
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground">API Reference</h2>
-          </div>
-          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-            Complete API documentation with code examples in Python, JavaScript, and Synapse-lang
+          <h3 className="text-lg font-semibold text-foreground mb-2">Try Playground</h3>
+          <p className="text-sm text-muted-foreground">
+            Test AI models interactively with real-time responses
           </p>
-          <div className="flex flex-wrap gap-4 justify-center">
-            <Link href="/docs/api">
-              <button className="btn-primary h-12 px-8">Browse API Docs</button>
-            </Link>
-            <Link href="/docs/sdk">
-              <button className="h-12 px-8 border border-border hover:bg-accent transition-all rounded-lg text-foreground font-medium">
-                Download SDK
-              </button>
-            </Link>
+        </Link>
+      </div>
+
+      {/* Core Platform */}
+      <div className="mb-16">
+        <h2 className="text-2xl font-semibold text-foreground mb-6">Core Platform</h2>
+        <div className="space-y-6">
+          <Link
+            href="/docs/ai-models"
+            className="block lab-card p-6 hover:border-foreground transition-all group"
+          >
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-md bg-foreground/5 flex items-center justify-center flex-shrink-0">
+                <Sparkles className="w-5 h-5 text-foreground" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <h3 className="text-base font-semibold text-foreground">AI Models</h3>
+                  <Badge className="sci-badge text-[9px]">150+ MODELS</Badge>
+                </div>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Deploy specialist agents for substrate analysis, SOP generation, yield forecasting,
+                  and contamination detection
+                </p>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <span className="metric-display">94.2% avg accuracy</span>
+                  <span>•</span>
+                  <span>Real-time inference</span>
+                  <span>•</span>
+                  <span>Production validated</span>
+                </div>
+              </div>
+              <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all flex-shrink-0 mt-2" />
+            </div>
+          </Link>
+
+          <Link
+            href="/workspaces"
+            className="block lab-card p-6 hover:border-foreground transition-all group"
+          >
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-md bg-foreground/5 flex items-center justify-center flex-shrink-0">
+                <Terminal className="w-5 h-5 text-foreground" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <h3 className="text-base font-semibold text-foreground">Workspaces</h3>
+                  <Badge className="sci-badge text-[9px]">SOLO • TEAM • BUSINESS</Badge>
+                </div>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Collaborative research environments for individual researchers, teams, and enterprises
+                </p>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <span>Up to 1TB storage</span>
+                  <span>•</span>
+                  <span>Unlimited AI models</span>
+                  <span>•</span>
+                  <span>Shared datasets</span>
+                </div>
+              </div>
+              <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all flex-shrink-0 mt-2" />
+            </div>
+          </Link>
+
+          <Link
+            href="/docs/datasets"
+            className="block lab-card p-6 hover:border-foreground transition-all group"
+          >
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-md bg-foreground/5 flex items-center justify-center flex-shrink-0">
+                <Database className="w-5 h-5 text-foreground" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <h3 className="text-base font-semibold text-foreground">Datasets</h3>
+                  <Badge className="sci-badge text-[9px]">847 DATASETS</Badge>
+                </div>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Research-grade cultivation data from commercial operations spanning 18 years
+                </p>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <span className="metric-display">2.4M records</span>
+                  <span>•</span>
+                  <span>Environmental sensors</span>
+                  <span>•</span>
+                  <span>Harvest metrics</span>
+                </div>
+              </div>
+              <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all flex-shrink-0 mt-2" />
+            </div>
+          </Link>
+        </div>
+      </div>
+
+      {/* Developer Tools */}
+      <div className="mb-16">
+        <h2 className="text-2xl font-semibold text-foreground mb-6">Developer Tools</h2>
+        <div className="grid md:grid-cols-2 gap-4">
+          <Link
+            href="/docs/synapse-lang"
+            className="lab-card p-5 hover:border-foreground transition-all group"
+          >
+            <div className="flex items-start justify-between mb-3">
+              <Code className="w-5 h-5 text-foreground" />
+              <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all" />
+            </div>
+            <h3 className="font-semibold text-foreground mb-1.5">Synapse Lang</h3>
+            <p className="text-xs text-muted-foreground">
+              Scientific programming language with native uncertainty quantification
+            </p>
+          </Link>
+
+          <Link
+            href="/docs/crowe-code"
+            className="lab-card p-5 hover:border-foreground transition-all group"
+          >
+            <div className="flex items-start justify-between mb-3">
+              <FileCode className="w-5 h-5 text-foreground" />
+              <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all" />
+            </div>
+            <h3 className="font-semibold text-foreground mb-1.5">Crowe Code</h3>
+            <p className="text-xs text-muted-foreground">
+              AI-powered code assistant for biological data analysis
+            </p>
+          </Link>
+
+          <Link
+            href="/docs/research-ide"
+            className="lab-card p-5 hover:border-foreground transition-all group"
+          >
+            <div className="flex items-start justify-between mb-3">
+              <Terminal className="w-5 h-5 text-foreground" />
+              <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all" />
+            </div>
+            <h3 className="font-semibold text-foreground mb-1.5">Research IDE</h3>
+            <p className="text-xs text-muted-foreground">
+              Integrated development environment for data-driven research
+            </p>
+          </Link>
+
+          <Link
+            href="/docs/api"
+            className="lab-card p-5 hover:border-foreground transition-all group"
+          >
+            <div className="flex items-start justify-between mb-3">
+              <Code className="w-5 h-5 text-foreground" />
+              <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all" />
+            </div>
+            <h3 className="font-semibold text-foreground mb-1.5">API Reference</h3>
+            <p className="text-xs text-muted-foreground">
+              Complete REST API documentation with code examples
+            </p>
+          </Link>
+        </div>
+      </div>
+
+      {/* Getting Help */}
+      <div className="lab-card p-8 bg-muted/30">
+        <div className="flex items-start gap-4">
+          <Book className="w-6 h-6 text-foreground flex-shrink-0 mt-1" />
+          <div>
+            <h3 className="text-lg font-semibold text-foreground mb-2">Need help?</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Join our community forum, explore tutorials, or contact our team for dedicated support.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/forum"
+                className="inline-flex items-center gap-2 text-sm font-medium text-foreground hover:text-muted-foreground transition-colors"
+              >
+                Community Forum
+                <ArrowRight className="w-3 h-3" />
+              </Link>
+              <Link
+                href="/docs/getting-started"
+                className="inline-flex items-center gap-2 text-sm font-medium text-foreground hover:text-muted-foreground transition-colors"
+              >
+                View Tutorials
+                <ArrowRight className="w-3 h-3" />
+              </Link>
+            </div>
           </div>
         </div>
       </div>

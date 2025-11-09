@@ -1,5 +1,5 @@
 import type React from "react"
-import { DocsSidebar } from "@/components/docs-sidebar"
+import { DocsNavProfessional } from "@/components/docs-nav-professional"
 
 export default function DocsLayout({
   children,
@@ -8,9 +8,9 @@ export default function DocsLayout({
 }) {
   return (
     <div className="flex min-h-screen bg-background">
-      <DocsSidebar />
-      <main className="flex-1 md:ml-64">
-        <div className="container mx-auto px-4 py-8 max-w-4xl">{children}</div>
+      <DocsNavProfessional />
+      <main className="flex-1 ml-64">
+        <div className="container mx-auto px-8 py-12 max-w-5xl">{children}</div>
       </main>
     </div>
   )
