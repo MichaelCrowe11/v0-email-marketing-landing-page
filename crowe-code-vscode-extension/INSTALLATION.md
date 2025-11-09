@@ -27,24 +27,24 @@ Complete step-by-step installation and deployment instructions for the Crowe Cod
 
 ### Install Dependencies
 
-```bash
+\`\`\`bash
 cd crowe-code-vscode-extension
 npm install
-```
+\`\`\`
 
 ### Compile TypeScript
 
-```bash
+\`\`\`bash
 npm run compile
-```
+\`\`\`
 
 ### Launch Extension Development Host
 
 Press **F5** in VS Code or run:
 
-```bash
+\`\`\`bash
 code --extensionDevelopmentPath=$(pwd)
-```
+\`\`\`
 
 ---
 
@@ -52,16 +52,16 @@ code --extensionDevelopmentPath=$(pwd)
 
 ### 1. Clone the Repository
 
-```bash
+\`\`\`bash
 git clone https://github.com/MichaelCrowe11/v0-email-marketing-landing-page
 cd v0-email-marketing-landing-page/crowe-code-vscode-extension
-```
+\`\`\`
 
 ### 2. Install Dependencies
 
-```bash
+\`\`\`bash
 npm install
-```
+\`\`\`
 
 ### 3. Configure VS Code
 
@@ -72,14 +72,14 @@ The `.vscode/` directory contains pre-configured files:
 ### 4. Build the Extension
 
 **One-time build:**
-```bash
+\`\`\`bash
 npm run compile
-```
+\`\`\`
 
 **Watch mode (recommended for development):**
-```bash
+\`\`\`bash
 npm run watch
-```
+\`\`\`
 
 This will automatically recompile on file changes.
 
@@ -100,19 +100,19 @@ This will automatically recompile on file changes.
 
 ### Method 2: Command Line
 
-```bash
+\`\`\`bash
 code --extensionDevelopmentPath=/workspaces/v0-email-marketing-landing-page/crowe-code-vscode-extension
-```
+\`\`\`
 
 ### Method 3: Install Locally (for testing)
 
-```bash
+\`\`\`bash
 # Package the extension
 npm run package
 
 # Install in VS Code
 code --install-extension crowe-code-1.0.0.vsix
-```
+\`\`\`
 
 ### Testing Checklist
 
@@ -134,7 +134,7 @@ code --install-extension crowe-code-1.0.0.vsix
 
 ### 1. Clean Build
 
-```bash
+\`\`\`bash
 # Remove old build artifacts
 rm -rf dist node_modules
 
@@ -143,11 +143,11 @@ npm install
 
 # Compile
 npm run compile
-```
+\`\`\`
 
 ### 2. Verify Compilation
 
-```bash
+\`\`\`bash
 # Check that all files compiled
 ls -lh dist/
 
@@ -158,41 +158,41 @@ ls -lh dist/
 # - commands/index.js
 # - statusBar.js
 # - utils/getNonce.js
-```
+\`\`\`
 
 ### 3. Update Version (if needed)
 
 Edit `package.json`:
-```json
+\`\`\`json
 {
   "version": "1.0.1"
 }
-```
+\`\`\`
 
 ### 4. Package the Extension
 
-```bash
+\`\`\`bash
 npm run package
-```
+\`\`\`
 
 This creates `crowe-code-1.0.0.vsix` in the root directory.
 
 ### 5. Verify Package Contents
 
-```bash
+\`\`\`bash
 # List contents of VSIX
 unzip -l crowe-code-1.0.0.vsix
-```
+\`\`\`
 
 Expected structure:
-```
+\`\`\`
 extension/
 ├── dist/          # Compiled JavaScript
 ├── assets/        # Icons and images
 ├── package.json   # Manifest
 ├── README.md      # Documentation
 └── CHANGELOG.md   # Release notes
-```
+\`\`\`
 
 ---
 
@@ -201,14 +201,14 @@ extension/
 ### Method 1: Install from VSIX (End Users)
 
 **For Windows:**
-```powershell
+\`\`\`powershell
 code --install-extension crowe-code-1.0.0.vsix
-```
+\`\`\`
 
 **For macOS/Linux:**
-```bash
+\`\`\`bash
 code --install-extension crowe-code-1.0.0.vsix
-```
+\`\`\`
 
 **Via VS Code UI:**
 1. Open VS Code
@@ -228,19 +228,19 @@ code --install-extension crowe-code-1.0.0.vsix
 1. Copy VSIX to VS Code extensions directory:
 
 **Windows:**
-```powershell
+\`\`\`powershell
 copy crowe-code-1.0.0.vsix %USERPROFILE%\.vscode\extensions\
-```
+\`\`\`
 
 **macOS:**
-```bash
+\`\`\`bash
 cp crowe-code-1.0.0.vsix ~/.vscode/extensions/
-```
+\`\`\`
 
 **Linux:**
-```bash
+\`\`\`bash
 cp crowe-code-1.0.0.vsix ~/.vscode/extensions/
-```
+\`\`\`
 
 2. Reload VS Code: `Ctrl+R` or `Cmd+R`
 
@@ -266,15 +266,15 @@ cp crowe-code-1.0.0.vsix ~/.vscode/extensions/
    - Copy the token (you won't see it again!)
 
 3. **Login with vsce**
-   ```bash
+   \`\`\`bash
    npx vsce login <publisher-name>
    # Paste your PAT when prompted
-   ```
+   \`\`\`
 
 ### Publishing Steps
 
 1. **Update package.json**
-   ```json
+   \`\`\`json
    {
      "publisher": "crowe-logic",
      "repository": {
@@ -282,39 +282,39 @@ cp crowe-code-1.0.0.vsix ~/.vscode/extensions/
        "url": "https://github.com/crowe-logic/crowe-code"
      }
    }
-   ```
+   \`\`\`
 
 2. **Add Icon (required)**
    - Create 128x128 PNG icon
    - Save as `assets/icon.png`
    - Update package.json:
-     ```json
+     \`\`\`json
      {
        "icon": "assets/icon.png"
      }
-     ```
+     \`\`\`
 
 3. **Test Package Locally**
-   ```bash
+   \`\`\`bash
    npm run package
    code --install-extension crowe-code-1.0.0.vsix
-   ```
+   \`\`\`
 
 4. **Publish**
-   ```bash
+   \`\`\`bash
    npx vsce publish
-   ```
+   \`\`\`
 
    Or publish specific version:
-   ```bash
+   \`\`\`bash
    npx vsce publish 1.0.1
-   ```
+   \`\`\`
 
    Or publish minor/major update:
-   ```bash
+   \`\`\`bash
    npx vsce publish minor  # 1.0.0 → 1.1.0
    npx vsce publish major  # 1.0.0 → 2.0.0
-   ```
+   \`\`\`
 
 5. **Verify Publication**
    - Check marketplace: https://marketplace.visualstudio.com/items?itemName=crowe-logic.crowe-code
@@ -331,9 +331,9 @@ cp crowe-code-1.0.0.vsix ~/.vscode/extensions/
 
 ### Unpublish Extension
 
-```bash
+\`\`\`bash
 npx vsce unpublish <publisher-name>.<extension-name>
-```
+\`\`\`
 
 **Warning**: This permanently removes the extension from the marketplace!
 
@@ -347,9 +347,9 @@ npx vsce unpublish <publisher-name>.<extension-name>
 
 **Solutions**:
 1. Check VS Code version: Must be >= 1.85.0
-   ```bash
+   \`\`\`bash
    code --version
-   ```
+   \`\`\`
 
 2. Reload window:
    - Press `Ctrl+Shift+P` → "Reload Window"
@@ -359,9 +359,9 @@ npx vsce unpublish <publisher-name>.<extension-name>
    - Check Console for errors
 
 4. Verify installation:
-   ```bash
+   \`\`\`bash
    code --list-extensions | grep crowe-code
-   ```
+   \`\`\`
 
 ### Compilation Errors
 
@@ -369,17 +369,17 @@ npx vsce unpublish <publisher-name>.<extension-name>
 
 **Solutions**:
 1. Clean and rebuild:
-   ```bash
+   \`\`\`bash
    rm -rf dist node_modules
    npm install
    npm run compile
-   ```
+   \`\`\`
 
 2. Check TypeScript version:
-   ```bash
+   \`\`\`bash
    npx tsc --version
    # Should be >= 5.2.2
-   ```
+   \`\`\`
 
 3. Verify tsconfig.json is correct
 
@@ -408,22 +408,22 @@ npx vsce unpublish <publisher-name>.<extension-name>
 
 **Solutions**:
 1. Check .vscodeignore:
-   ```
+   \`\`\`
    node_modules/**
    src/**
    **/*.ts
    **/*.map
    .vscode-test/**
-   ```
+   \`\`\`
 
 2. Remove source maps from production:
    - In tsconfig.json, set `"sourceMap": false`
 
 3. Minify JavaScript (optional):
-   ```bash
+   \`\`\`bash
    npm install --save-dev terser
    # Add minification script
-   ```
+   \`\`\`
 
 ### Commands Not Appearing
 
@@ -442,9 +442,9 @@ npx vsce unpublish <publisher-name>.<extension-name>
 
 **Solutions**:
 1. Sign in again:
-   ```
+   \`\`\`
    Ctrl+Shift+P → "Crowe Code: Sign In"
-   ```
+   \`\`\`
 
 2. Check token expiration:
    - Tokens may expire after 30 days

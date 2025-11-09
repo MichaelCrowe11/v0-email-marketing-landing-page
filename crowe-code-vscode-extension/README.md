@@ -42,11 +42,11 @@ Right-click on selected code to access:
 5. Select the downloaded file
 
 ### From Source
-```bash
+\`\`\`bash
 cd crowe-code-vscode-extension
 npm install
 npm run compile
-```
+\`\`\`
 
 Press `F5` to launch extension development host.
 
@@ -87,24 +87,24 @@ Access settings via `File > Preferences > Settings > Crowe Code`
 ## Use Cases
 
 ### Agricultural Data Analysis
-```
+\`\`\`
 Generate a function to analyze soil contamination patterns across multiple test sites
-```
+\`\`\`
 
 ### Yield Forecasting
-```
+\`\`\`
 Create a yield forecasting model using historical harvest data and environmental readings
-```
+\`\`\`
 
 ### Environmental Monitoring
-```
+\`\`\`
 Optimize this temperature and humidity monitoring query for real-time dashboard
-```
+\`\`\`
 
 ### Database Optimization
-```
+\`\`\`
 Refactor this Supabase query to improve performance with large cultivation datasets
-```
+\`\`\`
 
 ## Commands Reference
 
@@ -121,7 +121,7 @@ Refactor this Supabase query to improve performance with large cultivation datas
 
 ## Architecture
 
-```
+\`\`\`
 Extension Structure:
 ├── src/
 │   ├── extension.ts          # Main entry point
@@ -137,14 +137,14 @@ Extension Structure:
 ├── assets/                    # Icons and images
 ├── package.json              # Extension manifest
 └── tsconfig.json             # TypeScript config
-```
+\`\`\`
 
 ## API Integration
 
 Crowe Code connects to your Crowe Logic platform backend:
 
 **Streaming Chat Endpoint**: `POST /api/crowe-code/stream`
-```typescript
+\`\`\`typescript
 {
   "prompt": "Generate a contamination analysis function",
   "context": [
@@ -152,40 +152,40 @@ Crowe Code connects to your Crowe Logic platform backend:
     { "role": "assistant", "content": "..." }
   ]
 }
-```
+\`\`\`
 
 **Usage Quota Endpoint**: `GET /api/usage/quota`
-```typescript
+\`\`\`typescript
 {
   "used": 5,
   "remaining": 5,
   "quota": 10
 }
-```
+\`\`\`
 
 ## Development
 
 ### Building
-```bash
+\`\`\`bash
 npm run compile
-```
+\`\`\`
 
 ### Watching
-```bash
+\`\`\`bash
 npm run watch
-```
+\`\`\`
 
 ### Packaging
-```bash
+\`\`\`bash
 npm run package
-```
+\`\`\`
 
 This creates `crowe-code-1.0.0.vsix` for distribution.
 
 ### Testing
-```bash
+\`\`\`bash
 # Press F5 in VS Code to launch Extension Development Host
-```
+\`\`\`
 
 ## Tech Stack
 

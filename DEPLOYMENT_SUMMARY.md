@@ -70,7 +70,7 @@
 - Environment variables set
 
 **Deploy to Vercel**:
-```bash
+\`\`\`bash
 # 1. Push to GitHub
 git push origin Michael-Crowe
 
@@ -84,10 +84,10 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_key
 SUPABASE_SERVICE_ROLE_KEY=your_service_key
 NEXT_PUBLIC_GITHUB_CLIENT_ID=your_github_id
 GITHUB_CLIENT_SECRET=your_github_secret
-```
+\`\`\`
 
 **Environment Variables Required**:
-```env
+\`\`\`env
 # Supabase
 NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJxxx...
@@ -99,24 +99,24 @@ GITHUB_CLIENT_SECRET=xxx
 
 # API Keys (if using Vercel AI Gateway)
 ANTHROPIC_API_KEY=sk-ant-xxx
-```
+\`\`\`
 
 ---
 
 ### VS Code Extension Deployment
 
 **Option 1: Install Locally**
-```bash
+\`\`\`bash
 cd crowe-code-vscode-extension
 code --install-extension crowe-code-1.0.0.vsix
-```
+\`\`\`
 
 **Option 2: Distribute VSIX**
 - Share `crowe-code-1.0.0.vsix` with users
 - Users run: `code --install-extension crowe-code-1.0.0.vsix`
 
 **Option 3: Publish to Marketplace**
-```bash
+\`\`\`bash
 # 1. Create publisher account at https://marketplace.visualstudio.com
 
 # 2. Get Personal Access Token from Azure DevOps
@@ -126,7 +126,7 @@ npx vsce login crowe-logic
 
 # 4. Publish
 npx vsce publish
-```
+\`\`\`
 
 **After Publishing**:
 - Extension available at: `https://marketplace.visualstudio.com/items?itemName=crowe-logic.crowe-code`
@@ -147,14 +147,14 @@ npx vsce publish
 - ✅ Added comprehensive documentation
 
 **Files Modified**:
-```
+\`\`\`
 M  app/api/crowe-code/generate/route.ts
 M  app/api/crowe-code/stream/route.ts
 M  components/crowe-code-chat-panel.tsx
-```
+\`\`\`
 
 **Files Added**:
-```
+\`\`\`
 A  crowe-code-vscode-extension/               # Full extension
 A  crowe-code-vscode-extension/src/           # TypeScript source
 A  crowe-code-vscode-extension/dist/          # Compiled JS
@@ -163,7 +163,7 @@ A  crowe-code-vscode-extension/README.md
 A  crowe-code-vscode-extension/INSTALLATION.md
 A  crowe-code-vscode-extension/CHANGELOG.md
 A  crowe-code-vscode-extension/LICENSE
-```
+\`\`\`
 
 ---
 
@@ -258,7 +258,7 @@ A  crowe-code-vscode-extension/LICENSE
 ## 🎯 API Endpoints
 
 ### Streaming Chat
-```typescript
+\`\`\`typescript
 POST /api/crowe-code/stream
 
 Request:
@@ -275,10 +275,10 @@ Response: AI SDK v5 data stream
 0:"text chunk"
 0:"more text"
 d:{"finish_reason":"stop"}
-```
+\`\`\`
 
 ### Code Generation
-```typescript
+\`\`\`typescript
 POST /api/crowe-code/generate
 
 Request:
@@ -293,10 +293,10 @@ Response:
   "language": "python",
   "explanation": "..."
 }
-```
+\`\`\`
 
 ### Usage Quota
-```typescript
+\`\`\`typescript
 GET /api/usage/quota
 
 Response:
@@ -305,7 +305,7 @@ Response:
   "remaining": 5,
   "quota": 10
 }
-```
+\`\`\`
 
 ---
 
