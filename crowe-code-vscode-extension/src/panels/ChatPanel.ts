@@ -210,47 +210,49 @@ export class ChatPanel {
     }
 
     .avatar {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      border-radius: 2px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 10px;
-      font-weight: bold;
+      font-weight: 500;
+      letter-spacing: 0.5px;
     }
 
     .user-avatar {
-      background: var(--vscode-button-background);
-      color: var(--vscode-button-foreground);
+      background: var(--vscode-editor-background);
+      border: 1px solid var(--vscode-input-border);
+      color: var(--vscode-foreground);
     }
 
     .assistant-avatar {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
+      background: var(--vscode-editor-background);
+      border: 1px solid var(--vscode-focusBorder);
+      color: var(--vscode-focusBorder);
     }
 
     .message-content {
-      padding: 12px;
-      border-radius: 6px;
+      padding: 12px 0;
       line-height: 1.6;
       white-space: pre-wrap;
       word-wrap: break-word;
     }
 
     .user-message .message-content {
-      background: var(--vscode-input-background);
-      border: 1px solid var(--vscode-input-border);
+      color: var(--vscode-foreground);
     }
 
     .assistant-message .message-content {
-      background: var(--vscode-editor-inactiveSelectionBackground);
+      color: var(--vscode-foreground);
+      opacity: 0.95;
     }
 
     .code-block {
-      margin-top: 8px;
+      margin-top: 12px;
       border: 1px solid var(--vscode-panel-border);
-      border-radius: 6px;
+      border-radius: 4px;
       overflow: hidden;
     }
 
@@ -316,15 +318,18 @@ export class ChatPanel {
     }
 
     .logo {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      width: 48px;
+      height: 48px;
+      border-radius: 4px;
+      background: var(--vscode-editor-background);
+      border: 1px solid var(--vscode-focusBorder);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 32px;
-      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      color: var(--vscode-focusBorder);
     }
 
     .suggestions {
@@ -336,18 +341,20 @@ export class ChatPanel {
     }
 
     .suggestion-button {
-      background: var(--vscode-button-secondaryBackground);
-      color: var(--vscode-button-secondaryForeground);
-      border: none;
-      padding: 10px 16px;
-      border-radius: 6px;
+      background: var(--vscode-editor-background);
+      color: var(--vscode-foreground);
+      border: 1px solid var(--vscode-input-border);
+      padding: 12px 16px;
+      border-radius: 4px;
       cursor: pointer;
       font-size: 12px;
       text-align: left;
+      transition: border-color 0.15s ease;
     }
 
     .suggestion-button:hover {
-      background: var(--vscode-button-secondaryHoverBackground);
+      border-color: var(--vscode-focusBorder);
+      background: var(--vscode-editor-background);
     }
 
     #input-area {
@@ -367,13 +374,14 @@ export class ChatPanel {
       background: var(--vscode-input-background);
       color: var(--vscode-input-foreground);
       border: 1px solid var(--vscode-input-border);
-      border-radius: 6px;
+      border-radius: 4px;
       padding: 10px 12px;
       font-family: var(--vscode-font-family);
-      font-size: var(--vscode-font-size);
+      font-size: 13px;
       resize: none;
-      min-height: 40px;
+      min-height: 38px;
       max-height: 120px;
+      transition: border-color 0.15s ease;
     }
 
     #message-input:focus {
@@ -382,22 +390,25 @@ export class ChatPanel {
     }
 
     #send-button {
-      background: var(--vscode-button-background);
-      color: var(--vscode-button-foreground);
-      border: none;
-      padding: 10px 16px;
-      border-radius: 6px;
+      background: var(--vscode-editor-background);
+      color: var(--vscode-foreground);
+      border: 1px solid var(--vscode-input-border);
+      padding: 10px 18px;
+      border-radius: 4px;
       cursor: pointer;
-      font-weight: 600;
+      font-weight: 500;
+      font-size: 13px;
       white-space: nowrap;
+      transition: border-color 0.15s ease, background-color 0.15s ease;
     }
 
-    #send-button:hover {
-      background: var(--vscode-button-hoverBackground);
+    #send-button:hover:not(:disabled) {
+      border-color: var(--vscode-focusBorder);
+      background: var(--vscode-input-background);
     }
 
     #send-button:disabled {
-      opacity: 0.5;
+      opacity: 0.4;
       cursor: not-allowed;
     }
 
@@ -456,22 +467,22 @@ export class ChatPanel {
   <div id="messages" role="log" aria-live="polite" aria-label="Chat messages"></div>
 
   <div id="empty-state" role="region" aria-label="Welcome screen">
-    <div class="logo" aria-hidden="true">🤖</div>
+    <div class="logo" aria-hidden="true">CC</div>
     <div>
-      <h3>Crowe Code Assistant</h3>
-      <p style="opacity: 0.7; margin-top: 8px; font-size: 12px;">
-        AI-powered code generation for biological systems and agricultural data science
+      <h3 style="font-weight: 600; font-size: 14px;">Crowe Code</h3>
+      <p style="opacity: 0.6; margin-top: 6px; font-size: 11px; font-weight: 400;">
+        Autonomous AI developer for biological systems
       </p>
     </div>
     <div class="suggestions">
-      <button class="suggestion-button" onclick="sendSuggestion('Generate a function to analyze contamination patterns')">
-        📊 Analyze contamination patterns
+      <button class="suggestion-button" onclick="sendSuggestion('Generate a function to analyze contamination patterns across multiple test sites')">
+        Analyze contamination patterns
       </button>
-      <button class="suggestion-button" onclick="sendSuggestion('Create a yield forecasting model')">
-        📈 Create yield forecast
+      <button class="suggestion-button" onclick="sendSuggestion('Create a yield forecasting model using historical harvest data')">
+        Create yield forecasting model
       </button>
-      <button class="suggestion-button" onclick="sendSuggestion('Optimize database query performance')">
-        ⚡ Optimize database queries
+      <button class="suggestion-button" onclick="sendSuggestion('Optimize database query performance for large cultivation datasets')">
+        Optimize database queries
       </button>
     </div>
   </div>
@@ -480,7 +491,7 @@ export class ChatPanel {
     <div id="input-container">
       <textarea
         id="message-input"
-        placeholder="Ask Crowe Code to generate, explain, or optimize code..."
+        placeholder="Message Crowe Code..."
         rows="1"
         aria-label="Message input"
       ></textarea>
@@ -543,7 +554,7 @@ export class ChatPanel {
           <div class="message \${isUser ? 'user-message' : 'assistant-message'}">
             <div class="message-header">
               <div class="avatar \${isUser ? 'user-avatar' : 'assistant-avatar'}">
-                \${isUser ? 'U' : '🤖'}
+                \${isUser ? 'U' : 'CC'}
               </div>
               <span>\${isUser ? 'You' : 'Crowe Code'}</span>
             </div>
