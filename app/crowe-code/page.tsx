@@ -24,6 +24,10 @@ import {
 import { CroweCodeChatPanel } from "@/components/crowe-code-chat-panel"
 import { GitHubCloneDialog } from "@/components/github-clone-dialog"
 
+// Force dynamic rendering to avoid SSR issues with browser APIs
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+
 export default function CroweCodePage() {
   const [code, setCode] = useState(`# Synapse-lang - Scientific Programming Language
 # Express uncertainty, run parallel experiments, deploy directly
