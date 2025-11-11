@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import dynamic from "next/dynamic"
 import Image from "next/image"
 import Editor from "@monaco-editor/react"
 import { Button } from "@/components/ui/button"
