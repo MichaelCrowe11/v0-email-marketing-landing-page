@@ -224,9 +224,11 @@ export function CroweCodeChatPanel({
   }
 
   const handleCopy = (text: string, index: number) => {
-    navigator.clipboard.writeText(text)
-    setCopiedIndex(index)
-    setTimeout(() => setCopiedIndex(null), 2000)
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(text)
+      setCopiedIndex(index)
+      setTimeout(() => setCopiedIndex(null), 2000)
+    }
   }
 
   const handleInsertCode = (code: string) => {
@@ -379,7 +381,7 @@ export function CroweCodeChatPanel({
           </Button>
         </div>
         <div className="text-[10px] text-[#6a6a6a] mt-2 flex items-center justify-between">
-          <span>Press {navigator.platform.includes("Mac") ? "Cmd" : "Ctrl"}+Enter to send</span>
+          <span>Press {typeof navigator !== 'undefined' && navigator.platform?.includes("Mac") ? "Cmd" : "Ctrl"}+Enter to send</span>
           <span className="font-mono tabular-nums">Powered by Claude 4.5 Sonnet</span>
         </div>
       </form>

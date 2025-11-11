@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import dynamic from "next/dynamic"
 import Image from "next/image"
 import Editor from "@monaco-editor/react"
 import { Button } from "@/components/ui/button"
@@ -23,6 +24,10 @@ import {
 } from "lucide-react"
 import { CroweCodeChatPanel } from "@/components/crowe-code-chat-panel"
 import { GitHubCloneDialog } from "@/components/github-clone-dialog"
+
+// Force dynamic rendering to avoid SSR issues with browser APIs
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
 
 export default function CroweCodePage() {
   const [code, setCode] = useState(`# Synapse-lang - Scientific Programming Language
