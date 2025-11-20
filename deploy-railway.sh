@@ -65,6 +65,12 @@ if [ -f ".env.railway" ]; then
             continue
         fi
 
+        # Skip Railway template variables
+        if [[ "$value" =~ \$\{\{.*\}\} ]]; then
+            echo "  ℹ️ Skipping template variable: $key (will be set by Railway)"
+            continue
+        fi
+
         echo "  Setting $key..."
         railway variables --set "$key=$value" &> /dev/null
 
@@ -78,7 +84,23 @@ if [ -f ".env.railway" ]; then
     echo ""
     echo "✅ Environment variables uploaded"
 else
-    echo "⚠️ .env.railway file not found. Skipping environment variables upload."
+    echo "❌ .env.railway file not found!"
+    echo ""
+    echo "📋 To create your .env.railway file:"
+    echo "   1. Copy the example file:"
+    echo "      cp .env.railway.example .env.railway"
+    echo "   2. Edit .env.railway and add your actual values"
+    echo "   3. Run this script again"
+    echo ""
+    echo "ℹ️ You can also set variables manually in the Railway dashboard"
+    echo "   or skip this step if you've already configured them."
+    echo ""
+    read -p "Continue deployment without uploading variables? (y/N): " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo "❌ Deployment cancelled"
+        exit 1
+    fi
 fi
 
 # Optional: Fetch additional secrets from Azure Key Vault
