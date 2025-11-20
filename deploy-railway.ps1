@@ -63,6 +63,12 @@ if (Test-Path ".env.railway") {
                 continue
             }
 
+            # Skip Railway template variables (e.g., ${{RAILWAY_PUBLIC_DOMAIN}})
+            if ($value -match '\$\{\{.*\}\}') {
+                Write-Host "  ℹ️ Skipping template variable: $key (will be set by Railway)" -ForegroundColor Gray
+                continue
+            }
+
             Write-Host "  Setting $key..." -ForegroundColor Gray
             railway variables --set "$key=$value" 2>&1 | Out-Null
 
@@ -76,7 +82,22 @@ if (Test-Path ".env.railway") {
 
     Write-Host "`n✅ Environment variables uploaded" -ForegroundColor Green
 } else {
-    Write-Host "⚠️ .env.railway file not found. Skipping environment variables upload." -ForegroundColor Yellow
+    Write-Host "❌ .env.railway file not found!" -ForegroundColor Red
+    Write-Host ""
+    Write-Host "📋 To create your .env.railway file:" -ForegroundColor Cyan
+    Write-Host "   1. Copy the example file:" -ForegroundColor Gray
+    Write-Host "      cp .env.railway.example .env.railway" -ForegroundColor White
+    Write-Host "   2. Edit .env.railway and add your actual values" -ForegroundColor Gray
+    Write-Host "   3. Run this script again" -ForegroundColor Gray
+    Write-Host ""
+    Write-Host "ℹ️ You can also set variables manually in the Railway dashboard" -ForegroundColor Gray
+    Write-Host "   or skip this step if you've already configured them." -ForegroundColor Gray
+    Write-Host ""
+    $continue = Read-Host "Continue deployment without uploading variables? (y/N)"
+    if ($continue -ne "y" -and $continue -ne "Y") {
+        Write-Host "❌ Deployment cancelled" -ForegroundColor Red
+        exit 1
+    }
 }
 
 # Optional: Fetch additional secrets from Azure Key Vault
