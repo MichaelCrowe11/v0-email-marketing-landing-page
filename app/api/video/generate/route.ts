@@ -32,13 +32,14 @@ export async function POST(req: Request) {
 
     // Return a placeholder video URL
     // In production, this would be the actual generated video URL from Sora
-    const mockVideoUrl = "/placeholder-video.mp4"
+    const mockVideoUrl = "/mushroom-cultivation-video-thumbnail.jpg"
 
     return Response.json({
       videoUrl: mockVideoUrl,
       duration: 5,
       prompt: prompt,
       status: "completed",
+      isSimulation: true, // Added flag to indicate simulation
       message: "Note: Sora API integration pending. This is a demonstration placeholder.",
     })
   } catch (error) {

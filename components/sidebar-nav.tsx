@@ -25,6 +25,7 @@ import {
   Home,
   Sparkles,
   Calendar,
+  Code2,
 } from "lucide-react"
 import { HEADER_HEIGHT } from "@/components/global-header"
 
@@ -34,6 +35,7 @@ const navGroups = [
     items: [
       { href: "/", label: "Home", icon: Home },
       { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+      { href: "/ide", label: "Biotech IDE", icon: Code2 },
     ],
   },
   {
@@ -118,20 +120,24 @@ export function SidebarNav() {
       >
         <div className="flex flex-col h-full pb-4">
           <a
-            href="https://southwestmushrooms.com"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/"
             className="flex items-center justify-center px-6 py-4 border-b border-sidebar-border group shrink-0 hover:bg-sidebar-accent/50 transition-colors"
             style={{ height: `${HEADER_HEIGHT}px` }}
-            aria-label="Southwest Mushrooms - Opens in new tab"
+            aria-label="Crowe Logic Home"
           >
-            <Image
-              src="/southwest-mushrooms-logo.jpg"
-              alt="Southwest Mushrooms"
-              width={56}
-              height={56}
-              className="object-contain transition-transform group-hover:scale-105"
-            />
+            <div className="relative w-10 h-10 flex-shrink-0 mr-3">
+              <Image
+                src="/crowe-logic-logo.png"
+                alt="Crowe Logic Logo"
+                fill
+                className="object-contain transition-transform group-hover:scale-105"
+                priority
+                sizes="40px"
+              />
+            </div>
+            <span className="font-bold text-lg tracking-tight text-sidebar-foreground group-hover:text-primary transition-colors">
+              Crowe Logic
+            </span>
           </a>
 
           <nav className="flex-1 p-4 space-y-6 overflow-y-auto" aria-label="Main menu">

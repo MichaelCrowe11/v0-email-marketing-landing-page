@@ -1,39 +1,61 @@
+import { Dna, Microscope, Code2, Database, Cpu, FlaskConical, Network, ShieldCheck } from "lucide-react"
+
 export function Features() {
   const features = [
     {
-      image: "https://img.youtube.com/vi/o-9_9lMnTjM/maxresdefault.jpg",
-      title: "SOP Generator",
-      description: "Room-ready procedures tailored to your facility and strain set.",
+      icon: <Dna className="w-6 h-6" />,
+      title: "Genomic Analysis",
+      description: "Advanced sequence alignment and variant calling pipelines powered by AI.",
     },
     {
-      image: "https://img.youtube.com/vi/e1DyNs9XQVQ/maxresdefault.jpg",
-      title: "BE & Cost Math",
-      description: "Hydration, supplementation, BE targets, and cost per block.",
+      icon: <Microscope className="w-6 h-6" />,
+      title: "Protein Folding",
+      description: "Predict 3D protein structures with AlphaFold integration and visualization.",
     },
     {
-      image: "https://img.youtube.com/vi/-z0s3GwJxpM/maxresdefault.jpg",
-      title: "Spawn Master",
-      description: "Grain prep, sterilization cycles, inoculation rates, QC checklists.",
+      icon: <Code2 className="w-6 h-6" />,
+      title: "Integrated IDE",
+      description: "Full-featured Monaco editor with Python support for bioinformatics workflows.",
     },
     {
-      image: "https://img.youtube.com/vi/bgqt0q1I7J8/maxresdefault.jpg",
-      title: "Contam Triage",
-      description: "Rapid ID, containment, root-cause analysis, and CAPA playbooks.",
+      icon: <Database className="w-6 h-6" />,
+      title: "Biological Datasets",
+      description: "Access curated genomic, proteomic, and metabolic datasets instantly.",
+    },
+    {
+      icon: <Cpu className="w-6 h-6" />,
+      title: "AI Models",
+      description: "Leverage state-of-the-art LLMs fine-tuned for biological data analysis.",
+    },
+    {
+      icon: <FlaskConical className="w-6 h-6" />,
+      title: "Lab Simulation",
+      description: "Simulate wet-lab experiments in silico to optimize protocols.",
+    },
+    {
+      icon: <Network className="w-6 h-6" />,
+      title: "Data Pipelines",
+      description: "Build and deploy scalable data processing pipelines with ease.",
+    },
+    {
+      icon: <ShieldCheck className="w-6 h-6" />,
+      title: "Secure & Compliant",
+      description: "Enterprise-grade security ensuring your proprietary data remains safe.",
     },
   ]
 
   return (
-    <section id="features" className="px-4 py-24 md:py-32 bg-accent/5">
-      <div className="mx-auto max-w-7xl">
+    <section id="features" className="px-4 py-24 md:py-32 bg-background relative overflow-hidden">
+      {/* Background Grid */}
+      <div className="absolute inset-0 bg-grid-pattern opacity-[0.03] pointer-events-none" />
+
+      <div className="mx-auto max-w-7xl relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-4">
-            What's Inside{" "}
-            <span className="bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
-              Crowe Logic AI
-            </span>
+            Platform <span className="text-primary">Capabilities</span>
           </h2>
-          <p className="text-lg text-foreground max-w-2xl mx-auto">
-            Comprehensive tools for every stage of mushroom cultivation
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            A comprehensive suite of tools designed for the modern computational biologist.
           </p>
         </div>
 
@@ -41,19 +63,13 @@ export function Features() {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="group rounded-xl border border-border/50 bg-card overflow-hidden hover:shadow-lg transition-all duration-300"
+              className="group p-6 rounded-xl border border-border/50 bg-card hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
             >
-              <div className="relative overflow-hidden aspect-video">
-                <img
-                  src={feature.image || "/placeholder.svg"}
-                  alt={feature.title}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
+              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-4 group-hover:scale-110 transition-transform duration-300">
+                {feature.icon}
               </div>
-              <div className="p-6">
-                <h3 className="text-lg font-semibold text-foreground mb-2">{feature.title}</h3>
-                <p className="text-sm text-foreground leading-relaxed">{feature.description}</p>
-              </div>
+              <h3 className="text-lg font-semibold text-foreground mb-2">{feature.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
             </div>
           ))}
         </div>

@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState } from "react"
-import { Upload, Camera, Loader2, CheckCircle2, AlertTriangle, Info } from "lucide-react"
+import { Upload, Camera, Loader2, CheckCircle2, AlertTriangle, Info, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -29,10 +29,13 @@ export function CroweVisionContent() {
   const [uploading, setUploading] = useState(false)
   const [analyzing, setAnalyzing] = useState(false)
   const [result, setResult] = useState<AnalysisResult | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
+
+    setError(null)
 
     const reader = new FileReader()
     reader.onloadend = () => {
@@ -50,12 +53,19 @@ export function CroweVisionContent() {
         body: formData,
       })
 
+      if (!response.ok) {
+        throw new Error("Upload failed")
+      }
+
       const data = await response.json()
       if (data.url) {
         setBlobUrl(data.url)
+      } else {
+        throw new Error("No URL returned from upload")
       }
     } catch (error) {
       console.error("[v0] Upload failed:", error)
+      setError("Failed to upload image. Please try again.")
     } finally {
       setUploading(false)
     }
@@ -67,6 +77,7 @@ export function CroweVisionContent() {
     if (!blobUrl) return
 
     setAnalyzing(true)
+    setError(null)
     try {
       const response = await fetch("/api/crowe-vision/analyze", {
         method: "POST",
@@ -75,9 +86,23 @@ export function CroweVisionContent() {
       })
 
       const data = await response.json()
-      setResult(data.analysis)
+
+      if (data.error) {
+        if (data.details) {
+          if (data.analysis) {
+            setResult(data.analysis)
+          } else {
+            setError(data.details)
+          }
+        } else {
+          setError(data.error)
+        }
+      } else {
+        setResult(data.analysis)
+      }
     } catch (error) {
       console.error("[v0] Analysis failed:", error)
+      setError("Failed to analyze image. Please check your connection and try again.")
     } finally {
       setAnalyzing(false)
     }
@@ -121,6 +146,13 @@ export function CroweVisionContent() {
               <CardDescription>Upload a photo of your mushroom cultivation for AI analysis</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              {error && (
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+
               {!selectedImage ? (
                 <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
                   <div className="flex flex-col items-center justify-center pt-5 pb-6">
@@ -173,6 +205,7 @@ export function CroweVisionContent() {
                         setSelectedImage(null)
                         setBlobUrl(null)
                         setResult(null)
+                        setError(null)
                       }}
                     >
                       Clear

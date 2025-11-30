@@ -26,7 +26,7 @@ export interface SubscriptionFeatures {
 const TIER_FEATURES: Record<SubscriptionTier, SubscriptionFeatures> = {
   free: {
     unlimited_chat: false,
-    crowe_vision: false,
+    crowe_vision: true,
     forum_access: true,
     knowledge_base: true,
     environmental_monitoring: false,

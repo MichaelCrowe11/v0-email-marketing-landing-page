@@ -18,13 +18,9 @@ yarn-error.log*
 
 # env files
 .env*
-!.env.railway.example
 
 # vercel
 .vercel
-
-# railway
-.railway
 
 # typescript
 *.tsbuildinfo

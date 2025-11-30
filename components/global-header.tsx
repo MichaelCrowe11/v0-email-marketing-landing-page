@@ -1,29 +1,22 @@
 "use client"
 
 import type React from "react"
-
+import Image from "next/image"
 import { useState, useEffect } from "react"
-import { Search, Cloud, CloudRain, Sun, Wind, Snowflake, Command, MapPin } from "lucide-react"
+import { Search, Menu, X } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { UserMenu } from "@/components/user-menu"
 import { ThemeToggle } from "@/components/theme-toggle"
-
-interface WeatherData {
-  temp: number | null
-  condition: string
-  location: string
-  needsLocation?: boolean
-}
+import Link from "next/link"
 
 export const HEADER_HEIGHT = 72 // px
 
 export function GlobalHeader() {
   const [searchQuery, setSearchQuery] = useState("")
-  const [weather, setWeather] = useState<WeatherData | null>(null)
   const [searchFocused, setSearchFocused] = useState(false)
-  const [locationPermission, setLocationPermission] = useState<"prompt" | "granted" | "denied">("prompt")
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -40,47 +33,6 @@ export function GlobalHeader() {
     return () => document.removeEventListener("keydown", handleKeyDown)
   }, [])
 
-  useEffect(() => {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLocationPermission("granted")
-          const { latitude, longitude } = position.coords
-          fetch(`/api/weather?lat=${latitude}&lon=${longitude}`)
-            .then((res) => res.json())
-            .then((data) => setWeather(data))
-            .catch((err) => {
-              console.warn("[v0] Weather fetch failed, using default location:", err.message)
-              setWeather({ temp: null, condition: "Unknown", location: "Weather unavailable", needsLocation: true })
-            })
-        },
-        (error) => {
-          // User denied location or error occurred - this is expected behavior, not an error
-          console.log("[v0] Location access not available:", error.message)
-          setLocationPermission("denied")
-          // Fetch weather with default location
-          fetch("/api/weather")
-            .then((res) => res.json())
-            .then((data) => setWeather({ ...data, needsLocation: true }))
-            .catch((err) => {
-              console.warn("[v0] Weather fetch failed:", err.message)
-              setWeather({ temp: null, condition: "Unknown", location: "Weather unavailable", needsLocation: true })
-            })
-        },
-      )
-    } else {
-      // Geolocation not supported - use default location
-      console.log("[v0] Geolocation not supported by browser")
-      fetch("/api/weather")
-        .then((res) => res.json())
-        .then((data) => setWeather({ ...data, needsLocation: true }))
-        .catch((err) => {
-          console.warn("[v0] Weather fetch failed:", err.message)
-          setWeather({ temp: null, condition: "Unknown", location: "Weather unavailable", needsLocation: true })
-        })
-    }
-  }, [])
-
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     if (searchQuery.trim()) {
@@ -88,108 +40,79 @@ export function GlobalHeader() {
     }
   }
 
-  const getWeatherIcon = (condition: string) => {
-    const lower = condition.toLowerCase()
-    if (lower.includes("rain")) return <CloudRain className="w-4 h-4" />
-    if (lower.includes("cloud")) return <Cloud className="w-4 h-4" />
-    if (lower.includes("sun") || lower.includes("clear")) return <Sun className="w-4 h-4" />
-    if (lower.includes("wind")) return <Wind className="w-4 h-4" />
-    if (lower.includes("snow")) return <Snowflake className="w-4 h-4" />
-    return <Cloud className="w-4 h-4" />
-  }
-
   return (
-    <>
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg focus:shadow-lg"
-      >
-        Skip to main content
-      </a>
+    <header
+      className="fixed top-0 left-0 right-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60"
+      style={{ height: `${HEADER_HEIGHT}px` }}
+    >
+      <div className="flex items-center justify-between h-full px-4 md:px-6 max-w-screen-2xl mx-auto gap-4">
+        {/* Logo / Brand (Mobile) */}
+        <div className="md:hidden flex items-center gap-2">
+          <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </Button>
+          <Link href="/" className="flex items-center gap-2">
+            <div className="relative w-8 h-8">
+              <Image
+                src="/crowe-logic-logo.png"
+                alt="Crowe Logic"
+                fill
+                className="object-contain"
+                priority
+                sizes="32px"
+              />
+            </div>
+            <span className="font-bold text-lg">Crowe Logic</span>
+          </Link>
+        </div>
 
-      <header
-        className="fixed top-0 left-0 right-0 z-50 w-full border-b border-border/50 bg-background/95 backdrop-blur-xl shadow-sm"
-        style={{ height: `${HEADER_HEIGHT}px` }}
-        role="banner"
-      >
-        <div className="flex items-center justify-between h-full px-3 sm:px-4 md:px-6 md:pl-[272px] max-w-screen-2xl mx-auto gap-2 sm:gap-4">
-          {/* Search Bar */}
-          <form onSubmit={handleSearch} className="flex-1 max-w-2xl" role="search">
-            <div
-              className={`relative flex items-center transition-all ${
-                searchFocused ? "ring-2 ring-primary/30" : ""
-              } rounded-lg`}
-            >
-              <Search
-                className="absolute left-2 sm:left-3 w-4 h-4 text-muted-foreground pointer-events-none"
-                aria-hidden="true"
-              />
-              <Input
-                type="search"
-                placeholder="Search..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onFocus={() => setSearchFocused(true)}
-                onBlur={() => setSearchFocused(false)}
-                className="pl-8 sm:pl-10 pr-2 sm:pr-20 h-9 sm:h-10 text-sm bg-muted/70 border-border focus-visible:ring-primary/30 focus-visible:border-primary/50"
-                aria-label="Search the platform"
-              />
-              <div className="absolute right-2 hidden sm:flex items-center gap-1">
-                <Badge
-                  variant="outline"
-                  className="text-xs font-mono h-6 px-2"
-                  aria-label="Keyboard shortcut: Command K"
-                >
-                  <Command className="w-3 h-3 mr-1" aria-hidden="true" />K
-                </Badge>
-              </div>
+        {/* Search Bar */}
+        <div className="flex-1 max-w-md md:ml-[272px]">
+          <form onSubmit={handleSearch} className="relative">
+            <Search
+              className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${
+                searchFocused ? "text-primary" : "text-muted-foreground"
+              }`}
+            />
+            <Input
+              type="search"
+              placeholder="Search documentation, datasets, models..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => setSearchFocused(true)}
+              onBlur={() => setSearchFocused(false)}
+              className="pl-9 pr-12 bg-muted/50 border-transparent focus:bg-background focus:border-primary/30 transition-all"
+            />
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 hidden sm:flex">
+              <Badge variant="secondary" className="h-5 px-1.5 text-[10px] font-mono text-muted-foreground">
+                ⌘K
+              </Badge>
             </div>
           </form>
-
-          {/* Weather Display */}
-          {weather && (
-            <div
-              className="hidden lg:flex items-center gap-3 ml-6 px-4 py-2 rounded-lg bg-muted/70 border border-border/50"
-              role="status"
-              aria-live="polite"
-            >
-              {weather.needsLocation ? (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <MapPin className="w-4 h-4" aria-hidden="true" />
-                  <span>Enable location for weather</span>
-                </div>
-              ) : (
-                <>
-                  <div className="flex items-center gap-2 text-sm">
-                    {getWeatherIcon(weather.condition)}
-                    <span className="font-semibold">{weather.temp}°F</span>
-                  </div>
-                  <div className="h-4 w-px bg-border" aria-hidden="true" />
-                  <div className="text-sm text-muted-foreground">{weather.location}</div>
-                </>
-              )}
-            </div>
-          )}
-
-          {/* Quick Actions */}
-          <nav className="flex items-center gap-1 sm:gap-2 ml-2 sm:ml-4" aria-label="Quick actions">
-            <ThemeToggle />
-            <Button variant="ghost" size="sm" className="hidden xl:flex h-9" asChild>
-              <a href="/docs">Docs</a>
-            </Button>
-            <Button variant="ghost" size="sm" className="hidden xl:flex h-9" asChild>
-              <a href="/chat">AI Chat</a>
-            </Button>
-            <Button variant="ghost" size="sm" className="hidden xl:flex h-9" asChild>
-              <a href="/consultations">Consult</a>
-            </Button>
-            <Button size="sm" className="bg-primary hover:bg-primary/90 h-9 px-3 sm:px-4 text-xs sm:text-sm" asChild>
-              <a href="/crowe-vision">Vision</a>
-            </Button>
-            <UserMenu />
-          </nav>
         </div>
-      </header>
-    </>
+
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center gap-2">
+          <Button variant="ghost" size="sm" asChild>
+            <Link href="/docs">Docs</Link>
+          </Button>
+          <Button variant="ghost" size="sm" asChild>
+            <Link href="/ide">IDE</Link>
+          </Button>
+          <Button variant="ghost" size="sm" asChild>
+            <Link href="/datasets">Datasets</Link>
+          </Button>
+          <div className="h-4 w-px bg-border mx-2" />
+          <ThemeToggle />
+          <UserMenu />
+        </nav>
+
+        {/* Mobile Actions */}
+        <div className="md:hidden flex items-center gap-2">
+          <ThemeToggle />
+          <UserMenu />
+        </div>
+      </div>
+    </header>
   )
 }

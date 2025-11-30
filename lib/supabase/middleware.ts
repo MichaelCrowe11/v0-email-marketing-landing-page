@@ -43,7 +43,6 @@ export async function updateSession(request: NextRequest) {
       "/documents/new",
       "/forum/new",
       "/analytics",
-      "/crowe-vision",
       "/video-studio",
       "/sops",
       "/docs",

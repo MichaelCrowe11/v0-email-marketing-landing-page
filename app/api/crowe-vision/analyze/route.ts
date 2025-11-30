@@ -1,15 +1,6 @@
 import { generateObject } from "ai"
 import { z } from "zod"
 
-// Validate Anthropic API key
-function validateEnv() {
-  if (!process.env.ANTHROPIC_API_KEY) {
-    console.error("[v0] ANTHROPIC_API_KEY not set for Crowe Vision")
-    return false
-  }
-  return true
-}
-
 const analysisSchema = z.object({
   species: z.string().optional().describe("Identified mushroom species name"),
   confidence: z.number().min(0).max(100).describe("Confidence percentage for species identification"),
@@ -39,39 +30,8 @@ export async function POST(req: Request) {
       return Response.json({ error: "No image URL provided" }, { status: 400 })
     }
 
-    // Check environment configuration
-    if (!validateEnv()) {
-      console.error("[v0] Crowe Vision: ANTHROPIC_API_KEY not configured")
-      return Response.json(
-        {
-          error: "Vision API configuration error",
-          details: "ANTHROPIC_API_KEY is not configured. Please set up your Anthropic API key for image analysis.",
-          help: "Add ANTHROPIC_API_KEY to your .env.local file. Get your key from https://console.anthropic.com",
-          analysis: {
-            species: "Configuration Required",
-            confidence: 0,
-            growthStage: "N/A",
-            contamination: {
-              detected: false,
-              type: "none",
-              severity: "low",
-            },
-            healthScore: 0,
-            observations: [
-              "⚠️ Image analysis is not configured",
-              "ANTHROPIC_API_KEY environment variable is missing",
-              "Please configure your API key to enable computer vision features"
-            ],
-            recommendations: [
-              "Add ANTHROPIC_API_KEY to your .env.local file",
-              "Get an API key from https://console.anthropic.com",
-              "See SETUP.md for detailed configuration instructions",
-              "Restart the development server after adding the key"
-            ],
-          }
-        },
-        { status: 200 }
-      )
+    if (!imageUrl.startsWith("http") && !imageUrl.startsWith("data:")) {
+      return Response.json({ error: "Invalid image URL format" }, { status: 400 })
     }
 
     const imageResponse = await fetch(imageUrl)
@@ -83,8 +43,10 @@ export async function POST(req: Request) {
     const base64Data = Buffer.from(imageBuffer).toString("base64")
     const contentType = imageResponse.headers.get("content-type") || "image/jpeg"
 
+    console.log("[v0] Crowe Vision: Starting analysis with model anthropic/claude-3-5-sonnet-20241022")
+
     const { object } = await generateObject({
-      model: "anthropic/claude-sonnet-4.5",
+      model: "anthropic/claude-3-5-sonnet-20241022",
       schema: analysisSchema,
       messages: [
         {

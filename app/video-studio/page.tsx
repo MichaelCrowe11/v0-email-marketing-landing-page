@@ -13,6 +13,7 @@ interface GeneratedVideo {
   prompt: string
   duration: number
   timestamp: string
+  isSimulation?: boolean // Added optional property
 }
 
 export default function VideoStudioPage() {
@@ -45,6 +46,7 @@ export default function VideoStudioPage() {
         prompt: prompt,
         duration: data.duration || 5,
         timestamp: new Date().toISOString(),
+        isSimulation: data.isSimulation, // Store simulation status
       })
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred")
@@ -162,24 +164,40 @@ export default function VideoStudioPage() {
               {generatedVideo && !generating && (
                 <div className="space-y-4">
                   <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden border border-border">
-                    <video
-                      src={generatedVideo.url}
-                      controls
-                      className="w-full h-full object-contain"
-                      poster="/mushroom-cultivation-video-thumbnail.jpg"
-                    >
-                      Your browser does not support the video tag.
-                    </video>
+                    {generatedVideo.isSimulation ? (
+                      <div className="w-full h-full flex flex-col items-center justify-center bg-muted relative">
+                        <img
+                          src={generatedVideo.url || "/placeholder.svg"}
+                          alt="Video Thumbnail"
+                          className="absolute inset-0 w-full h-full object-cover opacity-50"
+                        />
+                        <div className="relative z-10 bg-background/80 backdrop-blur-sm p-6 rounded-xl text-center max-w-md mx-4">
+                          <Sparkles className="w-12 h-12 text-primary mx-auto mb-4" />
+                          <h3 className="text-xl font-bold mb-2">Video Generation Simulated</h3>
+                          <p className="text-muted-foreground mb-4">
+                            OpenAI Sora integration is currently in preview. This is a demonstration of the workflow.
+                          </p>
+                          <Badge variant="secondary">Simulation Mode</Badge>
+                        </div>
+                      </div>
+                    ) : (
+                      <video
+                        src={generatedVideo.url}
+                        controls
+                        className="w-full h-full object-contain"
+                        poster="/mushroom-cultivation-video-thumbnail.jpg"
+                      >
+                        Your browser does not support the video tag.
+                      </video>
+                    )}
                   </div>
 
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <Badge variant="outline">Duration: {generatedVideo.duration}s</Badge>
-                      <Button variant="outline" size="sm" asChild>
-                        <a href={generatedVideo.url} download="cultivation-video.mp4">
-                          <Download className="w-4 h-4 mr-2" />
-                          Download
-                        </a>
+                      <Button variant="outline" size="sm" disabled={generatedVideo.isSimulation}>
+                        <Download className="w-4 h-4 mr-2" />
+                        Download
                       </Button>
                     </div>
 
