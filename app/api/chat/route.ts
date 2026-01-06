@@ -37,7 +37,7 @@ function getModel(modelString: string) {
   }
 
   // Default fallback
-  return openai("gpt-4o-mini")
+  return openai("gpt-5")
 }
 
 export async function POST(req: Request) {
