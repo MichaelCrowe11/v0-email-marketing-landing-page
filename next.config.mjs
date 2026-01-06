@@ -14,7 +14,8 @@ const nextConfig = {
     dangerouslyAllowSVG: false,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
-  swcMinify: true,
+  // Ensure mssql and related packages are bundled for Node.js runtime
+  serverExternalPackages: ['mssql', 'tedious'],
   webpack: (config, { isServer }) => {
     // Bundle analyzer for production builds
     if (process.env.ANALYZE === 'true') {

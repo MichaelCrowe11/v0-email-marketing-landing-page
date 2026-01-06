@@ -10,6 +10,9 @@ import { HEADER_HEIGHT } from "@/components/global-header"
 import { PerformanceMonitorInit } from "@/components/performance-monitor-init"
 
 import { Inter, Fira_Code, Geist_Mono as V0_Font_Geist_Mono } from "next/font/google"
+import { Toaster } from "@/components/ui/toaster"
+import { ConfirmationProvider } from "@/hooks/use-confirmation"
+import { GlobalConfirmationDialog } from "@/components/global-confirmation-dialog"
 
 // Initialize fonts
 const _geistMono = V0_Font_Geist_Mono({
@@ -84,12 +87,16 @@ export default function RootLayout({
       </head>
       <body className={`${inter.variable} ${firaCode.variable} font-sans antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-          <SidebarNav />
-          <GlobalHeader />
-          <div className="md:ml-64" style={{ paddingTop: `${HEADER_HEIGHT}px` }}>
-            <Suspense fallback={null}>{children}</Suspense>
-          </div>
-          <PerformanceMonitorInit />
+          <ConfirmationProvider>
+            <SidebarNav />
+            <GlobalHeader />
+            <div className="md:ml-64" style={{ paddingTop: `${HEADER_HEIGHT}px` }}>
+              <Suspense fallback={null}>{children}</Suspense>
+            </div>
+            <PerformanceMonitorInit />
+            <Toaster />
+            <GlobalConfirmationDialog />
+          </ConfirmationProvider>
         </ThemeProvider>
       </body>
     </html>

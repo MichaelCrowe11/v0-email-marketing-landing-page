@@ -94,13 +94,16 @@ export function GlobalHeader() {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-2">
           <Button variant="ghost" size="sm" asChild>
+            <Link href="/dashboard">Dashboard</Link>
+          </Button>
+          <Button variant="ghost" size="sm" asChild>
+            <Link href="/pricing">Pricing</Link>
+          </Button>
+          <Button variant="ghost" size="sm" asChild>
             <Link href="/docs">Docs</Link>
           </Button>
           <Button variant="ghost" size="sm" asChild>
             <Link href="/ide">IDE</Link>
-          </Button>
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/datasets">Datasets</Link>
           </Button>
           <div className="h-4 w-px bg-border mx-2" />
           <ThemeToggle />

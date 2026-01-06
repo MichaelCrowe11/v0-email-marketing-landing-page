@@ -1,11 +1,17 @@
 import { openai } from "@ai-sdk/openai"
 import { anthropic } from "@ai-sdk/anthropic"
 import { google } from "@ai-sdk/google"
+import { getAIProvider } from "@/lib/ai-provider"
 
 export const maxDuration = 30
 
 function getModel(modelString: string) {
   console.log("[v0] Getting model for:", modelString)
+
+  // Specific Azure Deployment Request
+  if (modelString === "gpt-5.2" || modelString === "azure/gpt-5.2") {
+    return getAIProvider("gpt-5.2")
+  }
 
   // Crowe Logic Mini (default)
   if (modelString.startsWith("crowelogic/")) {

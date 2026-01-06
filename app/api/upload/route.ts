@@ -1,4 +1,3 @@
-import { put } from "@vercel/blob"
 import { type NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest) {
@@ -10,13 +9,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 })
     }
 
-    // Upload to Vercel Blob
-    const blob = await put(file.name, file, {
-      access: "public",
-    })
+    // Convert to Base64 Data URI for immediate use without external storage
+    const buffer = Buffer.from(await file.arrayBuffer())
+    const base64 = buffer.toString("base64")
+    const dataUrl = `data:${file.type};base64,${base64}`
 
     return NextResponse.json({
-      url: blob.url,
+      url: dataUrl,
       filename: file.name,
       size: file.size,
       type: file.type,
@@ -26,3 +25,4 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Upload failed" }, { status: 500 })
   }
 }
+

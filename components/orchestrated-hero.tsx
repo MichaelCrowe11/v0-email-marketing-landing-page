@@ -159,18 +159,19 @@ export function OrchestratedHero() {
 
   return (
     <section className="relative min-h-screen pt-24 pb-12 px-4 overflow-hidden bg-background bg-grid-pattern">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-primary/10 blur-[120px] rounded-full pointer-events-none animate-pulse" />
+      <div className="absolute bottom-0 left-1/4 -translate-x-1/2 w-[600px] h-[600px] bg-teal-500/5 blur-[150px] rounded-full pointer-events-none" />
 
       <div className="mx-auto max-w-7xl relative z-10">
         <div className="text-center mb-16 space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium animate-fade-in">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium animate-fade-in hover:bg-primary/20 transition-colors cursor-default">
             <Activity className="w-4 h-4" />
             <span>AI-Powered Mushroom Cultivation</span>
           </div>
 
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-foreground animate-slide-up-fade">
             Master Cultivation with <br />
-            <span className="bg-gradient-to-r from-sky-400 via-teal-400 to-indigo-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-sky-400 via-teal-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-sm">
               Intelligent Mycology AI
             </span>
           </h1>
@@ -183,7 +184,7 @@ export function OrchestratedHero() {
           <div className="flex flex-wrap gap-4 justify-center animate-slide-up-fade animation-delay-400">
             <Button
               size="lg"
-              className="text-lg px-8 h-12 bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20"
+              className="text-lg px-8 h-12 bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all hover:scale-105 active:scale-95"
               asChild
             >
               <Link href="/chat">Start Growing</Link>
@@ -191,7 +192,7 @@ export function OrchestratedHero() {
             <Button
               size="lg"
               variant="outline"
-              className="text-lg px-8 h-12 border-primary/20 hover:bg-primary/5 bg-transparent"
+              className="text-lg px-8 h-12 border-primary/20 hover:bg-primary/5 bg-transparent transition-all hover:scale-105 active:scale-95"
               asChild
             >
               <Link href="/crowe-vision">Analyze Cultures</Link>

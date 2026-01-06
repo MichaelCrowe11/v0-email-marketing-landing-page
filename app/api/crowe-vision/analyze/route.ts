@@ -1,4 +1,6 @@
 import { generateObject } from "ai"
+import { openai } from "@ai-sdk/openai"
+import { getAIProvider } from "@/lib/ai-provider"
 import { z } from "zod"
 
 const analysisSchema = z.object({
@@ -11,7 +13,7 @@ const analysisSchema = z.object({
   contamination: z.object({
     detected: z.boolean().describe("Whether contamination is present"),
     type: z
-      .enum(["bacterial", "mold", "trichoderma", "cobweb", "green-mold", "none"])
+      .enum(["bacterial", "mold", "trichoderma", "cobweb", "green-mold", "desiccated", "none"])
       .optional()
       .describe("Type of contamination if detected"),
     severity: z.enum(["low", "medium", "high", "critical"]).optional().describe("Severity level of contamination"),
@@ -34,19 +36,13 @@ export async function POST(req: Request) {
       return Response.json({ error: "Invalid image URL format" }, { status: 400 })
     }
 
-    const imageResponse = await fetch(imageUrl)
-    if (!imageResponse.ok) {
-      return Response.json({ error: "Failed to fetch image" }, { status: 400 })
-    }
-
-    const imageBuffer = await imageResponse.arrayBuffer()
-    const base64Data = Buffer.from(imageBuffer).toString("base64")
-    const contentType = imageResponse.headers.get("content-type") || "image/jpeg"
-
-    console.log("[v0] Crowe Vision: Starting analysis with model anthropic/claude-3-5-sonnet-20241022")
+    // Use Azure "gpt-5.2" if available via helper, otherwise standard gpt-4o
+    const model = getAIProvider("gpt-4o") 
+    
+    console.log("[v0] Crowe Vision: Starting analysis")
 
     const { object } = await generateObject({
-      model: "anthropic/claude-3-5-sonnet-20241022",
+      model: model,
       schema: analysisSchema,
       messages: [
         {
@@ -68,19 +64,20 @@ Be specific, practical, and focus on actionable insights. If contamination is de
             },
             {
               type: "image",
-              image: `data:${contentType};base64,${base64Data}`,
+              image: imageUrl,
             },
           ],
         },
       ],
-      maxOutputTokens: 2000,
+      maxTokens: 2000,
     })
 
     return Response.json({ analysis: object })
   } catch (error) {
     console.error("[v0] Crowe Vision analysis error:", error)
-    return Response.json({ error: "Analysis failed" }, { status: 500 })
+    return Response.json({ error: "Analysis failed", details: error instanceof Error ? error.message : String(error) }, { status: 500 })
   }
 }
 
 export const maxDuration = 30
+
