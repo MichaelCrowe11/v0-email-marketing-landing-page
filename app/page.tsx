@@ -87,17 +87,18 @@ export default function Home() {
               </div>
             </div>
             <div className="text-center sm:text-left">
-              <div className="text-lg sm:text-xl md:text-2xl font-black text-foreground mb-1">Crowe Logic AI</div>
+              <div className="text-lg sm:text-xl md:text-2xl font-black text-foreground mb-1">Crowe Mycology</div>
               <div className="text-xs sm:text-sm md:text-base text-muted-foreground">
-                Ultimate Biotech & Coding Platform
+                AI-Powered Mushroom Cultivation Platform
               </div>
             </div>
           </div>
           <p className="text-xs sm:text-sm md:text-base text-muted-foreground max-w-2xl mx-auto px-4 leading-relaxed">
-            Empowering biotech innovation with AI-driven tools, datasets, and a professional coding environment.
+            Empowering mushroom cultivators with AI-driven contamination detection, cultivation guidance, and
+            comprehensive mycology resources.
             <br className="hidden sm:block" />
             <span className="sm:hidden"> </span>
-            From sequence analysis to protocol development, we provide the infrastructure for discovery.
+            From species selection to harvest optimization, we provide the tools for successful cultivation.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 md:gap-8 pt-4 sm:pt-6">
             <a

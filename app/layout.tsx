@@ -9,10 +9,13 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { HEADER_HEIGHT } from "@/components/global-header"
 import { PerformanceMonitorInit } from "@/components/performance-monitor-init"
 
-import { Inter, Fira_Code, Geist_Mono as V0_Font_Geist_Mono } from 'next/font/google'
+import { Inter, Fira_Code, Geist_Mono as V0_Font_Geist_Mono } from "next/font/google"
 
 // Initialize fonts
-const _geistMono = V0_Font_Geist_Mono({ subsets: ['latin'], weight: ["100","200","300","400","500","600","700","800","900"] })
+const _geistMono = V0_Font_Geist_Mono({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+})
 
 const inter = Inter({
   subsets: ["latin"],
@@ -45,15 +48,15 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: "Crowe Logic - Ultimate Biotech & Coding Platform",
+  title: "Crowe Mycology - AI-Powered Mushroom Cultivation Platform",
   description:
-    "The ultimate platform for biotech development. Access AI models, datasets, and a powerful coding environment for bioinformatics.",
+    "Advanced mycology platform with AI-powered cultivation guidance, contamination detection, and comprehensive mushroom growing resources.",
   generator: "v0.app",
-  applicationName: "Crowe Logic AI",
+  applicationName: "Crowe Mycology",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Crowe Logic AI",
+    title: "Crowe Mycology",
   },
   formatDetection: {
     telephone: false,

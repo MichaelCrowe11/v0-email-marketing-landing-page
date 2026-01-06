@@ -55,14 +55,14 @@ export function GlobalHeader() {
             <div className="relative w-8 h-8">
               <Image
                 src="/crowe-logic-logo.png"
-                alt="Crowe Logic"
+                alt="Crowe Mycology"
                 fill
                 className="object-contain"
                 priority
                 sizes="32px"
               />
             </div>
-            <span className="font-bold text-lg">Crowe Logic</span>
+            <span className="font-bold text-lg">Crowe Mycology</span>
           </Link>
         </div>
 

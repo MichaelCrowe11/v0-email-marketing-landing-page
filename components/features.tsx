@@ -1,46 +1,46 @@
-import { Dna, Microscope, Code2, Database, Cpu, FlaskConical, Network, ShieldCheck } from "lucide-react"
+import { Microscope, Camera, Thermometer, Database, Cpu, FlaskConical, AlertTriangle, TrendingUp } from "lucide-react"
 
 export function Features() {
   const features = [
     {
-      icon: <Dna className="w-6 h-6" />,
-      title: "Genomic Analysis",
-      description: "Advanced sequence alignment and variant calling pipelines powered by AI.",
+      icon: <Camera className="w-6 h-6" />,
+      title: "Computer Vision Analysis",
+      description: "AI-powered contamination detection and growth stage identification from photos.",
     },
     {
       icon: <Microscope className="w-6 h-6" />,
-      title: "Protein Folding",
-      description: "Predict 3D protein structures with AlphaFold integration and visualization.",
+      title: "Species Library",
+      description: "Comprehensive database of mushroom species with cultivation parameters and characteristics.",
     },
     {
-      icon: <Code2 className="w-6 h-6" />,
-      title: "Integrated IDE",
-      description: "Full-featured Monaco editor with Python support for bioinformatics workflows.",
+      icon: <Thermometer className="w-6 h-6" />,
+      title: "Environmental Monitoring",
+      description: "Real-time tracking of temperature, humidity, CO2, and FAE for optimal fruiting conditions.",
     },
     {
       icon: <Database className="w-6 h-6" />,
-      title: "Biological Datasets",
-      description: "Access curated genomic, proteomic, and metabolic datasets instantly.",
+      title: "Cultivation SOPs",
+      description: "Step-by-step standard operating procedures for substrate prep, inoculation, and fruiting.",
     },
     {
       icon: <Cpu className="w-6 h-6" />,
-      title: "AI Models",
-      description: "Leverage state-of-the-art LLMs fine-tuned for biological data analysis.",
+      title: "AI Cultivation Assistant",
+      description: "Chat with an AI trained on mycology best practices and troubleshooting techniques.",
     },
     {
       icon: <FlaskConical className="w-6 h-6" />,
-      title: "Lab Simulation",
-      description: "Simulate wet-lab experiments in silico to optimize protocols.",
+      title: "Substrate Calculator",
+      description: "Calculate precise substrate ratios and supplementation for maximum yield potential.",
     },
     {
-      icon: <Network className="w-6 h-6" />,
-      title: "Data Pipelines",
-      description: "Build and deploy scalable data processing pipelines with ease.",
+      icon: <AlertTriangle className="w-6 h-6" />,
+      title: "Contamination Guide",
+      description: "Visual identification guide for common contaminants with prevention and remediation strategies.",
     },
     {
-      icon: <ShieldCheck className="w-6 h-6" />,
-      title: "Secure & Compliant",
-      description: "Enterprise-grade security ensuring your proprietary data remains safe.",
+      icon: <TrendingUp className="w-6 h-6" />,
+      title: "Yield Optimization",
+      description: "AI-driven predictions and recommendations to maximize mushroom production and quality.",
     },
   ]
 
@@ -52,10 +52,10 @@ export function Features() {
       <div className="mx-auto max-w-7xl relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-4">
-            Platform <span className="text-primary">Capabilities</span>
+            Platform <span className="text-primary">Features</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            A comprehensive suite of tools designed for the modern computational biologist.
+            Everything you need to grow mushrooms successfully, from spore to harvest.
           </p>
         </div>
 

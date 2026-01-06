@@ -123,12 +123,12 @@ export function SidebarNav() {
             href="/"
             className="flex items-center justify-center px-6 py-4 border-b border-sidebar-border group shrink-0 hover:bg-sidebar-accent/50 transition-colors"
             style={{ height: `${HEADER_HEIGHT}px` }}
-            aria-label="Crowe Logic Home"
+            aria-label="Crowe Mycology Home"
           >
             <div className="relative w-10 h-10 flex-shrink-0 mr-3">
               <Image
                 src="/crowe-logic-logo.png"
-                alt="Crowe Logic Logo"
+                alt="Crowe Mycology Logo"
                 fill
                 className="object-contain transition-transform group-hover:scale-105"
                 priority
@@ -136,7 +136,7 @@ export function SidebarNav() {
               />
             </div>
             <span className="font-bold text-lg tracking-tight text-sidebar-foreground group-hover:text-primary transition-colors">
-              Crowe Logic
+              Crowe Mycology
             </span>
           </a>
 
