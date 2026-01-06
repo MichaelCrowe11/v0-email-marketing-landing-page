@@ -158,9 +158,14 @@ export function OrchestratedHero() {
   }, [])
 
   return (
-    <section className="relative min-h-screen pt-24 pb-12 px-4 overflow-hidden bg-background bg-grid-pattern">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-primary/10 blur-[120px] rounded-full pointer-events-none animate-pulse" />
-      <div className="absolute bottom-0 left-1/4 -translate-x-1/2 w-[600px] h-[600px] bg-teal-500/5 blur-[150px] rounded-full pointer-events-none" />
+    <section className="relative min-h-screen pt-24 pb-12 px-4 overflow-hidden bg-background bg-grid-pattern bg-noise">
+      {/* Atmospheric gradient orbs */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-gradient-to-b from-primary/15 via-primary/5 to-transparent blur-[100px] rounded-full pointer-events-none" />
+      <div className="absolute top-20 right-1/4 w-[400px] h-[400px] bg-teal-500/10 blur-[120px] rounded-full pointer-events-none animate-pulse" />
+      <div className="absolute bottom-0 left-1/4 -translate-x-1/2 w-[600px] h-[600px] bg-indigo-500/5 blur-[150px] rounded-full pointer-events-none" />
+
+      {/* Radial fade overlay */}
+      <div className="absolute inset-0 bg-radial-fade pointer-events-none" />
 
       <div className="mx-auto max-w-7xl relative z-10">
         <div className="text-center mb-16 space-y-6">
@@ -169,9 +174,9 @@ export function OrchestratedHero() {
             <span>AI-Powered Mushroom Cultivation</span>
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-foreground animate-slide-up-fade">
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-foreground animate-slide-up-fade font-display">
             Master Cultivation with <br />
-            <span className="bg-gradient-to-r from-sky-400 via-teal-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-sm">
+            <span className="text-gradient-brand drop-shadow-sm">
               Intelligent Mycology AI
             </span>
           </h1>
@@ -201,7 +206,7 @@ export function OrchestratedHero() {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto animate-scale-in animation-delay-600">
-          <div className="relative group rounded-xl h-[400px] overflow-hidden border border-border/50 bg-card/50 backdrop-blur-xl shadow-2xl">
+          <div className="relative group rounded-xl h-[400px] overflow-hidden border border-border/50 bg-card/50 backdrop-blur-xl shadow-2xl card-premium animate-border-glow">
             <div className="flex items-center justify-between px-4 py-3 border-b border-border/50 bg-muted/30">
               <div className="flex items-center gap-2">
                 <div className="flex gap-1.5">
@@ -244,7 +249,7 @@ export function OrchestratedHero() {
             </div>
           </div>
 
-          <div className="relative group rounded-xl h-[400px] overflow-hidden border border-border/50 bg-card/50 backdrop-blur-xl shadow-2xl">
+          <div className="relative group rounded-xl h-[400px] overflow-hidden border border-border/50 bg-card/50 backdrop-blur-xl shadow-2xl card-premium animate-border-glow">
             <div className="flex items-center justify-between px-4 py-3 border-b border-border/50 bg-muted/30">
               <div className="flex items-center gap-2">
                 <Network className="w-4 h-4 text-primary" />
