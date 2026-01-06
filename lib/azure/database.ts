@@ -17,7 +17,6 @@ const ALLOWED_TABLES = [
   "forum_replies",
   "documents",
   "species_library",
-  "mushroom_species_library",
   "knowledge_base",
   "gpt_modules",
   "user_gpt_purchases",

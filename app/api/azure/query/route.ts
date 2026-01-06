@@ -1,5 +1,5 @@
 // Azure database query API route
-// SECURITY: Public read for certain tables, auth required for writes
+// SECURITY: Requires authentication for all operations
 import { type NextRequest, NextResponse } from "next/server"
 import { insert, update, select, remove } from "@/lib/azure/database"
 import { getUser } from "@/lib/azure/auth"
@@ -19,13 +19,12 @@ const USER_READABLE_TABLES = [
   "documents",
 ]
 
-// Public read tables (anyone can read without auth)
+// Public read tables (anyone authenticated can read)
 const PUBLIC_READ_TABLES = [
   "forum_categories",
   "forum_posts",
   "forum_replies",
   "species_library",
-  "mushroom_species_library",
   "knowledge_base",
   "contamination_library",
   "sop_templates",
@@ -34,6 +33,16 @@ const PUBLIC_READ_TABLES = [
 
 export async function POST(request: NextRequest) {
   try {
+    // Require authentication
+    const { data: { user }, error: authError } = await getUser()
+
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: "Authentication required" },
+        { status: 401 }
+      )
+    }
+
     const body = await request.json()
     const { action, table, data, columns, whereClause, whereParams, orderBy, limit } = body
 
@@ -42,24 +51,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid action" }, { status: 400 })
     }
 
-    // Check if this is a public read request (no auth needed)
-    const isPublicRead = action === "select" && PUBLIC_READ_TABLES.includes(table)
-
-    // Get user (may be null for public reads)
-    const { data: { user } } = await getUser()
-
-    // Require authentication for non-public requests
-    if (!isPublicRead && !user) {
-      return NextResponse.json(
-        { error: "Authentication required" },
-        { status: 401 }
-      )
-    }
-
-    const isAdmin = user?.is_admin === true
+    // Authorization checks based on action and table
+    const isAdmin = user.is_admin === true
 
     switch (action) {
       case "insert": {
+        // Only admins can insert into admin-only tables
         if (ADMIN_ONLY_TABLES.includes(table) && !isAdmin) {
           return NextResponse.json(
             { error: "Admin access required for this operation" },
@@ -67,7 +64,8 @@ export async function POST(request: NextRequest) {
           )
         }
 
-        const insertData = USER_READABLE_TABLES.includes(table) && user
+        // For user tables, ensure user_id is set to current user
+        const insertData = USER_READABLE_TABLES.includes(table)
           ? { ...data, user_id: user.id }
           : data
 
@@ -76,6 +74,7 @@ export async function POST(request: NextRequest) {
       }
 
       case "update": {
+        // Only admins can update admin-only tables
         if (ADMIN_ONLY_TABLES.includes(table) && !isAdmin) {
           return NextResponse.json(
             { error: "Admin access required for this operation" },
@@ -83,10 +82,11 @@ export async function POST(request: NextRequest) {
           )
         }
 
+        // For user tables, restrict to own data
         let finalWhereClause = whereClause
         let finalWhereParams = whereParams
 
-        if (USER_READABLE_TABLES.includes(table) && !isAdmin && user) {
+        if (USER_READABLE_TABLES.includes(table) && !isAdmin) {
           finalWhereClause = whereClause
             ? `(${whereClause}) AND user_id = @_auth_user_id`
             : "user_id = @_auth_user_id"
@@ -98,12 +98,7 @@ export async function POST(request: NextRequest) {
       }
 
       case "select": {
-        // Public tables - allow without auth
-        if (isPublicRead) {
-          const result = await select(table, columns, whereClause, whereParams, { orderBy, limit })
-          return NextResponse.json(result)
-        }
-
+        // Check if user can read this table
         const canRead =
           isAdmin ||
           PUBLIC_READ_TABLES.includes(table) ||
@@ -116,10 +111,11 @@ export async function POST(request: NextRequest) {
           )
         }
 
+        // For user-specific tables, restrict to own data unless admin
         let finalWhereClause = whereClause
         let finalWhereParams = whereParams
 
-        if (USER_READABLE_TABLES.includes(table) && !isAdmin && user) {
+        if (USER_READABLE_TABLES.includes(table) && !isAdmin) {
           finalWhereClause = whereClause
             ? `(${whereClause}) AND user_id = @_auth_user_id`
             : "user_id = @_auth_user_id"
@@ -131,6 +127,7 @@ export async function POST(request: NextRequest) {
       }
 
       case "delete": {
+        // Only admins can delete from admin-only tables
         if (ADMIN_ONLY_TABLES.includes(table) && !isAdmin) {
           return NextResponse.json(
             { error: "Admin access required for this operation" },
@@ -138,10 +135,11 @@ export async function POST(request: NextRequest) {
           )
         }
 
+        // For user tables, restrict to own data
         let finalWhereClause = whereClause
         let finalWhereParams = whereParams
 
-        if (USER_READABLE_TABLES.includes(table) && !isAdmin && user) {
+        if (USER_READABLE_TABLES.includes(table) && !isAdmin) {
           finalWhereClause = whereClause
             ? `(${whereClause}) AND user_id = @_auth_user_id`
             : "user_id = @_auth_user_id"
