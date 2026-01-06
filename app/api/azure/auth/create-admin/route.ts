@@ -1,23 +1,43 @@
 // Azure auth - create admin account (one-time setup)
+// SECURITY: This endpoint requires ADMIN_SETUP_KEY environment variable
 import { type NextRequest, NextResponse } from "next/server"
 import { insert, selectSingle, update } from "@/lib/azure/database"
 import bcrypt from "bcryptjs"
 import { v4 as uuidv4 } from "uuid"
 
-// Admin credentials - CHANGE THESE AFTER FIRST USE
-const ADMIN_EMAIL = "admin@crowelogic.com"
-const ADMIN_PASSWORD = "CroweAdmin2024!"
-const ADMIN_NAME = "Administrator"
-
 export async function POST(request: NextRequest) {
   try {
-    // Check for setup key to prevent unauthorized access
-    const { setupKey } = await request.json()
+    const { setupKey, email, password, name } = await request.json()
 
-    if (setupKey !== "setup-admin-account-2024") {
+    // Validate setup key from environment variable
+    const validSetupKey = process.env.ADMIN_SETUP_KEY
+    if (!validSetupKey) {
+      return NextResponse.json(
+        { error: "Admin setup is disabled. Set ADMIN_SETUP_KEY environment variable." },
+        { status: 403 }
+      )
+    }
+
+    if (!setupKey || setupKey !== validSetupKey) {
       return NextResponse.json(
         { error: "Invalid setup key" },
         { status: 401 }
+      )
+    }
+
+    // Validate required fields
+    if (!email || !password) {
+      return NextResponse.json(
+        { error: "Email and password are required" },
+        { status: 400 }
+      )
+    }
+
+    // Validate password strength
+    if (password.length < 12) {
+      return NextResponse.json(
+        { error: "Password must be at least 12 characters" },
+        { status: 400 }
       )
     }
 
@@ -26,18 +46,18 @@ export async function POST(request: NextRequest) {
       "users",
       "id, email",
       "email = @email",
-      { email: ADMIN_EMAIL }
+      { email }
     )
+
+    const passwordHash = await bcrypt.hash(password, 12)
 
     if (existingUser) {
       // Update existing user to be admin
-      const passwordHash = await bcrypt.hash(ADMIN_PASSWORD, 12)
-
       const { error: updateError } = await update(
         "users",
-        { password_hash: passwordHash, is_admin: true, name: ADMIN_NAME },
+        { password_hash: passwordHash, is_admin: true, name: name || "Administrator" },
         "email = @email",
-        { email: ADMIN_EMAIL }
+        { email }
       )
 
       if (updateError) {
@@ -49,23 +69,18 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json({
         success: true,
-        message: "Existing user updated to admin",
-        credentials: {
-          email: ADMIN_EMAIL,
-          password: ADMIN_PASSWORD,
-        },
+        message: "Existing user updated to admin. Remove ADMIN_SETUP_KEY from environment after setup.",
       })
     }
 
     // Create new admin user
     const id = uuidv4()
-    const passwordHash = await bcrypt.hash(ADMIN_PASSWORD, 12)
 
     const { error: insertError } = await insert("users", {
       id,
-      email: ADMIN_EMAIL,
+      email,
       password_hash: passwordHash,
-      name: ADMIN_NAME,
+      name: name || "Administrator",
       is_admin: true,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
@@ -80,11 +95,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: "Admin account created successfully",
-      credentials: {
-        email: ADMIN_EMAIL,
-        password: ADMIN_PASSWORD,
-      },
+      message: "Admin account created. Remove ADMIN_SETUP_KEY from environment after setup.",
     })
   } catch (error) {
     return NextResponse.json(

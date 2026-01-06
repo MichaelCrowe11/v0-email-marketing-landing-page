@@ -13,13 +13,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ user: null, session: null, error: error?.message || "Sign in failed" })
     }
 
-    // Set session cookie
+    // Set session cookie with secure settings
     const cookieStore = await cookies()
     cookieStore.set("crowe-session", data.session!.access_token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60, // 7 days
+      secure: true, // Always use secure cookies
+      sameSite: "strict", // Prevent CSRF attacks
+      path: "/",
+      maxAge: 24 * 60 * 60, // 24 hours (reduced from 7 days for security)
     })
 
     return NextResponse.json({ user: data.user, session: data.session, error: null })

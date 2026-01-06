@@ -3,6 +3,48 @@
 
 import sql from "mssql"
 
+// Whitelist of allowed table names to prevent SQL injection
+const ALLOWED_TABLES = [
+  "users",
+  "user_subscriptions",
+  "cultivation_projects",
+  "environmental_readings",
+  "harvest_records",
+  "ai_conversations",
+  "ai_messages",
+  "forum_categories",
+  "forum_posts",
+  "forum_replies",
+  "documents",
+  "species_library",
+  "knowledge_base",
+  "gpt_modules",
+  "user_gpt_purchases",
+  "contamination_library",
+  "sop_templates",
+] as const
+
+type AllowedTable = typeof ALLOWED_TABLES[number]
+
+// Validate table name against whitelist
+function validateTable(table: string): asserts table is AllowedTable {
+  if (!ALLOWED_TABLES.includes(table as AllowedTable)) {
+    throw new Error(`Invalid table name: ${table}`)
+  }
+}
+
+// Validate column names (alphanumeric, underscores only)
+function validateColumns(columns: string): string {
+  if (columns === "*") return columns
+  const columnList = columns.split(",").map((c) => c.trim())
+  for (const col of columnList) {
+    if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(col)) {
+      throw new Error(`Invalid column name: ${col}`)
+    }
+  }
+  return columns
+}
+
 // Connection configuration using Azure environment variables
 const config: sql.config = {
   user: process.env.AZURE_SQL_USER,
@@ -51,7 +93,13 @@ export async function insert<T>(
   data: Record<string, unknown>,
 ): Promise<{ data: T | null; error: Error | null }> {
   try {
+    // Validate table name against whitelist
+    validateTable(table)
+
     const columns = Object.keys(data).join(", ")
+    // Validate column names
+    validateColumns(columns)
+
     const values = Object.keys(data)
       .map((key) => `@${key}`)
       .join(", ")
@@ -83,6 +131,11 @@ export async function update<T>(
   whereParams: Record<string, unknown>,
 ): Promise<{ data: T | null; error: Error | null }> {
   try {
+    // Validate table name against whitelist
+    validateTable(table)
+    // Validate column names in data
+    validateColumns(Object.keys(data).join(", "))
+
     const setClause = Object.keys(data)
       .map((key) => `${key} = @${key}`)
       .join(", ")
@@ -120,6 +173,11 @@ export async function select<T>(
   options?: { orderBy?: string; limit?: number },
 ): Promise<{ data: T[] | null; error: Error | null }> {
   try {
+    // Validate table name against whitelist
+    validateTable(table)
+    // Validate column names
+    validateColumns(columns)
+
     const poolConnection = await getPool()
     const request = poolConnection.request()
 
@@ -155,6 +213,9 @@ export async function remove(
   whereParams: Record<string, unknown>,
 ): Promise<{ error: Error | null }> {
   try {
+    // Validate table name against whitelist
+    validateTable(table)
+
     const poolConnection = await getPool()
     const request = poolConnection.request()
 
