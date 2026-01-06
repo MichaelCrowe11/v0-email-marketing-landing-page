@@ -1,7 +1,5 @@
 "use client"
 
-import { createClient } from '@/lib/azure/client'
-
 import type React from "react"
 
 import { Button } from "@/components/ui/button"
@@ -26,7 +24,6 @@ export default function Page() {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
-    const supabase = createClient()
     setIsLoading(true)
     setError(null)
 
@@ -37,17 +34,17 @@ export default function Page() {
     }
 
     try {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL || `${window.location.origin}`,
-          data: {
-            full_name: fullName,
-          },
-        },
+      const response = await fetch("/api/azure/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, name: fullName }),
       })
-      if (error) throw error
+
+      const result = await response.json()
+
+      if (result.error) {
+        throw new Error(result.error)
+      }
 
       try {
         await fetch("/api/auth/welcome-email", {

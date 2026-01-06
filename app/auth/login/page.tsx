@@ -1,7 +1,5 @@
 "use client"
 
-import { createClient } from '@/lib/azure/client'
-
 import type React from "react"
 
 import { Button } from "@/components/ui/button"
@@ -24,16 +22,22 @@ export default function Page() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    const supabase = createClient()
     setIsLoading(true)
     setError(null)
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      const response = await fetch("/api/azure/auth/signin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       })
-      if (error) throw error
+
+      const result = await response.json()
+
+      if (result.error) {
+        throw new Error(result.error)
+      }
+
       router.push("/")
       router.refresh()
     } catch (error: unknown) {

@@ -65,7 +65,7 @@
     "lucide-react": "^0.454.0",
     "monaco-editor": "latest",
     "mssql": "^11.0.1",
-    "next": "15.3.8",
+    "next": "^15.5.9",
     "next-themes": "latest",
     "openai": "latest",
     "react": "19.1.0",
