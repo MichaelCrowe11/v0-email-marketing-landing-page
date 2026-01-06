@@ -1,5 +1,5 @@
 // Azure database query API route
-// SECURITY: Requires authentication for all operations
+// SECURITY: Public read for certain tables, auth required for writes
 import { type NextRequest, NextResponse } from "next/server"
 import { insert, update, select, remove } from "@/lib/azure/database"
 import { getUser } from "@/lib/azure/auth"
@@ -19,12 +19,13 @@ const USER_READABLE_TABLES = [
   "documents",
 ]
 
-// Public read tables (anyone authenticated can read)
+// Public read tables (anyone can read, no auth required)
 const PUBLIC_READ_TABLES = [
   "forum_categories",
   "forum_posts",
   "forum_replies",
   "species_library",
+  "mushroom_species_library",
   "knowledge_base",
   "contamination_library",
   "sop_templates",
@@ -33,16 +34,6 @@ const PUBLIC_READ_TABLES = [
 
 export async function POST(request: NextRequest) {
   try {
-    // Require authentication
-    const { data: { user }, error: authError } = await getUser()
-
-    if (authError || !user) {
-      return NextResponse.json(
-        { error: "Authentication required" },
-        { status: 401 }
-      )
-    }
-
     const body = await request.json()
     const { action, table, data, columns, whereClause, whereParams, orderBy, limit } = body
 
@@ -51,8 +42,22 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid action" }, { status: 400 })
     }
 
+    // Check if this is a public read request
+    const isPublicRead = action === "select" && PUBLIC_READ_TABLES.includes(table)
+
+    // Get user (may be null for public reads)
+    const { data: { user } } = await getUser()
+
+    // Require authentication for non-public requests
+    if (!isPublicRead && !user) {
+      return NextResponse.json(
+        { error: "Authentication required" },
+        { status: 401 }
+      )
+    }
+
     // Authorization checks based on action and table
-    const isAdmin = user.is_admin === true
+    const isAdmin = user?.is_admin === true
 
     switch (action) {
       case "insert": {
@@ -65,7 +70,7 @@ export async function POST(request: NextRequest) {
         }
 
         // For user tables, ensure user_id is set to current user
-        const insertData = USER_READABLE_TABLES.includes(table)
+        const insertData = USER_READABLE_TABLES.includes(table) && user
           ? { ...data, user_id: user.id }
           : data
 
@@ -86,7 +91,7 @@ export async function POST(request: NextRequest) {
         let finalWhereClause = whereClause
         let finalWhereParams = whereParams
 
-        if (USER_READABLE_TABLES.includes(table) && !isAdmin) {
+        if (USER_READABLE_TABLES.includes(table) && !isAdmin && user) {
           finalWhereClause = whereClause
             ? `(${whereClause}) AND user_id = @_auth_user_id`
             : "user_id = @_auth_user_id"
@@ -98,7 +103,13 @@ export async function POST(request: NextRequest) {
       }
 
       case "select": {
-        // Check if user can read this table
+        // For public tables, allow unauthenticated access
+        if (isPublicRead) {
+          const result = await select(table, columns, whereClause, whereParams, { orderBy, limit })
+          return NextResponse.json(result)
+        }
+
+        // Check if authenticated user can read this table
         const canRead =
           isAdmin ||
           PUBLIC_READ_TABLES.includes(table) ||
@@ -115,7 +126,7 @@ export async function POST(request: NextRequest) {
         let finalWhereClause = whereClause
         let finalWhereParams = whereParams
 
-        if (USER_READABLE_TABLES.includes(table) && !isAdmin) {
+        if (USER_READABLE_TABLES.includes(table) && !isAdmin && user) {
           finalWhereClause = whereClause
             ? `(${whereClause}) AND user_id = @_auth_user_id`
             : "user_id = @_auth_user_id"
@@ -139,7 +150,7 @@ export async function POST(request: NextRequest) {
         let finalWhereClause = whereClause
         let finalWhereParams = whereParams
 
-        if (USER_READABLE_TABLES.includes(table) && !isAdmin) {
+        if (USER_READABLE_TABLES.includes(table) && !isAdmin && user) {
           finalWhereClause = whereClause
             ? `(${whereClause}) AND user_id = @_auth_user_id`
             : "user_id = @_auth_user_id"
