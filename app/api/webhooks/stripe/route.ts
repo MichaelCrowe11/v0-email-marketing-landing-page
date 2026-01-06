@@ -1,7 +1,7 @@
+import { createClient } from '@/lib/azure/client'
 import { headers } from "next/headers"
 import { NextResponse } from "next/server"
 import Stripe from "stripe"
-import { createClient } from "@/lib/supabase/server"
 import { sendEmail } from "@/lib/resend"
 import { getOrderConfirmationEmailHTML } from "@/lib/email-templates"
 

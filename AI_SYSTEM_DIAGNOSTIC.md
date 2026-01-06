@@ -97,7 +97,6 @@ If Azure AI setup is complex, you can use Vercel AI Gateway which requires no co
 ## Support
 
 If issues persist:
-1. Check the browser console for `[v0]` debug logs
-2. Verify API route is being called
+1. Check the browser console for `[v0]` debug log
 3. Test with AI Gateway models first (no config needed)
 4. Check Vercel deployment logs for errors

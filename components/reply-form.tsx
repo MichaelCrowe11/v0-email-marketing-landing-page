@@ -1,10 +1,11 @@
 "use client"
 
+import { createClient } from '@/lib/azure/client'
+
 import type React from "react"
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Sparkles } from "lucide-react"

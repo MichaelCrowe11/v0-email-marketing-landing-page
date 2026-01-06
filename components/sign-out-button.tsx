@@ -1,7 +1,8 @@
 "use client"
 
+import { createClient } from '@/lib/azure/client'
+
 import { useRouter } from "next/navigation"
-import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { LogOut } from "lucide-react"
 import { useState } from "react"

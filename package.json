@@ -47,8 +47,6 @@
     "@react-email/render": "latest",
     "@stripe/react-stripe-js": "latest",
     "@stripe/stripe-js": "latest",
-    "@supabase/ssr": "latest",
-    "@supabase/supabase-js": "latest",
     "@vercel/analytics": "latest",
     "@vercel/blob": "latest",
     "ai": "latest",

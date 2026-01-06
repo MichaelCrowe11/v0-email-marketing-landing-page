@@ -1,7 +1,8 @@
 "use server"
 
 import { stripe } from "@/lib/stripe"
-import { createClient } from "@/lib/supabase/server"
+import { getUser } from "@/lib/azure/auth"
+import { selectSingle, update } from "@/lib/azure/database"
 
 // Legacy pricing for existing Pro/Expert plans (using inline pricing)
 const PLAN_PRICES = {
@@ -22,12 +23,8 @@ const MASTER_PRICE_IDS = {
 }
 
 export async function startSubscriptionCheckout(planId: string, billingCycle: "monthly" | "yearly") {
-  const supabase = await createClient()
-
   // Get current user
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const { data: { user } } = await getUser()
 
   if (!user) {
     throw new Error("You must be logged in to subscribe")
@@ -49,7 +46,12 @@ export async function startSubscriptionCheckout(planId: string, billingCycle: "m
   // Create or retrieve Stripe customer
   let customerId: string
 
-  const { data: userData } = await supabase.from("users").select("stripe_customer_id").eq("id", user.id).single()
+  const { data: userData } = await selectSingle<{ stripe_customer_id: string }>(
+    "users",
+    "stripe_customer_id",
+    "id = @id",
+    { id: user.id }
+  )
 
   if (userData?.stripe_customer_id) {
     customerId = userData.stripe_customer_id
@@ -57,13 +59,13 @@ export async function startSubscriptionCheckout(planId: string, billingCycle: "m
     const customer = await stripe.customers.create({
       email: user.email,
       metadata: {
-        supabase_user_id: user.id,
+        azure_user_id: user.id,
       },
     })
     customerId = customer.id
 
     // Save customer ID to database
-    await supabase.from("users").update({ stripe_customer_id: customerId }).eq("id", user.id)
+    await update("users", { stripe_customer_id: customerId }, "id = @id", { id: user.id })
   }
 
   // Create checkout session for subscription

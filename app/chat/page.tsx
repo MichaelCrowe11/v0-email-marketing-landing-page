@@ -1,9 +1,12 @@
+import { createClient } from '@/lib/azure/client'
 import { Suspense } from "react"
+
+// Prevent static generation - this page requires runtime auth
+export const dynamic = 'force-dynamic'
 import { getUserSubscription } from "@/lib/subscription"
 import { ChatContainer } from "@/components/chat/chat-container"
 import { ChatMeter } from "@/components/chat/chat-meter"
 import { getChatQuota } from "@/lib/chat-metering"
-import { createClient } from "@/lib/supabase/server"
 
 function ChatLoading() {
   return (

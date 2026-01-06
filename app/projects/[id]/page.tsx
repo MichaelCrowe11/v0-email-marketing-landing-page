@@ -1,5 +1,7 @@
 "use client"
 
+import { createClient } from '@/lib/azure/client'
+
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -8,8 +10,9 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Progress } from "@/components/ui/progress"
 import { Thermometer, Droplets, Wind, TrendingUp, Calendar, Clock, Eye, Plus } from "lucide-react"
-import { createClient } from "@/lib/supabase/client"
 import Link from "next/link"
+
+export const dynamic = 'force-dynamic'
 
 export default function ProjectDetailPage() {
   const params = useParams()

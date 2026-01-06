@@ -1,5 +1,7 @@
 "use client"
 
+import { createClient } from '@/lib/azure/client'
+
 import { useEffect, useState } from "react"
 import { LogOut, Settings, UserCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -12,7 +14,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 
 export function UserMenu() {

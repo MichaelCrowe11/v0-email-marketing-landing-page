@@ -1,8 +1,9 @@
 "use client"
 
+import { createClient } from '@/lib/azure/client'
+
 import type React from "react"
 
-import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -11,6 +12,8 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import Image from "next/image"
+
+export const dynamic = 'force-dynamic'
 
 export default function Page() {
   const [email, setEmail] = useState("")

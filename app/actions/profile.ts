@@ -1,15 +1,12 @@
 "use server"
 
-import { createClient } from "@/lib/supabase/server"
 import { put } from "@vercel/blob"
 import { revalidatePath } from "next/cache"
+import { getUser } from "@/lib/azure/auth"
+import { update } from "@/lib/azure/database"
 
 export async function uploadProfilePicture(formData: FormData) {
-  const supabase = await createClient()
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const { data: { user } } = await getUser()
 
   if (!user) {
     return { error: "Not authenticated" }
@@ -38,7 +35,12 @@ export async function uploadProfilePicture(formData: FormData) {
     })
 
     // Update user avatar_url in database
-    const { error: updateError } = await supabase.from("users").update({ avatar_url: blob.url }).eq("id", user.id)
+    const { error: updateError } = await update(
+      "users",
+      { avatar_url: blob.url },
+      "id = @id",
+      { id: user.id }
+    )
 
     if (updateError) {
       return { error: updateError.message }

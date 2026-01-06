@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server"
+import { createClient } from '@/lib/azure/client'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -6,6 +6,8 @@ import Link from "next/link"
 import { MessageSquare, Plus, Eye, ThumbsUp, Clock, TrendingUp, Users, Sparkles } from "lucide-react"
 import ForumSearch from "@/components/forum-search"
 import AIMentionBadge from "@/components/ai-mention-badge"
+
+export const dynamic = 'force-dynamic'
 
 export default async function ForumPage() {
   const supabase = await createClient()

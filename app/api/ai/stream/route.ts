@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server"
+import { createClient } from '@/lib/azure/client'
 import OpenAI from "openai"
 
 export const runtime = "nodejs"

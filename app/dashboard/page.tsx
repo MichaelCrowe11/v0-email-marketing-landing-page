@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { createClient } from "@/lib/azure/client"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -27,7 +28,8 @@ import {
   Sparkles,
 } from "lucide-react"
 import Link from "next/link"
-import { createClient } from "@/lib/supabase/client"
+
+export const dynamic = 'force-dynamic'
 
 export default function DashboardPage() {
   const [projects, setProjects] = useState<any[]>([])

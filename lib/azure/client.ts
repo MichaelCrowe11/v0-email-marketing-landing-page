@@ -1,5 +1,4 @@
 // Client-side Azure database and auth helpers
-// This replaces @supabase/ssr client
 
 import type { User, Session } from "./auth"
 

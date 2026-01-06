@@ -1,7 +1,8 @@
 "use server"
 
 import { stripe } from "@/lib/stripe"
-import { createClient } from "@/lib/supabase/server"
+import { getUser } from "@/lib/azure/auth"
+import { selectSingle, update } from "@/lib/azure/database"
 
 // Consultation Price IDs from environment variables
 const CONSULTATION_PRICE_IDS = {
@@ -19,12 +20,8 @@ const SERVICE_PRICE_IDS = {
 }
 
 export async function startConsultationCheckout(consultationType: string) {
-  const supabase = await createClient()
-
   // Get current user
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const { data: { user } } = await getUser()
 
   if (!user) {
     throw new Error("You must be logged in to book a consultation")
@@ -40,7 +37,12 @@ export async function startConsultationCheckout(consultationType: string) {
   // Create or retrieve Stripe customer
   let customerId: string
 
-  const { data: userData } = await supabase.from("users").select("stripe_customer_id").eq("id", user.id).single()
+  const { data: userData } = await selectSingle<{ stripe_customer_id: string }>(
+    "users",
+    "stripe_customer_id",
+    "id = @id",
+    { id: user.id }
+  )
 
   if (userData?.stripe_customer_id) {
     customerId = userData.stripe_customer_id
@@ -48,13 +50,13 @@ export async function startConsultationCheckout(consultationType: string) {
     const customer = await stripe.customers.create({
       email: user.email,
       metadata: {
-        supabase_user_id: user.id,
+        azure_user_id: user.id,
       },
     })
     customerId = customer.id
 
     // Save customer ID to database
-    await supabase.from("users").update({ stripe_customer_id: customerId }).eq("id", user.id)
+    await update("users", { stripe_customer_id: customerId }, "id = @id", { id: user.id })
   }
 
   // Determine if it's a subscription (retainer) or one-time payment
@@ -83,12 +85,8 @@ export async function startConsultationCheckout(consultationType: string) {
 }
 
 export async function startServiceCheckout(serviceType: string) {
-  const supabase = await createClient()
-
   // Get current user
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const { data: { user } } = await getUser()
 
   if (!user) {
     throw new Error("You must be logged in to purchase this service")
@@ -104,7 +102,12 @@ export async function startServiceCheckout(serviceType: string) {
   // Create or retrieve Stripe customer
   let customerId: string
 
-  const { data: userData } = await supabase.from("users").select("stripe_customer_id").eq("id", user.id).single()
+  const { data: userData } = await selectSingle<{ stripe_customer_id: string }>(
+    "users",
+    "stripe_customer_id",
+    "id = @id",
+    { id: user.id }
+  )
 
   if (userData?.stripe_customer_id) {
     customerId = userData.stripe_customer_id
@@ -112,13 +115,13 @@ export async function startServiceCheckout(serviceType: string) {
     const customer = await stripe.customers.create({
       email: user.email,
       metadata: {
-        supabase_user_id: user.id,
+        azure_user_id: user.id,
       },
     })
     customerId = customer.id
 
     // Save customer ID to database
-    await supabase.from("users").update({ stripe_customer_id: customerId }).eq("id", user.id)
+    await update("users", { stripe_customer_id: customerId }, "id = @id", { id: user.id })
   }
 
   // Create checkout session (all services are one-time payments)

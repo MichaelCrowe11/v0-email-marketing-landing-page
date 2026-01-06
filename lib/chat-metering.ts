@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server"
+import { createClient } from '@/lib/azure/client'
 import { cookies } from "next/headers"
 
 const DAILY_FREE_MESSAGES = 10

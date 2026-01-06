@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server"
+import { createClient } from '@/lib/azure/client'
 import { redirect } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -7,6 +7,8 @@ import Link from "next/link"
 import { FileText, MessageSquare, Calendar, Mail, Crown, Settings } from "lucide-react"
 import SignOutButton from "@/components/sign-out-button"
 import { ProfilePictureUpload } from "@/components/profile-picture-upload"
+
+export const dynamic = 'force-dynamic'
 
 export default async function ProfilePage() {
   const supabase = await createClient()

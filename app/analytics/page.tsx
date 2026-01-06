@@ -1,7 +1,10 @@
-import { createClient } from "@/lib/supabase/server"
+import { createClient } from '@/lib/azure/client'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { TrendingUp, TrendingDown, Activity, Thermometer, Calendar, Target, Award, AlertTriangle } from "lucide-react"
+
+// Prevent static generation - requires runtime auth
+export const dynamic = 'force-dynamic'
 
 export default async function AnalyticsPage() {
   const supabase = await createClient()

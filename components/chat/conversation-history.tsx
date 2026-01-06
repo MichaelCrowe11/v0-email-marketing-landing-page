@@ -1,10 +1,10 @@
 "use client"
 
+import { createClient } from '@/lib/azure/client'
+
 import type React from "react"
 
 import { useState, useEffect } from "react"
-import { createClient } from "@/lib/supabase/client"
-import { getConversations, deleteConversation, type Conversation } from "@/lib/supabase/chat-queries"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 

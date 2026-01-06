@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server"
+import { createClient } from '@/lib/azure/client'
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -9,6 +9,8 @@ import { notFound } from "next/navigation"
 import ReplyForm from "@/components/reply-form"
 import LikeButton from "@/components/like-button"
 import AIAvatar from "@/components/ai-avatar"
+
+export const dynamic = 'force-dynamic'
 
 export default async function ForumPostPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params

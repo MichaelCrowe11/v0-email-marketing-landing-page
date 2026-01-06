@@ -2,10 +2,10 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { ThumbsUp, Loader2 } from "lucide-react"
 import { toast } from "sonner"
+import { createClient } from "@/lib/azure/client"
 
 export default function LikeButton({
   postId,

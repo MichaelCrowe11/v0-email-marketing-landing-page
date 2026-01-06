@@ -1,9 +1,11 @@
-import { createClient } from "@/lib/supabase/server"
+import { createClient } from '@/lib/azure/client'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { FileText, Plus, Eye } from "lucide-react"
+
+export const dynamic = 'force-dynamic'
 
 export default async function DocumentsPage() {
   const supabase = await createClient()

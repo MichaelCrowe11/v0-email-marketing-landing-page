@@ -1,6 +1,8 @@
-import { createClient } from "@/lib/supabase/server"
+import { createClient } from '@/lib/azure/client'
 import { redirect } from "next/navigation"
 import DocumentForm from "@/components/document-form"
+
+export const dynamic = 'force-dynamic'
 
 export default async function NewDocumentPage() {
   const supabase = await createClient()

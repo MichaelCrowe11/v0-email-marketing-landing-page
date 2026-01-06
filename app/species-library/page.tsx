@@ -1,5 +1,7 @@
 "use client"
 
+import { createClient } from '@/lib/azure/client'
+
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -7,7 +9,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Search, Thermometer, Droplets, TrendingUp, DollarSign, Beaker, ChefHat } from "lucide-react"
-import { createClient } from "@/lib/supabase/client"
+
+export const dynamic = 'force-dynamic'
 
 export default function SpeciesLibraryPage() {
   const [species, setSpecies] = useState<any[]>([])

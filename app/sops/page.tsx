@@ -1,5 +1,7 @@
 "use client"
 
+import { createClient } from '@/lib/azure/client'
+
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -7,8 +9,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Search, Clock, TrendingUp, AlertTriangle, CheckCircle2, Eye, BookOpen, Play } from "lucide-react"
-import { createClient } from "@/lib/supabase/client"
 import Link from "next/link"
+
+export const dynamic = 'force-dynamic'
 
 export default function SOPsPage() {
   const [sops, setSops] = useState<any[]>([])

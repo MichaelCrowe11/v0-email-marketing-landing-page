@@ -1,5 +1,5 @@
+import { createClient } from '@/lib/azure/client'
 import { NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
 
 export const runtime = "nodejs"
 
