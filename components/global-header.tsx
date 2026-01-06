@@ -52,17 +52,20 @@ export function GlobalHeader() {
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </Button>
           <Link href="/" className="flex items-center gap-2">
-            <div className="relative w-8 h-8">
+            <div className="relative w-8 h-8 rounded-lg overflow-hidden bg-[#f5f0e8]">
               <Image
-                src="/crowe-logic-logo.png"
-                alt="Crowe Mycology"
+                src="/southwest-mushrooms-logo.png"
+                alt="Southwest Mushrooms"
                 fill
-                className="object-contain"
+                className="object-contain p-0.5"
                 priority
                 sizes="32px"
               />
             </div>
-            <span className="font-bold text-lg">Crowe Mycology</span>
+            <div className="relative w-8 h-8 rounded-full overflow-hidden border border-primary/20">
+              <Image src="/crowe-avatar.png" alt="Crowe Mycology" fill className="object-cover" priority sizes="32px" />
+            </div>
+            <span className="font-bold text-lg text-primary">Crowe Mycology</span>
           </Link>
         </div>
 

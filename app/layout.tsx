@@ -67,9 +67,9 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: "Crowe Mycology - AI-Powered Mushroom Cultivation Platform",
+  title: "Crowe Mycology by Southwest Mushrooms - AI-Powered Cultivation Platform",
   description:
-    "Advanced mycology platform with AI-powered cultivation guidance, contamination detection, and comprehensive mushroom growing resources.",
+    "Professional mushroom cultivation platform by Southwest Mushrooms. AI-powered contamination detection, real-time monitoring, and comprehensive growing resources.",
   generator: "v0.app",
   applicationName: "Crowe Mycology",
   appleWebApp: {
@@ -101,7 +101,9 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
       </head>
-      <body className={`${inter.variable} ${firaCode.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
+      <body
+        className={`${inter.variable} ${firaCode.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} font-sans antialiased`}
+      >
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           <ConfirmationProvider>
             <SidebarNav />

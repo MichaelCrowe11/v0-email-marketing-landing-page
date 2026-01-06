@@ -13,17 +13,17 @@ const sizeClasses = {
 
 export function AIAvatar({ state, size = "md" }: AIAvatarProps) {
   const animationClass = {
-    idle: "animate-logo-breathe",
-    thinking: "animate-logo-pulse",
-    streaming: "animate-logo-glow",
-    completed: "animate-logo-success",
+    idle: "animate-fruiting-pulse",
+    thinking: "animate-spore-drift",
+    streaming: "animate-substrate-breathe",
+    completed: "animate-mycelial-grow",
   }[state]
 
   return (
     <img
-      src="/crowe-logic-logo.png"
-      alt="Crowe Logic AI"
-      className={`${sizeClasses[size]} rounded-full ring-2 ring-primary/30 ${animationClass} transition-all duration-200`}
+      src="/crowe-avatar.png"
+      alt="Crowe Mycology AI"
+      className={`${sizeClasses[size]} rounded-full ring-2 ring-primary/30 ${animationClass} transition-all duration-200 object-cover`}
     />
   )
 }

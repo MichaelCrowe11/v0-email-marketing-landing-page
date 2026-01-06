@@ -6,13 +6,14 @@ export function BrandFamilyBanner() {
   const brands = [
     {
       name: "Southwest Mushrooms",
-      logo: "/southwest-mushrooms-logo.jpg",
+      logo: "/southwest-mushrooms-logo.png",
       tagline: "Premium Gourmet Mushrooms",
+      isPrimary: true,
     },
     {
       name: "Crowe Mycology",
-      logo: "/crowe-mycology-logo.png",
-      tagline: "Mycological Expertise & Consulting",
+      logo: "/crowe-avatar.png",
+      tagline: "AI-Powered Cultivation Intelligence",
     },
     {
       name: "Mycology Research Pipeline",
@@ -45,8 +46,12 @@ export function BrandFamilyBanner() {
         {duplicatedBrands.map((brand, index) => (
           <div key={`${brand.name}-${index}`} className="flex items-center gap-6 mx-16 min-w-[350px] group">
             <div
-              className={`relative w-20 h-20 rounded-2xl overflow-hidden backdrop-blur-md border-2 border-border/50 flex items-center justify-center p-3 transition-all duration-300 group-hover:scale-110 group-hover:border-primary/50 group-hover:shadow-lg ${
-                brand.needsWhiteBg ? "bg-white" : "bg-card/60"
+              className={`relative w-20 h-20 rounded-2xl overflow-hidden backdrop-blur-md border-2 flex items-center justify-center p-2 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg ${
+                brand.isPrimary
+                  ? "border-primary/50 bg-[#f5f0e8] group-hover:border-primary"
+                  : brand.needsWhiteBg
+                    ? "border-border/50 bg-white group-hover:border-primary/50"
+                    : "border-border/50 bg-card/60 group-hover:border-primary/50"
               }`}
             >
               <Image
@@ -54,11 +59,17 @@ export function BrandFamilyBanner() {
                 alt={brand.name}
                 width={80}
                 height={80}
-                className="object-contain"
+                className={`object-contain ${brand.isPrimary ? "rounded-xl" : ""}`}
               />
             </div>
             <div className="flex flex-col gap-1">
-              <h3 className="text-xl font-bold text-foreground tracking-tight group-hover:text-primary transition-colors">
+              <h3
+                className={`text-xl font-bold tracking-tight transition-colors ${
+                  brand.isPrimary
+                    ? "text-primary group-hover:text-primary/80"
+                    : "text-foreground group-hover:text-primary"
+                }`}
+              >
                 {brand.name}
               </h3>
               <p className="text-sm text-muted-foreground font-medium">{brand.tagline}</p>

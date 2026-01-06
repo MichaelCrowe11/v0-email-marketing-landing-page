@@ -194,7 +194,7 @@ Crowe Logic possesses **exceptional AI infrastructure** with access to GPT-5 var
 
 ### 5.1 Environment Variables to Add
 
-```env
+\`\`\`env
 # Stripe Price IDs (add to Vercel)
 NEXT_PUBLIC_PRO_MONTHLY_PRICE_ID=price_1SmQMnLynR0PTQ0FvgyuufSx
 NEXT_PUBLIC_PRO_YEARLY_PRICE_ID=price_1SmQMnLynR0PTQ0FjfABvYfc
@@ -220,11 +220,11 @@ AZURE_OPENAI_ENDPOINT=https://crowelogicinc.cognitiveservices.azure.com/
 AZURE_OPENAI_GPT5_DEPLOYMENT=gpt-5
 AZURE_OPENAI_SORA_DEPLOYMENT=sora-2
 AZURE_CLAUDE_DEPLOYMENT=claude-opus-4-5
-```
+\`\`\`
 
 ### 5.2 Model Routing Strategy
 
-```typescript
+\`\`\`typescript
 // Recommended model routing by tier/task
 const MODEL_ROUTING = {
   free: {
@@ -250,7 +250,7 @@ const MODEL_ROUTING = {
     video: 'sora-2',
   },
 }
-```
+\`\`\`
 
 ### 5.3 API Integration Points
 
@@ -335,7 +335,7 @@ const MODEL_ROUTING = {
 
 ## Appendix: Complete Price ID Reference
 
-```
+\`\`\`
 # SUBSCRIPTIONS
 Pro Monthly:           price_1SmQMnLynR0PTQ0FvgyuufSx ($97)
 Pro Yearly:            price_1SmQMnLynR0PTQ0FjfABvYfc ($997)
@@ -369,7 +369,7 @@ Ultimate Bundle:       price_1SmQPcLynR0PTQ0FJ5d27O1K ($197)
 Master Course:         price_1SmQOpLynR0PTQ0FJxpJqt8Z ($997)
 Facility Setup:        price_1SmQOqLynR0PTQ0FERNZFrDt ($50,000)
 Custom AI Training:    price_1SmQOrLynR0PTQ0FQxeuOABX ($5,000)
-```
+\`\`\`
 
 ---
 

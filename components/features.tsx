@@ -46,8 +46,7 @@ export function Features() {
 
   return (
     <section id="features" className="px-4 py-24 md:py-32 bg-background relative overflow-hidden">
-      {/* Background Grid */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-[0.03] pointer-events-none" />
+      <div className="absolute inset-0 opacity-[0.02] pointer-events-none bg-[radial-gradient(ellipse_at_center,_var(--primary)_0%,transparent_50%)]" />
 
       <div className="mx-auto max-w-7xl relative z-10">
         <div className="text-center mb-16">
@@ -63,9 +62,9 @@ export function Features() {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="group p-6 rounded-xl border border-border/50 bg-card hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
+              className="group p-6 rounded-xl border border-border/50 bg-card/80 backdrop-blur-sm hover:border-primary/30 hover:bg-card transition-all duration-300 hover:-translate-y-1"
             >
-              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-4 group-hover:scale-110 transition-transform duration-300">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-4 group-hover:bg-primary/15 transition-all duration-300 group-hover:animate-fruiting-pulse">
                 {feature.icon}
               </div>
               <h3 className="text-lg font-semibold text-foreground mb-2">{feature.title}</h3>

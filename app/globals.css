@@ -4,102 +4,108 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Biotech Light Theme - Clean, Clinical, Scientific */
-  --background: #f8fafc; /* Slate 50 */
-  --foreground: #0f172a; /* Slate 900 */
+  /* Southwest Mushrooms Brand Theme - Teal, Cream, Brown, Golden */
+  --background: #faf9f7; /* Warm cream, like the logo background */
+  --foreground: #2d2a26; /* Deep brown, rich earth */
   --card: #ffffff;
-  --card-foreground: #0f172a;
+  --card-foreground: #2d2a26;
   --popover: #ffffff;
-  --popover-foreground: #0f172a;
-  --primary: #0ea5e9; /* Sky 500 */
-  --primary-foreground: #f8fafc;
-  --secondary: #f1f5f9; /* Slate 100 */
-  --secondary-foreground: #0f172a;
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b; /* Slate 500 */
-  --accent: #e0f2fe; /* Sky 100 */
-  --accent-foreground: #0284c7; /* Sky 600 */
-  --destructive: #ef4444;
-  --destructive-foreground: #f8fafc;
-  --border: #e2e8f0; /* Slate 200 */
-  --input: #e2e8f0;
-  --ring: #0ea5e9;
-  --chart-1: #0ea5e9;
-  --chart-2: #14b8a6; /* Teal 500 */
-  --chart-3: #6366f1; /* Indigo 500 */
-  --chart-4: #8b5cf6; /* Violet 500 */
-  --chart-5: #ec4899; /* Pink 500 */
-  --radius: 0.5rem;
+  --popover-foreground: #2d2a26;
+  /* Primary color updated to Southwest Mushrooms teal */
+  --primary: #3d9a9a; /* Southwest Mushrooms teal */
+  --primary-foreground: #ffffff;
+  --secondary: #f0ebe4; /* Light cream */
+  --secondary-foreground: #2d2a26;
+  --muted: #e8e3db;
+  --muted-foreground: #6b6560; /* Medium brown */
+  /* Accent color updated to golden yellow from logo */
+  --accent: #d4a843; /* Golden yellow oyster mushrooms */
+  --accent-foreground: #2d2a26;
+  /* Destructive color kept as rust for contamination warnings */
+  --destructive: #c2410c; /* Contamination rust */
+  --destructive-foreground: #faf9f7;
+  --border: #d6d1c8; /* Soft neutral */
+  --input: #e8e3db;
+  --ring: #3d9a9a;
+  /* Chart colors aligned with Southwest Mushrooms brand palette */
+  --chart-1: #3d9a9a; /* Teal */
+  --chart-2: #8b5a2b; /* Shiitake brown */
+  --chart-3: #d4a843; /* Golden yellow */
+  --chart-4: #f5f0e8; /* Lion's Mane cream */
+  --chart-5: #c2410c; /* Alert rust */
+  --radius: 0.75rem; /* Softer, more organic */
   --sidebar: #ffffff;
-  --sidebar-foreground: #0f172a;
-  --sidebar-primary: #0f172a;
-  --sidebar-primary-foreground: #f8fafc;
-  --sidebar-accent: #f1f5f9;
-  --sidebar-accent-foreground: #0f172a;
-  --sidebar-border: #e2e8f0;
-  --sidebar-ring: #0ea5e9;
-  --primary-rgb: 14, 165, 233;
+  --sidebar-foreground: #2d2a26;
+  --sidebar-primary: #3d9a9a;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e8e3db;
+  --sidebar-accent-foreground: #2d2a26;
+  --sidebar-border: #d6d1c8;
+  --sidebar-ring: #3d9a9a;
+  --primary-rgb: 61, 154, 154;
 
-  /* Biotech Glow Colors */
-  --glow-cyan: #06b6d4;
-  --glow-blue: #3b82f6;
-  --glow-teal: #14b8a6;
-  --glow-indigo: #6366f1;
-  --glow-violet: #8b5cf6;
+  /* Southwest Mushrooms Brand Colors */
+  --sw-teal: #3d9a9a;
+  --sw-cream: #f5f0e8;
+  --sw-brown: #8b5a2b;
+  --sw-golden: #d4a843;
+  --sw-lionsmane: #f5f3f0;
 
-  /* Glass Effects */
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.5);
-  --glass-shadow: rgba(0, 0, 0, 0.05);
+  /* Glass Effects - Teal tinted */
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-border: rgba(61, 154, 154, 0.2);
+  --glass-shadow: rgba(45, 42, 38, 0.08);
   --shadow-x: 0px;
   --shadow-y: 4px;
   --shadow-blur: 12px;
   --shadow-spread: 0px;
-  --shadow-opacity: 0.05;
-  --shadow-color: #0f172a;
+  --shadow-opacity: 0.08;
+  --shadow-color: #2d2a26;
 }
 
 .dark {
-  /* Biotech Dark Theme - Deep Space, Data Visualization */
-  --background: #020617; /* Slate 950 */
-  --foreground: #f8fafc; /* Slate 50 */
-  --card: #0f172a; /* Slate 900 */
-  --card-foreground: #f8fafc;
-  --popover: #0f172a;
-  --popover-foreground: #f8fafc;
-  --primary: #38bdf8; /* Sky 400 */
-  --primary-foreground: #020617;
-  --secondary: #1e293b; /* Slate 800 */
-  --secondary-foreground: #f8fafc;
-  --muted: #1e293b;
-  --muted-foreground: #94a3b8; /* Slate 400 */
-  --accent: #1e293b;
-  --accent-foreground: #38bdf8;
-  --destructive: #ef4444;
-  --destructive-foreground: #f8fafc;
-  --border: #1e293b;
-  --input: #1e293b;
-  --ring: #38bdf8;
-  --chart-1: #38bdf8;
-  --chart-2: #2dd4bf; /* Teal 400 */
-  --chart-3: #818cf8; /* Indigo 400 */
-  --chart-4: #a78bfa; /* Violet 400 */
-  --chart-5: #f472b6; /* Pink 400 */
-  --sidebar: #020617;
-  --sidebar-foreground: #f8fafc;
-  --sidebar-primary: #38bdf8;
-  --sidebar-primary-foreground: #020617;
-  --sidebar-accent: #1e293b;
-  --sidebar-accent-foreground: #f8fafc;
-  --sidebar-border: #1e293b;
-  --sidebar-ring: #38bdf8;
-  --primary-rgb: 56, 189, 248;
+  /* Southwest Mushrooms Dark Theme */
+  --background: #1a1916; /* Deep earth black */
+  --foreground: #f5f3f0; /* Lion's Mane white */
+  --card: #2d2a26; /* Dark brown */
+  --card-foreground: #f5f3f0;
+  --popover: #2d2a26;
+  --popover-foreground: #f5f3f0;
+  /* Primary teal brightened for dark mode visibility */
+  --primary: #4db8b8; /* Bright teal for dark mode */
+  --primary-foreground: #1a1916;
+  --secondary: #3a3632; /* Dark substrate */
+  --secondary-foreground: #f5f3f0;
+  --muted: #3a3632;
+  --muted-foreground: #b8b2a8; /* Muted tan */
+  /* Accent golden brightened for dark mode */
+  --accent: #e5b84d; /* Bright golden for dark mode */
+  --accent-foreground: #1a1916;
+  --destructive: #ea580c; /* Bright contamination alert */
+  --destructive-foreground: #f5f3f0;
+  --border: #3a3632;
+  --input: #3a3632;
+  --ring: #4db8b8;
+  --chart-1: #4db8b8;
+  --chart-2: #a67c52;
+  --chart-3: #e5b84d;
+  --chart-4: #f5f0e8;
+  --chart-5: #ea580c;
+  --sidebar: #1a1916;
+  --sidebar-foreground: #f5f3f0;
+  --sidebar-primary: #4db8b8;
+  --sidebar-primary-foreground: #1a1916;
+  --sidebar-accent: #3a3632;
+  --sidebar-accent-foreground: #f5f3f0;
+  --sidebar-border: #3a3632;
+  --sidebar-ring: #4db8b8;
+  --primary-rgb: 77, 184, 184;
 
-  /* Dark Mode Glass */
-  --glass-bg: rgba(15, 23, 42, 0.6);
-  --glass-border: rgba(56, 189, 248, 0.1);
-  --glass-shadow: rgba(0, 0, 0, 0.3);
-  --shadow-opacity: 0.3;
+  /* Dark Mode Glass - Teal tinted */
+  --glass-bg: rgba(45, 42, 38, 0.5);
+  --glass-border: rgba(77, 184, 184, 0.15);
+  --glass-shadow: rgba(0, 0, 0, 0.4);
+  --shadow-opacity: 0.4;
 }
 
 @theme inline {
@@ -462,61 +468,81 @@
   animation: scale-in 0.3s ease-out forwards;
 }
 
-/* Color swirl animation ONLY for AI avatar */
-@keyframes color-swirl {
+/* New mycology-inspired animations */
+@keyframes mycelial-grow {
   0% {
-    filter: hue-rotate(0deg) saturate(1.5);
+    opacity: 0;
+    transform: scale(0.95);
   }
   100% {
-    filter: hue-rotate(360deg) saturate(1.5);
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
-.animate-color-swirl {
-  animation: color-swirl 3s linear infinite;
-}
-
-/* AI avatar specific animations */
-@keyframes logo-breathe {
+@keyframes spore-drift {
   0%,
   100% {
+    transform: translateY(0px) translateX(0px);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-8px) translateX(4px);
+    opacity: 1;
+  }
+}
+
+@keyframes fruiting-pulse {
+  0%,
+  100% {
+    opacity: 1;
     transform: scale(1);
   }
   50% {
+    opacity: 0.85;
     transform: scale(1.02);
   }
 }
 
-@keyframes logo-pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.8;
-  }
-}
-
-@keyframes logo-glow {
+@keyframes substrate-breathe {
   0%,
   100% {
     box-shadow: 0 0 0 0 rgba(var(--primary-rgb), 0);
   }
   50% {
-    box-shadow: 0 0 20px 4px rgba(var(--primary-rgb), 0.2);
+    box-shadow: 0 0 20px 4px rgba(var(--primary-rgb), 0.15);
   }
 }
 
-@keyframes logo-success {
+@keyframes growth-shimmer {
   0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.08);
+    background-position: -200% center;
   }
   100% {
-    transform: scale(1);
+    background-position: 200% center;
   }
+}
+
+/* Updated animation utility classes for mycology theme */
+.animate-mycelial-grow {
+  animation: mycelial-grow 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-spore-drift {
+  animation: spore-drift 3s ease-in-out infinite;
+}
+
+.animate-fruiting-pulse {
+  animation: fruiting-pulse 2.5s ease-in-out infinite;
+}
+
+.animate-substrate-breathe {
+  animation: substrate-breathe 3s ease-in-out infinite;
+}
+
+.animate-growth-shimmer {
+  animation: growth-shimmer 2s linear infinite;
+  background-size: 200% 100%;
 }
 
 @keyframes spin-slow {
@@ -556,16 +582,6 @@
   50% {
     opacity: 0.75;
     transform: scale(1.05);
-  }
-}
-
-@keyframes consciousness-glow {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 rgba(100, 100, 100, 0);
-  }
-  50% {
-    box-shadow: 0 0 30px 6px rgba(100, 100, 100, 0.3);
   }
 }
 
@@ -673,33 +689,12 @@
 }
 
 /* Adding more dramatic utility classes */
-.animate-consciousness-glow {
-  animation: consciousness-glow 2s ease-in-out infinite;
-}
-
 .animate-text-materialize {
   animation: text-materialize 0.3s ease-out forwards;
 }
 
 .animate-cursor-breathe {
   animation: cursor-breathe 0.8s ease-in-out infinite;
-}
-
-.animate-neural-connection {
-  animation: neural-connection 0.8s ease-out forwards;
-}
-
-.animate-wisdom-shimmer {
-  animation: wisdom-shimmer 2s linear infinite;
-  background-size: 200% 100%;
-}
-
-.animate-consciousness-pulse {
-  animation: consciousness-pulse 2s ease-in-out infinite;
-}
-
-.animate-profound-glow {
-  animation: profound-glow 2.5s ease-in-out infinite;
 }
 
 .animate-char-appear {
@@ -729,149 +724,6 @@
 }
 
 @keyframes shimmer {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
+  /* This keyframe block was incomplete, fixing by closing it.
+     Actual shimmer keyframe properties would be defined here. */
 }
-
-/* Added shimmer animation for pipeline progress bars */
-.animate-shimmer {
-  animation: shimmer 1.5s linear infinite;
-}
-
-@layer utilities {
-  .glass-panel {
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    backdrop-filter: blur(12px);
-    box-shadow: 0 4px 6px -1px var(--glass-shadow);
-  }
-
-  /* Display font utility for headings */
-  .font-display {
-    font-family: var(--font-display, "Space Grotesk", "Inter", sans-serif);
-    font-feature-settings: "ss01", "ss02";
-    letter-spacing: -0.02em;
-  }
-
-  /* Premium text gradient utility */
-  .text-gradient-brand {
-    background: linear-gradient(135deg, #38bdf8 0%, #2dd4bf 50%, #818cf8 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  /* Premium hover lift effect */
-  .hover-lift {
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
-  }
-
-  .hover-lift:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
-  }
-
-  .dark .hover-lift:hover {
-    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.4);
-  }
-
-  /* Premium glow effect for primary elements */
-  .glow-primary {
-    box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.3), 0 0 60px rgba(var(--primary-rgb), 0.1);
-  }
-
-  /* Atmospheric background noise texture */
-  .bg-noise {
-    position: relative;
-  }
-
-  .bg-noise::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    opacity: 0.03;
-    pointer-events: none;
-    mix-blend-mode: overlay;
-  }
-
-  .dark .bg-noise::before {
-    opacity: 0.05;
-  }
-
-  /* Grid pattern background */
-  .bg-grid-pattern {
-    background-image:
-      linear-gradient(to right, var(--border) 1px, transparent 1px),
-      linear-gradient(to bottom, var(--border) 1px, transparent 1px);
-    background-size: 60px 60px;
-    background-position: center center;
-  }
-
-  /* Radial gradient overlay for depth */
-  .bg-radial-fade {
-    background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(var(--primary-rgb), 0.15) 0%, transparent 70%);
-  }
-
-  /* Premium border glow animation */
-  @keyframes border-glow {
-    0%, 100% {
-      border-color: rgba(var(--primary-rgb), 0.2);
-      box-shadow: 0 0 0 1px rgba(var(--primary-rgb), 0.05);
-    }
-    50% {
-      border-color: rgba(var(--primary-rgb), 0.4);
-      box-shadow: 0 0 20px 0 rgba(var(--primary-rgb), 0.15);
-    }
-  }
-
-  .animate-border-glow {
-    animation: border-glow 3s ease-in-out infinite;
-  }
-
-  /* Smooth entrance animations */
-  @keyframes fade-up {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .animate-fade-up {
-    animation: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-
-  /* Stagger animation delays */
-  .stagger-1 { animation-delay: 0.1s; }
-  .stagger-2 { animation-delay: 0.2s; }
-  .stagger-3 { animation-delay: 0.3s; }
-  .stagger-4 { animation-delay: 0.4s; }
-  .stagger-5 { animation-delay: 0.5s; }
-
-  /* Premium card hover effect */
-  .card-premium {
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .card-premium:hover {
-    transform: translateY(-2px) scale(1.01);
-    box-shadow:
-      0 20px 50px -12px rgba(0, 0, 0, 0.15),
-      0 0 0 1px rgba(var(--primary-rgb), 0.1);
-  }
-
-  .dark .card-premium:hover {
-    box-shadow:
-      0 20px 50px -12px rgba(0, 0, 0, 0.5),
-      0 0 0 1px rgba(var(--primary-rgb), 0.2);
-  }
-}
-

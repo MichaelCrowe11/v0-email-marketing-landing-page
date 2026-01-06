@@ -190,12 +190,12 @@ You have access to models that most competitors don't:
 ## 9. Integration Opportunities
 
 ### 9.1 Connect to Crowe Mycology Platform
-```
+\`\`\`
 Azure Cognitive Services → /app/api/ai/stream/route.ts
 Azure Blob Storage → /app/api/crowe-vision/analyze/route.ts
 Cosmos DB → Real-time cultivation monitoring
 Sora 2 → /app/api/video/generate/route.ts
-```
+\`\`\`
 
 ### 9.2 New Integrations to Build
 1. **Azure IoT Hub** - Sensor data from grow rooms

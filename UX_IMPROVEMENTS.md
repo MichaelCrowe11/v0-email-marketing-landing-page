@@ -20,7 +20,7 @@ This document details the three UX improvements that have been implemented to en
 
 ### Usage Examples:
 
-```tsx
+\`\`\`tsx
 import { toast } from "sonner"
 
 // Success notification
@@ -57,7 +57,7 @@ toast.promise(
     error: "Failed to save",
   }
 )
-```
+\`\`\`
 
 ### Features:
 - ✅ Auto-dismiss (default 4s)
@@ -91,7 +91,7 @@ toast.promise(
 
 #### Programmatic Usage (Recommended):
 
-```tsx
+\`\`\`tsx
 "use client"
 
 import { useConfirmation } from "@/hooks/use-confirmation"
@@ -124,11 +124,11 @@ export function DeleteButton({ projectId }: { projectId: string }) {
     </Button>
   )
 }
-```
+\`\`\`
 
 #### Component-based Usage:
 
-```tsx
+\`\`\`tsx
 import {
   ConfirmationDialog,
   ConfirmationDialogTrigger,
@@ -164,7 +164,7 @@ export function LogoutButton() {
     </ConfirmationDialog>
   )
 }
-```
+\`\`\`
 
 ### Features:
 - ✅ Programmatic API via `useConfirmation` hook
@@ -194,15 +194,15 @@ export function LogoutButton() {
 ### Improvements:
 
 **Before:**
-```tsx
+\`\`\`tsx
 <Button disabled={isLoading}>
   <ThumbsUp />
   <span>{likes}</span>
 </Button>
-```
+\`\`\`
 
 **After:**
-```tsx
+\`\`\`tsx
 <Button disabled={isLoading}>
   {isLoading ? (
     <Loader2 className="w-4 h-4 animate-spin" />
@@ -211,7 +211,7 @@ export function LogoutButton() {
   )}
   <span>{isLoading ? "..." : likes}</span>
 </Button>
-```
+\`\`\`
 
 ### User Feedback Flow:
 
@@ -283,17 +283,17 @@ export function LogoutButton() {
 ### Replace console.log with toast notifications:
 
 **Before:**
-```tsx
+\`\`\`tsx
 try {
   await saveData()
   console.log("Data saved")
 } catch (error) {
   console.error("Failed to save:", error)
 }
-```
+\`\`\`
 
 **After:**
-```tsx
+\`\`\`tsx
 import { toast } from "sonner"
 
 try {
@@ -302,17 +302,17 @@ try {
 } catch (error) {
   toast.error("Failed to save data")
 }
-```
+\`\`\`
 
 ### Add confirmation dialogs to destructive actions:
 
 **Before:**
-```tsx
+\`\`\`tsx
 <Button onClick={deleteItem}>Delete</Button>
-```
+\`\`\`
 
 **After:**
-```tsx
+\`\`\`tsx
 import { useConfirmation } from "@/hooks/use-confirmation"
 
 const { confirm } = useConfirmation()
@@ -329,26 +329,26 @@ const { confirm } = useConfirmation()
 >
   Delete
 </Button>
-```
+\`\`\`
 
 ### Add loading feedback to buttons:
 
 **Before:**
-```tsx
+\`\`\`tsx
 <Button onClick={handleSubmit} disabled={isLoading}>
   Submit
 </Button>
-```
+\`\`\`
 
 **After:**
-```tsx
+\`\`\`tsx
 import { Loader2 } from "lucide-react"
 
 <Button onClick={handleSubmit} disabled={isLoading}>
   {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
   {isLoading ? "Submitting..." : "Submit"}
 </Button>
-```
+\`\`\`
 
 ---
 

@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react"
 import Image from "next/image"
 
-interface CodeParticle {
+interface SporeParticle {
   id: number
-  code: string
+  symbol: string
   x: number
   y: number
   color: string
@@ -24,88 +24,62 @@ interface AIAvatarSwirlProps {
 }
 
 export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
-  const [particles, setParticles] = useState<CodeParticle[]>([])
-  const [isBlinking, setIsBlinking] = useState(false)
+  const [particles, setParticles] = useState<SporeParticle[]>([])
   const [avatarOpacity, setAvatarOpacity] = useState(1)
 
-  const codeSnippets = [
-    "AI",
-    "ML",
-    "{}",
-    "<>",
-    "fn",
-    "=>",
-    "if",
-    "&&",
-    "||",
-    "++",
-    "==",
-    "!=",
-    "[]",
-    "()",
-    "//",
-    "/*",
-    "*/",
-    ";;",
+  const sporeSymbols = [
+    "◦", // Spore
+    "⚬", // Mycelium node
+    "○", // Fruiting body
+    "◉", // Mature spore
+    "⊙", // Spore cluster
+    "◌", // Young mycelium
+    "⊚", // Colonizing
+    "⊕", // Growth point
   ]
 
-  const colors = [
-    "rgb(236, 72, 153)", // pink-500
-    "rgb(168, 85, 247)", // purple-500
-    "rgb(59, 130, 246)", // blue-500
-    "rgb(34, 211, 238)", // cyan-400
-    "rgb(74, 222, 128)", // green-400
-    "rgb(250, 204, 21)", // yellow-400
-    "rgb(251, 146, 60)", // orange-400
-    "rgb(239, 68, 68)", // red-500
+  const naturalColors = [
+    "rgb(212, 196, 168)", // Mycelium beige
+    "rgb(156, 116, 86)", // Mushroom brown
+    "rgb(74, 124, 89)", // Growth green
+    "rgb(184, 152, 118)", // Substrate tan
+    "rgb(245, 243, 240)", // White mycelium
+    "rgb(107, 93, 79)", // Dark soil
   ]
 
   useEffect(() => {
     if (state === "thinking" || state === "responding") {
-      const blinkInterval = setInterval(
+      const breatheInterval = setInterval(
         () => {
-          setIsBlinking(true)
-          setAvatarOpacity(0.3)
-
-          setTimeout(() => {
-            setAvatarOpacity(1)
-          }, 150)
-
-          setTimeout(() => {
-            setAvatarOpacity(0.5)
-          }, 300)
-
-          setTimeout(() => {
-            setAvatarOpacity(1)
-            setIsBlinking(false)
-          }, 450)
+          setAvatarOpacity(0.7)
+          setTimeout(() => setAvatarOpacity(1), 300)
+          setTimeout(() => setAvatarOpacity(0.85), 600)
+          setTimeout(() => setAvatarOpacity(1), 900)
         },
-        state === "thinking" ? 1200 : 2000,
+        state === "thinking" ? 2000 : 3000,
       )
-
-      return () => clearInterval(blinkInterval)
+      return () => clearInterval(breatheInterval)
     } else {
       setAvatarOpacity(1)
-      setIsBlinking(false)
     }
   }, [state])
 
   useEffect(() => {
-    const particleCount = state === "thinking" ? 24 : state === "responding" ? 18 : 12
-    const newParticles: CodeParticle[] = Array.from({ length: particleCount }, (_, i) => ({
+    const particleCount = state === "thinking" ? 16 : state === "responding" ? 12 : 8
+    const newParticles: SporeParticle[] = Array.from({ length: particleCount }, (_, i) => ({
       id: i,
-      code: codeSnippets[Math.floor(Math.random() * codeSnippets.length)],
+      symbol: sporeSymbols[Math.floor(Math.random() * sporeSymbols.length)],
       x: 0,
       y: 0,
-      color: colors[i % colors.length],
+      color: naturalColors[i % naturalColors.length],
       speed:
         state === "thinking"
-          ? 2 + Math.random() * 3
+          ? 1 + Math.random() * 1.5
           : state === "responding"
-            ? 0.5 + Math.random() * 1
-            : 0.5 + Math.random() * 1,
+            ? 0.3 + Math.random() * 0.7
+            : 0.3 + Math.random() * 0.5,
       angle: (i / particleCount) * Math.PI * 2,
-      radius: size * 0.8 + Math.random() * (size * 0.4),
+      radius: size * 0.75 + Math.random() * (size * 0.3),
       opacity: 1,
       scale: 1,
     }))
@@ -117,34 +91,31 @@ export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
     let time = 0
 
     const animate = () => {
-      time += state === "thinking" ? 0.05 : state === "responding" ? 0.03 : 0.02
+      time += state === "thinking" ? 0.03 : state === "responding" ? 0.02 : 0.015
 
       setParticles((prev) =>
         prev.map((p, index) => {
-          const newAngle = p.angle + p.speed * 0.02
-          let wobble = 0
+          const newAngle = p.angle + p.speed * 0.015
+          let drift = 0
           let newRadius = p.radius
           let newOpacity = p.opacity
           let newScale = 1
 
           if (state === "thinking") {
-            // Aggressive storm mode - chaotic movement with pulsing
-            wobble = Math.sin(time * 3 + p.id) * (size * 0.3) + Math.cos(time * 2 + p.id * 0.5) * (size * 0.2)
-            newRadius = p.radius + Math.sin(time * 4 + p.id) * (size * 0.3)
-            newOpacity = 0.7 + Math.sin(time * 5 + p.id) * 0.3
-            newScale = 1 + Math.sin(time * 3 + p.id) * 0.3
+            drift = Math.sin(time * 2 + p.id) * (size * 0.2) + Math.cos(time * 1.5 + p.id * 0.3) * (size * 0.15)
+            newRadius = p.radius + Math.sin(time * 2.5 + p.id) * (size * 0.2)
+            newOpacity = 0.6 + Math.sin(time * 3 + p.id) * 0.4
+            newScale = 0.8 + Math.sin(time * 2 + p.id) * 0.3
           } else if (state === "responding") {
-            // Flowing into center - particles spiral inward
-            const spiralFactor = Math.sin(time * 2 + p.id * 0.5) * 0.3
-            newRadius = p.radius * (0.8 + spiralFactor)
-            newOpacity = 0.8 + Math.sin(time * 3 + p.id) * 0.2
-            newScale = 1 + Math.sin(time * 4 + p.id) * 0.2
-            wobble = Math.sin(time * 2 + p.id) * (size * 0.15)
+            const spiralFactor = Math.sin(time * 1.5 + p.id * 0.4) * 0.2
+            newRadius = p.radius * (0.85 + spiralFactor)
+            newOpacity = 0.7 + Math.sin(time * 2 + p.id) * 0.3
+            newScale = 0.9 + Math.sin(time * 2.5 + p.id) * 0.2
+            drift = Math.sin(time * 1.5 + p.id) * (size * 0.1)
           } else {
-            // Idle mode - gentle rainbow swirl
-            wobble = Math.sin(time * 2 + p.id) * (size * 0.15)
-            newOpacity = 0.6 + Math.sin(time * 1.5 + p.id) * 0.4
-            newScale = 1 + Math.sin(time * 2 + p.id) * 0.1
+            drift = Math.sin(time * 1.5 + p.id) * (size * 0.12)
+            newOpacity = 0.5 + Math.sin(time + p.id) * 0.3
+            newScale = 0.9 + Math.sin(time * 1.5 + p.id) * 0.15
           }
 
           return {
@@ -153,8 +124,8 @@ export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
             radius: newRadius,
             opacity: newOpacity,
             scale: newScale,
-            x: Math.cos(newAngle) * (newRadius + wobble),
-            y: Math.sin(newAngle) * (newRadius + wobble),
+            x: Math.cos(newAngle) * (newRadius + drift),
+            y: Math.sin(newAngle) * (newRadius + drift),
           }
         }),
       )
@@ -171,39 +142,39 @@ export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
         {particles.map((particle) => (
           <div
             key={particle.id}
-            className="absolute font-mono text-[8px] font-bold whitespace-nowrap transition-all duration-100 pointer-events-none"
+            className="absolute text-sm font-light whitespace-nowrap transition-all duration-150 pointer-events-none"
             style={{
               transform: `translate(${particle.x}px, ${particle.y}px) scale(${particle.scale})`,
               color: particle.color,
-              opacity: particle.opacity * (isBlinking ? 0.3 : 1),
-              textShadow: `0 0 ${state === "thinking" ? "10px" : "6px"} currentColor, 0 0 ${state === "thinking" ? "20px" : "12px"} currentColor`,
-              filter: `blur(${state === "thinking" ? "0.5px" : "0px"})`,
+              opacity: particle.opacity * avatarOpacity,
+              textShadow: `0 0 ${state === "thinking" ? "8px" : "4px"} currentColor`,
+              filter: "blur(0.3px)",
             }}
           >
-            {particle.code}
+            {particle.symbol}
           </div>
         ))}
       </div>
 
       <div
-        className={`absolute inset-0 rounded-full p-0.5 transition-all duration-300 ${
-          state === "thinking"
-            ? "shadow-lg shadow-purple-500/50"
-            : state === "responding"
-              ? "shadow-lg shadow-cyan-500/50"
-              : "shadow-lg shadow-accent/30"
-        }`}
+        className={`absolute inset-0 rounded-full p-0.5 transition-all duration-300`}
         style={{
-          transform: state === "thinking" ? "scale(1.05)" : "scale(1)",
+          transform: state === "thinking" ? "scale(1.03)" : "scale(1)",
           opacity: avatarOpacity,
+          boxShadow:
+            state === "thinking"
+              ? "0 0 16px rgba(156, 116, 86, 0.4)"
+              : state === "responding"
+                ? "0 0 12px rgba(74, 124, 89, 0.3)"
+                : "0 0 8px rgba(124, 93, 63, 0.2)",
         }}
       >
         <Image
-          src="/crowe-logic-logo.png"
-          alt="Crowe Logic AI"
+          src="/crowe-avatar.png"
+          alt="Crowe Mycology AI"
           width={size}
           height={size}
-          className="rounded-full border-2 border-accent/50 object-cover"
+          className="rounded-full border-2 border-primary/30 object-cover"
           priority
           quality={95}
         />

@@ -41,7 +41,7 @@ All three UX quick wins have been successfully implemented and integrated:
 - Integration in [app/layout.tsx:94](app/layout.tsx#L94) ✅
 
 **Implementation Quality:**
-```typescript
+\`\`\`typescript
 // Theme-aware, glass morphism styling
 <Toaster
   theme={theme}
@@ -55,7 +55,7 @@ All three UX quick wins have been successfully implemented and integrated:
     }
   }}
 />
-```
+\`\`\`
 
 **Features Validated:**
 - ✅ Success, error, info, warning variants
@@ -65,12 +65,12 @@ All three UX quick wins have been successfully implemented and integrated:
 - ✅ Accessible (ARIA live regions)
 
 **Usage Example:**
-```tsx
+\`\`\`tsx
 import { toast } from "sonner"
 
 toast.success("Project created!")
 toast.error("Failed to save", { description: "Details here" })
-```
+\`\`\`
 
 **Integration Points Found:**
 - [components/like-button.tsx:26-56](components/like-button.tsx#L26-L56) - Like action feedback ✅
@@ -88,7 +88,7 @@ toast.error("Failed to save", { description: "Details here" })
 - Provider integration in [app/layout.tsx:87-99](app/layout.tsx#L87-L99) ✅
 
 **Implementation Quality:**
-```typescript
+\`\`\`typescript
 // Context-based provider pattern
 export function ConfirmationProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<ConfirmationContextType["state"]>({ ... })
@@ -99,7 +99,7 @@ export function ConfirmationProvider({ children }: { children: ReactNode }) {
 
   return <ConfirmationContext.Provider value={{ confirm, close, state }}>
 }
-```
+\`\`\`
 
 **Features Validated:**
 - ✅ Programmatic API via hook
@@ -110,7 +110,7 @@ export function ConfirmationProvider({ children }: { children: ReactNode }) {
 - ✅ Keyboard accessible (ESC to close)
 
 **Usage Example:**
-```tsx
+\`\`\`tsx
 const { confirm } = useConfirmation()
 
 confirm({
@@ -122,7 +122,7 @@ confirm({
     toast.success("Deleted!")
   }
 })
-```
+\`\`\`
 
 **Recommended Integration Points:**
 - [ ] Project deletion in [app/dashboard/page.tsx](app/dashboard/page.tsx)
@@ -139,7 +139,7 @@ confirm({
 - [components/like-button.tsx](components/like-button.tsx) ✅
 
 **Improvements Validated:**
-```tsx
+\`\`\`tsx
 // Before: Just disabled state
 <Button disabled={isLoading}>
   <ThumbsUp />
@@ -155,7 +155,7 @@ confirm({
   )}
   <span>{isLoading ? "..." : likes}</span>
 </Button>
-```
+\`\`\`
 
 **Features Validated:**
 - ✅ Spinning loader during async operation
@@ -191,7 +191,7 @@ confirm({
 **Validated Pages:**
 
 #### Public Routes (10)
-```
+\`\`\`
 / (homepage)                                  ✅ Working - Orchestrated hero
 /pricing                                      ✅ Working - 14 products ready
 /contact                                      ✅ Working - Contact form
@@ -202,18 +202,18 @@ confirm({
 /thanks                                       ✅ Working - Post-purchase
 /species-library                              ✅ Working - Mushroom database
 /contamination-guide                          ✅ Working - ID guide
-```
+\`\`\`
 
 #### Authentication Routes (4)
-```
+\`\`\`
 /auth/login                                   ✅ Working - Supabase auth
 /auth/sign-up                                 ✅ Working - User registration
 /auth/sign-up-success                         ✅ Working - Email confirmation
 /auth/error                                   ✅ Working - Error handling
-```
+\`\`\`
 
 #### Protected Application Routes (14)
-```
+\`\`\`
 /dashboard                                    ✅ Working - Main hub
 /chat                                         ✅ Working - AI assistant
 /crowe-vision                                 ✅ ENHANCED - Multimodal analysis
@@ -228,25 +228,25 @@ confirm({
 /forum                                        ✅ Working - Community
 /forum/new                                    ✅ Working - Create post
 /forum/[id]                                   ✅ Dynamic - View thread
-```
+\`\`\`
 
 #### Knowledge Base Routes (6)
-```
+\`\`\`
 /docs                                         ✅ Working - Documentation hub
 /docs/overview                                ✅ Working - Platform overview
 /docs/agents                                  ✅ Working - AI agents guide
 /docs/quality                                 ✅ Working - Quality standards
 /docs/schemas                                 ✅ Working - Data schemas
 /knowledge-base                               ✅ Working - Searchable KB
-```
+\`\`\`
 
 #### Utility Routes (4)
-```
+\`\`\`
 /sops                                         ✅ Working - Standard procedures
 /search                                       ✅ Working - Global search
 /projects/[id]                                ✅ Dynamic - Project details
 /admin/stripe-links                           ✅ Working - Admin panel
-```
+\`\`\`
 
 ---
 
@@ -257,7 +257,7 @@ confirm({
 **Component Organization:**
 
 #### Base UI Components (16) - [components/ui/](components/ui/)
-```
+\`\`\`
 alert.tsx                    ✅ Alert notifications
 avatar.tsx                   ✅ User avatars
 badge.tsx                    ✅ Status badges (4 variants)
@@ -275,11 +275,11 @@ separator.tsx                ✅ Visual dividers
 tabs.tsx                     ✅ Tabbed interfaces
 textarea.tsx                 ✅ Multi-line inputs
 toaster.tsx                  ✅ NEW - Toast system
-```
+\`\`\`
 
 #### Feature Components (58) - [components/](components/)
 **Landing Page (8):**
-```
+\`\`\`
 hero.tsx                     ✅ Hero section wrapper
 orchestrated-hero.tsx        ✅ ENHANCED - Animated hero with glow
 features.tsx                 ✅ 8-feature grid
@@ -288,10 +288,10 @@ proof-section.tsx            ✅ Social proof
 pricing.tsx                  ✅ Pricing cards
 faq.tsx                      ✅ FAQ section
 brand-family-banner.tsx      ✅ Brand banner
-```
+\`\`\`
 
 **AI & Chat (14):**
-```
+\`\`\`
 chat-demo.tsx                ✅ Chat mockup
 streaming-chat-demo.tsx      ✅ Real-time demo
 ai-avatar.tsx                ✅ Animated avatar
@@ -307,10 +307,10 @@ chat/chain-of-thought.tsx    ✅ Reasoning display
 chat/conversation-history.tsx ✅ Chat history
 chat/ai-avatar.tsx           ✅ Chat avatar
 chat/voice-chat-button.tsx   ✅ Voice input
-```
+\`\`\`
 
 **Dashboard & Data (12):**
-```
+\`\`\`
 chat/substrate-calculator.tsx ✅ Substrate calc
 chat/yield-calculator.tsx     ✅ Yield predictor
 chat/environment-monitor.tsx  ✅ Real-time sensors
@@ -323,20 +323,20 @@ advanced-terminal.tsx         ✅ Terminal UI
 chat/workflow-terminal.tsx    ✅ Workflow logs
 chat/debug-panel.tsx          ✅ Debug console
 loading-skeleton.tsx          ✅ Skeleton screens
-```
+\`\`\`
 
 **Vision & IDE (5):**
-```
+\`\`\`
 crowe-vision/crowe-vision-content.tsx ✅ ENHANCED - Vision UI
 ide/ide-shell.tsx             ✅ IDE container
 ide/monaco-editor.tsx         ✅ Code editor
 ide/terminal-output.tsx       ✅ Terminal
 ide/dataset-browser.tsx       ✅ Data browser
 ide/model-selector.tsx        ✅ Model picker
-```
+\`\`\`
 
 **Navigation & Layout (8):**
-```
+\`\`\`
 global-header.tsx             ✅ ENHANCED - Dashboard link added
 sidebar-nav.tsx               ✅ Sidebar navigation
 premium-nav.tsx               ✅ Premium features nav
@@ -345,10 +345,10 @@ user-menu.tsx                 ✅ User dropdown
 theme-toggle.tsx              ✅ Dark/light toggle
 sign-out-button.tsx           ✅ Logout button
 page-header.tsx               ✅ Page headers
-```
+\`\`\`
 
 **Forms & Interaction (9):**
-```
+\`\`\`
 document-form.tsx             ✅ Document creation
 forum-post-form.tsx           ✅ Forum posting
 reply-form.tsx                ✅ Reply interface
@@ -358,10 +358,10 @@ profile-picture-upload.tsx    ✅ Avatar upload
 checkout.tsx                  ✅ Stripe checkout
 ai-reply-trigger.tsx          ✅ AI mention trigger
 ai-mention-badge.tsx          ✅ @CroweLogic badge
-```
+\`\`\`
 
 **Utilities & UX (7):**
-```
+\`\`\`
 scroll-reveal.tsx             ✅ Scroll animations
 empty-state.tsx               ✅ Empty states
 error-boundary.tsx            ✅ Error handling
@@ -369,12 +369,12 @@ feature-gate.tsx              ✅ Feature flags
 optimized-image.tsx           ✅ Image optimization
 performance-monitor-init.tsx  ✅ Performance tracking
 global-confirmation-dialog.tsx ✅ NEW - Confirmation instance
-```
+\`\`\`
 
 **Examples (1):**
-```
+\`\`\`
 examples/ux-improvements-demo.tsx ✅ NEW - UX demo component
-```
+\`\`\`
 
 ---
 
@@ -403,7 +403,7 @@ examples/ux-improvements-demo.tsx ✅ NEW - UX demo component
 #### 3.1 Design Tokens - [app/globals.css](app/globals.css)
 
 **Color System:**
-```css
+\`\`\`css
 /* Light Theme */
 --primary: #0ea5e9 (Sky 500)
 --secondary: #f1f5f9 (Slate 100)
@@ -422,7 +422,7 @@ examples/ux-improvements-demo.tsx ✅ NEW - UX demo component
 --glow-cyan: #06b6d4
 --glow-blue: #3b82f6
 --glow-teal: #14b8a6
-```
+\`\`\`
 
 **Status:** ✅ Consistent, well-organized, accessible contrast ratios
 
@@ -431,7 +431,7 @@ examples/ux-improvements-demo.tsx ✅ NEW - UX demo component
 #### 3.2 Glass Morphism System
 
 **Implementation Quality:**
-```css
+\`\`\`css
 .glass-panel {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(24px) saturate(180%);
@@ -454,7 +454,7 @@ examples/ux-improvements-demo.tsx ✅ NEW - UX demo component
   background: rgba(0, 0, 0, 0.4);
   box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.02);
 }
-```
+\`\`\`
 
 **Status:** ✅ 5 glass variants for different contexts
 **Browser Support:** ✅ Chrome 76+, Safari 9+, Firefox 103+
@@ -466,29 +466,29 @@ examples/ux-improvements-demo.tsx ✅ NEW - UX demo component
 **Animation Categories:**
 
 **Standard Animations:**
-```css
+\`\`\`css
 @keyframes fade-in (300ms)
 @keyframes slide-up-fade (400ms)
 @keyframes scale-in (300ms)
 @keyframes shimmer (1.5s)
 @keyframes spin-slow (3s)
-```
+\`\`\`
 
 **AI/Consciousness Animations (Domain-specific):**
-```css
+\`\`\`css
 @keyframes thought-emerge         /* AI response materialization */
 @keyframes thought-pulse          /* Pulsing effect for active thinking */
 @keyframes consciousness-glow     /* Box shadow pulse */
 @keyframes text-materialize       /* Character-by-character reveal */
 @keyframes char-appear            /* Individual character animation */
-```
+\`\`\`
 
 **Logo Animations:**
-```css
+\`\`\`css
 @keyframes logo-breathe           /* Subtle scale pulse */
 @keyframes logo-glow              /* Radial glow effect */
 @keyframes logo-success           /* Bounce on success */
-```
+\`\`\`
 
 **Status:** ✅ 15+ custom animations with consistent timing functions
 **Performance:** ✅ GPU-accelerated (transform, opacity)
@@ -498,7 +498,7 @@ examples/ux-improvements-demo.tsx ✅ NEW - UX demo component
 #### 3.4 Typography System
 
 **Font Stack:**
-```typescript
+\`\`\`typescript
 // Body text
 const inter = Inter({
   variable: "--font-sans",
@@ -510,16 +510,16 @@ const firaCode = Fira_Code({
   variable: "--font-code",
   weight: ["400", "500", "600"],
 })
-```
+\`\`\`
 
 **Scale:**
-```css
+\`\`\`css
 text-xs   (0.75rem)
 text-sm   (0.875rem)
 text-base (1rem)
 text-lg   (1.125rem)
 text-xl through text-5xl
-```
+\`\`\`
 
 **Status:** ✅ Clear hierarchy, excellent readability
 
@@ -528,20 +528,20 @@ text-xl through text-5xl
 #### 3.5 Spacing & Layout
 
 **Radius System:**
-```css
+\`\`\`css
 --radius: 0.5rem
 --radius-sm: 0.125rem
 --radius-md: 0.25rem
 --radius-lg: 0.5rem
 --radius-xl: 0.625rem
-```
+\`\`\`
 
 **Shadow System:**
-```css
+\`\`\`css
 --shadow-xs through --shadow-2xl
 --shadow: var(--shadow-md) (default)
 --shadow-opacity: 0.05 (light) / 0.3 (dark)
-```
+\`\`\`
 
 **Status:** ✅ Consistent spacing scale, cohesive visual depth
 
@@ -550,7 +550,7 @@ text-xl through text-5xl
 #### 3.6 Recent Enhancements
 
 **Orchestrated Hero Component:**
-```tsx
+\`\`\`tsx
 // Background glow effect
 <div className="absolute inset-0 bg-gradient-to-b from-primary/20 via-transparent to-transparent animate-pulse" />
 
@@ -559,7 +559,7 @@ text-xl through text-5xl
 
 // Interactive CTAs
 <Button className="hover:scale-105 active:scale-95 transition-transform">
-```
+\`\`\`
 
 **Status:** ✅ Enhanced visual hierarchy and atmosphere
 
@@ -590,7 +590,7 @@ text-xl through text-5xl
 **File:** [lib/ai-provider.ts](lib/ai-provider.ts)
 
 **Implementation:**
-```typescript
+\`\`\`typescript
 export const getAIProvider = (modelName: string) => {
   const useAzure = process.env.AZURE_OPENAI_API_KEY &&
                    process.env.AZURE_OPENAI_RESOURCE_NAME;
@@ -604,7 +604,7 @@ export const getAIProvider = (modelName: string) => {
 
   return openai(modelName);
 };
-```
+\`\`\`
 
 **Supported Providers:**
 - ✅ Azure OpenAI (gpt-5.2, gpt-4o deployments)
@@ -614,7 +614,7 @@ export const getAIProvider = (modelName: string) => {
 - ✅ xAI (grok models)
 
 **Environment Variables Required:**
-```env
+\`\`\`env
 # Azure OpenAI (optional, falls back to OpenAI)
 AZURE_OPENAI_API_KEY=your-key
 AZURE_OPENAI_RESOURCE_NAME=your-resource-name
@@ -627,10 +627,10 @@ ANTHROPIC_API_KEY=your-key
 
 # Google (optional)
 GOOGLE_GENERATIVE_AI_API_KEY=your-key
-```
+\`\`\`
 
 **Chat API Integration:** [app/api/chat/route.ts](app/api/chat/route.ts)
-```typescript
+\`\`\`typescript
 function getModel(modelString: string) {
   // Azure GPT-5.2 support
   if (modelString === "gpt-5.2" || modelString === "azure/gpt-5.2") {
@@ -646,7 +646,7 @@ function getModel(modelString: string) {
   if (modelString.startsWith("openai/")) { ... }
   if (modelString.startsWith("anthropic/")) { ... }
 }
-```
+\`\`\`
 
 **Status:** ✅ Production-ready multi-provider architecture
 
@@ -659,7 +659,7 @@ function getModel(modelString: string) {
 **File:** [app/api/crowe-vision/analyze/route.ts](app/api/crowe-vision/analyze/route.ts)
 
 **Implementation:**
-```typescript
+\`\`\`typescript
 const model = getAIProvider("gpt-4o") // Uses Azure if configured
 
 const { object } = await generateObject({
@@ -674,10 +674,10 @@ const { object } = await generateObject({
   }],
   maxTokens: 2000,
 })
-```
+\`\`\`
 
 **Analysis Schema (Zod):**
-```typescript
+\`\`\`typescript
 const analysisSchema = z.object({
   species: z.string().optional(),
   confidence: z.number().min(0).max(100),
@@ -692,7 +692,7 @@ const analysisSchema = z.object({
   observations: z.array(z.string()),
   recommendations: z.array(z.string())
 })
-```
+\`\`\`
 
 **Features:**
 - ✅ Species identification
@@ -726,46 +726,46 @@ const analysisSchema = z.object({
 **Product Categories:**
 
 **1. Subscriptions (2 products):**
-```bash
+\`\`\`bash
 Master Grower Access - Monthly  ($497/mo)
 Master Grower Access - Yearly   ($4,997/yr)
-```
+\`\`\`
 
 **2. Consultations (4 products):**
-```bash
+\`\`\`bash
 1-Hour Expert Consultation      ($425)
 3-Hour Consultation Package     ($1,150)
 Full Day (6-Hour) Consultation  ($2,250)
 Monthly Consulting Retainer     ($25,000/mo)
-```
+\`\`\`
 
 **3. Credits/Lifetime Access (3 products):**
-```bash
+\`\`\`bash
 100 AI Credits                  ($10)
 1,000 AI Credits               ($75)
 Lifetime Founder Access        ($4,997 one-time)
-```
+\`\`\`
 
 **4. Books/Resources (5 products):**
-```bash
+\`\`\`bash
 The Mushroom Cultivator        ($35)
 Growing Gourmet Mushrooms      ($45)
 Mycelium Running               ($25)
 Digital Course Bundle          ($297)
 Complete Mycology Library      ($497)
-```
+\`\`\`
 
 **To Run:**
-```bash
+\`\`\`bash
 stripe login
 ./scripts/create_stripe_products.sh
-```
+\`\`\`
 
 **Next Steps:**
 1. ✅ Run script to create products
 2. [ ] Copy Price IDs from output
 3. [ ] Add to `.env.local`:
-```env
+\`\`\`env
 STRIPE_SECRET_KEY=sk_...
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_...
 
@@ -774,7 +774,7 @@ STRIPE_PRICE_MONTHLY_SUBSCRIPTION=price_...
 STRIPE_PRICE_YEARLY_SUBSCRIPTION=price_...
 STRIPE_PRICE_1HR_CONSULTATION=price_...
 # ... etc
-```
+\`\`\`
 
 **Checkout Integration:** [app/checkout/page.tsx](app/checkout/page.tsx)
 - ✅ Stripe Elements integration
@@ -794,27 +794,27 @@ STRIPE_PRICE_1HR_CONSULTATION=price_...
 **Tables Referenced in Code:**
 
 **Dashboard ([app/dashboard/page.tsx](app/dashboard/page.tsx)):**
-```sql
+\`\`\`sql
 -- Required tables
 user_subscriptions (user_id, status, credits_remaining, usage_this_month)
 cultivation_projects (id, name, species, stage, start_date, expected_harvest)
 environmental_readings (project_id, temperature, humidity, co2, timestamp)
 harvest_records (project_id, weight, quality, notes, harvest_date)
-```
+\`\`\`
 
 **Forum ([app/forum/page.tsx](app/forum/page.tsx)):**
-```sql
+\`\`\`sql
 -- Required tables
 forum_posts (id, title, content, author_id, created_at)
 forum_replies (id, post_id, content, author_id, created_at)
 forum_likes (user_id, post_id, reply_id)
-```
+\`\`\`
 
 **Documents ([app/documents/page.tsx](app/documents/page.tsx)):**
-```sql
+\`\`\`sql
 -- Required tables
 documents (id, title, content, author_id, tags, created_at)
-```
+\`\`\`
 
 **Recommendation:**
 - [ ] Run the provided migration script: [scripts/azure_schema.sql](scripts/azure_schema.sql)
@@ -832,7 +832,7 @@ documents (id, title, content, author_id, tags, created_at)
 
 **File:** [next.config.mjs](next.config.mjs)
 
-```javascript
+\`\`\`javascript
 const nextConfig = {
   typescript: {
     ignoreBuildErrors: true, // ⚠️ Permissive for rapid deployment
@@ -844,7 +844,7 @@ const nextConfig = {
     domains: ["..."], // ✅ Configured for external images
   },
 }
-```
+\`\`\`
 
 **Status:** ✅ Configured for Vercel deployment
 
@@ -859,7 +859,7 @@ const nextConfig = {
 
 **Required for Full Functionality:**
 
-```env
+\`\`\`env
 # Database (REQUIRED)
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGc...
@@ -883,7 +883,7 @@ RESEND_API_KEY=re_...
 
 # Analytics (Optional)
 NEXT_PUBLIC_VERCEL_ANALYTICS_ID=...
-```
+\`\`\`
 
 **Status:** ⚠️ Requires environment configuration before deployment
 
@@ -946,7 +946,7 @@ NEXT_PUBLIC_VERCEL_ANALYTICS_ID=...
 ### Immediate (Can Complete Now)
 
 #### 1. Run Automation Scripts ✅
-```bash
+\`\`\`bash
 # Authenticate CLIs (one-time)
 stripe login
 az login
@@ -956,7 +956,7 @@ az login
 
 # Note the Price IDs from output
 # Add to Vercel environment variables
-```
+\`\`\`
 
 **Who Can Run:** You (user) - requires interactive login
 
@@ -968,14 +968,14 @@ az login
 ---
 
 #### 2. Set Environment Variables ⚠️
-```bash
+\`\`\`bash
 # In Vercel Dashboard > Project > Settings > Environment Variables
 # Add ALL required keys from Section 5.2
 
 # Or for local development
 cp .env.example .env.local
 # Edit .env.local with your keys
-```
+\`\`\`
 
 **Who Can Run:** You (user) - requires access to API keys
 
@@ -984,7 +984,7 @@ cp .env.example .env.local
 ---
 
 #### 3. Verify Database Schema ⚠️
-```bash
+\`\`\`bash
 # Option A: Azure SQL (if migrating)
 ./scripts/setup_azure_infra.sh
 # Then run azure_schema.sql in Azure Portal
@@ -992,7 +992,7 @@ cp .env.example .env.local
 # Option B: Supabase (current)
 # Manually create tables via Supabase SQL Editor
 # Copy SQL from scripts/azure_schema.sql
-```
+\`\`\`
 
 **Who Can Run:** You (user) - requires database access
 
@@ -1003,7 +1003,7 @@ cp .env.example .env.local
 ### Short-Term (This Week)
 
 #### 4. Deploy to Production ✅
-```bash
+\`\`\`bash
 # If using Vercel (recommended)
 git push origin main
 # Vercel auto-deploys
@@ -1011,7 +1011,7 @@ git push origin main
 # Manual deploy
 npm run build
 npm start
-```
+\`\`\`
 
 **Prerequisites:**
 - ✅ Environment variables set
@@ -1024,7 +1024,7 @@ npm start
 
 #### 5. Test Critical Flows 🧪
 **Manual Testing Checklist:**
-```
+\`\`\`
 [ ] Sign up new user
 [ ] Login existing user
 [ ] Create cultivation project
@@ -1034,7 +1034,7 @@ npm start
 [ ] Create forum post
 [ ] Like forum post (should see toast!)
 [ ] Delete project (should see confirmation!)
-```
+\`\`\`
 
 **Who Can Run:** Anyone (QA, team, you)
 
@@ -1045,7 +1045,7 @@ npm start
 #### 6. Integrate UX Improvements 🎨
 
 **Apply confirmations to:**
-```typescript
+\`\`\`typescript
 // app/dashboard/page.tsx
 const handleDeleteProject = (id: string) => {
   confirm({
@@ -1059,7 +1059,7 @@ const handleDeleteProject = (id: string) => {
     }
   })
 }
-```
+\`\`\`
 
 **Apply toasts to:**
 - [ ] Login success/error
@@ -1078,7 +1078,7 @@ const handleDeleteProject = (id: string) => {
 ### Medium-Term (This Month)
 
 #### 7. Add Tests 🧪
-```bash
+\`\`\`bash
 # Install Playwright
 npm install -D @playwright/test
 
@@ -1087,7 +1087,7 @@ mkdir -p tests/e2e
 # tests/e2e/auth.spec.ts
 # tests/e2e/dashboard.spec.ts
 # tests/e2e/vision.spec.ts
-```
+\`\`\`
 
 **Priority:** 🟡 IMPORTANT - Prevents regressions
 
@@ -1176,10 +1176,10 @@ mkdir -p tests/e2e
 3. `./scripts/add-to-vercel.sh` - Adds env vars to Vercel (needs customization)
 
 **Interactive Logins Required:**
-```bash
+\`\`\`bash
 stripe login    # Opens browser for authentication
 az login        # Opens browser for authentication
-```
+\`\`\`
 
 **Output Format:**
 - Stripe script outputs Price IDs → Copy to `.env.local`
@@ -1211,12 +1211,12 @@ az login        # Opens browser for authentication
 ### Common Issues
 
 **Build Fails:**
-```bash
+\`\`\`bash
 # Clear cache and rebuild
 rm -rf .next node_modules
 npm install
 npm run build
-```
+\`\`\`
 
 **Toast Not Showing:**
 - Check that `<Toaster />` is in [app/layout.tsx:94](app/layout.tsx#L94) ✅

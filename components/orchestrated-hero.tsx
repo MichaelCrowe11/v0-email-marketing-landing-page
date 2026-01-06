@@ -1,59 +1,31 @@
 "use client"
 
-import { useEffect, useState, useMemo, useCallback } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { Activity, Database, Terminal, Cpu, Network } from "lucide-react"
-
-interface CodeParticle {
-  id: number
-  code: string
-  angle: number
-  radius: number
-  color: string
-  speed: number
-}
+import Image from "next/image"
+import { Activity, Sprout, Terminal, Thermometer, Droplets } from "lucide-react"
 
 interface TerminalLine {
   text: string
   type: "success" | "info" | "warning"
 }
 
-interface CodeBlock {
+interface CultivationStage {
   id: string
   title: string
-  status: "pending" | "generating" | "complete"
+  status: "pending" | "active" | "complete"
   progress: number
 }
 
 export function OrchestratedHero() {
-  const [particles, setParticles] = useState<CodeParticle[]>([])
   const [terminalLines, setTerminalLines] = useState<TerminalLine[]>([])
-  const [codeBlocks, setCodeBlocks] = useState<CodeBlock[]>([
+  const [stages, setStages] = useState<CultivationStage[]>([
     { id: "1", title: "Substrate Sterilization", status: "pending", progress: 0 },
     { id: "2", title: "Inoculation & Spawn Run", status: "pending", progress: 0 },
     { id: "3", title: "Fruiting Initiation", status: "pending", progress: 0 },
     { id: "4", title: "Harvest Optimization", status: "pending", progress: 0 },
   ])
-
-  const codeSnippets = useMemo(
-    () => [
-      "import pandas as pd",
-      "from myco import Species",
-      "monitor.temp(75.2)",
-      "detect.contamination()",
-      "substrate.sterilize()",
-      "yield.predict(days)",
-      "camera.analyze(image)",
-      "env.optimize(co2)",
-    ],
-    [],
-  )
-
-  const colors = useMemo(
-    () => ["text-sky-400", "text-teal-400", "text-indigo-400", "text-cyan-400", "text-blue-400"],
-    [],
-  )
 
   const terminalMessages: TerminalLine[] = useMemo(
     () => [
@@ -68,37 +40,6 @@ export function OrchestratedHero() {
     ],
     [],
   )
-
-  const updateParticles = useCallback(() => {
-    setParticles((prev) =>
-      prev.map((p) => ({
-        ...p,
-        angle: p.angle + p.speed * 0.01,
-      })),
-    )
-  }, [])
-
-  useEffect(() => {
-    const newParticles: CodeParticle[] = Array.from({ length: 20 }, (_, i) => ({
-      id: i,
-      code: codeSnippets[Math.floor(Math.random() * codeSnippets.length)],
-      angle: (i / 20) * Math.PI * 2,
-      radius: 120 + Math.random() * 60,
-      color: colors[Math.floor(Math.random() * colors.length)],
-      speed: 0.3 + Math.random() * 0.5,
-    }))
-    setParticles(newParticles)
-
-    let animationFrame: number
-
-    const animate = () => {
-      updateParticles()
-      animationFrame = requestAnimationFrame(animate)
-    }
-
-    animate()
-    return () => cancelAnimationFrame(animationFrame)
-  }, [codeSnippets, colors, updateParticles])
 
   useEffect(() => {
     let lineIndex = 0
@@ -127,26 +68,26 @@ export function OrchestratedHero() {
   }, [terminalMessages])
 
   useEffect(() => {
-    let currentBlock = 0
+    let currentStage = 0
     const interval = setInterval(() => {
-      setCodeBlocks((prev) => {
+      setStages((prev) => {
         const updated = [...prev]
-        if (currentBlock < updated.length) {
-          if (updated[currentBlock].status === "pending") {
-            updated[currentBlock].status = "generating"
-          } else if (updated[currentBlock].status === "generating") {
-            updated[currentBlock].progress += 20
-            if (updated[currentBlock].progress >= 100) {
-              updated[currentBlock].status = "complete"
-              currentBlock++
+        if (currentStage < updated.length) {
+          if (updated[currentStage].status === "pending") {
+            updated[currentStage].status = "active"
+          } else if (updated[currentStage].status === "active") {
+            updated[currentStage].progress += 20
+            if (updated[currentStage].progress >= 100) {
+              updated[currentStage].status = "complete"
+              currentStage++
             }
           }
         } else {
           setTimeout(() => {
-            currentBlock = 0
-            updated.forEach((block) => {
-              block.status = "pending"
-              block.progress = 0
+            currentStage = 0
+            updated.forEach((stage) => {
+              stage.status = "pending"
+              stage.progress = 0
             })
           }, 2000)
         }
@@ -158,38 +99,42 @@ export function OrchestratedHero() {
   }, [])
 
   return (
-    <section className="relative min-h-screen pt-24 pb-12 px-4 overflow-hidden bg-background bg-grid-pattern bg-noise">
-      {/* Atmospheric gradient orbs */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-gradient-to-b from-primary/15 via-primary/5 to-transparent blur-[100px] rounded-full pointer-events-none" />
-      <div className="absolute top-20 right-1/4 w-[400px] h-[400px] bg-teal-500/10 blur-[120px] rounded-full pointer-events-none animate-pulse" />
-      <div className="absolute bottom-0 left-1/4 -translate-x-1/2 w-[600px] h-[600px] bg-indigo-500/5 blur-[150px] rounded-full pointer-events-none" />
-
-      {/* Radial fade overlay */}
-      <div className="absolute inset-0 bg-radial-fade pointer-events-none" />
+    <section className="relative min-h-screen pt-24 pb-12 px-4 overflow-hidden bg-background">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-primary/10 via-primary/5 to-transparent blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-accent/10 blur-[100px] rounded-full pointer-events-none" />
 
       <div className="mx-auto max-w-7xl relative z-10">
         <div className="text-center mb-16 space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium animate-fade-in hover:bg-primary/20 transition-colors cursor-default">
-            <Activity className="w-4 h-4" />
-            <span>AI-Powered Mushroom Cultivation</span>
+          <div className="flex justify-center mb-6 animate-fade-in">
+            <div className="relative w-24 h-24 rounded-2xl overflow-hidden border-2 border-primary/30 bg-[#f5f0e8] shadow-lg shadow-primary/10">
+              <Image
+                src="/southwest-mushrooms-logo.png"
+                alt="Southwest Mushrooms"
+                fill
+                className="object-contain p-1"
+              />
+            </div>
+          </div>
+
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium animate-fade-in hover:bg-primary/15 transition-colors cursor-default">
+            <Sprout className="w-4 h-4" />
+            <span>Southwest Mushrooms + Crowe Mycology</span>
           </div>
 
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-foreground animate-slide-up-fade font-display">
-            Master Cultivation with <br />
-            <span className="text-gradient-brand drop-shadow-sm">
-              Intelligent Mycology AI
-            </span>
+            Crowe Mycology <br />
+            <span className="text-primary">AI-Powered Growth</span>
           </h1>
 
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed animate-slide-up-fade animation-delay-200">
-            The ultimate platform for mushroom cultivation. Automated contamination detection, real-time environmental
-            monitoring, and AI-driven yield optimization for commercial and home growers.
+            Professional mushroom cultivation platform with automated contamination detection, real-time environmental
+            monitoring, and AI-driven yield optimization.
           </p>
 
           <div className="flex flex-wrap gap-4 justify-center animate-slide-up-fade animation-delay-400">
             <Button
               size="lg"
-              className="text-lg px-8 h-12 bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all hover:scale-105 active:scale-95"
+              className="text-lg px-8 h-12 bg-primary hover:bg-primary/90 shadow-lg shadow-primary/10 transition-all hover:scale-105 active:scale-95"
               asChild
             >
               <Link href="/chat">Start Growing</Link>
@@ -206,13 +151,13 @@ export function OrchestratedHero() {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto animate-scale-in animation-delay-600">
-          <div className="relative group rounded-xl h-[400px] overflow-hidden border border-border/50 bg-card/50 backdrop-blur-xl shadow-2xl card-premium animate-border-glow">
+          <div className="relative group rounded-xl h-[400px] overflow-hidden border border-border/50 bg-card/50 backdrop-blur-xl shadow-xl">
             <div className="flex items-center justify-between px-4 py-3 border-b border-border/50 bg-muted/30">
               <div className="flex items-center gap-2">
                 <div className="flex gap-1.5">
-                  <div className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/50" />
-                  <div className="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500/50" />
-                  <div className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50" />
+                  <div className="w-3 h-3 rounded-full bg-primary/20 border border-primary/40" />
+                  <div className="w-3 h-3 rounded-full bg-muted border border-border" />
+                  <div className="w-3 h-3 rounded-full bg-muted border border-border" />
                 </div>
                 <span className="ml-3 text-xs font-mono text-muted-foreground">cultivation-monitor — bash — 80x24</span>
               </div>
@@ -220,8 +165,6 @@ export function OrchestratedHero() {
             </div>
 
             <div className="p-6 font-mono text-sm h-full overflow-hidden relative">
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
               <div className="space-y-2">
                 {terminalLines.map((line, i) =>
                   line ? (
@@ -230,10 +173,10 @@ export function OrchestratedHero() {
                       <span
                         className={`${
                           line.type === "success"
-                            ? "text-teal-400"
+                            ? "text-emerald-600 dark:text-emerald-400"
                             : line.type === "warning"
-                              ? "text-yellow-400"
-                              : "text-sky-400"
+                              ? "text-amber-600 dark:text-amber-400"
+                              : "text-foreground"
                         }`}
                       >
                         {line.text}
@@ -249,29 +192,29 @@ export function OrchestratedHero() {
             </div>
           </div>
 
-          <div className="relative group rounded-xl h-[400px] overflow-hidden border border-border/50 bg-card/50 backdrop-blur-xl shadow-2xl card-premium animate-border-glow">
+          <div className="relative group rounded-xl h-[400px] overflow-hidden border border-border/50 bg-card/50 backdrop-blur-xl shadow-xl">
             <div className="flex items-center justify-between px-4 py-3 border-b border-border/50 bg-muted/30">
               <div className="flex items-center gap-2">
-                <Network className="w-4 h-4 text-primary" />
+                <Sprout className="w-4 h-4 text-primary" />
                 <span className="text-xs font-medium text-foreground">Growth Pipeline Status</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                 </span>
                 <span className="text-xs text-muted-foreground">Active</span>
               </div>
             </div>
 
             <div className="p-6 space-y-6">
-              {codeBlocks.map((block, index) => (
-                <div key={block.id} className="relative">
-                  {index < codeBlocks.length - 1 && (
+              {stages.map((stage, index) => (
+                <div key={stage.id} className="relative">
+                  {index < stages.length - 1 && (
                     <div className="absolute left-6 top-10 bottom-[-24px] w-0.5 bg-border">
                       <div
                         className={`w-full bg-primary transition-all duration-1000 ${
-                          block.status === "complete" ? "h-full" : "h-0"
+                          stage.status === "complete" ? "h-full" : "h-0"
                         }`}
                       />
                     </div>
@@ -280,19 +223,19 @@ export function OrchestratedHero() {
                   <div className="flex items-center gap-4">
                     <div
                       className={`relative z-10 flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all duration-300 ${
-                        block.status === "complete"
-                          ? "border-teal-500 bg-teal-500/10 text-teal-500"
-                          : block.status === "generating"
-                            ? "border-primary bg-primary/10 text-primary animate-pulse"
+                        stage.status === "complete"
+                          ? "border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                          : stage.status === "active"
+                            ? "border-primary bg-primary/10 text-primary animate-fruiting-pulse"
                             : "border-muted bg-muted/50 text-muted-foreground"
                       }`}
                     >
-                      {block.status === "complete" ? (
+                      {stage.status === "complete" ? (
                         <Activity className="w-6 h-6" />
-                      ) : block.status === "generating" ? (
-                        <Cpu className="w-6 h-6 animate-spin-slow" />
+                      ) : stage.status === "active" ? (
+                        <Thermometer className="w-6 h-6" />
                       ) : (
-                        <Database className="w-6 h-6" />
+                        <Droplets className="w-6 h-6" />
                       )}
                     </div>
 
@@ -300,22 +243,24 @@ export function OrchestratedHero() {
                       <div className="flex justify-between mb-1">
                         <span
                           className={`text-sm font-medium ${
-                            block.status === "generating" ? "text-primary" : "text-foreground"
+                            stage.status === "active" ? "text-primary" : "text-foreground"
                           }`}
                         >
-                          {block.title}
+                          {stage.title}
                         </span>
                         <span className="text-xs text-muted-foreground font-mono">
-                          {block.status === "complete" ? "100%" : `${block.progress}%`}
+                          {stage.status === "complete" ? "100%" : `${stage.progress}%`}
                         </span>
                       </div>
 
                       <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
                         <div
                           className={`h-full rounded-full transition-all duration-300 ${
-                            block.status === "complete" ? "bg-teal-500" : "bg-primary"
+                            stage.status === "complete"
+                              ? "bg-emerald-500"
+                              : "bg-primary animate-growth-shimmer bg-gradient-to-r from-primary via-primary/80 to-primary"
                           }`}
-                          style={{ width: `${block.progress}%` }}
+                          style={{ width: `${stage.progress}%` }}
                         />
                       </div>
                     </div>

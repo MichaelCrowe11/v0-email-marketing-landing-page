@@ -23,7 +23,7 @@
 
 ## 📂 Project Structure
 
-```bash
+\`\`\`bash
 ├── app/                  # Next.js App Router pages
 │   ├── dashboard/        # User dashboard & metrics
 │   ├── chat/            # AI Assistant interface
@@ -34,27 +34,27 @@
 │   └── [feature].tsx    # Feature-specific components (e.g., orchestrated-hero.tsx)
 ├── lib/                 # Utility functions & Supabase client
 └── public/              # Static assets
-```
+\`\`\`
 
 ## 🚦 Getting Started
 
 1.  **Clone the repository**:
-    ```bash
+    \`\`\`bash
     git clone https://github.com/MichaelCrowe11/v0-email-marketing-landing-page.git
     cd v0-email-marketing-landing-page
-    ```
+    \`\`\`
 
 2.  **Install dependencies**:
-    ```bash
+    \`\`\`bash
     pnpm install
     # or
     npm install
-    ```
+    \`\`\`
 
 3.  **Run Development Server**:
-    ```bash
+    \`\`\`bash
     npm run dev
-    ```
+    \`\`\`
 
 4.  **Open in Browser**:
     Navigate to `http://localhost:3000` to see the application.

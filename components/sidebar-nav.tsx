@@ -35,7 +35,7 @@ const navGroups = [
     items: [
       { href: "/", label: "Home", icon: Home },
       { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-      { href: "/ide", label: "Biotech IDE", icon: Code2 },
+      { href: "/ide", label: "Cultivation IDE", icon: Code2 },
     ],
   },
   {
@@ -121,23 +121,36 @@ export function SidebarNav() {
         <div className="flex flex-col h-full pb-4">
           <a
             href="/"
-            className="flex items-center justify-center px-6 py-4 border-b border-sidebar-border group shrink-0 hover:bg-sidebar-accent/50 transition-colors"
+            className="flex items-center px-4 py-3 border-b border-sidebar-border group shrink-0 hover:bg-sidebar-accent/50 transition-colors"
             style={{ height: `${HEADER_HEIGHT}px` }}
             aria-label="Crowe Mycology Home"
           >
-            <div className="relative w-10 h-10 flex-shrink-0 mr-3">
+            <div className="relative w-12 h-12 flex-shrink-0 mr-2 rounded-xl overflow-hidden bg-[#f5f0e8] border border-primary/20">
               <Image
-                src="/crowe-logic-logo.png"
-                alt="Crowe Mycology Logo"
+                src="/southwest-mushrooms-logo.png"
+                alt="Southwest Mushrooms"
                 fill
-                className="object-contain transition-transform group-hover:scale-105"
+                className="object-contain p-1 transition-transform group-hover:scale-105"
+                priority
+                sizes="48px"
+              />
+            </div>
+            <div className="relative w-10 h-10 flex-shrink-0 mr-2 rounded-full overflow-hidden border-2 border-primary/30">
+              <Image
+                src="/crowe-avatar.png"
+                alt="Crowe Mycology"
+                fill
+                className="object-cover transition-transform group-hover:scale-105"
                 priority
                 sizes="40px"
               />
             </div>
-            <span className="font-bold text-lg tracking-tight text-sidebar-foreground group-hover:text-primary transition-colors">
-              Crowe Mycology
-            </span>
+            <div className="flex flex-col">
+              <span className="font-bold text-sm tracking-tight text-primary group-hover:text-primary/80 transition-colors">
+                Crowe Mycology
+              </span>
+              <span className="text-[10px] text-muted-foreground">by Southwest Mushrooms</span>
+            </div>
           </a>
 
           <nav className="flex-1 p-4 space-y-6 overflow-y-auto" aria-label="Main menu">
@@ -156,7 +169,7 @@ export function SidebarNav() {
                         href={item.href}
                         className={`flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 ${
                           active
-                            ? "bg-sidebar-accent text-sidebar-foreground shadow-sm"
+                            ? "bg-primary/10 text-primary border border-primary/20 shadow-sm"
                             : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50 active:bg-sidebar-accent"
                         }`}
                         onClick={() => setIsOpen(false)}
