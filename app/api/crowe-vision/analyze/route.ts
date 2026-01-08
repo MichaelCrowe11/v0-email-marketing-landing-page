@@ -1,6 +1,4 @@
 import { generateObject } from "ai"
-import { openai } from "@ai-sdk/openai"
-import { getAIProvider } from "@/lib/ai-provider"
 import { z } from "zod"
 
 const analysisSchema = z.object({
@@ -36,13 +34,10 @@ export async function POST(req: Request) {
       return Response.json({ error: "Invalid image URL format" }, { status: 400 })
     }
 
-    // Use Azure "gpt-5.2" if available via helper, otherwise standard gpt-4o
-    const model = getAIProvider("gpt-4o") 
-    
     console.log("[v0] Crowe Vision: Starting analysis")
 
     const { object } = await generateObject({
-      model: model,
+      model: "openai/gpt-4o",
       schema: analysisSchema,
       messages: [
         {
@@ -75,7 +70,10 @@ Be specific, practical, and focus on actionable insights. If contamination is de
     return Response.json({ analysis: object })
   } catch (error) {
     console.error("[v0] Crowe Vision analysis error:", error)
-    return Response.json({ error: "Analysis failed", details: error instanceof Error ? error.message : String(error) }, { status: 500 })
+    return Response.json(
+      { error: "Analysis failed", details: error instanceof Error ? error.message : String(error) },
+      { status: 500 },
+    )
   }
 }
 

@@ -108,7 +108,7 @@ export default function RootLayout({
           <ConfirmationProvider>
             <SidebarNav />
             <GlobalHeader />
-            <div className="md:ml-64" style={{ paddingTop: `${HEADER_HEIGHT}px` }}>
+            <div className="md:ml-60" style={{ paddingTop: `${HEADER_HEIGHT}px` }}>
               <Suspense fallback={null}>{children}</Suspense>
             </div>
             <PerformanceMonitorInit />

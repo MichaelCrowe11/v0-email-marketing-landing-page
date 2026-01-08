@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useEffect, useState, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -60,17 +59,6 @@ const TerminalIcon = ({ className }: { className?: string }) => (
   </svg>
 )
 
-const SensorIcon = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className}>
-    <circle cx="12" cy="12" r="3" />
-    <path d="M12 2v2M12 20v2M2 12h2M20 12h2" strokeLinecap="round" />
-    <path
-      d="M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
-      strokeLinecap="round"
-    />
-  </svg>
-)
-
 interface TerminalLine {
   text: string
   type: "success" | "info" | "warning"
@@ -87,46 +75,22 @@ interface CultivationStage {
 export function OrchestratedHero() {
   const [terminalLines, setTerminalLines] = useState<TerminalLine[]>([])
   const [stages, setStages] = useState<CultivationStage[]>([
-    {
-      id: "1",
-      title: "Substrate Sterilization",
-      status: "pending",
-      progress: 0,
-      icon: <SubstrateIcon className="w-5 h-5" />,
-    },
-    {
-      id: "2",
-      title: "Inoculation & Spawn Run",
-      status: "pending",
-      progress: 0,
-      icon: <SporeIcon className="w-5 h-5" />,
-    },
-    {
-      id: "3",
-      title: "Fruiting Initiation",
-      status: "pending",
-      progress: 0,
-      icon: <FruitingIcon className="w-5 h-5" />,
-    },
-    {
-      id: "4",
-      title: "Harvest Optimization",
-      status: "pending",
-      progress: 0,
-      icon: <HarvestIcon className="w-5 h-5" />,
-    },
+    { id: "1", title: "Substrate Prep", status: "pending", progress: 0, icon: <SubstrateIcon className="w-4 h-4" /> },
+    { id: "2", title: "Inoculation", status: "pending", progress: 0, icon: <SporeIcon className="w-4 h-4" /> },
+    { id: "3", title: "Fruiting", status: "pending", progress: 0, icon: <FruitingIcon className="w-4 h-4" /> },
+    { id: "4", title: "Harvest", status: "pending", progress: 0, icon: <HarvestIcon className="w-4 h-4" /> },
   ])
 
   const terminalMessages: TerminalLine[] = useMemo(
     () => [
-      { text: "[INIT] Crowe Mycology System v3.1.2 online...", type: "info" },
-      { text: "[SENSOR] Temperature: 75.2°F | Humidity: 92% | CO2: 850ppm", type: "info" },
-      { text: "[CAMERA] Analyzing growth chamber A for contamination...", type: "info" },
-      { text: "[SUCCESS] No contaminants detected - culture is clean", type: "success" },
-      { text: "[AI] Predicting optimal harvest window...", type: "info" },
-      { text: "[WARN] Humidity slightly low in chamber B - adjusting", type: "warning" },
-      { text: "[RESULT] Estimated yield: 3.2kg in 4 days", type: "success" },
-      { text: "[SYSTEM] All cultivation systems nominal", type: "success" },
+      { text: "[INIT] Crowe Mycology v3.2 online...", type: "info" },
+      { text: "[SENSOR] Temp: 75°F | RH: 92% | CO2: 850ppm", type: "info" },
+      { text: "[CAMERA] Scanning for contamination...", type: "info" },
+      { text: "[OK] Culture is clean", type: "success" },
+      { text: "[AI] Calculating harvest window...", type: "info" },
+      { text: "[WARN] Humidity low in chamber B", type: "warning" },
+      { text: "[RESULT] Est. yield: 3.2kg in 4 days", type: "success" },
+      { text: "[SYSTEM] All systems nominal", type: "success" },
     ],
     [],
   )
@@ -161,7 +125,7 @@ export function OrchestratedHero() {
     let currentStage = 0
     const interval = setInterval(() => {
       setStages((prev) => {
-        const updated = prev.map((stage, idx) => ({ ...stage }))
+        const updated = prev.map((stage) => ({ ...stage }))
         if (currentStage < updated.length) {
           if (updated[currentStage].status === "pending") {
             updated[currentStage].status = "active"
@@ -189,43 +153,43 @@ export function OrchestratedHero() {
   }, [])
 
   return (
-    <section className="relative min-h-screen pt-24 pb-12 px-4 overflow-hidden bg-background">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-gradient-to-b from-primary/8 via-accent/5 to-transparent blur-[100px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-20 right-1/4 w-[400px] h-[400px] bg-accent/8 blur-[80px] rounded-full pointer-events-none" />
+    <section className="relative min-h-[90vh] pt-20 pb-8 px-4 overflow-hidden bg-background">
+      {/* Subtle background gradients */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-primary/5 via-accent/3 to-transparent blur-[80px] rounded-full pointer-events-none" />
 
-      <div className="mx-auto max-w-7xl relative z-10">
-        <div className="text-center mb-16 space-y-8">
-          <div className="flex justify-center mb-8 animate-fade-in">
+      <div className="mx-auto max-w-6xl relative z-10">
+        <div className="text-center mb-12 space-y-6">
+          <div className="flex justify-center mb-6 animate-fade-in">
             <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 via-accent/30 to-primary/30 rounded-full blur-md opacity-60 group-hover:opacity-80 transition-opacity" />
-              <div className="relative w-28 h-28 rounded-full overflow-hidden border-2 border-primary/40 shadow-xl shadow-primary/20">
+              <div className="absolute -inset-1.5 bg-gradient-to-r from-primary/40 via-accent/40 to-primary/40 rounded-full blur-lg opacity-60 group-hover:opacity-80 transition-opacity" />
+              <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-3 border-primary/50 shadow-2xl shadow-primary/25">
                 <Image src="/crowe-avatar.png" alt="Crowe Mycology" fill className="object-cover" priority />
               </div>
             </div>
           </div>
 
-          <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-semibold animate-fade-in hover:bg-primary/15 transition-colors cursor-default">
-            <MyceliumIcon className="w-4 h-4" />
-            <span className="tracking-wide">AI-Powered Cultivation Platform</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold animate-fade-in">
+            <MyceliumIcon className="w-3.5 h-3.5" />
+            <span className="tracking-wide uppercase">AI-Powered Cultivation</span>
           </div>
 
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-foreground animate-slide-up-fade font-display leading-[0.95]">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter text-foreground animate-slide-up-fade leading-none">
             Crowe Mycology
           </h1>
 
-          <p className="text-2xl md:text-3xl font-medium text-primary/90 animate-slide-up-fade animation-delay-100 font-display tracking-tight">
+          <p className="text-xl md:text-2xl font-medium text-primary animate-slide-up-fade animation-delay-100 tracking-tight">
             Grow with Intelligence
           </p>
 
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed animate-slide-up-fade animation-delay-200">
-            Professional mushroom cultivation platform with automated contamination detection, real-time environmental
-            monitoring, and AI-driven yield optimization.
+          <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed animate-slide-up-fade animation-delay-200">
+            Professional mushroom cultivation with AI contamination detection, environmental monitoring, and yield
+            optimization.
           </p>
 
-          <div className="flex flex-wrap gap-4 justify-center animate-slide-up-fade animation-delay-400 pt-2">
+          <div className="flex flex-wrap gap-3 justify-center animate-slide-up-fade animation-delay-400 pt-2">
             <Button
               size="lg"
-              className="text-lg px-10 h-14 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/30 active:scale-[0.98] font-semibold rounded-xl"
+              className="text-base px-8 h-12 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98] font-semibold rounded-xl"
               asChild
             >
               <Link href="/chat">Start Growing</Link>
@@ -233,7 +197,7 @@ export function OrchestratedHero() {
             <Button
               size="lg"
               variant="outline"
-              className="text-lg px-10 h-14 border-2 border-primary/30 hover:border-primary/50 hover:bg-primary/5 bg-transparent transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] font-semibold rounded-xl"
+              className="text-base px-8 h-12 border-2 border-primary/30 hover:border-primary/50 hover:bg-primary/5 transition-all hover:scale-[1.02] active:scale-[0.98] font-semibold rounded-xl bg-transparent"
               asChild
             >
               <Link href="/crowe-vision">Analyze Cultures</Link>
@@ -241,26 +205,28 @@ export function OrchestratedHero() {
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-6 max-w-6xl mx-auto animate-scale-in animation-delay-600">
-          {/* Terminal Card */}
-          <div className="relative group rounded-2xl h-[420px] overflow-hidden border border-border/50 bg-card/80 backdrop-blur-xl shadow-xl hover:shadow-2xl transition-shadow duration-300">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-border/50 bg-muted/30">
-              <div className="flex items-center gap-3">
-                <div className="flex gap-2">
-                  <div className="w-3 h-3 rounded-full bg-destructive/60" />
-                  <div className="w-3 h-3 rounded-full bg-accent/60" />
-                  <div className="w-3 h-3 rounded-full bg-primary/60" />
+        <div className="grid md:grid-cols-2 gap-4 max-w-5xl mx-auto animate-scale-in animation-delay-600">
+          {/* Terminal Card - Compact */}
+          <div className="relative rounded-xl h-[320px] overflow-hidden border border-border/50 bg-card/90 backdrop-blur-xl shadow-lg">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border/50 bg-muted/30">
+              <div className="flex items-center gap-2">
+                <div className="flex gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-destructive/60" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-accent/60" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-primary/60" />
                 </div>
-                <span className="ml-2 text-xs font-mono text-muted-foreground tracking-wide">cultivation-monitor</span>
+                <span className="ml-2 text-[10px] font-mono text-muted-foreground tracking-wide">
+                  cultivation-monitor
+                </span>
               </div>
-              <TerminalIcon className="w-5 h-5 text-muted-foreground" />
+              <TerminalIcon className="w-4 h-4 text-muted-foreground" />
             </div>
 
-            <div className="p-6 font-mono text-sm h-full overflow-hidden relative">
-              <div className="space-y-2.5">
+            <div className="p-4 font-mono text-xs h-full overflow-hidden">
+              <div className="space-y-2">
                 {terminalLines.map((line, i) =>
                   line ? (
-                    <div key={i} className="flex gap-3 items-start">
+                    <div key={i} className="flex gap-2 items-start">
                       <span className="text-primary/60 select-none font-bold">$</span>
                       <span
                         className={`${
@@ -276,46 +242,44 @@ export function OrchestratedHero() {
                     </div>
                   ) : null,
                 )}
-                <div className="flex gap-3 items-center">
+                <div className="flex gap-2 items-center">
                   <span className="text-primary/60 select-none font-bold">$</span>
-                  <span className="w-2.5 h-5 bg-primary rounded-sm animate-pulse" />
+                  <span className="w-2 h-4 bg-primary rounded-sm animate-pulse" />
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Pipeline Card */}
-          <div className="relative group rounded-2xl h-[420px] overflow-hidden border border-border/50 bg-card/80 backdrop-blur-xl shadow-xl hover:shadow-2xl transition-shadow duration-300">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-border/50 bg-muted/30">
-              <div className="flex items-center gap-3">
-                <MyceliumIcon className="w-5 h-5 text-primary" />
-                <span className="text-sm font-semibold text-foreground tracking-wide">Growth Pipeline</span>
-              </div>
+          {/* Pipeline Card - Compact */}
+          <div className="relative rounded-xl h-[320px] overflow-hidden border border-border/50 bg-card/90 backdrop-blur-xl shadow-lg">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border/50 bg-muted/30">
               <div className="flex items-center gap-2">
-                <span className="relative flex h-2.5 w-2.5">
+                <MyceliumIcon className="w-4 h-4 text-primary" />
+                <span className="text-xs font-semibold text-foreground tracking-wide">Growth Pipeline</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                 </span>
-                <span className="text-xs text-muted-foreground font-medium">Active</span>
+                <span className="text-[10px] text-muted-foreground font-medium">Active</span>
               </div>
             </div>
 
-            <div className="p-6 space-y-5">
+            <div className="p-4 space-y-4">
               {stages.map((stage, index) => (
                 <div key={stage.id} className="relative">
                   {index < stages.length - 1 && (
-                    <div className="absolute left-6 top-12 bottom-[-20px] w-0.5 bg-border">
+                    <div className="absolute left-5 top-10 bottom-[-16px] w-0.5 bg-border">
                       <div
-                        className={`w-full bg-primary transition-all duration-700 ${
-                          stage.status === "complete" ? "h-full" : "h-0"
-                        }`}
+                        className={`w-full bg-primary transition-all duration-700 ${stage.status === "complete" ? "h-full" : "h-0"}`}
                       />
                     </div>
                   )}
 
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3">
                     <div
-                      className={`relative z-10 flex items-center justify-center w-12 h-12 rounded-xl border-2 transition-all duration-300 ${
+                      className={`relative z-10 flex items-center justify-center w-10 h-10 rounded-lg border-2 transition-all duration-300 ${
                         stage.status === "complete"
                           ? "border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
                           : stage.status === "active"
@@ -327,9 +291,9 @@ export function OrchestratedHero() {
                     </div>
 
                     <div className="flex-1">
-                      <div className="flex justify-between mb-2">
+                      <div className="flex justify-between mb-1.5">
                         <span
-                          className={`text-sm font-semibold ${
+                          className={`text-xs font-semibold ${
                             stage.status === "active"
                               ? "text-primary"
                               : stage.status === "complete"
@@ -339,16 +303,14 @@ export function OrchestratedHero() {
                         >
                           {stage.title}
                         </span>
-                        <span className="text-xs text-muted-foreground font-mono">
+                        <span className="text-[10px] text-muted-foreground font-mono">
                           {stage.status === "complete" ? "100%" : `${stage.progress}%`}
                         </span>
                       </div>
 
-                      <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+                      <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
                         <div
-                          className={`h-full rounded-full transition-all duration-300 ${
-                            stage.status === "complete" ? "bg-emerald-500" : "bg-primary"
-                          }`}
+                          className={`h-full rounded-full transition-all duration-300 ${stage.status === "complete" ? "bg-emerald-500" : "bg-primary"}`}
                           style={{ width: `${stage.progress}%` }}
                         />
                       </div>
