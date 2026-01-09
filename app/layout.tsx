@@ -6,6 +6,7 @@ import { Suspense } from "react"
 import { SidebarNav } from "@/components/sidebar-nav"
 import { GlobalHeader } from "@/components/global-header"
 import { ThemeProvider } from "@/components/theme-provider"
+import { SessionProvider } from "@/components/providers/session-provider"
 import { HEADER_HEIGHT } from "@/components/global-header"
 import { PerformanceMonitorInit } from "@/components/performance-monitor-init"
 
@@ -104,18 +105,20 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${firaCode.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} font-sans antialiased`}
       >
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-          <ConfirmationProvider>
-            <SidebarNav />
-            <GlobalHeader />
-            <div className="md:ml-60" style={{ paddingTop: `${HEADER_HEIGHT}px` }}>
-              <Suspense fallback={null}>{children}</Suspense>
-            </div>
-            <PerformanceMonitorInit />
-            <Toaster />
-            <GlobalConfirmationDialog />
-          </ConfirmationProvider>
-        </ThemeProvider>
+        <SessionProvider>
+          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+            <ConfirmationProvider>
+              <SidebarNav />
+              <GlobalHeader />
+              <div className="md:ml-60" style={{ paddingTop: `${HEADER_HEIGHT}px` }}>
+                <Suspense fallback={null}>{children}</Suspense>
+              </div>
+              <PerformanceMonitorInit />
+              <Toaster />
+              <GlobalConfirmationDialog />
+            </ConfirmationProvider>
+          </ThemeProvider>
+        </SessionProvider>
       </body>
     </html>
   )
