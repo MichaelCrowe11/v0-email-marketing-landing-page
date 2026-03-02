@@ -42,7 +42,7 @@ class PerformanceMonitor {
 
       observer.observe({ entryTypes: ["largest-contentful-paint"] })
     } catch (e) {
-      console.error("[v0] LCP measurement failed:", e)
+      console.error("[CroweLogic] LCP measurement failed:", e)
     }
   }
 
@@ -58,7 +58,7 @@ class PerformanceMonitor {
 
       observer.observe({ entryTypes: ["first-input"] })
     } catch (e) {
-      console.error("[v0] FID measurement failed:", e)
+      console.error("[CroweLogic] FID measurement failed:", e)
     }
   }
 
@@ -78,7 +78,7 @@ class PerformanceMonitor {
 
       observer.observe({ entryTypes: ["layout-shift"] })
     } catch (e) {
-      console.error("[v0] CLS measurement failed:", e)
+      console.error("[CroweLogic] CLS measurement failed:", e)
     }
   }
 
@@ -90,7 +90,7 @@ class PerformanceMonitor {
         this.metrics.fcp = fcp.startTime
       }
     } catch (e) {
-      console.error("[v0] FCP measurement failed:", e)
+      console.error("[CroweLogic] FCP measurement failed:", e)
     }
   }
 
@@ -101,7 +101,7 @@ class PerformanceMonitor {
         this.metrics.ttfb = navTiming.responseStart - navTiming.requestStart
       }
     } catch (e) {
-      console.error("[v0] TTFB measurement failed:", e)
+      console.error("[CroweLogic] TTFB measurement failed:", e)
     }
   }
 

@@ -33,11 +33,11 @@ export async function POST(req: Request) {
   try {
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
   } catch (err) {
-    console.error("[v0] Webhook signature verification failed:", err)
+    console.error("[CroweLogic] Webhook signature verification failed:", err)
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 })
   }
 
-  console.log("[v0] Stripe webhook event:", event.type)
+  console.log("[CroweLogic] Stripe webhook event:", event.type)
 
   const supabase = await createClient()
 
@@ -50,7 +50,7 @@ export async function POST(req: Request) {
         const { data: user } = await supabase.from("users").select("id").eq("email", session.customer_email).single()
 
         if (!user) {
-          console.error("[v0] User not found for email:", session.customer_email)
+          console.error("[CroweLogic] User not found for email:", session.customer_email)
           break
         }
 
@@ -58,7 +58,7 @@ export async function POST(req: Request) {
         const planId = session.metadata?.plan_id
 
         if (!planId) {
-          console.error("[v0] No plan_id in session metadata")
+          console.error("[CroweLogic] No plan_id in session metadata")
           break
         }
 
@@ -99,12 +99,12 @@ export async function POST(req: Request) {
               orderId: session.id,
             }),
           })
-          console.log("[v0] Order confirmation email sent")
+          console.log("[CroweLogic] Order confirmation email sent")
         } catch (emailError) {
-          console.error("[v0] Failed to send order confirmation email:", emailError)
+          console.error("[CroweLogic] Failed to send order confirmation email:", emailError)
         }
 
-        console.log("[v0] Subscription created for user:", user.id)
+        console.log("[CroweLogic] Subscription created for user:", user.id)
         break
       }
 
@@ -119,7 +119,7 @@ export async function POST(req: Request) {
           })
           .eq("stripe_subscription_id", subscription.id)
 
-        console.log("[v0] Subscription updated:", subscription.id)
+        console.log("[CroweLogic] Subscription updated:", subscription.id)
         break
       }
 
@@ -152,7 +152,7 @@ export async function POST(req: Request) {
             .eq("id", userSub.user_id)
         }
 
-        console.log("[v0] Subscription canceled:", subscription.id)
+        console.log("[CroweLogic] Subscription canceled:", subscription.id)
         break
       }
 
@@ -171,13 +171,13 @@ export async function POST(req: Request) {
                 orderId: invoice.id,
               }),
             })
-            console.log("[v0] Payment receipt email sent")
+            console.log("[CroweLogic] Payment receipt email sent")
           }
         } catch (emailError) {
-          console.error("[v0] Failed to send payment receipt email:", emailError)
+          console.error("[CroweLogic] Failed to send payment receipt email:", emailError)
         }
 
-        console.log("[v0] Payment succeeded for invoice:", invoice.id)
+        console.log("[CroweLogic] Payment succeeded for invoice:", invoice.id)
         break
       }
 
@@ -192,17 +192,17 @@ export async function POST(req: Request) {
             .eq("stripe_subscription_id", invoice.subscription as string)
         }
 
-        console.log("[v0] Payment failed for invoice:", invoice.id)
+        console.log("[CroweLogic] Payment failed for invoice:", invoice.id)
         break
       }
 
       default:
-        console.log("[v0] Unhandled event type:", event.type)
+        console.log("[CroweLogic] Unhandled event type:", event.type)
     }
 
     return NextResponse.json({ received: true })
   } catch (error) {
-    console.error("[v0] Webhook handler error:", error)
+    console.error("[CroweLogic] Webhook handler error:", error)
     return NextResponse.json({ error: "Webhook handler failed" }, { status: 500 })
   }
 }

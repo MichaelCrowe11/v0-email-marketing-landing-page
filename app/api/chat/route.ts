@@ -1,61 +1,23 @@
-import { openai } from "@ai-sdk/openai"
-import { anthropic } from "@ai-sdk/anthropic"
-import { google } from "@ai-sdk/google"
-import { getAIProvider } from "@/lib/ai-provider"
+import { getCroweLMModel, CROWELM_SYSTEM_PROMPT } from "@/lib/crowelm"
+import { getRAGContext } from "@/lib/rag"
+import { validateLicenseFromHeader } from "@/lib/license"
 
-export const maxDuration = 30
-
-function getModel(modelString: string) {
-  console.log("[v0] Getting model for:", modelString)
-
-  // Specific Azure Deployment Request
-  if (modelString === "gpt-5.2" || modelString === "azure/gpt-5.2") {
-    return getAIProvider("gpt-5.2")
-  }
-
-  // Crowe Logic Mini (default)
-  if (modelString.startsWith("crowelogic/")) {
-    return openai("gpt-4o-mini") // Fallback to GPT-4o-mini until RunPod is configured
-  }
-
-  // OpenAI models
-  if (modelString.startsWith("openai/")) {
-    const modelName = modelString.replace("openai/", "")
-    return openai(modelName)
-  }
-
-  // Anthropic models
-  if (modelString.startsWith("anthropic/")) {
-    const modelName = modelString.replace("anthropic/", "")
-    return anthropic(modelName)
-  }
-
-  // Google models
-  if (modelString.startsWith("google/")) {
-    const modelName = modelString.replace("google/", "")
-    return google(modelName)
-  }
-
-  // xAI models
-  if (modelString.startsWith("xai/")) {
-    const modelName = modelString.replace("xai/", "")
-    return openai(modelName)
-  }
-
-  // Default fallback
-  return openai("gpt-5")
-}
+export const maxDuration = 60
 
 export async function POST(req: Request) {
   try {
-    console.log("[v0] Chat API called")
+    // Verify license before processing
+    const cookieHeader = req.headers.get("cookie")
+    if (!validateLicenseFromHeader(cookieHeader)) {
+      return new Response(
+        JSON.stringify({ error: "License required", code: "LICENSE_REQUIRED" }),
+        { status: 403, headers: { "Content-Type": "application/json" } }
+      )
+    }
 
-    const { messages, model } = await req.json()
-
-    console.log("[v0] Received messages:", messages?.length, "Model:", model)
+    const { messages } = await req.json()
 
     if (!messages || messages.length === 0) {
-      console.error("[v0] No messages provided")
       return new Response(JSON.stringify({ error: "No messages provided" }), {
         status: 400,
         headers: { "Content-Type": "application/json" },
@@ -64,58 +26,63 @@ export async function POST(req: Request) {
 
     const normalizedMessages = messages.map((msg: any) => {
       const content =
-        typeof msg.content === "string" ? msg.content : msg.parts?.map((p: any) => p.text).join("") || msg.text || ""
-      return {
-        role: msg.role,
-        content,
-      }
+        typeof msg.content === "string"
+          ? msg.content
+          : msg.parts?.map((p: any) => p.text).join("") || msg.text || ""
+      return { role: msg.role, content }
     })
 
-    console.log("[v0] Normalized messages:", normalizedMessages.length)
+    // Get the latest user message for RAG query
+    const lastUserMessage = [...normalizedMessages].reverse().find((m: any) => m.role === "user")
+    const userQuery = lastUserMessage?.content || ""
 
-    const systemMessage = {
-      role: "system" as const,
-      content: `You are Crowe Logic AI, an expert deep reasoning scientific research assistant.
-
-Your capabilities:
-- Complex multi-step reasoning and analysis
-- Scientific research and problem-solving  
-- Technical explanations and code generation
-- Mycological expertise and cultivation guidance
-- Mathematical proofs and derivations
-
-Approach:
-- Break down complex problems logically
-- Show your reasoning process
-- Provide actionable insights
-- Be clear and precise`,
+    // Fetch RAG context from Pinecone
+    let ragContext = ""
+    if (userQuery) {
+      try {
+        ragContext = await getRAGContext(userQuery, 5)
+      } catch (e) {
+        console.error("[CroweLM] RAG error:", e)
+      }
     }
 
+    // Build system message with RAG context
+    const systemContent = ragContext
+      ? `${CROWELM_SYSTEM_PROMPT}\n\n${ragContext}`
+      : CROWELM_SYSTEM_PROMPT
+
+    const systemMessage = { role: "system" as const, content: systemContent }
+
+    // Use the configured AI provider (Kimi K2.5 via OpenAI-compatible API)
+    const AI_BASE_URL = process.env.AI_BASE_URL || "https://api.moonshot.cn/v1"
+    const AI_API_KEY = process.env.AI_API_KEY || process.env.OPENAI_API_KEY || ""
+    const AI_MODEL_ID = process.env.AI_MODEL_ID || "kimi-k2.5"
+
     const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 25000) // 25 second timeout
+    const timeoutId = setTimeout(() => controller.abort(), 55000)
 
     let response
     try {
-      response = await fetch("https://api.openai.com/v1/chat/completions", {
+      response = await fetch(`${AI_BASE_URL}/chat/completions`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+          Authorization: `Bearer ${AI_API_KEY}`,
         },
         body: JSON.stringify({
-          model: "gpt-4o-mini",
+          model: AI_MODEL_ID,
           messages: [systemMessage, ...normalizedMessages],
           temperature: 0.7,
-          max_tokens: 2000,
+          max_tokens: 4000,
           stream: true,
         }),
         signal: controller.signal,
       })
     } catch (fetchError) {
       clearTimeout(timeoutId)
-      console.error("[v0] OpenAI fetch error:", fetchError)
+      console.error("[CroweLM] Fetch error:", fetchError)
       throw new Error(
-        `Failed to connect to OpenAI: ${fetchError instanceof Error ? fetchError.message : "Unknown error"}`,
+        `Failed to connect to AI provider: ${fetchError instanceof Error ? fetchError.message : "Unknown error"}`
       )
     }
 
@@ -123,12 +90,11 @@ Approach:
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ error: { message: "Unknown error" } }))
-      console.error("[v0] OpenAI API error:", errorData)
-      throw new Error(errorData.error?.message || `OpenAI API request failed with status ${response.status}`)
+      console.error("[CroweLM] API error:", response.status, errorData)
+      throw new Error(errorData.error?.message || `API request failed with status ${response.status}`)
     }
 
-    console.log("[v0] OpenAI response received, starting stream")
-
+    // Stream the response back (OpenAI-compatible SSE format)
     return new Response(response.body, {
       headers: {
         "Content-Type": "text/event-stream",
@@ -137,7 +103,7 @@ Approach:
       },
     })
   } catch (error) {
-    console.error("[v0] Chat error:", error instanceof Error ? error.message : String(error))
+    console.error("[CroweLM] Chat error:", error instanceof Error ? error.message : String(error))
     return new Response(
       JSON.stringify({
         error: "Chat request failed",
@@ -146,7 +112,7 @@ Approach:
       {
         status: 500,
         headers: { "Content-Type": "application/json" },
-      },
+      }
     )
   }
 }

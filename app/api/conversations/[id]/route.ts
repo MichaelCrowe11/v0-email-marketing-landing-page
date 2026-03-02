@@ -25,7 +25,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       .single()
 
     if (convError) {
-      console.error("[v0] Error fetching conversation:", convError)
+      console.error("[CroweLogic] Error fetching conversation:", convError)
       return NextResponse.json({ error: "Conversation not found" }, { status: 404 })
     }
 
@@ -37,13 +37,13 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       .order("created_at", { ascending: true })
 
     if (msgError) {
-      console.error("[v0] Error fetching messages:", msgError)
+      console.error("[CroweLogic] Error fetching messages:", msgError)
       return NextResponse.json({ error: "Failed to fetch messages" }, { status: 500 })
     }
 
     return NextResponse.json({ conversation, messages })
   } catch (error) {
-    console.error("[v0] Get conversation API error:", error)
+    console.error("[CroweLogic] Get conversation API error:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
@@ -67,13 +67,13 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     const { error } = await supabase.from("ai_conversations").delete().eq("id", id).eq("user_id", user.id)
 
     if (error) {
-      console.error("[v0] Error deleting conversation:", error)
+      console.error("[CroweLogic] Error deleting conversation:", error)
       return NextResponse.json({ error: "Failed to delete conversation" }, { status: 500 })
     }
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error("[v0] Delete conversation API error:", error)
+    console.error("[CroweLogic] Delete conversation API error:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

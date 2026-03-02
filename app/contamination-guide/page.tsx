@@ -288,7 +288,7 @@ export default function ContaminationGuidePage() {
         setUsingFallback(true)
       }
     } catch (error) {
-      console.error("[v0] Error loading contamination guide, using fallback:", error)
+      console.error("[CroweLogic] Error loading contamination guide, using fallback:", error)
       setContaminants(FALLBACK_CONTAMINANTS)
       setUsingFallback(true)
     } finally {
@@ -348,7 +348,7 @@ export default function ContaminationGuidePage() {
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-foreground">Contamination Field Guide</h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Rapid identification, containment strategies, and prevention protocols from 20+ years of commercial
+            Rapid identification, containment strategies, and prevention protocols from 18+ years of commercial
             cultivation experience.
           </p>
         </div>

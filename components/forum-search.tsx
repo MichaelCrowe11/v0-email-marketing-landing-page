@@ -56,7 +56,7 @@ export default function ForumSearch() {
               <div className="flex-1">
                 <p className="text-sm font-medium text-purple-200 mb-1">Get instant AI assistance</p>
                 <p className="text-xs text-muted-foreground mb-3">
-                  CroweLogic AI can provide expert guidance based on Michael Crowe's 20+ years of cultivation experience
+                  CroweLogic AI can provide expert guidance based on Michael Crowe's 18+ years of cultivation experience
                 </p>
                 <Button
                   size="sm"

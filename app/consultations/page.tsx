@@ -102,7 +102,7 @@ export default function ConsultationsPage() {
             Work Directly with Michael Crowe
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            20+ years of commercial mycology expertise at your service. From quick troubleshooting
+            18+ years of commercial mycology expertise at your service. From quick troubleshooting
             to comprehensive facility design and ongoing strategic support.
           </p>
         </div>
@@ -233,7 +233,7 @@ export default function ConsultationsPage() {
             <Card className="p-6">
               <h3 className="font-semibold mb-2">3. Your Consultation</h3>
               <p className="text-sm text-muted-foreground">
-                Meet with Michael via video call (or on-site for full-day sessions). Get actionable recommendations based on 20+ years of commercial experience.
+                Meet with Michael via video call (or on-site for full-day sessions). Get actionable recommendations based on 18+ years of commercial experience.
               </p>
             </Card>
             <Card className="p-6">

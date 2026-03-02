@@ -76,7 +76,7 @@ const getCachedStripeData = unstable_cache(
 
       return { products: croweProducts }
     } catch (error: any) {
-      console.error("[v0] Error fetching Stripe payment links:", error)
+      console.error("[CroweLogic] Error fetching Stripe payment links:", error)
       return { error: error.message }
     }
   },

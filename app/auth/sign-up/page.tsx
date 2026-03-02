@@ -53,7 +53,7 @@ export default function Page() {
           body: JSON.stringify({ email, name: fullName }),
         })
       } catch (emailError) {
-        console.error("[v0] Failed to send welcome email:", emailError)
+        console.error("[CroweLogic] Failed to send welcome email:", emailError)
         // Don't fail the sign-up if email fails
       }
 

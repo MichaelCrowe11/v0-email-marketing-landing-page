@@ -6,7 +6,7 @@ export function AIShowcase() {
           <div className="mb-8 text-center">
             <h2 className="mb-3 text-3xl font-bold tracking-tight text-foreground">See the AI in action</h2>
             <p className="text-lg text-muted-foreground">
-              The same ChatGPT interface you know, trained with Michael's 20 years of mycology expertise
+              The same ChatGPT interface you know, trained with Michael's 18+ years of mycology expertise
             </p>
           </div>
 

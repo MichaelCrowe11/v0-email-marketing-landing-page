@@ -18,7 +18,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error("[v0] Welcome email error:", error)
+    console.error("[CroweLogic] Welcome email error:", error)
     return NextResponse.json({ error: "Failed to send welcome email" }, { status: 500 })
   }
 }

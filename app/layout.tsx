@@ -68,15 +68,16 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: "Crowe Mycology by Southwest Mushrooms - AI-Powered Cultivation Platform",
+  title: "Crowe Logic AI by Michael Crowe — AI-Powered Mushroom Cultivation Platform",
   description:
-    "Professional mushroom cultivation platform by Southwest Mushrooms. AI-powered contamination detection, real-time monitoring, and comprehensive growing resources.",
-  generator: "v0.app",
-  applicationName: "Crowe Mycology",
+    "Professional mushroom cultivation platform by Michael Crowe of Southwest Mushrooms. AI-powered contamination detection, real-time monitoring, and comprehensive growing resources built on 18+ years of commercial cultivation expertise.",
+  applicationName: "Crowe Logic AI",
+  authors: [{ name: "Michael Crowe", url: "https://southwestmushrooms.com" }],
+  creator: "Michael Crowe",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Crowe Mycology",
+    title: "Crowe Logic AI",
   },
   formatDetection: {
     telephone: false,
@@ -84,9 +85,9 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
-      { url: "/icon.jpg", type: "image/png", sizes: "32x32" },
+      { url: "/icon.jpg", type: "image/jpeg", sizes: "32x32" },
     ],
-    apple: [{ url: "/apple-icon.jpg", sizes: "180x180", type: "image/png" }],
+    apple: [{ url: "/apple-icon.jpg", sizes: "180x180", type: "image/jpeg" }],
   },
   manifest: "/manifest.json",
 }

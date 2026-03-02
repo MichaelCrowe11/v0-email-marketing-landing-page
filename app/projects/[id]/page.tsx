@@ -62,7 +62,7 @@ export default function ProjectDetailPage() {
       setObservations(observationsData || [])
       setHarvests(harvestsData || [])
     } catch (error) {
-      console.error("[v0] Error loading project data:", error)
+      console.error("[CroweLogic] Error loading project data:", error)
     } finally {
       setLoading(false)
     }

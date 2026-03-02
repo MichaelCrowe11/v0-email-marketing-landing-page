@@ -12,7 +12,7 @@ export function ErrorBoundary({
   reset: () => void
 }) {
   useEffect(() => {
-    console.error("[v0] Error boundary caught:", error)
+    console.error("[CroweLogic] Error boundary caught:", error)
   }, [error])
 
   return (

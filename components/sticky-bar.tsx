@@ -38,7 +38,7 @@ export function StickyBar() {
       <div className="flex flex-col sm:flex-row items-center justify-between gap-2 md:gap-3">
         <div className="text-center sm:text-left text-sm md:text-base">
           <strong className="text-foreground">Crowe Logic AI</strong> · Professional mycology intelligence powered by
-          20+ years of expertise
+          18+ years of expertise
         </div>
         <div className="flex flex-wrap justify-center gap-2 w-full sm:w-auto">
           <Button

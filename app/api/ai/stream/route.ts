@@ -108,7 +108,7 @@ export async function POST(request: Request) {
 
           controller.close()
         } catch (error) {
-          console.error("[v0] Assistant API error:", error)
+          console.error("[CroweLogic] Assistant API error:", error)
           controller.enqueue(
             encoder.encode(`data: ${JSON.stringify({ type: "error", error: "Failed to get response" })}\n\n`),
           )
@@ -125,7 +125,7 @@ export async function POST(request: Request) {
       },
     })
   } catch (error) {
-    console.error("[v0] AI stream error:", error)
+    console.error("[CroweLogic] AI stream error:", error)
     return new Response("Internal server error", { status: 500 })
   }
 }

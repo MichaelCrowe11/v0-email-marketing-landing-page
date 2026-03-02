@@ -17,15 +17,15 @@ export async function POST(req: Request) {
     const hasCdpUrl = !!process.env.CDP_WEBSOCKET_URL
 
     if (!hasKernelKey && !hasCdpUrl) {
-      console.log("[v0] Neither ONKERNEL_API_KEY nor CDP_WEBSOCKET_URL configured - using simulated research")
+      console.log("[CroweLogic] Neither ONKERNEL_API_KEY nor CDP_WEBSOCKET_URL configured - using simulated research")
     } else if (hasCdpUrl) {
       console.log(
-        "[v0] Using CDP WebSocket URL for browser connection:",
+        "[CroweLogic] Using CDP WebSocket URL for browser connection:",
         process.env.CDP_WEBSOCKET_URL?.substring(0, 50) + "...",
       )
     }
 
-    console.log("[v0] Browser research request:", { query, depth })
+    console.log("[CroweLogic] Browser research request:", { query, depth })
 
     // Create SSE stream for real-time updates
     const encoder = new TextEncoder()
@@ -119,7 +119,7 @@ Format your response in clear sections with markdown. Be specific and cite sourc
 
           controller.close()
         } catch (error) {
-          console.error("[v0] Browser research error:", error)
+          console.error("[CroweLogic] Browser research error:", error)
           controller.enqueue(
             encoder.encode(
               `data: ${JSON.stringify({ type: "error", message: "Research failed: " + String(error) })}\n\n`,
@@ -138,7 +138,7 @@ Format your response in clear sections with markdown. Be specific and cite sourc
       },
     })
   } catch (error) {
-    console.error("[v0] Browser research API error:", error)
+    console.error("[CroweLogic] Browser research API error:", error)
     return new Response(JSON.stringify({ error: "Failed to start research" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },

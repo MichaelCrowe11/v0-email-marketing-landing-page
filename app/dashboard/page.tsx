@@ -109,7 +109,7 @@ export default function DashboardPage() {
         alertsCount,
       })
     } catch (error) {
-      console.error("[v0] Error loading dashboard data:", error)
+      console.error("[CroweLogic] Error loading dashboard data:", error)
     } finally {
       setLoading(false)
     }

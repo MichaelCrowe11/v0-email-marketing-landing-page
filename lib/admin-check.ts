@@ -17,14 +17,14 @@ export async function isAdmin(userId?: string): Promise<boolean> {
     const { data, error } = await supabase.from("users").select("is_admin, email").eq("id", userId).single()
 
     if (error) {
-      console.error("[v0] Admin check error:", error)
+      console.error("[CroweLogic] Admin check error:", error)
       return false
     }
 
-    console.log("[v0] Admin check for:", data?.email, "is_admin:", data?.is_admin)
+    console.log("[CroweLogic] Admin check for:", data?.email, "is_admin:", data?.is_admin)
     return data?.is_admin === true
   } catch (error) {
-    console.error("[v0] Admin check exception:", error)
+    console.error("[CroweLogic] Admin check exception:", error)
     return false
   }
 }

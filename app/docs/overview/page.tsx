@@ -6,7 +6,7 @@ export default function OverviewPage() {
       <div>
         <h1 className="text-4xl font-bold mb-2">Crowe Logic v5.0</h1>
         <p className="text-xl text-muted-foreground">
-          Expert mycology reasoning engine with 20+ years of commercial cultivation experience
+          Expert mycology reasoning engine with 18+ years of commercial cultivation experience
         </p>
       </div>
 

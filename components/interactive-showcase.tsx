@@ -32,7 +32,7 @@ export function InteractiveShowcase() {
       id: "brain",
       icon: <Brain className="w-8 h-8" />,
       title: "Neural Analysis",
-      description: "Deep learning models trained on 20 years of cultivation data",
+      description: "Deep learning models trained on 18+ years of cultivation data",
       color: "text-purple-500",
       gradient: "from-purple-500 to-pink-500",
     },

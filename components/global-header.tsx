@@ -55,7 +55,7 @@ export function GlobalHeader() {
             <div className="relative w-7 h-7 rounded-full overflow-hidden border border-primary/30">
               <Image src="/crowe-avatar.png" alt="Crowe Mycology" fill className="object-cover" priority sizes="28px" />
             </div>
-            <span className="font-bold text-sm text-primary">Crowe Mycology</span>
+            <span className="font-bold text-sm text-primary">Crowe Logic AI</span>
           </Link>
         </div>
 

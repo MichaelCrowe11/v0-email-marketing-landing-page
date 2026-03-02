@@ -17,7 +17,7 @@ type Message = {
 }
 
 export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAccess?: boolean }) {
-  const [selectedModel, setSelectedModel] = useState("openai/gpt-4o-mini")
+  const [selectedModel, setSelectedModel] = useState("crowelm/v1")
   const [copied, setCopied] = useState(false)
   const [inputValue, setInputValue] = useState("")
   const [messages, setMessages] = useState<Message[]>([])
@@ -65,7 +65,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
         }),
       })
     } catch (error) {
-      console.error("[v0] Error saving message:", error)
+      console.error("[CroweLogic] Error saving message:", error)
     }
   }
 
@@ -80,7 +80,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
       })
 
       if (response.status === 401) {
-        console.log("[v0] Chat running in anonymous mode - conversations will not be saved")
+        console.log("[CroweLogic] Chat running in anonymous mode - conversations will not be saved")
         return null
       }
 
@@ -90,7 +90,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
         return data.conversation.id
       }
     } catch (error) {
-      console.log("[v0] Chat running in anonymous mode - conversations will not be saved")
+      console.log("[CroweLogic] Chat running in anonymous mode - conversations will not be saved")
     }
     return null
   }
@@ -123,8 +123,6 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
     ])
 
     try {
-      console.log("[v0] Sending chat request with model:", selectedModel)
-
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -137,11 +135,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
         }),
       })
 
-      console.log("[v0] Response status:", response.status, response.statusText)
-
       if (!response.ok) {
-        const errorText = await response.text()
-        console.error("[v0] API error response:", errorText)
         throw new Error(`Chat request failed: ${response.status}`)
       }
 
@@ -186,9 +180,8 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
         }
       }
 
-      console.log("[v0] Streaming complete, total length:", accumulatedText.length)
     } catch (error) {
-      console.error("[v0] Chat error:", error)
+      console.error("[CroweLogic] Chat error:", error)
       setMessages((prev) =>
         prev.map((m) =>
           m.id === assistantMessageId
@@ -267,8 +260,8 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
               </Button>
               <AIAvatarSwirl state="idle" size={40} />
               <div>
-                <h1 className="text-sm sm:text-base font-semibold text-foreground">Crowe Logic AI</h1>
-                <p className="text-xs text-muted-foreground hidden sm:block">Deep Reasoning Research Assistant</p>
+                <h1 className="text-sm sm:text-base font-semibold text-foreground">Crowe Logic AI V 1.0</h1>
+                <p className="text-xs text-muted-foreground hidden sm:block">by Michael Crowe — Mycology Intelligence</p>
               </div>
             </div>
 
@@ -317,72 +310,49 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                     <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light tracking-tight text-foreground">
                       Welcome to <span className="font-semibold">Crowe Logic AI</span>
                     </h2>
+                    <p className="text-xs sm:text-sm text-muted-foreground/70 font-medium">V 1.0 — by Michael Crowe</p>
                     <p className="text-base sm:text-lg text-muted-foreground leading-relaxed font-light px-4">
-                      Your deep reasoning scientific research assistant for complex problem-solving, document
-                      generation, and code creation.
+                      Your personal mycology AI coach, powered by 18+ years of professional cultivation expertise
+                      and The Mushroom Grower book series by Michael Crowe.
                     </p>
                   </div>
 
                   <div className="w-full max-w-3xl mt-6 sm:mt-8 space-y-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <button
-                        onClick={() => handleSuggestionClick("Generate a detailed SOP for laboratory safety protocols")}
+                        onClick={() => handleSuggestionClick("How do I identify contamination in my grain spawn jars?")}
                         className="p-4 rounded-xl bg-card border border-border hover:bg-accent hover:border-accent-foreground/20 transition-all text-left shadow-sm group"
                       >
                         <FileText className="w-5 h-5 mb-2 text-muted-foreground group-hover:text-foreground transition-colors" />
-                        <div className="text-sm font-medium text-foreground">Generate SOP</div>
-                        <div className="text-xs text-muted-foreground mt-1">Create standard operating procedures</div>
+                        <div className="text-sm font-medium text-foreground">Contamination ID</div>
+                        <div className="text-xs text-muted-foreground mt-1">Identify and prevent common contaminants</div>
                       </button>
 
                       <button
-                        onClick={() => handleSuggestionClick("Write Python code to analyze mycological growth data")}
+                        onClick={() => handleSuggestionClick("What are the optimal fruiting conditions for blue oyster mushrooms?")}
                         className="p-4 rounded-xl bg-card border border-border hover:bg-accent hover:border-accent-foreground/20 transition-all text-left shadow-sm group"
                       >
                         <Code className="w-5 h-5 mb-2 text-muted-foreground group-hover:text-foreground transition-colors" />
-                        <div className="text-sm font-medium text-foreground">Generate Code</div>
-                        <div className="text-xs text-muted-foreground mt-1">Create analysis scripts and tools</div>
+                        <div className="text-sm font-medium text-foreground">Fruiting Conditions</div>
+                        <div className="text-xs text-muted-foreground mt-1">Species-specific growing parameters</div>
                       </button>
 
                       <button
-                        onClick={() => handleSuggestionClick("Explain the biochemistry of fungal cell wall synthesis")}
+                        onClick={() => handleSuggestionClick("How do I prepare hardwood substrate for shiitake cultivation?")}
                         className="p-4 rounded-xl bg-card border border-border hover:bg-accent hover:border-accent-foreground/20 transition-all text-left shadow-sm group"
                       >
-                        <svg
-                          className="w-5 h-5 mb-2 text-muted-foreground group-hover:text-foreground transition-colors"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                          />
-                        </svg>
-                        <div className="text-sm font-medium text-foreground">Scientific Research</div>
-                        <div className="text-xs text-muted-foreground mt-1">Deep mycological analysis</div>
+                        <FileText className="w-5 h-5 mb-2 text-muted-foreground group-hover:text-foreground transition-colors" />
+                        <div className="text-sm font-medium text-foreground">Substrate Prep</div>
+                        <div className="text-xs text-muted-foreground mt-1">Recipes and sterilization techniques</div>
                       </button>
 
                       <button
-                        onClick={() => handleSuggestionClick("Solve this differential equation: dy/dx = x^2 + y")}
+                        onClick={() => handleSuggestionClick("What's the best way to scale up from hobby to commercial mushroom production?")}
                         className="p-4 rounded-xl bg-card border border-border hover:bg-accent hover:border-accent-foreground/20 transition-all text-left shadow-sm group"
                       >
-                        <svg
-                          className="w-5 h-5 mb-2 text-muted-foreground group-hover:text-foreground transition-colors"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
-                          />
-                        </svg>
-                        <div className="text-sm font-medium text-foreground">Problem Solving</div>
-                        <div className="text-xs text-muted-foreground mt-1">Complex mathematical reasoning</div>
+                        <FileText className="w-5 h-5 mb-2 text-muted-foreground group-hover:text-foreground transition-colors" />
+                        <div className="text-sm font-medium text-foreground">Farm Scaling</div>
+                        <div className="text-xs text-muted-foreground mt-1">Grow your operation efficiently</div>
                       </button>
                     </div>
                   </div>
@@ -485,7 +455,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                       handleSubmit(e)
                     }
                   }}
-                  placeholder="Ask about scientific research, generate SOPs, create code, solve problems..."
+                  placeholder="Ask about cultivation, substrates, contamination, species..."
                   className="w-full min-h-[56px] sm:min-h-[60px] max-h-[200px] px-4 sm:px-5 py-3 sm:py-4 pr-16 glass-input rounded-2xl text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent/50 resize-none shadow-sm"
                   rows={2}
                   disabled={isLoading}

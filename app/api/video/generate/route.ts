@@ -6,7 +6,7 @@ export async function POST(req: Request) {
       return Response.json({ error: "No prompt provided" }, { status: 400 })
     }
 
-    console.log("[v0] Video generation request:", prompt)
+    console.log("[CroweLogic] Video generation request:", prompt)
 
     // Note: Sora API is not yet publicly available
     // This is a placeholder implementation that would integrate with Sora when available
@@ -43,7 +43,7 @@ export async function POST(req: Request) {
       message: "Note: Sora API integration pending. This is a demonstration placeholder.",
     })
   } catch (error) {
-    console.error("[v0] Video generation error:", error)
+    console.error("[CroweLogic] Video generation error:", error)
     return Response.json({ error: "Video generation failed" }, { status: 500 })
   }
 }

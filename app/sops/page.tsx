@@ -43,7 +43,7 @@ export default function SOPsPage() {
       setSops(data || [])
       setFilteredSops(data || [])
     } catch (error) {
-      console.error("[v0] Error loading SOPs:", error)
+      console.error("[CroweLogic] Error loading SOPs:", error)
     } finally {
       setLoading(false)
     }

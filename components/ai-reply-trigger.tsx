@@ -63,7 +63,7 @@ export default function AIReplyTrigger({ postId, replyId, content, onComplete }:
         }
       }
     } catch (error) {
-      console.error("[v0] AI reply error:", error)
+      console.error("[CroweLogic] AI reply error:", error)
       setIsStreaming(false)
       setStatus("idle")
     }

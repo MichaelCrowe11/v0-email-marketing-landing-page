@@ -220,7 +220,7 @@ export function StreamingChatDemo() {
             </span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Watch the AI solve complex cultivation problems in real-time with Michael's 20 years of expertise
+            Watch the AI solve complex cultivation problems in real-time with Michael's 18+ years of expertise
           </p>
         </div>
 
@@ -565,19 +565,19 @@ export function StreamingChatDemo() {
           {/* Feature Highlights */}
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             <div className="glass-card rounded-2xl p-4 hover:border-primary/50 transition-all duration-300 hover:shadow-lg">
-              <div className="mb-2 text-success font-semibold text-sm">✓ Image Analysis</div>
+              <div className="mb-2 text-emerald-500 font-semibold text-sm">✓ Image Analysis</div>
               <p className="text-xs text-muted-foreground">
                 Upload photos for visual contamination detection with marked transfer zones
               </p>
             </div>
             <div className="glass-card rounded-2xl p-4 hover:border-primary/50 transition-all duration-300 hover:shadow-lg">
-              <div className="mb-2 text-success font-semibold text-sm">✓ VRS Format</div>
+              <div className="mb-2 text-emerald-500 font-semibold text-sm">✓ VRS Format</div>
               <p className="text-xs text-muted-foreground">
                 Visible Reasoning Summaries with evidence ledgers, not hidden chain-of-thought
               </p>
             </div>
             <div className="glass-card rounded-2xl p-4 hover:border-primary/50 transition-all duration-300 hover:shadow-lg">
-              <div className="mb-2 text-success font-semibold text-sm">✓ 20 Years Data</div>
+              <div className="mb-2 text-emerald-500 font-semibold text-sm">✓ 18+ Years Data</div>
               <p className="text-xs text-muted-foreground">
                 Every answer backed by Michael Crowe's commercial cultivation expertise
               </p>

@@ -15,7 +15,7 @@ export async function GET(request: Request) {
       needsLocation: !lat || !lon,
     })
   } catch (error) {
-    console.error("[v0] Weather API error:", error)
+    console.error("[CroweLogic] Weather API error:", error)
     return Response.json({
       temp: 72,
       condition: "Sunny",

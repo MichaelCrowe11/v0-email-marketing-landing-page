@@ -44,14 +44,14 @@ export async function sendEmail({
     })
 
     if (error) {
-      console.error("[v0] Resend error:", error)
+      console.error("[CroweLogic] Resend error:", error)
       throw new Error(`Failed to send email: ${error.message}`)
     }
 
-    console.log("[v0] Email sent successfully:", data?.id)
+    console.log("[CroweLogic] Email sent successfully:", data?.id)
     return { success: true, id: data?.id }
   } catch (error) {
-    console.error("[v0] Email sending failed:", error)
+    console.error("[CroweLogic] Email sending failed:", error)
     throw error
   }
 }

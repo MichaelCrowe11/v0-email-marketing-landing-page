@@ -40,7 +40,7 @@ export default function SpeciesLibraryPage() {
       setSpecies(data || [])
       setFilteredSpecies(data || [])
     } catch (error) {
-      console.error("[v0] Error loading species:", error)
+      console.error("[CroweLogic] Error loading species:", error)
     } finally {
       setLoading(false)
     }
@@ -110,7 +110,7 @@ export default function SpeciesLibraryPage() {
         <div className="text-center space-y-4">
           <h1 className="text-4xl md:text-5xl font-bold text-foreground">Mushroom Species Library</h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Comprehensive cultivation data for 50+ species, curated from Michael Crowe's 20+ years of expertise
+            Comprehensive cultivation data for 50+ species, curated from Michael Crowe's 18+ years of expertise
           </p>
         </div>
 

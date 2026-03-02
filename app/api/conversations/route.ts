@@ -23,13 +23,13 @@ export async function GET() {
       .order("updated_at", { ascending: false })
 
     if (error) {
-      console.error("[v0] Error fetching conversations:", error)
+      console.error("[CroweLogic] Error fetching conversations:", error)
       return NextResponse.json({ error: "Failed to fetch conversations" }, { status: 500 })
     }
 
     return NextResponse.json({ conversations })
   } catch (error) {
-    console.error("[v0] Conversations API error:", error)
+    console.error("[CroweLogic] Conversations API error:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
@@ -62,13 +62,13 @@ export async function POST(request: Request) {
       .single()
 
     if (error) {
-      console.error("[v0] Error creating conversation:", error)
+      console.error("[CroweLogic] Error creating conversation:", error)
       return NextResponse.json({ error: "Failed to create conversation" }, { status: 500 })
     }
 
     return NextResponse.json({ conversation })
   } catch (error) {
-    console.error("[v0] Create conversation API error:", error)
+    console.error("[CroweLogic] Create conversation API error:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

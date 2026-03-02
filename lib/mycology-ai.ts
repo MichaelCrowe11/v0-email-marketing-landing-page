@@ -1,5 +1,5 @@
 // Advanced Mycology AI Engine with Genetic Algorithms
-// Powered by Crowe Logic - 20+ Years of Expertise
+// Powered by Crowe Logic - 18+ Years of Expertise
 
 export interface GeneticAlgorithmConfig {
   populationSize: number

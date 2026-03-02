@@ -115,8 +115,8 @@ export function SidebarNav() {
               />
             </div>
             <div className="flex flex-col">
-              <span className="font-bold text-sm tracking-tight text-primary">Crowe Mycology</span>
-              <span className="text-[9px] text-muted-foreground">by Southwest Mushrooms</span>
+              <span className="font-bold text-sm tracking-tight text-primary">Crowe Logic AI</span>
+              <span className="text-[9px] text-muted-foreground">by Michael Crowe</span>
             </div>
           </a>
 

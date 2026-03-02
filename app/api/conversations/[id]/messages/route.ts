@@ -42,7 +42,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       .single()
 
     if (error) {
-      console.error("[v0] Error saving message:", error)
+      console.error("[CroweLogic] Error saving message:", error)
       return NextResponse.json({ error: "Failed to save message" }, { status: 500 })
     }
 
@@ -51,7 +51,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
     return NextResponse.json({ message })
   } catch (error) {
-    console.error("[v0] Save message API error:", error)
+    console.error("[CroweLogic] Save message API error:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

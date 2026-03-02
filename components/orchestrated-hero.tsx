@@ -174,11 +174,15 @@ export function OrchestratedHero() {
           </div>
 
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter text-foreground animate-slide-up-fade leading-none">
-            Crowe Mycology
+            Crowe Logic AI
           </h1>
 
           <p className="text-xl md:text-2xl font-medium text-primary animate-slide-up-fade animation-delay-100 tracking-tight">
             Grow with Intelligence
+          </p>
+
+          <p className="text-sm text-muted-foreground/70 animate-slide-up-fade animation-delay-150">
+            by Michael Crowe — 18+ Years of Commercial Cultivation Expertise
           </p>
 
           <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed animate-slide-up-fade animation-delay-200">

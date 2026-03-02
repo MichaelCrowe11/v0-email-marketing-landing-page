@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
     })
 
     if (error) {
-      console.error("[v0] Error saving contact submission:", error)
+      console.error("[CroweLogic] Error saving contact submission:", error)
       return NextResponse.json({ error: "Failed to submit form" }, { status: 500 })
     }
 
@@ -47,15 +47,15 @@ export async function POST(request: NextRequest) {
         }),
         replyTo: body.email,
       })
-      console.log("[v0] Contact form email sent successfully")
+      console.log("[CroweLogic] Contact form email sent successfully")
     } catch (emailError) {
       // Log error but don't fail the request
-      console.error("[v0] Failed to send contact form email:", emailError)
+      console.error("[CroweLogic] Failed to send contact form email:", emailError)
     }
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error("[v0] Contact API error:", error)
+    console.error("[CroweLogic] Contact API error:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

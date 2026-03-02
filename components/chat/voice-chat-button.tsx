@@ -43,7 +43,7 @@ export function VoiceChatButton({ onTranscript, disabled }: VoiceChatButtonProps
           }
         },
         (error: string) => {
-          console.error("[v0] Voice recognition error:", error)
+          console.error("[CroweLogic] Voice recognition error:", error)
           setIsListening(false)
           setInterimTranscript("")
         },

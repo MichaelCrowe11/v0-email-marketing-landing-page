@@ -43,7 +43,7 @@ export default function ContactPage() {
 
       setIsSubmitted(true)
     } catch (error) {
-      console.error("[v0] Contact form submission error:", error)
+      console.error("[CroweLogic] Contact form submission error:", error)
       alert("Failed to submit form. Please try again or email Michael@CroweLogic.com directly.")
     } finally {
       setIsSubmitting(false)

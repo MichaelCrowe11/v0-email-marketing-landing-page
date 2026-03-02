@@ -83,7 +83,7 @@ export default function PricingPage() {
         {/* Header */}
         <div className="text-center mb-16">
           <Badge variant="outline" className="mb-4">
-            20 Years of Mycology Expertise
+            18+ Years of Mycology Expertise
           </Badge>
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl mb-4">Choose Your Access Level</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">

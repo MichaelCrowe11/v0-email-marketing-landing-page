@@ -109,7 +109,7 @@ export async function startSubscriptionCheckout(planId: string, billingCycle: "m
             currency: "usd",
             product_data: {
               name: `${planName} - ${billingCycle === "monthly" ? "Monthly" : "Yearly"}`,
-              description: `Access to Crowe Logic AI platform with 20 years of mycology expertise`,
+              description: `Access to Crowe Logic AI platform with 18+ years of mycology expertise`,
             },
             unit_amount: priceInCents,
             recurring: {

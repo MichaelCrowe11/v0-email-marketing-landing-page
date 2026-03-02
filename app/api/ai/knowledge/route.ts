@@ -94,7 +94,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(results)
   } catch (error) {
-    console.error("[v0] Knowledge base error:", error)
+    console.error("[CroweLogic] Knowledge base error:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

@@ -31,7 +31,7 @@ export function ProofSection() {
                 alt="Michael Crowe"
                 className="h-24 w-24 rounded-full object-cover ring-4 ring-primary/30 shadow-xl animate-glow-pulse"
               />
-              <div className="absolute -bottom-2 -right-2 h-8 w-8 bg-success rounded-full border-4 border-card shadow-lg flex items-center justify-center">
+              <div className="absolute -bottom-2 -right-2 h-8 w-8 bg-emerald-500 rounded-full border-4 border-card shadow-lg flex items-center justify-center">
                 <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path
                     fillRule="evenodd"
@@ -43,10 +43,10 @@ export function ProofSection() {
             </div>
             <div className="flex-1">
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground mb-3">
-                The data vault that powers the <span className="text-gradient-purple">behavior core</span>
+                The data vault that powers the <span className="text-primary">behavior core</span>
               </h2>
               <p className="text-lg text-muted-foreground">
-                Built by Michael Crowe and the Southwest Mushrooms team over 20 years
+                Built by Michael Crowe and the Southwest Mushrooms team over 18+ years
               </p>
             </div>
           </div>

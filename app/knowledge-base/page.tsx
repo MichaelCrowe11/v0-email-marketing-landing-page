@@ -91,7 +91,7 @@ export default function KnowledgeBasePage() {
         <div className="mb-12">
           <h1 className="text-5xl font-bold text-foreground mb-4">Knowledge Base</h1>
           <p className="text-foreground/70 text-lg max-w-3xl">
-            Comprehensive cultivation guides, SOPs, and expert knowledge from 20+ years of professional mushroom farming
+            Comprehensive cultivation guides, SOPs, and expert knowledge from 18+ years of professional mushroom farming
             experience.
           </p>
         </div>

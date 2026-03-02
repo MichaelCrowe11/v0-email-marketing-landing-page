@@ -167,7 +167,7 @@ export default function GPTsPage() {
             Professional Mycology AI
           </h1>
           <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            20+ years of commercial cultivation expertise distilled into powerful AI assistants. Choose individual
+            18+ years of commercial cultivation expertise distilled into powerful AI assistants. Choose individual
             modules or save with bundle packages.
           </p>
         </div>

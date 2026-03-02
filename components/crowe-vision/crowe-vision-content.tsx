@@ -64,7 +64,7 @@ export function CroweVisionContent() {
         throw new Error("No URL returned from upload")
       }
     } catch (error) {
-      console.error("[v0] Upload failed:", error)
+      console.error("[CroweLogic] Upload failed:", error)
       setError("Failed to upload image. Please try again.")
     } finally {
       setUploading(false)
@@ -101,7 +101,7 @@ export function CroweVisionContent() {
         setResult(data.analysis)
       }
     } catch (error) {
-      console.error("[v0] Analysis failed:", error)
+      console.error("[CroweLogic] Analysis failed:", error)
       setError("Failed to analyze image. Please check your connection and try again.")
     } finally {
       setAnalyzing(false)
@@ -129,9 +129,10 @@ export function CroweVisionContent() {
         {/* Header */}
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-3">
-            <Camera className="w-12 h-12" />
+            <Camera className="w-12 h-12 text-primary" />
             <h1 className="text-4xl md:text-5xl font-black">Crowe Vision</h1>
           </div>
+          <p className="text-sm text-muted-foreground/70">by Michael Crowe — Powered by GPT-4o Vision</p>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             AI-powered computer vision for mushroom cultivation. Upload images for instant contamination detection,
             species identification, and growth stage analysis.
@@ -255,10 +256,23 @@ export function CroweVisionContent() {
                   <div>
                     <h3 className="text-sm font-semibold mb-2">Health Score</h3>
                     <div className="flex items-center gap-3">
-                      <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
-                        <div className="h-full bg-primary transition-all" style={{ width: `${result.healthScore}%` }} />
+                      <div className="flex-1 h-3 bg-muted rounded-full overflow-hidden">
+                        <div
+                          className={`h-full rounded-full transition-all duration-500 ${
+                            result.healthScore >= 80 ? "bg-emerald-500" :
+                            result.healthScore >= 60 ? "bg-primary" :
+                            result.healthScore >= 40 ? "bg-amber-500" :
+                            "bg-destructive"
+                          }`}
+                          style={{ width: `${result.healthScore}%` }}
+                        />
                       </div>
-                      <span className="text-sm font-medium">{result.healthScore}%</span>
+                      <span className={`text-lg font-bold ${
+                        result.healthScore >= 80 ? "text-emerald-500" :
+                        result.healthScore >= 60 ? "text-primary" :
+                        result.healthScore >= 40 ? "text-amber-500" :
+                        "text-destructive"
+                      }`}>{result.healthScore}%</span>
                     </div>
                   </div>
 

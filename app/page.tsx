@@ -69,9 +69,6 @@ export default function Home() {
       <ScrollReveal delay={100}>
         <FAQ />
       </ScrollReveal>
-      <ScrollReveal delay={100}>
-        <BrandFamilyBanner />
-      </ScrollReveal>
       <footer className="relative py-16 sm:py-20 md:py-24 text-center overflow-hidden border-t border-border/30 bg-noise">
         {/* Atmospheric footer background */}
         <div className="absolute inset-0 bg-gradient-to-t from-muted/40 via-muted/10 to-transparent" />
@@ -86,14 +83,14 @@ export default function Home() {
                 <img
                   src="/crowe-avatar.png"
                   alt="Crowe Logic"
-                  className="w-full h-full rounded-full ring-4 ring-border/50 shadow-2xl hover:ring-primary/30 transition-all duration-500 object-cover hover-lift"
+                  className="w-full h-full rounded-full ring-4 ring-border/50 shadow-2xl hover:ring-primary/30 transition-all duration-500 object-cover hover:-translate-y-1"
                 />
               </div>
             </div>
             <div className="text-center">
-              <div className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-2 font-display tracking-tight">Crowe Mycology</div>
+              <div className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-2 font-display tracking-tight">Crowe Logic AI</div>
               <div className="text-sm sm:text-base text-muted-foreground font-medium">
-                AI-Powered Mushroom Cultivation Platform
+                by Michael Crowe — AI-Powered Mushroom Cultivation
               </div>
             </div>
           </div>
@@ -125,7 +122,7 @@ export default function Home() {
 
           {/* Copyright with refined styling */}
           <div className="pt-8 border-t border-border/30">
-            <span className="text-xs sm:text-sm text-muted-foreground/80">© 2026 Crowe Mycology. All Rights Reserved.</span>
+            <span className="text-xs sm:text-sm text-muted-foreground/80">© 2026 Michael Crowe / Southwest Mushrooms. All Rights Reserved.</span>
           </div>
         </div>
       </footer>

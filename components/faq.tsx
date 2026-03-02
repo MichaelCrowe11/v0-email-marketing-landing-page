@@ -3,7 +3,7 @@ export function FAQ() {
     {
       question: "Can I use this for commercial cultivation?",
       answer:
-        "Absolutely. Crowe Logic AI is built from 20+ years of commercial growing experience. It includes SOPs, contamination protocols, and yield optimization strategies used in professional operations.",
+        "Absolutely. Crowe Logic AI is built from 18+ years of commercial growing experience. It includes SOPs, contamination protocols, and yield optimization strategies used in professional operations.",
     },
     {
       question: "Does it work with image analysis?",

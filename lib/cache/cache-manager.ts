@@ -33,7 +33,7 @@ class CacheManager {
           return await response.json()
         }
       } catch (e) {
-        console.error("[v0] Cache read error:", e)
+        console.error("[CroweLogic] Cache read error:", e)
       }
     }
 
@@ -63,7 +63,7 @@ class CacheManager {
         })
         await cache.put(key, response)
       } catch (e) {
-        console.error("[v0] Cache write error:", e)
+        console.error("[CroweLogic] Cache write error:", e)
       }
     }
   }
