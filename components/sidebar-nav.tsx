@@ -6,21 +6,14 @@ import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import {
-  User,
   MessageSquare,
-  DollarSign,
-  BookOpen,
   Menu,
   X,
   ExternalLink,
-  LayoutDashboard,
   Microscope,
-  ClipboardList,
-  Users,
   Leaf,
   Camera,
   Home,
-  Calendar,
 } from "lucide-react"
 import { HEADER_HEIGHT } from "@/components/global-header"
 
@@ -29,26 +22,15 @@ const navGroups = [
     label: "Main",
     items: [
       { href: "/", label: "Home", icon: Home },
-      { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
       { href: "/chat", label: "AI Assistant", icon: MessageSquare },
+      { href: "/crowe-vision", label: "Crowe Vision", icon: Camera },
     ],
   },
   {
-    label: "Tools",
+    label: "Reference",
     items: [
-      { href: "/crowe-vision", label: "Crowe Vision", icon: Camera },
       { href: "/species-library", label: "Species Library", icon: Microscope },
       { href: "/contamination-guide", label: "Contamination ID", icon: Leaf },
-      { href: "/sops", label: "SOPs & Guides", icon: ClipboardList },
-    ],
-  },
-  {
-    label: "Community",
-    items: [
-      { href: "/forum", label: "Community", icon: Users },
-      { href: "/consultations", label: "Consultations", icon: Calendar },
-      { href: "/pricing", label: "Pricing", icon: DollarSign },
-      { href: "/docs", label: "Documentation", icon: BookOpen },
     ],
   },
 ]
@@ -123,7 +105,7 @@ export function SidebarNav() {
           <nav className="flex-1 p-3 space-y-4 overflow-y-auto">
             {navGroups.map((group) => (
               <div key={group.label}>
-                <h3 className="px-3 mb-1.5 text-[10px] font-semibold text-sidebar-foreground/50 uppercase tracking-wider">
+                <h3 className="px-3 mb-1.5 text-[10px] font-semibold text-sidebar-foreground/70 uppercase tracking-wider">
                   {group.label}
                 </h3>
                 <div className="space-y-0.5">
@@ -137,7 +119,7 @@ export function SidebarNav() {
                         className={`flex items-center gap-2.5 px-3 py-2 text-xs font-medium rounded-lg transition-all ${
                           active
                             ? "bg-primary/10 text-primary border border-primary/20"
-                            : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
+                            : "text-sidebar-foreground/90 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
                         }`}
                         onClick={() => setIsOpen(false)}
                       >
@@ -158,14 +140,10 @@ export function SidebarNav() {
                 Contact Michael
               </a>
             </Button>
-            <Button size="sm" variant="ghost" className="w-full justify-start gap-2 h-8 text-xs" asChild>
-              <Link href="/profile">
-                <User className="w-3.5 h-3.5" />
-                Profile
-              </Link>
-            </Button>
             <Button size="sm" className="w-full h-8 text-xs bg-primary hover:bg-primary/90" asChild>
-              <Link href="/pricing">Upgrade Access</Link>
+              <a href="https://buy.southwestmushrooms.com" target="_blank" rel="noopener noreferrer">
+                Get The Book
+              </a>
             </Button>
           </div>
         </div>

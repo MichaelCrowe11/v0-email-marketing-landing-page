@@ -1,129 +1,97 @@
 "use client"
 
-import { useState, useEffect } from "react"
 import { Hero } from "@/components/hero"
-import { BenefitsBand } from "@/components/benefits-band"
-import { ProofSection } from "@/components/proof-section"
-import { StreamingChatDemo } from "@/components/streaming-chat-demo"
-import { Features } from "@/components/features"
-import { FAQ } from "@/components/faq"
-import { ScrollReveal } from "@/components/scroll-reveal"
-import { CodeGenerationIntro } from "@/components/code-generation-intro"
-import { BrandFamilyBanner } from "@/components/brand-family-banner"
+import Link from "next/link"
+import { MessageSquare, Camera, BookOpen } from "lucide-react"
 
 export default function Home() {
-  const [showIntro, setShowIntro] = useState(true)
-  const [hasSeenIntro, setHasSeenIntro] = useState(false)
-
-  useEffect(() => {
-    // Check for demo mode URL parameter
-    const params = new URLSearchParams(window.location.search)
-    const demo = params.get("demo")
-    const resetIntro = params.get("reset-intro")
-
-    // Admin: Reset intro if requested
-    if (resetIntro === "true") {
-      localStorage.removeItem("crowe-intro-seen")
-      window.location.href = "/"
-      return
-    }
-
-    // Check if user has seen intro before
-    const introSeen = localStorage.getItem("crowe-intro-seen")
-    if (introSeen === "true" || demo === "true") {
-      setShowIntro(false)
-      setHasSeenIntro(true)
-    }
-  }, [])
-
-  const handleIntroComplete = () => {
-    setShowIntro(false)
-    setHasSeenIntro(true)
-    localStorage.setItem("crowe-intro-seen", "true")
-  }
-
-  // Show intro if user hasn't seen it yet
-  if (showIntro && !hasSeenIntro) {
-    return <CodeGenerationIntro onComplete={handleIntroComplete} />
-  }
-
-  // Users can explore the platform and sign up when ready
   return (
     <main className="min-h-screen" id="main-content">
       <Hero />
-      <ScrollReveal>
-        <BrandFamilyBanner />
-      </ScrollReveal>
-      <ScrollReveal>
-        <BenefitsBand />
-      </ScrollReveal>
-      <ScrollReveal delay={100}>
-        <StreamingChatDemo />
-      </ScrollReveal>
-      <ScrollReveal delay={200}>
-        <ProofSection />
-      </ScrollReveal>
-      <ScrollReveal delay={100}>
-        <Features />
-      </ScrollReveal>
-      <ScrollReveal delay={100}>
-        <FAQ />
-      </ScrollReveal>
-      <footer className="relative py-16 sm:py-20 md:py-24 text-center overflow-hidden border-t border-border/30 bg-noise">
-        {/* Atmospheric footer background */}
-        <div className="absolute inset-0 bg-gradient-to-t from-muted/40 via-muted/10 to-transparent" />
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
 
-        <div className="relative z-10 space-y-6 sm:space-y-8 px-4 max-w-4xl mx-auto">
-          {/* Brand identity */}
-          <div className="flex flex-col items-center gap-5 mb-6 sm:mb-8">
-            <div className="relative group">
-              <div className="absolute inset-0 bg-primary/20 rounded-full blur-2xl group-hover:blur-3xl transition-all duration-500 opacity-0 group-hover:opacity-100" />
-              <div className="relative w-20 h-20 sm:w-24 sm:h-24">
-                <img
-                  src="/crowe-avatar.png"
-                  alt="Crowe Logic"
-                  className="w-full h-full rounded-full ring-4 ring-border/50 shadow-2xl hover:ring-primary/30 transition-all duration-500 object-cover hover:-translate-y-1"
-                />
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-2 font-display tracking-tight">Crowe Logic AI</div>
-              <div className="text-sm sm:text-base text-muted-foreground font-medium">
-                by Michael Crowe — AI-Powered Mushroom Cultivation
-              </div>
+      {/* Core Features — 3 cards */}
+      <section className="px-4 py-16 md:py-24">
+        <div className="mx-auto max-w-5xl">
+          <div className="grid gap-6 md:grid-cols-3">
+            <Link
+              href="/chat"
+              className="group rounded-2xl border border-border bg-card p-8 transition-all hover:border-primary/40 hover:shadow-lg hover:-translate-y-1"
+            >
+              <MessageSquare className="w-10 h-10 text-primary mb-4" />
+              <h3 className="text-lg font-bold text-foreground mb-2">AI Assistant</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Ask anything about mushroom cultivation. Powered by 18+ years of Michael Crowe's commercial growing expertise.
+              </p>
+            </Link>
+
+            <Link
+              href="/crowe-vision"
+              className="group rounded-2xl border border-border bg-card p-8 transition-all hover:border-primary/40 hover:shadow-lg hover:-translate-y-1"
+            >
+              <Camera className="w-10 h-10 text-primary mb-4" />
+              <h3 className="text-lg font-bold text-foreground mb-2">Crowe Vision</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Upload a photo for instant contamination detection, species identification, and growth stage analysis.
+              </p>
+            </Link>
+
+            <Link
+              href="/species-library"
+              className="group rounded-2xl border border-border bg-card p-8 transition-all hover:border-primary/40 hover:shadow-lg hover:-translate-y-1"
+            >
+              <BookOpen className="w-10 h-10 text-primary mb-4" />
+              <h3 className="text-lg font-bold text-foreground mb-2">Reference Library</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                100+ species profiles and a comprehensive contamination field guide with identification and remediation.
+              </p>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Minimal Footer */}
+      <footer className="py-12 text-center border-t border-border/30 px-4">
+        <div className="max-w-4xl mx-auto space-y-4">
+          <div className="flex items-center justify-center gap-3">
+            <img
+              src="/crowe-avatar.png"
+              alt="Crowe Logic AI"
+              className="w-10 h-10 rounded-full ring-2 ring-primary/30"
+            />
+            <div className="text-left">
+              <div className="font-bold text-foreground">Crowe Logic AI</div>
+              <div className="text-xs text-muted-foreground">by Michael Crowe</div>
             </div>
           </div>
-
-          {/* Description */}
-          <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            Empowering mushroom cultivators with AI-driven contamination detection, cultivation guidance, and
-            comprehensive mycology resources. From species selection to harvest optimization, we provide the tools for successful cultivation.
-          </p>
-
-          {/* Links with refined styling */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 pt-4 sm:pt-6">
+          <div className="flex items-center justify-center gap-4 text-sm">
             <a
               href="https://southwestmushrooms.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm sm:text-base font-semibold text-foreground hover:text-primary transition-all duration-300 hover:-translate-y-0.5"
+              className="text-muted-foreground hover:text-primary transition-colors"
             >
               Southwest Mushrooms
             </a>
-            <span className="hidden sm:inline text-border">|</span>
+            <span className="text-border">|</span>
+            <a
+              href="https://buy.southwestmushrooms.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              Get The Book
+            </a>
+            <span className="text-border">|</span>
             <a
               href="mailto:michael@crowelogic.com"
-              className="text-sm sm:text-base font-semibold text-foreground hover:text-primary transition-all duration-300 hover:-translate-y-0.5"
+              className="text-muted-foreground hover:text-primary transition-colors"
             >
-              Contact Michael
+              Contact
             </a>
           </div>
-
-          {/* Copyright with refined styling */}
-          <div className="pt-8 border-t border-border/30">
-            <span className="text-xs sm:text-sm text-muted-foreground/80">© 2026 Michael Crowe / Southwest Mushrooms. All Rights Reserved.</span>
-          </div>
+          <p className="text-xs text-muted-foreground">
+            © 2026 Michael Crowe / Southwest Mushrooms. All Rights Reserved.
+          </p>
         </div>
       </footer>
     </main>

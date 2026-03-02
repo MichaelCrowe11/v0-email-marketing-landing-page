@@ -181,7 +181,7 @@ export function OrchestratedHero() {
             Grow with Intelligence
           </p>
 
-          <p className="text-sm text-muted-foreground/70 animate-slide-up-fade animation-delay-150">
+          <p className="text-sm text-muted-foreground animate-slide-up-fade animation-delay-150">
             by Michael Crowe — 18+ Years of Commercial Cultivation Expertise
           </p>
 
