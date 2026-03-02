@@ -140,11 +140,15 @@ export function SidebarNav() {
                 Contact Michael
               </a>
             </Button>
-            <Button size="sm" className="w-full h-9 text-xs font-semibold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-primary-foreground shadow-md shadow-primary/20 rounded-lg" asChild>
-              <a href="https://buy.southwestmushrooms.com" target="_blank" rel="noopener noreferrer">
-                Get The Book
-              </a>
-            </Button>
+            <a
+              href="https://buy.southwestmushrooms.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center w-full h-9 text-xs font-semibold rounded-lg transition-all hover:opacity-90"
+              style={{ background: "linear-gradient(to right, #3d9a9a, #4db8b8)", color: "#fff", boxShadow: "0 4px 12px rgba(61,154,154,0.3)" }}
+            >
+              Get The Book
+            </a>
           </div>
         </div>
       </aside>

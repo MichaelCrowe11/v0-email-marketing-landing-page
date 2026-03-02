@@ -153,7 +153,7 @@ export function OrchestratedHero() {
   }, [])
 
   return (
-    <section className="relative min-h-[85vh] pt-16 pb-6 px-4 overflow-hidden bg-background">
+    <section className="relative min-h-[75vh] pt-12 pb-2 px-4 overflow-hidden bg-background">
       {/* Subtle background gradients */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-primary/5 via-accent/3 to-transparent blur-[80px] rounded-full pointer-events-none" />
 
@@ -191,20 +191,20 @@ export function OrchestratedHero() {
           </p>
 
           <div className="flex flex-wrap gap-4 justify-center animate-slide-up-fade animation-delay-400 pt-4">
-            <Button
-              size="lg"
-              className="text-base px-10 h-13 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-primary-foreground shadow-xl shadow-primary/30 transition-all hover:scale-[1.03] active:scale-[0.98] font-bold rounded-2xl"
-              asChild
+            <Link
+              href="/chat"
+              className="inline-flex items-center justify-center text-base px-10 h-13 rounded-2xl font-bold shadow-xl transition-all hover:scale-[1.03] active:scale-[0.98]"
+              style={{ background: "linear-gradient(to right, #3d9a9a, #4db8b8)", color: "#fff", boxShadow: "0 10px 25px -5px rgba(61,154,154,0.4)" }}
             >
-              <Link href="/chat">Start Growing</Link>
-            </Button>
-            <Button
-              size="lg"
-              className="text-base px-10 h-13 bg-accent/90 hover:bg-accent text-accent-foreground shadow-xl shadow-accent/20 transition-all hover:scale-[1.03] active:scale-[0.98] font-bold rounded-2xl"
-              asChild
+              Start Growing
+            </Link>
+            <Link
+              href="/crowe-vision"
+              className="inline-flex items-center justify-center text-base px-10 h-13 rounded-2xl font-bold shadow-xl transition-all hover:scale-[1.03] active:scale-[0.98]"
+              style={{ background: "linear-gradient(to right, #d4a843, #e5b84d)", color: "#1a1916", boxShadow: "0 10px 25px -5px rgba(212,168,67,0.4)" }}
             >
-              <Link href="/crowe-vision">Analyze Cultures</Link>
-            </Button>
+              Analyze Cultures
+            </Link>
           </div>
         </div>
 

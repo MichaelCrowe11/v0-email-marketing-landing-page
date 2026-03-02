@@ -132,7 +132,7 @@ export function CroweVisionContent() {
             <Camera className="w-12 h-12 text-primary" />
             <h1 className="text-4xl md:text-5xl font-black">Crowe Vision</h1>
           </div>
-          <p className="text-sm text-muted-foreground/70">by Michael Crowe — Powered by GPT-4o Vision</p>
+          <p className="text-sm text-muted-foreground/70">by Michael Crowe — AI-Powered Analysis</p>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             AI-powered computer vision for mushroom cultivation. Upload images for instant contamination detection,
             species identification, and growth stage analysis.

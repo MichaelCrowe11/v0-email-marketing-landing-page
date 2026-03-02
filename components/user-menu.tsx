@@ -55,13 +55,13 @@ export function UserMenu() {
         <Button variant="ghost" size="sm" className="h-9 px-2 sm:px-3 text-xs sm:text-sm" asChild>
           <a href="/auth/login">Sign In</a>
         </Button>
-        <Button
-          size="sm"
-          className="bg-primary hover:bg-primary/90 h-9 px-2 sm:px-3 text-xs sm:text-sm whitespace-nowrap"
-          asChild
+        <a
+          href="/auth/sign-up"
+          className="inline-flex items-center justify-center h-9 px-2 sm:px-3 text-xs sm:text-sm font-medium whitespace-nowrap rounded-md transition-all hover:opacity-90"
+          style={{ background: "#3d9a9a", color: "#fff" }}
         >
-          <a href="/auth/sign-up">Sign Up</a>
-        </Button>
+          Sign Up
+        </a>
       </div>
     )
   }
