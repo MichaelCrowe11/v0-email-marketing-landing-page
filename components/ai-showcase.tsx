@@ -11,7 +11,13 @@ export function AIShowcase() {
           </div>
 
           <div className="mx-auto max-w-4xl overflow-hidden rounded-xl border border-border bg-background shadow-2xl">
-            <img src="/chatgpt-interface-screenshot.jpeg" alt="Crowe Logic AI ChatGPT Interface" className="w-full" />
+            <div className="relative w-full aspect-video bg-gradient-to-br from-card to-background flex items-center justify-center p-12">
+              <div className="text-center space-y-4">
+                <img src="/crowe-logic-logo.png" alt="Crowe Logic AI" className="w-24 h-24 mx-auto rounded-full ring-4 ring-primary/30" />
+                <h3 className="text-2xl font-bold text-foreground">Crowe Logic AI</h3>
+                <p className="text-muted-foreground max-w-md mx-auto">AI-powered mycology intelligence — ask anything about mushroom cultivation, contamination, substrates, and more.</p>
+              </div>
+            </div>
           </div>
 
           <div className="mt-8 grid gap-4 md:grid-cols-4">

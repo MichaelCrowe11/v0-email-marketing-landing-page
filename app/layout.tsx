@@ -90,6 +90,30 @@ export const metadata: Metadata = {
     apple: [{ url: "/apple-icon.jpg", sizes: "180x180", type: "image/jpeg" }],
   },
   manifest: "/manifest.json",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://ai.southwestmushrooms.com",
+    siteName: "Crowe Logic AI",
+    title: "Crowe Logic AI by Michael Crowe",
+    description:
+      "AI-powered mushroom cultivation platform built on 18+ years of commercial expertise. Contamination detection, species identification, and growing intelligence by Michael Crowe of Southwest Mushrooms.",
+    images: [
+      {
+        url: "/crowe-logic-logo.png",
+        width: 512,
+        height: 512,
+        alt: "Crowe Logic AI",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary",
+    title: "Crowe Logic AI by Michael Crowe",
+    description:
+      "AI-powered mushroom cultivation platform — 18+ years of expertise from Southwest Mushrooms.",
+    images: ["/crowe-logic-logo.png"],
+  },
 }
 
 export default function RootLayout({

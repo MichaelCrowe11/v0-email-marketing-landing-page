@@ -4,7 +4,11 @@
 import { cookies } from "next/headers"
 import { jwtVerify, SignJWT } from "jose"
 
-const JWT_SECRET = new TextEncoder().encode(process.env.AZURE_AUTH_SECRET || "crowe-mycology-secret-key")
+const AZURE_AUTH_SECRET = process.env.AZURE_AUTH_SECRET
+if (!AZURE_AUTH_SECRET) {
+  console.warn("[CroweLogic] AZURE_AUTH_SECRET not set — Azure auth sessions will not work")
+}
+const JWT_SECRET = new TextEncoder().encode(AZURE_AUTH_SECRET || crypto.randomUUID())
 
 export interface User {
   id: string

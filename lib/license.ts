@@ -2,7 +2,11 @@ import { cookies } from "next/headers"
 import crypto from "crypto"
 
 const LICENSE_COOKIE = "crowelm_license"
-const LICENSE_SECRET = process.env.LICENSE_SECRET || "crowelm-default-secret-change-me"
+const LICENSE_SECRET = process.env.LICENSE_SECRET
+if (!LICENSE_SECRET) {
+  console.warn("[CroweLogic] LICENSE_SECRET not set — license cookies will use ephemeral key")
+}
+const EFFECTIVE_SECRET = LICENSE_SECRET || crypto.randomUUID()
 
 // Payhip product links for verification
 const VALID_PRODUCT_LINKS = [
@@ -90,7 +94,7 @@ export async function verifyLicenseKey(licenseKey: string): Promise<{
  */
 function signLicense(payload: { key: string; email: string; activatedAt: string }): string {
   const data = JSON.stringify(payload)
-  const hmac = crypto.createHmac("sha256", LICENSE_SECRET).update(data).digest("hex")
+  const hmac = crypto.createHmac("sha256", EFFECTIVE_SECRET).update(data).digest("hex")
   const encoded = Buffer.from(data).toString("base64")
   return `${encoded}.${hmac}`
 }

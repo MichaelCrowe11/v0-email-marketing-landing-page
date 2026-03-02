@@ -91,8 +91,9 @@ export async function POST(req: Request) {
             ),
           )
 
+          const { getAIProvider } = await import("@/lib/ai-provider")
           const result = await streamText({
-            model: "anthropic/claude-sonnet-4.5",
+            model: getAIProvider("gpt-4o"),
             prompt: `You are a research assistant conducting web research on: "${query}"
 
 ${hasCdpUrl ? "Using real browser automation via Kernel CDP connection" : "Based on simulated browser research"}, provide a comprehensive research summary including:
