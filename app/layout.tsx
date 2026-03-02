@@ -68,6 +68,7 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://ai.southwestmushrooms.com"),
   title: "Crowe Logic AI by Michael Crowe — AI-Powered Mushroom Cultivation Platform",
   description:
     "Professional mushroom cultivation platform by Michael Crowe of Southwest Mushrooms. AI-powered contamination detection, real-time monitoring, and comprehensive growing resources built on 18+ years of commercial cultivation expertise.",
