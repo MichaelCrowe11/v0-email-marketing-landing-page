@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { LicenseGate } from "@/components/license-gate"
 import { ChatContainer } from "@/components/chat/chat-container"
 
 interface ChatWithLicenseProps {
@@ -12,13 +11,14 @@ interface ChatWithLicenseProps {
 export function ChatWithLicense({ initiallyLicensed, hasUnlimitedAccess }: ChatWithLicenseProps) {
   const [licensed, setLicensed] = useState(initiallyLicensed)
 
-  if (!licensed) {
-    return <LicenseGate onActivated={() => setLicensed(true)} />
-  }
-
+  // Always show the chat container — it handles the license gate inline on send
   return (
     <div className="flex-1 overflow-hidden">
-      <ChatContainer hasUnlimitedAccess={hasUnlimitedAccess} />
+      <ChatContainer
+        hasUnlimitedAccess={hasUnlimitedAccess}
+        isLicensed={licensed}
+        onLicenseActivated={() => setLicensed(true)}
+      />
     </div>
   )
 }

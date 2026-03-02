@@ -127,6 +127,7 @@ export default function RootLayout({
       <head>
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
       </head>
       <body
         className={`${inter.variable} ${firaCode.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} font-sans antialiased`}

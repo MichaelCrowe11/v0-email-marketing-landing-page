@@ -1,27 +1,55 @@
 "use client"
 
 import type React from "react"
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useCallback } from "react"
 import Link from "next/link"
 import { ModelSelector } from "@/components/chat/model-selector"
 import { AIAvatarSwirl } from "@/components/chat/ai-avatar-swirl"
 import { ChatCanvas } from "@/components/chat/chat-canvas"
 import { ConversationHistory } from "@/components/chat/conversation-history"
+import { MarkdownRenderer } from "@/components/chat/markdown-renderer"
 import { Button } from "@/components/ui/button"
-import { FileText, Code, Download, Copy, Check, Maximize2, Menu, X } from "lucide-react"
+import { FileText, Code, Download, Copy, Check, Maximize2, Menu, X, Camera, Loader2, Lock, ExternalLink } from "lucide-react"
 
 type Message = {
   id: string
   role: "user" | "assistant"
   content: string
+  imageUrl?: string
+  visionResult?: VisionResult | null
 }
 
-export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAccess?: boolean }) {
+interface VisionResult {
+  species?: string
+  confidence: number
+  growthStage?: string
+  contamination: {
+    detected: boolean
+    type?: string
+    severity?: "low" | "medium" | "high" | "critical"
+    recommendations?: string[]
+  }
+  healthScore: number
+  observations: string[]
+  recommendations: string[]
+}
+
+interface ChatContainerProps {
+  hasUnlimitedAccess?: boolean
+  isLicensed?: boolean
+  onLicenseActivated?: () => void
+}
+
+export function ChatContainer({ hasUnlimitedAccess = false, isLicensed = true, onLicenseActivated }: ChatContainerProps) {
   const [selectedModel, setSelectedModel] = useState("crowelm/v1")
   const [copied, setCopied] = useState(false)
   const [inputValue, setInputValue] = useState("")
   const [messages, setMessages] = useState<Message[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [showLicensePrompt, setShowLicensePrompt] = useState(false)
+  const [licenseKey, setLicenseKey] = useState("")
+  const [licenseError, setLicenseError] = useState("")
+  const [licenseLoading, setLicenseLoading] = useState(false)
   const [canvasContent, setCanvasContent] = useState<{
     content: string
     type: "code" | "document"
@@ -30,8 +58,25 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null)
   const [showSidebar, setShowSidebar] = useState(false)
 
+  // Crowe Vision inline state
+  const [pendingImage, setPendingImage] = useState<string | null>(null)
+  const [pendingImageFile, setPendingImageFile] = useState<File | null>(null)
+  const [isAnalyzingImage, setIsAnalyzingImage] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const messagesContainerRef = useRef<HTMLDivElement>(null)
   const isEmpty = messages.length === 0
+
+  // Auto-scroll to bottom on new messages
+  const scrollToBottom = useCallback(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }, [])
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages, scrollToBottom])
 
   const loadConversation = (conversationId: string) => {
     // Implementation for loading conversation
@@ -95,24 +140,176 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
     return null
   }
 
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setPendingImageFile(file)
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setPendingImage(reader.result as string)
+    }
+    reader.readAsDataURL(file)
+  }
+
+  const clearPendingImage = () => {
+    setPendingImage(null)
+    setPendingImageFile(null)
+    if (fileInputRef.current) fileInputRef.current.value = ""
+  }
+
+  const analyzeImageInChat = async (imageDataUrl: string): Promise<VisionResult | null> => {
+    try {
+      // Upload to get a blob URL
+      const blob = await fetch(imageDataUrl).then(r => r.blob())
+      const formData = new FormData()
+      formData.append("file", blob, "image.jpg")
+
+      const uploadRes = await fetch("/api/upload", { method: "POST", body: formData })
+      if (!uploadRes.ok) return null
+      const { url } = await uploadRes.json()
+
+      // Analyze with Crowe Vision
+      const analyzeRes = await fetch("/api/crowe-vision/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageUrl: url }),
+      })
+
+      if (!analyzeRes.ok) return null
+      const data = await analyzeRes.json()
+      return data.analysis || null
+    } catch {
+      return null
+    }
+  }
+
   const sendMessage = async (text: string) => {
-    if (!text.trim() || isLoading) return
+    if ((!text.trim() && !pendingImage) || isLoading) return
 
     let conversationId = currentConversationId
     if (!conversationId) {
       conversationId = await createNewConversation(text)
     }
 
+    const hasImage = !!pendingImage
+    const imageDataUrl = pendingImage
+
     const userMessage: Message = {
       id: Date.now().toString(),
       role: "user",
-      content: text,
+      content: text || (hasImage ? "Analyze this image with Crowe Vision" : ""),
+      imageUrl: imageDataUrl || undefined,
     }
+
+    // Clear pending image immediately
+    clearPendingImage()
 
     setMessages((prev) => [...prev, userMessage])
     setIsLoading(true)
 
-    const assistantMessageId = (Date.now() + 1).toString()
+    // If there's an image, run Crowe Vision analysis first
+    if (hasImage && imageDataUrl) {
+      setIsAnalyzingImage(true)
+      const visionMessageId = (Date.now() + 1).toString()
+
+      // Add a "analyzing" assistant message
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: visionMessageId,
+          role: "assistant",
+          content: "",
+          visionResult: null,
+        },
+      ])
+
+      const visionResult = await analyzeImageInChat(imageDataUrl)
+      setIsAnalyzingImage(false)
+
+      if (visionResult) {
+        // Build a rich markdown summary from the vision result
+        const visionMarkdown = buildVisionMarkdown(visionResult)
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === visionMessageId
+              ? { ...m, content: visionMarkdown, visionResult }
+              : m,
+          ),
+        )
+      } else {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === visionMessageId
+              ? { ...m, content: "I wasn't able to analyze that image. Please try again with a clearer photo." }
+              : m,
+          ),
+        )
+      }
+
+      // Now also send the text + vision context to the chat API for follow-up discussion
+      if (text.trim()) {
+        const contextMessage = visionResult
+          ? `${text}\n\n[Context: Crowe Vision just analyzed an image and found: ${visionResult.species || "unknown species"}, health score ${visionResult.healthScore}%, contamination: ${visionResult.contamination.detected ? visionResult.contamination.type : "none detected"}]`
+          : text
+
+        await streamChatResponse(contextMessage, [...messages, userMessage])
+      }
+
+      setIsLoading(false)
+      return
+    }
+
+    // Normal text-only message
+    await streamChatResponse(text, [...messages, userMessage])
+    setIsLoading(false)
+  }
+
+  const buildVisionMarkdown = (result: VisionResult): string => {
+    const lines: string[] = []
+    lines.push("## Crowe Vision Analysis\n")
+
+    if (result.species && result.species !== "Unknown") {
+      lines.push(`**Species:** ${result.species} (${result.confidence}% confidence)\n`)
+    }
+    if (result.growthStage) {
+      lines.push(`**Growth Stage:** ${result.growthStage}\n`)
+    }
+
+    // Health score with emoji indicator
+    const healthEmoji = result.healthScore >= 80 ? "🟢" : result.healthScore >= 60 ? "🟡" : result.healthScore >= 40 ? "🟠" : "🔴"
+    lines.push(`**Health Score:** ${healthEmoji} ${result.healthScore}/100\n`)
+
+    // Contamination
+    if (result.contamination.detected) {
+      lines.push(`\n### ⚠️ Contamination Detected\n`)
+      lines.push(`- **Type:** ${result.contamination.type}`)
+      lines.push(`- **Severity:** ${result.contamination.severity}\n`)
+      if (result.contamination.recommendations?.length) {
+        lines.push(`**Remediation Steps:**`)
+        result.contamination.recommendations.forEach((rec) => lines.push(`- ${rec}`))
+      }
+    } else {
+      lines.push(`\n### ✅ No Contamination Detected\n`)
+    }
+
+    // Observations
+    if (result.observations.length > 0) {
+      lines.push(`\n### Observations\n`)
+      result.observations.forEach((obs) => lines.push(`- ${obs}`))
+    }
+
+    // Recommendations
+    if (result.recommendations.length > 0) {
+      lines.push(`\n### Recommendations\n`)
+      result.recommendations.forEach((rec) => lines.push(`- ${rec}`))
+    }
+
+    return lines.join("\n")
+  }
+
+  const streamChatResponse = async (text: string, contextMessages: Message[]) => {
+    const assistantMessageId = (Date.now() + 2).toString()
     setMessages((prev) => [
       ...prev,
       {
@@ -127,7 +324,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: [...messages, userMessage].map((m) => ({
+          messages: contextMessages.map((m) => ({
             role: m.role,
             content: m.content,
           })),
@@ -173,7 +370,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                   prev.map((m) => (m.id === assistantMessageId ? { ...m, content: accumulatedText } : m)),
                 )
               }
-            } catch (e) {
+            } catch {
               // Skip invalid JSON
             }
           }
@@ -192,8 +389,6 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
             : m,
         ),
       )
-    } finally {
-      setIsLoading(false)
     }
   }
 
@@ -226,9 +421,45 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
     URL.revokeObjectURL(url)
   }
 
+  const handleActivateLicense = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLicenseError("")
+    setLicenseLoading(true)
+
+    try {
+      const res = await fetch("/api/license/activate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ licenseKey: licenseKey.trim() }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        setLicenseError(data.error || "Invalid license key")
+        setLicenseLoading(false)
+        return
+      }
+
+      setShowLicensePrompt(false)
+      setLicenseKey("")
+      onLicenseActivated?.()
+    } catch {
+      setLicenseError("Connection error. Please try again.")
+    } finally {
+      setLicenseLoading(false)
+    }
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!inputValue.trim() || isLoading) return
+    if ((!inputValue.trim() && !pendingImage) || isLoading) return
+
+    // Check license before sending
+    if (!isLicensed) {
+      setShowLicensePrompt(true)
+      return
+    }
 
     sendMessage(inputValue)
     setInputValue("")
@@ -300,8 +531,8 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto">
-            <div className="max-w-4xl mx-auto px-6 py-12">
+          <div className="flex-1 overflow-y-auto" ref={messagesContainerRef}>
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
               {isEmpty && (
                 <div className="flex flex-col items-center justify-center min-h-[calc(100vh-300px)] space-y-6 sm:space-y-8 px-4">
                   <AIAvatarSwirl state="idle" size={128} />
@@ -350,58 +581,98 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                         onClick={() => handleSuggestionClick("What's the best way to scale up from hobby to commercial mushroom production?")}
                         className="p-4 rounded-xl bg-card border border-border hover:bg-accent hover:border-accent-foreground/20 transition-all text-left shadow-sm group"
                       >
-                        <FileText className="w-5 h-5 mb-2 text-muted-foreground group-hover:text-foreground transition-colors" />
+                        <Camera className="w-5 h-5 mb-2 text-muted-foreground group-hover:text-foreground transition-colors" />
                         <div className="text-sm font-medium text-foreground">Farm Scaling</div>
                         <div className="text-xs text-muted-foreground mt-1">Grow your operation efficiently</div>
                       </button>
+                    </div>
+
+                    {/* Crowe Vision hint */}
+                    <div className="text-center mt-4">
+                      <p className="text-xs text-muted-foreground">
+                        <Camera className="w-3 h-3 inline mr-1" />
+                        Attach a photo to analyze with <span className="font-semibold text-primary">Crowe Vision</span>
+                      </p>
                     </div>
                   </div>
                 </div>
               )}
 
               {!isEmpty && (
-                <div className="space-y-8">
+                <div className="space-y-6">
                   {messages.map((message, index) => {
                     const isAssistant = message.role === "assistant"
                     const isLastMessage = index === messages.length - 1
                     const isStreaming = isLastMessage && isLoading && isAssistant
+                    const isVisionAnalyzing = isAssistant && !message.content && isAnalyzingImage && isLastMessage
 
                     // Detect if message contains code or document
                     const hasCode = message.content.includes("```")
                     const isDocument = message.content.length > 500 && !hasCode
 
                     return (
-                      <div key={message.id} className="flex gap-4">
-                        {!isAssistant && (
-                          <div className="flex-shrink-0">
-                            <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center text-sm font-medium text-muted-foreground">
+                      <div key={message.id} className="flex gap-3 sm:gap-4 animate-fade-in">
+                        {/* Avatar column */}
+                        <div className="flex-shrink-0 pt-1">
+                          {isAssistant ? (
+                            <AIAvatarSwirl state={isStreaming || isVisionAnalyzing ? "thinking" : "idle"} size={36} />
+                          ) : (
+                            <div className="h-9 w-9 rounded-full bg-gradient-to-br from-amber-100 to-amber-200 dark:from-amber-900/40 dark:to-amber-800/30 flex items-center justify-center text-xs font-semibold text-amber-700 dark:text-amber-300 border border-amber-200/50 dark:border-amber-700/50">
                               You
                             </div>
+                          )}
+                        </div>
+
+                        {/* Message content */}
+                        <div className="flex-1 min-w-0">
+                          <div className="text-xs font-semibold mb-1 text-muted-foreground">
+                            {isAssistant ? "Crowe Logic AI" : "You"}
                           </div>
-                        )}
-                        <div className="flex-1">
                           <div
-                            className={`rounded-2xl px-5 py-4 shadow-sm ${
+                            className={`rounded-2xl px-4 sm:px-5 py-3 sm:py-4 shadow-sm ${
                               isAssistant
                                 ? "bg-card border border-border"
                                 : "bg-gradient-to-br from-amber-50 to-amber-100/50 dark:from-amber-950/30 dark:to-amber-900/20 border border-amber-200/50 dark:border-amber-800/50"
                             }`}
                           >
-                            <div className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
-                              {message.content}
-                              {isAssistant && (
-                                <span className="inline-block align-middle ml-3">
-                                  <AIAvatarSwirl state={isStreaming ? "thinking" : "idle"} size={32} />
-                                </span>
-                              )}
-                              {isStreaming && (
-                                <span className="inline-block w-1.5 h-4 ml-0.5 bg-foreground animate-pulse align-middle" />
-                              )}
-                            </div>
+                            {/* User image preview */}
+                            {!isAssistant && message.imageUrl && (
+                              <div className="mb-3">
+                                <img
+                                  src={message.imageUrl}
+                                  alt="Uploaded for analysis"
+                                  className="rounded-lg max-h-48 object-contain border border-border/30"
+                                />
+                              </div>
+                            )}
+
+                            {/* Vision analyzing state */}
+                            {isVisionAnalyzing && (
+                              <div className="flex items-center gap-3 py-2">
+                                <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                                <span className="text-sm text-muted-foreground">Crowe Vision is analyzing your image...</span>
+                              </div>
+                            )}
+
+                            {/* Message content with markdown */}
+                            {message.content && (
+                              <div className="text-sm text-foreground">
+                                {isAssistant ? (
+                                  <MarkdownRenderer content={message.content} />
+                                ) : (
+                                  <div className="leading-relaxed whitespace-pre-wrap">{message.content}</div>
+                                )}
+                              </div>
+                            )}
+
+                            {/* Streaming cursor */}
+                            {isStreaming && (
+                              <span className="inline-block w-1.5 h-4 bg-primary animate-pulse rounded-sm ml-0.5" />
+                            )}
 
                             {/* Canvas buttons for code/documents */}
                             {isAssistant && !isStreaming && (hasCode || isDocument) && (
-                              <div className="mt-4 flex gap-2">
+                              <div className="mt-3 flex gap-2">
                                 {hasCode && (
                                   <Button
                                     variant="outline"
@@ -412,21 +683,21 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                                       const lang = codeMatch ? codeMatch[1] || "typescript" : "typescript"
                                       handleOpenCanvas(code, "code", lang)
                                     }}
-                                    className="gap-2"
+                                    className="gap-2 text-xs"
                                   >
                                     <Maximize2 className="w-3 h-3" />
-                                    Open in Code Canvas
+                                    Open in Canvas
                                   </Button>
                                 )}
-                                {isDocument && (
+                                {isDocument && !hasCode && (
                                   <Button
                                     variant="outline"
                                     size="sm"
                                     onClick={() => handleOpenCanvas(message.content, "document")}
-                                    className="gap-2"
+                                    className="gap-2 text-xs"
                                   >
                                     <Maximize2 className="w-3 h-3" />
-                                    Open in Document Canvas
+                                    Open in Canvas
                                   </Button>
                                 )}
                               </div>
@@ -436,6 +707,7 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                       </div>
                     )
                   })}
+                  <div ref={messagesEndRef} />
                 </div>
               )}
             </div>
@@ -443,7 +715,30 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
 
           {/* Input */}
           <div className="border-t border-border glass-panel">
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
+              {/* Pending image preview */}
+              {pendingImage && (
+                <div className="mb-3 flex items-start gap-2">
+                  <div className="relative inline-block">
+                    <img
+                      src={pendingImage}
+                      alt="Pending upload"
+                      className="h-20 rounded-lg border border-border/50 object-cover"
+                    />
+                    <button
+                      onClick={clearPendingImage}
+                      className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center hover:bg-destructive/90 transition-colors shadow-sm"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs text-primary font-medium mt-1">
+                    <Camera className="w-3.5 h-3.5" />
+                    Crowe Vision will analyze this image
+                  </div>
+                </div>
+              )}
+
               <form onSubmit={handleSubmit} className="relative">
                 <textarea
                   ref={textareaRef}
@@ -455,31 +750,37 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                       handleSubmit(e)
                     }
                   }}
-                  placeholder="Ask about cultivation, substrates, contamination, species..."
-                  className="w-full min-h-[56px] sm:min-h-[60px] max-h-[200px] px-4 sm:px-5 py-3 sm:py-4 pr-16 glass-input rounded-2xl text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent/50 resize-none shadow-sm"
+                  placeholder={pendingImage ? "Add a question about this image, or just send to analyze..." : "Ask about cultivation, substrates, contamination, species..."}
+                  className="w-full min-h-[56px] sm:min-h-[60px] max-h-[200px] pl-12 sm:pl-14 pr-14 sm:pr-16 py-3 sm:py-4 glass-input rounded-2xl text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent/50 resize-none shadow-sm"
                   rows={2}
                   disabled={isLoading}
                 />
 
+                {/* Image upload button */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageSelect}
+                  className="hidden"
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="absolute left-2 sm:left-3 bottom-2 sm:bottom-3 h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-xl text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all disabled:opacity-50"
+                  disabled={isLoading}
+                  title="Upload image for Crowe Vision analysis"
+                >
+                  <Camera className="w-4 h-4 sm:w-5 sm:h-5" />
+                </button>
+
                 <button
                   type="submit"
                   className="absolute right-2 sm:right-3 bottom-2 sm:bottom-3 h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-xl bg-accent text-accent-foreground hover:bg-accent/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
-                  disabled={isLoading || !inputValue?.trim()}
+                  disabled={isLoading || (!inputValue?.trim() && !pendingImage)}
                 >
                   {isLoading ? (
-                    <svg
-                      className="w-4 h-4 sm:w-5 sm:h-5 animate-spin"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      />
-                    </svg>
+                    <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
                   ) : (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -497,8 +798,8 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
                   )}
                 </button>
               </form>
-              <p className="text-xs text-muted-foreground mt-2 sm:mt-3 text-center">
-                Press Enter to send, Shift+Enter for new line
+              <p className="text-xs text-muted-foreground mt-2 text-center">
+                Enter to send · Shift+Enter for new line · <Camera className="w-3 h-3 inline" /> for Crowe Vision
               </p>
             </div>
           </div>
@@ -513,6 +814,73 @@ export function ChatContainer({ hasUnlimitedAccess = false }: { hasUnlimitedAcce
           language={canvasContent.language}
           onClose={() => setCanvasContent(null)}
         />
+      )}
+
+      {/* Inline License Activation Prompt */}
+      {showLicensePrompt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="w-full max-w-sm rounded-2xl border border-border bg-card shadow-2xl p-6 animate-scale-in">
+            <div className="text-center mb-5">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                <Lock className="w-6 h-6 text-primary" />
+              </div>
+              <h3 className="text-lg font-bold text-foreground">Activate CroweLM</h3>
+              <p className="text-xs text-muted-foreground mt-1">
+                Enter your license key from The Mushroom Grower to unlock the AI assistant.
+              </p>
+            </div>
+
+            <form onSubmit={handleActivateLicense} className="space-y-3">
+              <input
+                type="text"
+                value={licenseKey}
+                onChange={(e) => {
+                  setLicenseKey(e.target.value.toUpperCase())
+                  setLicenseError("")
+                }}
+                placeholder="XXXX-XXXX-XXXX-XXXX"
+                className="w-full px-4 py-3 rounded-xl font-mono text-sm tracking-wider text-center bg-muted border-2 border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-colors"
+                autoFocus
+                disabled={licenseLoading}
+              />
+              {licenseError && (
+                <p className="text-xs text-destructive text-center">{licenseError}</p>
+              )}
+              <button
+                type="submit"
+                disabled={licenseLoading || !licenseKey.trim()}
+                className="w-full py-3 rounded-xl font-semibold text-sm bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 transition-all disabled:opacity-50"
+              >
+                {licenseLoading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Verifying...
+                  </span>
+                ) : (
+                  "Activate"
+                )}
+              </button>
+            </form>
+
+            <div className="mt-4 text-center space-y-2">
+              <a
+                href="https://buy.southwestmushrooms.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline"
+              >
+                <ExternalLink className="w-3 h-3" />
+                Get The Mushroom Grower
+              </a>
+              <button
+                onClick={() => setShowLicensePrompt(false)}
+                className="block w-full text-xs text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   )

@@ -153,16 +153,16 @@ export function OrchestratedHero() {
   }, [])
 
   return (
-    <section className="relative min-h-[90vh] pt-20 pb-8 px-4 overflow-hidden bg-background">
+    <section className="relative min-h-[85vh] pt-16 pb-6 px-4 overflow-hidden bg-background">
       {/* Subtle background gradients */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-primary/5 via-accent/3 to-transparent blur-[80px] rounded-full pointer-events-none" />
 
       <div className="mx-auto max-w-6xl relative z-10">
-        <div className="text-center mb-12 space-y-6">
-          <div className="flex justify-center mb-6 animate-fade-in">
+        <div className="text-center mb-8 space-y-5">
+          <div className="flex justify-center mb-4 animate-fade-in">
             <div className="relative group">
               <div className="absolute -inset-1.5 bg-gradient-to-r from-primary/40 via-accent/40 to-primary/40 rounded-full blur-lg opacity-60 group-hover:opacity-80 transition-opacity" />
-              <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-3 border-primary/50 shadow-2xl shadow-primary/25">
+              <div className="relative w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden border-3 border-primary/50 shadow-2xl shadow-primary/25">
                 <Image src="/crowe-avatar.png" alt="Crowe Mycology" fill className="object-cover" priority />
               </div>
             </div>
@@ -190,18 +190,17 @@ export function OrchestratedHero() {
             optimization.
           </p>
 
-          <div className="flex flex-wrap gap-3 justify-center animate-slide-up-fade animation-delay-400 pt-2">
+          <div className="flex flex-wrap gap-4 justify-center animate-slide-up-fade animation-delay-400 pt-4">
             <Button
               size="lg"
-              className="text-base px-8 h-12 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98] font-semibold rounded-xl"
+              className="text-base px-10 h-13 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-primary-foreground shadow-xl shadow-primary/30 transition-all hover:scale-[1.03] active:scale-[0.98] font-bold rounded-2xl"
               asChild
             >
               <Link href="/chat">Start Growing</Link>
             </Button>
             <Button
               size="lg"
-              variant="outline"
-              className="text-base px-8 h-12 border-2 border-primary/30 hover:border-primary/50 hover:bg-primary/5 transition-all hover:scale-[1.02] active:scale-[0.98] font-semibold rounded-xl bg-transparent"
+              className="text-base px-10 h-13 bg-accent/90 hover:bg-accent text-accent-foreground shadow-xl shadow-accent/20 transition-all hover:scale-[1.03] active:scale-[0.98] font-bold rounded-2xl"
               asChild
             >
               <Link href="/crowe-vision">Analyze Cultures</Link>

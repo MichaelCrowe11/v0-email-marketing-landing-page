@@ -133,14 +133,14 @@ export function SidebarNav() {
             ))}
           </nav>
 
-          <div className="p-3 border-t border-sidebar-border space-y-1.5">
-            <Button size="sm" variant="ghost" className="w-full justify-start gap-2 h-8 text-xs" asChild>
+          <div className="p-3 border-t border-sidebar-border space-y-2">
+            <Button size="sm" variant="ghost" className="w-full justify-start gap-2 h-8 text-xs text-sidebar-foreground/80 hover:text-sidebar-foreground" asChild>
               <a href="mailto:Michael@CroweLogic.com">
                 <ExternalLink className="w-3.5 h-3.5" />
                 Contact Michael
               </a>
             </Button>
-            <Button size="sm" className="w-full h-8 text-xs bg-primary hover:bg-primary/90" asChild>
+            <Button size="sm" className="w-full h-9 text-xs font-semibold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-primary-foreground shadow-md shadow-primary/20 rounded-lg" asChild>
               <a href="https://buy.southwestmushrooms.com" target="_blank" rel="noopener noreferrer">
                 Get The Book
               </a>
