@@ -7,7 +7,7 @@ import { ChatWithLicense } from "@/components/chat/chat-with-license"
 
 function ChatLoading() {
   return (
-    <div className="h-screen flex items-center justify-center" style={{ backgroundColor: "#1a1916" }}>
+    <div className="flex items-center justify-center" style={{ backgroundColor: "#1a1916", height: "calc(100vh - 64px)" }}>
       <div className="text-center space-y-4">
         <div className="w-16 h-16 border-4 rounded-full animate-spin mx-auto" style={{ borderColor: "#3d9a9a", borderTopColor: "transparent" }} />
         <p className="text-sm" style={{ color: "#6b6560" }}>Loading Crowe Logic AI...</p>
@@ -20,7 +20,7 @@ async function ChatContent() {
   const licensed = await hasValidLicense()
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden touch-pan-y" style={{ backgroundColor: "#1a1916" }}>
+    <div className="flex flex-col overflow-hidden touch-pan-y" style={{ backgroundColor: "#1a1916", height: "calc(100vh - 64px)" }}>
       <ChatWithLicense initiallyLicensed={licensed} hasUnlimitedAccess={licensed} />
     </div>
   )
