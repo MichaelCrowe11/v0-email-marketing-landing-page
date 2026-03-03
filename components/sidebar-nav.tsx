@@ -14,8 +14,10 @@ import {
   Leaf,
   Camera,
   Home,
+  Users,
 } from "lucide-react"
-import { HEADER_HEIGHT } from "@/components/global-header"
+import { HEADER_HEIGHT } from "@/lib/layout-constants"
+import { SidebarProducts } from "@/components/sidebar-products"
 
 const navGroups = [
   {
@@ -86,14 +88,14 @@ export function SidebarNav() {
             className="flex items-center px-3 py-2 border-b border-sidebar-border group shrink-0 hover:bg-sidebar-accent/50 transition-colors"
             style={{ height: `${HEADER_HEIGHT}px` }}
           >
-            <div className="relative w-9 h-9 flex-shrink-0 mr-2 rounded-full overflow-hidden border-2 border-primary/30">
+            <div className="relative w-10 h-10 flex-shrink-0 mr-2 rounded-full overflow-hidden border-2 border-primary/30">
               <Image
                 src="/crowe-avatar.png"
                 alt="Crowe Mycology"
                 fill
-                className="object-cover transition-transform group-hover:scale-105"
+                className="object-cover scale-[1.4] object-[center_15%] transition-transform group-hover:scale-[1.5]"
                 priority
-                sizes="36px"
+                sizes="40px"
               />
             </div>
             <div className="flex flex-col">
@@ -102,38 +104,48 @@ export function SidebarNav() {
             </div>
           </a>
 
-          <nav className="flex-1 p-3 space-y-4 overflow-y-auto">
-            {navGroups.map((group) => (
-              <div key={group.label}>
-                <h3 className="px-3 mb-1.5 text-[10px] font-semibold text-sidebar-foreground/70 uppercase tracking-wider">
-                  {group.label}
-                </h3>
-                <div className="space-y-0.5">
-                  {group.items.map((item) => {
-                    const Icon = item.icon
-                    const active = isActive(item.href)
-                    return (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        className={`flex items-center gap-2.5 px-3 py-2 text-xs font-medium rounded-lg transition-all ${
-                          active
-                            ? "bg-primary/10 text-primary border border-primary/20"
-                            : "text-sidebar-foreground/90 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
-                        }`}
-                        onClick={() => setIsOpen(false)}
-                      >
-                        <Icon className="w-4 h-4 flex-shrink-0" />
-                        <span className="truncate">{item.label}</span>
-                      </Link>
-                    )
-                  })}
+          <div className="flex-1 overflow-y-auto">
+            <nav className="p-3 space-y-4">
+              {navGroups.map((group) => (
+                <div key={group.label}>
+                  <h3 className="px-3 mb-1.5 text-[10px] font-semibold text-sidebar-foreground/70 uppercase tracking-wider">
+                    {group.label}
+                  </h3>
+                  <div className="space-y-0.5">
+                    {group.items.map((item) => {
+                      const Icon = item.icon
+                      const active = isActive(item.href)
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          className={`flex items-center gap-2.5 px-3 py-2 text-xs font-medium rounded-lg transition-all ${
+                            active
+                              ? "bg-primary/10 text-primary border border-primary/20"
+                              : "text-sidebar-foreground/90 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
+                          }`}
+                          onClick={() => setIsOpen(false)}
+                        >
+                          <Icon className="w-4 h-4 flex-shrink-0" />
+                          <span className="truncate">{item.label}</span>
+                        </Link>
+                      )
+                    })}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </nav>
+              ))}
+            </nav>
 
-          <div className="p-3 border-t border-sidebar-border space-y-2">
+            <SidebarProducts />
+          </div>
+
+          <div className="p-3 border-t border-sidebar-border space-y-2 shrink-0">
+            <Button size="sm" variant="ghost" className="w-full justify-start gap-2 h-8 text-xs text-sidebar-foreground/80 hover:text-sidebar-foreground" asChild>
+              <a href="https://www.skool.com/southwestmushrooms" target="_blank" rel="noopener noreferrer">
+                <Users className="w-3.5 h-3.5" />
+                Skool Community
+              </a>
+            </Button>
             <Button size="sm" variant="ghost" className="w-full justify-start gap-2 h-8 text-xs text-sidebar-foreground/80 hover:text-sidebar-foreground" asChild>
               <a href="mailto:Michael@CroweLogic.com">
                 <ExternalLink className="w-3.5 h-3.5" />
@@ -141,7 +153,7 @@ export function SidebarNav() {
               </a>
             </Button>
             <a
-              href="https://buy.southwestmushrooms.com"
+              href="https://shop.southwestmushrooms.com"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center w-full h-9 text-xs font-semibold rounded-lg transition-all hover:opacity-90"

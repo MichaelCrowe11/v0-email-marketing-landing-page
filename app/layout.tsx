@@ -7,12 +7,13 @@ import { SidebarNav } from "@/components/sidebar-nav"
 import { GlobalHeader } from "@/components/global-header"
 import { ThemeProvider } from "@/components/theme-provider"
 import { SessionProvider } from "@/components/providers/session-provider"
-import { HEADER_HEIGHT } from "@/components/global-header"
+import { HEADER_HEIGHT } from "@/lib/layout-constants"
 import { PerformanceMonitorInit } from "@/components/performance-monitor-init"
 
-import { Inter, Fira_Code, Geist_Mono as V0_Font_Geist_Mono, Space_Grotesk, JetBrains_Mono } from "next/font/google"
+import { IBM_Plex_Sans, Fira_Code, Geist_Mono as V0_Font_Geist_Mono, Space_Grotesk, JetBrains_Mono } from "next/font/google"
 import { Toaster } from "@/components/ui/toaster"
 import { ConfirmationProvider } from "@/hooks/use-confirmation"
+import { ShopifyProvider } from "@/hooks/use-shopify"
 import { GlobalConfirmationDialog } from "@/components/global-confirmation-dialog"
 
 // Initialize fonts
@@ -21,14 +22,14 @@ const _geistMono = V0_Font_Geist_Mono({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 })
 
-const inter = Inter({
+const ibmPlexSans = IBM_Plex_Sans({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
   preload: true,
   fallback: ["system-ui", "-apple-system", "sans-serif"],
   adjustFontFallback: true,
-  weight: ["400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700"],
 })
 
 const firaCode = Fira_Code({
@@ -130,10 +131,11 @@ export default function RootLayout({
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
       </head>
       <body
-        className={`${inter.variable} ${firaCode.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} font-sans antialiased`}
+        className={`${ibmPlexSans.variable} ${firaCode.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} font-sans antialiased`}
       >
         <SessionProvider>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+            <ShopifyProvider>
             <ConfirmationProvider>
               <SidebarNav />
               <GlobalHeader />
@@ -144,6 +146,7 @@ export default function RootLayout({
               <Toaster />
               <GlobalConfirmationDialog />
             </ConfirmationProvider>
+            </ShopifyProvider>
           </ThemeProvider>
         </SessionProvider>
       </body>
