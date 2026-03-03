@@ -77,11 +77,14 @@ export default function Home() {
       <footer className="py-10 text-center border-t border-border/20 px-4">
         <div className="max-w-4xl mx-auto space-y-4">
           <div className="flex items-center justify-center gap-3">
-            <img
-              src="/crowe-avatar.png"
-              alt="Crowe Logic AI"
-              className="w-9 h-9 rounded-full ring-2 ring-primary/30"
-            />
+            <div className="relative w-10 h-10 rounded-full overflow-hidden ring-2 ring-primary/30">
+              <img
+                src="/crowe-avatar.png"
+                alt="Crowe Logic AI"
+                className="w-full h-full object-cover"
+                style={{ transform: "scale(1.4)", objectPosition: "center 15%" }}
+              />
+            </div>
             <div className="text-left">
               <div className="font-bold text-sm text-foreground">Crowe Logic AI</div>
               <div className="text-[10px] text-muted-foreground">by Michael Crowe</div>
@@ -98,7 +101,7 @@ export default function Home() {
             </a>
             <span className="text-border/50">|</span>
             <a
-              href="https://buy.southwestmushrooms.com"
+              href="https://shop.southwestmushrooms.com"
               target="_blank"
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-primary transition-colors"

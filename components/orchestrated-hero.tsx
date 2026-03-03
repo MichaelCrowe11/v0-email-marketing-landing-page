@@ -163,7 +163,7 @@ export function OrchestratedHero() {
             <div className="relative group">
               <div className="absolute -inset-1.5 bg-gradient-to-r from-primary/40 via-accent/40 to-primary/40 rounded-full blur-lg opacity-60 group-hover:opacity-80 transition-opacity" />
               <div className="relative w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden border-3 border-primary/50 shadow-2xl shadow-primary/25">
-                <Image src="/crowe-avatar.png" alt="Crowe Mycology" fill className="object-cover" priority />
+                <Image src="/crowe-avatar.png" alt="Crowe Mycology" fill className="object-cover scale-[1.3] object-[center_15%]" priority />
               </div>
             </div>
           </div>
