@@ -17,7 +17,7 @@ const plans = [
     savings: 167,
     icon: Zap,
     features: [
-      "Unlimited AI chat with 11 models",
+      "Unlimited CroweLM AI chat assistant",
       "Crowe Vision contamination analysis",
       "Forum with AI assistance",
       "Complete knowledge base (61+ articles)",

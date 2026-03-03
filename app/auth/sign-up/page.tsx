@@ -66,7 +66,7 @@ export default function Page() {
   }
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center p-6 md:p-10 bg-gradient-to-br from-purple-50 via-white to-purple-50">
+    <div className="flex min-h-screen w-full items-center justify-center p-6 md:p-10 bg-gradient-to-br from-purple-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <div className="w-full max-w-sm">
         <div className="flex flex-col gap-6">
           <div className="flex justify-center mb-4">
@@ -78,7 +78,7 @@ export default function Page() {
               className="rounded-full shadow-lg"
             />
           </div>
-          <Card className="glass shadow-2xl border-purple-200">
+          <Card className="glass shadow-2xl border-purple-200 dark:border-purple-800">
             <CardHeader>
               <CardTitle className="text-2xl text-center">Join Crowe Logic</CardTitle>
               <CardDescription className="text-center">Create your account to get started</CardDescription>
