@@ -1,6 +1,6 @@
 "use client"
 
-import { createClient } from '@/lib/azure/client'
+import { createClient } from '@/lib/supabase'
 
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import Image from "next/image"
 
 interface SporeParticle {
@@ -21,11 +21,14 @@ type AvatarState = "idle" | "thinking" | "responding"
 interface AIAvatarSwirlProps {
   state: AvatarState
   size?: number
+  interactive?: boolean
 }
 
-export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
+export function AIAvatarSwirl({ state, size = 40, interactive = false }: AIAvatarSwirlProps) {
   const [particles, setParticles] = useState<SporeParticle[]>([])
   const [avatarOpacity, setAvatarOpacity] = useState(1)
+  const mouseOffset = useRef({ x: 0, y: 0 })
+  const containerRef = useRef<HTMLDivElement>(null)
 
   const sporeSymbols = [
     "◦", // Spore
@@ -63,6 +66,23 @@ export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
       setAvatarOpacity(1)
     }
   }, [state])
+
+  // Mouse tracking for interactive vortex
+  useEffect(() => {
+    if (!interactive) return
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!containerRef.current) return
+      const rect = containerRef.current.getBoundingClientRect()
+      const centerX = rect.left + rect.width / 2
+      const centerY = rect.top + rect.height / 2
+      mouseOffset.current = {
+        x: (e.clientX - centerX) / (size * 2),
+        y: (e.clientY - centerY) / (size * 2),
+      }
+    }
+    document.addEventListener("mousemove", handleMouseMove)
+    return () => document.removeEventListener("mousemove", handleMouseMove)
+  }, [interactive, size])
 
   useEffect(() => {
     const particleCount = state === "thinking" ? 16 : state === "responding" ? 12 : 8
@@ -118,14 +138,18 @@ export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
             newScale = 0.9 + Math.sin(time * 1.5 + p.id) * 0.15
           }
 
+          const mx = mouseOffset.current.x
+          const my = mouseOffset.current.y
+          const mouseInfluence = interactive ? size * 0.4 : 0
+
           return {
             ...p,
             angle: newAngle,
             radius: newRadius,
             opacity: newOpacity,
             scale: newScale,
-            x: Math.cos(newAngle) * (newRadius + drift),
-            y: Math.sin(newAngle) * (newRadius + drift),
+            x: Math.cos(newAngle) * (newRadius + drift) + mx * mouseInfluence,
+            y: Math.sin(newAngle) * (newRadius + drift) + my * mouseInfluence,
           }
         }),
       )
@@ -134,10 +158,10 @@ export function AIAvatarSwirl({ state, size = 40 }: AIAvatarSwirlProps) {
 
     animate()
     return () => cancelAnimationFrame(animationFrame)
-  }, [state, size])
+  }, [state, size, interactive])
 
   return (
-    <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
+    <div ref={containerRef} className="relative flex-shrink-0" style={{ width: size, height: size }}>
       <div className="absolute inset-0 flex items-center justify-center">
         {particles.map((particle) => (
           <div

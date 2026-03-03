@@ -535,7 +535,7 @@ export function ChatContainer({ hasUnlimitedAccess = false, isLicensed = true, o
             <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
               {isEmpty && (
                 <div className="flex flex-col items-center justify-center min-h-[calc(100vh-300px)] space-y-6 sm:space-y-8 px-4">
-                  <AIAvatarSwirl state="idle" size={128} />
+                  <AIAvatarSwirl state="idle" size={128} interactive />
 
                   <div className="text-center space-y-2 sm:space-y-3 max-w-2xl">
                     <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light tracking-tight text-foreground">
@@ -615,7 +615,7 @@ export function ChatContainer({ hasUnlimitedAccess = false, isLicensed = true, o
                         {/* Avatar column */}
                         <div className="flex-shrink-0 pt-1">
                           {isAssistant ? (
-                            <AIAvatarSwirl state={isStreaming || isVisionAnalyzing ? "thinking" : "idle"} size={36} />
+                            <AIAvatarSwirl state={isStreaming ? "responding" : isVisionAnalyzing ? "thinking" : "idle"} size={36} />
                           ) : (
                             <div className="h-9 w-9 rounded-full bg-gradient-to-br from-amber-100 to-amber-200 dark:from-amber-900/40 dark:to-amber-800/30 flex items-center justify-center text-xs font-semibold text-amber-700 dark:text-amber-300 border border-amber-200/50 dark:border-amber-700/50">
                               You

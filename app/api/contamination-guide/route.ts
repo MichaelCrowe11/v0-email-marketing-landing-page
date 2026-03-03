@@ -70,17 +70,18 @@ const FALLBACK_CONTAMINANTS = [
 
 export async function GET() {
   try {
-    // Check if Azure SQL is configured
-    const connectionString = process.env.AZURE_SQL_CONNECTION_STRING
+    const { createClient } = await import("@/lib/supabase")
+    const supabase = createClient()
+    const { data, error } = await supabase
+      .from("contamination_library")
+      .select("*")
+      .order("severity_level", { ascending: false })
 
-    if (!connectionString) {
-      // Return fallback data if no database configured
+    if (error || !data?.length) {
       return NextResponse.json(FALLBACK_CONTAMINANTS)
     }
 
-    // TODO: Implement Azure SQL query when database is configured
-    // For now, return fallback data
-    return NextResponse.json(FALLBACK_CONTAMINANTS)
+    return NextResponse.json(data)
   } catch (error) {
     console.error("[API] Error fetching contamination guide:", error)
     return NextResponse.json(FALLBACK_CONTAMINANTS)
