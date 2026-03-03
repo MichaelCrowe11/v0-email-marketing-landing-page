@@ -484,7 +484,7 @@ export function ChatContainer({ hasUnlimitedAccess = false, isLicensed = true, o
 
         <div className="flex-1 flex flex-col">
           {/* Header */}
-          <div className="px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between border-b border-border/40 bg-[#222019] backdrop-blur-xl">
+          <div className="px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between border-b border-primary/20" style={{ backgroundColor: "#252420" }}>
             <div className="flex items-center gap-2 sm:gap-3">
               <Button variant="ghost" size="icon-sm" onClick={() => setShowSidebar(!showSidebar)} className="h-8 w-8">
                 {showSidebar ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
