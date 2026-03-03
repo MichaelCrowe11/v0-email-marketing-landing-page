@@ -33,16 +33,6 @@ const PUBLIC_READ_TABLES = [
 
 export async function POST(request: NextRequest) {
   try {
-    // Require authentication
-    const { data: { user }, error: authError } = await getUser()
-
-    if (authError || !user) {
-      return NextResponse.json(
-        { error: "Authentication required" },
-        { status: 401 }
-      )
-    }
-
     const body = await request.json()
     const { action, table, data, columns, whereClause, whereParams, orderBy, limit } = body
 
@@ -51,8 +41,22 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid action" }, { status: 400 })
     }
 
+    // Allow unauthenticated reads on public tables
+    const isPublicRead = action === "select" && PUBLIC_READ_TABLES.includes(table)
+
+    // Require authentication for non-public operations
+    const { data: { user }, error: authError } = await getUser()
+    const isAuthenticated = !authError && !!user
+
+    if (!isAuthenticated && !isPublicRead) {
+      return NextResponse.json(
+        { error: "Authentication required" },
+        { status: 401 }
+      )
+    }
+
     // Authorization checks based on action and table
-    const isAdmin = user.is_admin === true
+    const isAdmin = user?.is_admin === true
 
     switch (action) {
       case "insert": {

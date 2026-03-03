@@ -112,7 +112,7 @@ function verifySignedLicense(cookieValue: string): {
     if (!encoded || !hmac) return null
 
     const data = Buffer.from(encoded, "base64").toString("utf-8")
-    const expectedHmac = crypto.createHmac("sha256", LICENSE_SECRET).update(data).digest("hex")
+    const expectedHmac = crypto.createHmac("sha256", EFFECTIVE_SECRET).update(data).digest("hex")
 
     if (hmac !== expectedHmac) return null
 
