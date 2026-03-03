@@ -12,6 +12,105 @@ import { Search, Thermometer, Droplets, TrendingUp, DollarSign, Beaker, ChefHat 
 
 export const dynamic = 'force-dynamic'
 
+const FALLBACK_SPECIES = [
+  {
+    id: "1", common_name: "Blue Oyster", scientific_name: "Pleurotus ostreatus var. columbinus",
+    difficulty_level: "beginner", optimal_temp_min: 55, optimal_temp_max: 75, optimal_humidity_min: 85, optimal_humidity_max: 95,
+    growth_characteristics: { colonization_days: "12-18", fruiting_days: "5-7" },
+    market_value: "medium", yield_expectations: { biological_efficiency: "100-150% BE" },
+    culinary_notes: "Mild, slightly anise flavor. Excellent sautéed, in soups, or as a meat substitute.",
+    medicinal_properties: "Rich in antioxidants, supports immune function and cholesterol management.",
+  },
+  {
+    id: "2", common_name: "Lion's Mane", scientific_name: "Hericium erinaceus",
+    difficulty_level: "intermediate", optimal_temp_min: 60, optimal_temp_max: 75, optimal_humidity_min: 90, optimal_humidity_max: 95,
+    growth_characteristics: { colonization_days: "14-21", fruiting_days: "7-10" },
+    market_value: "very high", yield_expectations: { biological_efficiency: "50-80% BE" },
+    culinary_notes: "Lobster/crab-like flavor and texture. Premium gourmet mushroom.",
+    medicinal_properties: "Nerve growth factor (NGF) stimulation, neuroprotective, cognitive support.",
+  },
+  {
+    id: "3", common_name: "Pink Oyster", scientific_name: "Pleurotus djamor",
+    difficulty_level: "beginner", optimal_temp_min: 65, optimal_temp_max: 85, optimal_humidity_min: 85, optimal_humidity_max: 95,
+    growth_characteristics: { colonization_days: "10-14", fruiting_days: "4-6" },
+    market_value: "high", yield_expectations: { biological_efficiency: "100-150% BE" },
+    culinary_notes: "Bacon-like flavor when cooked at high heat. Vibrant pink color fades when cooked.",
+    medicinal_properties: "Contains lovastatin, supports cardiovascular health.",
+  },
+  {
+    id: "4", common_name: "King Oyster", scientific_name: "Pleurotus eryngii",
+    difficulty_level: "intermediate", optimal_temp_min: 55, optimal_temp_max: 65, optimal_humidity_min: 85, optimal_humidity_max: 90,
+    growth_characteristics: { colonization_days: "18-25", fruiting_days: "7-14" },
+    market_value: "very high", yield_expectations: { biological_efficiency: "60-100% BE" },
+    culinary_notes: "Thick meaty stem, scallop-like texture. Best seared or grilled.",
+    medicinal_properties: "Rich in ergothioneine antioxidant, supports immune health.",
+  },
+  {
+    id: "5", common_name: "Shiitake", scientific_name: "Lentinula edodes",
+    difficulty_level: "intermediate", optimal_temp_min: 60, optimal_temp_max: 75, optimal_humidity_min: 80, optimal_humidity_max: 90,
+    growth_characteristics: { colonization_days: "30-60", fruiting_days: "7-10" },
+    market_value: "high", yield_expectations: { biological_efficiency: "75-125% BE" },
+    culinary_notes: "Rich umami flavor. Excellent dried, in stir-fries, soups, and sauces.",
+    medicinal_properties: "Lentinan (beta-glucan), immune modulation, anti-tumor properties.",
+  },
+  {
+    id: "6", common_name: "Reishi", scientific_name: "Ganoderma lucidum",
+    difficulty_level: "advanced", optimal_temp_min: 70, optimal_temp_max: 80, optimal_humidity_min: 90, optimal_humidity_max: 95,
+    growth_characteristics: { colonization_days: "30-60", fruiting_days: "60-90" },
+    market_value: "very high", yield_expectations: { biological_efficiency: "15-30% BE" },
+    culinary_notes: "Not culinary - medicinal only. Used for teas, tinctures, and extracts.",
+    medicinal_properties: "Triterpenes and polysaccharides. Adaptogenic, immune-modulating, anti-inflammatory.",
+  },
+  {
+    id: "7", common_name: "Maitake", scientific_name: "Grifola frondosa",
+    difficulty_level: "advanced", optimal_temp_min: 55, optimal_temp_max: 65, optimal_humidity_min: 85, optimal_humidity_max: 95,
+    growth_characteristics: { colonization_days: "30-60", fruiting_days: "14-21" },
+    market_value: "very high", yield_expectations: { biological_efficiency: "30-60% BE" },
+    culinary_notes: "Rich, earthy, woodsy flavor. Excellent roasted, grilled, or in risottos.",
+    medicinal_properties: "D-fraction beta-glucans, blood sugar regulation, immune support.",
+  },
+  {
+    id: "8", common_name: "Turkey Tail", scientific_name: "Trametes versicolor",
+    difficulty_level: "beginner", optimal_temp_min: 65, optimal_temp_max: 75, optimal_humidity_min: 85, optimal_humidity_max: 95,
+    growth_characteristics: { colonization_days: "14-28", fruiting_days: "30-60" },
+    market_value: "high", yield_expectations: { biological_efficiency: "20-40% BE" },
+    culinary_notes: "Not culinary - medicinal only. Used for teas, tinctures, and extracts.",
+    medicinal_properties: "PSK and PSP polysaccharides. Extensively researched for immune support and cancer adjunct therapy.",
+  },
+  {
+    id: "9", common_name: "Golden Oyster", scientific_name: "Pleurotus citrinopileatus",
+    difficulty_level: "beginner", optimal_temp_min: 65, optimal_temp_max: 85, optimal_humidity_min: 85, optimal_humidity_max: 95,
+    growth_characteristics: { colonization_days: "10-14", fruiting_days: "4-6" },
+    market_value: "high", yield_expectations: { biological_efficiency: "80-120% BE" },
+    culinary_notes: "Delicate, slightly nutty, cashew-like flavor. Beautiful golden clusters.",
+    medicinal_properties: "Antioxidant properties, supports immune function.",
+  },
+  {
+    id: "10", common_name: "Cordyceps", scientific_name: "Cordyceps militaris",
+    difficulty_level: "expert", optimal_temp_min: 60, optimal_temp_max: 68, optimal_humidity_min: 90, optimal_humidity_max: 95,
+    growth_characteristics: { colonization_days: "14-21", fruiting_days: "45-60" },
+    market_value: "very high", yield_expectations: { biological_efficiency: "10-25% BE" },
+    culinary_notes: "Mild, slightly sweet. Used in teas, broths, and supplements.",
+    medicinal_properties: "Cordycepin production, ATP enhancement, athletic performance, respiratory support.",
+  },
+  {
+    id: "11", common_name: "Chestnut", scientific_name: "Pholiota adiposa",
+    difficulty_level: "intermediate", optimal_temp_min: 55, optimal_temp_max: 65, optimal_humidity_min: 85, optimal_humidity_max: 90,
+    growth_characteristics: { colonization_days: "14-21", fruiting_days: "7-10" },
+    market_value: "high", yield_expectations: { biological_efficiency: "50-80% BE" },
+    culinary_notes: "Nutty, rich flavor with crunchy cap. Popular in Asian cuisine.",
+    medicinal_properties: "Contains ergosterol, precursor to Vitamin D2.",
+  },
+  {
+    id: "12", common_name: "Pioppino", scientific_name: "Agrocybe aegerita",
+    difficulty_level: "advanced", optimal_temp_min: 55, optimal_temp_max: 65, optimal_humidity_min: 85, optimal_humidity_max: 95,
+    growth_characteristics: { colonization_days: "21-35", fruiting_days: "10-14" },
+    market_value: "very high", yield_expectations: { biological_efficiency: "40-70% BE" },
+    culinary_notes: "Crunchy texture, peppery nutty flavor. Holds up well in cooking. Chef favorite.",
+    medicinal_properties: "Antioxidant and anti-inflammatory properties.",
+  },
+]
+
 export default function SpeciesLibraryPage() {
   const [species, setSpecies] = useState<any[]>([])
   const [filteredSpecies, setFilteredSpecies] = useState<any[]>([])
@@ -32,15 +131,22 @@ export default function SpeciesLibraryPage() {
   async function loadSpecies() {
     try {
       const { data, error } = await supabase
-        .from("mushroom_species_library")
+        .from("species_library")
         .select("*")
         .order("common_name", { ascending: true })
 
       if (error) throw error
-      setSpecies(data || [])
-      setFilteredSpecies(data || [])
+      if (data && data.length > 0) {
+        setSpecies(data)
+        setFilteredSpecies(data)
+      } else {
+        setSpecies(FALLBACK_SPECIES)
+        setFilteredSpecies(FALLBACK_SPECIES)
+      }
     } catch (error) {
-      console.error("[CroweLogic] Error loading species:", error)
+      console.error("[CroweLogic] Error loading species, using fallback:", error)
+      setSpecies(FALLBACK_SPECIES)
+      setFilteredSpecies(FALLBACK_SPECIES)
     } finally {
       setLoading(false)
     }
