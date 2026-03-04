@@ -108,8 +108,18 @@ export async function POST(req: Request) {
           console.log("[CroweLogic] Subscription created for user:", user.id)
         } else {
           // --- ONE-TIME PURCHASE FLOW (book/bundle via Payment Link) ---
-          const productName = session.metadata?.product_name || "The Mushroom Grower Bundle"
+          let productName = session.metadata?.product_name || ""
           const amount = session.amount_total || 0
+
+          // Fetch actual product name from line items if not in metadata
+          if (!productName) {
+            try {
+              const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { limit: 1 })
+              productName = lineItems.data[0]?.description || "The Mushroom Grower Bundle"
+            } catch {
+              productName = "The Mushroom Grower Bundle"
+            }
+          }
 
           console.log("[CroweLogic] One-time purchase:", productName, "by", customerEmail)
           console.log("[CONVERSION]", {
