@@ -1,9 +1,14 @@
+import { Suspense } from "react"
 import { Button } from "@/components/ui/button"
 import { CheckCircle, BookOpen, Mail, ArrowRight } from "lucide-react"
+import { ConversionTracker } from "@/components/conversion-tracker"
 
 export default function ThanksPage() {
   return (
     <main className="min-h-screen px-4 py-20">
+      <Suspense fallback={null}>
+        <ConversionTracker />
+      </Suspense>
       <div className="mx-auto max-w-3xl space-y-8">
         {/* Confirmation Card */}
         <div className="rounded-2xl border border-border bg-card p-8 text-center">
