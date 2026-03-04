@@ -15,6 +15,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { ConfirmationProvider } from "@/hooks/use-confirmation"
 import { ShopifyProvider } from "@/hooks/use-shopify"
 import { GlobalConfirmationDialog } from "@/components/global-confirmation-dialog"
+import { LaunchCountdown } from "@/components/launch-countdown"
 
 // Initialize fonts
 const _geistMono = V0_Font_Geist_Mono({
@@ -140,6 +141,7 @@ export default function RootLayout({
               <SidebarNav />
               <GlobalHeader />
               <div className="md:ml-60" style={{ paddingTop: `${HEADER_HEIGHT}px` }}>
+                <LaunchCountdown />
                 <Suspense fallback={null}>{children}</Suspense>
               </div>
               <PerformanceMonitorInit />
