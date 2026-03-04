@@ -211,6 +211,81 @@ export function getOrderConfirmationEmailHTML({
   `
 }
 
+export function getLicenseKeyEmailHTML({
+  name,
+  licenseKey,
+  productName,
+  amount,
+}: {
+  name: string
+  licenseKey: string
+  productName: string
+  amount: string
+}) {
+  return `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: ${BRAND.font}; line-height: 1.6; color: ${BRAND.text}; background: ${BRAND.bg}; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: linear-gradient(135deg, ${BRAND.primary} 0%, ${BRAND.primaryDark} 100%); color: white; padding: 40px; text-align: center; border-radius: 8px 8px 0 0; }
+          .content { background: white; padding: 40px; border-radius: 0 0 8px 8px; }
+          .license-box { background: #1a1916; color: #4db8b8; font-family: 'Fira Code', 'Courier New', monospace; font-size: 22px; font-weight: bold; text-align: center; padding: 24px; border-radius: 8px; margin: 24px 0; letter-spacing: 2px; }
+          .steps { background: ${BRAND.bg}; padding: 20px; border-radius: 8px; margin: 20px 0; }
+          .step { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+          .step-num { background: ${BRAND.primary}; color: white; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; flex-shrink: 0; }
+          .button { display: inline-block; background: ${BRAND.primary}; color: white; padding: 14px 32px; text-decoration: none; border-radius: 8px; margin: 20px 0; font-weight: 600; }
+          .footer { text-align: center; margin-top: 30px; color: ${BRAND.muted}; font-size: 13px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1 style="margin: 0;">Your License Key</h1>
+            <p style="margin: 8px 0 0; opacity: 0.85; font-size: 14px;">The Mushroom Grower by Michael Crowe</p>
+          </div>
+          <div class="content">
+            <h2>Thank you, ${name}!</h2>
+            <p>Your purchase of <strong>${productName}</strong> (${amount}) is confirmed. Here is your license key for Crowe Logic AI:</p>
+
+            <div class="license-box">${licenseKey}</div>
+
+            <div class="steps">
+              <div class="step">
+                <span class="step-num">1</span>
+                <span>Go to <a href="${BRAND.siteUrl}" style="color: ${BRAND.primary}; font-weight: 600;">ai.southwestmushrooms.com</a></span>
+              </div>
+              <div class="step">
+                <span class="step-num">2</span>
+                <span>Enter your license key when prompted</span>
+              </div>
+              <div class="step">
+                <span class="step-num">3</span>
+                <span>Get full access to the AI Assistant, Crowe Vision, and all platform tools</span>
+              </div>
+            </div>
+
+            <p><strong>Save this email.</strong> Your license key is your access pass to the platform.</p>
+
+            <div style="text-align: center;">
+              <a href="${BRAND.siteUrl}/thanks" class="button">Access the Platform</a>
+            </div>
+
+            <p>Questions? Email <a href="mailto:michael@southwestmushrooms.com" style="color: ${BRAND.primary};">michael@southwestmushrooms.com</a></p>
+
+            <p>Grow with intelligence,<br><strong>Michael Crowe</strong><br><span style="color: ${BRAND.muted}; font-size: 13px;">Southwest Mushrooms / Crowe Logic AI</span></p>
+          </div>
+          <div class="footer">
+            <p>&copy; ${new Date().getFullYear()} Michael Crowe / Southwest Mushrooms. All rights reserved.</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `
+}
+
 export function getNotificationEmailHTML({
   title,
   message,

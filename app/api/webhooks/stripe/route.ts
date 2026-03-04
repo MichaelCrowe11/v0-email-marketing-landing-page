@@ -3,7 +3,8 @@ import { headers } from "next/headers"
 import { NextResponse } from "next/server"
 import Stripe from "stripe"
 import { sendEmail } from "@/lib/resend"
-import { getOrderConfirmationEmailHTML } from "@/lib/email-templates"
+import { getOrderConfirmationEmailHTML, getLicenseKeyEmailHTML } from "@/lib/email-templates"
+import { createLicenseKey } from "@/lib/license-keys"
 
 export const dynamic = "force-dynamic"
 
@@ -45,66 +46,119 @@ export async function POST(req: Request) {
     switch (event.type) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session
-
-        // Get user by email
-        const { data: user } = await supabase.from("users").select("id").eq("email", session.customer_email).single()
-
-        if (!user) {
-          console.error("[CroweLogic] User not found for email:", session.customer_email)
-          break
-        }
-
-        // Get plan details from metadata
+        const customerEmail = session.customer_email || session.customer_details?.email
+        const customerName = session.customer_details?.name || "Valued Customer"
         const planId = session.metadata?.plan_id
 
-        if (!planId) {
-          console.error("[CroweLogic] No plan_id in session metadata")
+        if (!customerEmail) {
+          console.error("[CroweLogic] No customer email in session")
           break
         }
 
-        // Create subscription record
-        await supabase.from("user_subscriptions").insert({
-          user_id: user.id,
-          plan_id: planId,
-          stripe_customer_id: session.customer as string,
-          stripe_subscription_id: session.subscription as string,
-          status: "active",
-          current_period_start: new Date().toISOString(),
-          current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days
-        })
+        // Determine if this is a subscription (has plan_id) or a one-time purchase (book/bundle)
+        if (planId && session.subscription) {
+          // --- SUBSCRIPTION FLOW (existing) ---
+          const { data: user } = await supabase.from("users").select("id").eq("email", customerEmail).single()
 
-        // Update user subscription status
-        await supabase
-          .from("users")
-          .update({
-            subscription_tier: planId.includes("expert") ? "expert" : "pro",
-            subscription_status: "active",
+          if (!user) {
+            console.error("[CroweLogic] User not found for email:", customerEmail)
+            break
+          }
+
+          await supabase.from("user_subscriptions").insert({
+            user_id: user.id,
+            plan_id: planId,
+            stripe_customer_id: session.customer as string,
+            stripe_subscription_id: session.subscription as string,
+            status: "active",
+            current_period_start: new Date().toISOString(),
+            current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
           })
-          .eq("id", user.id)
 
-        try {
+          await supabase
+            .from("users")
+            .update({
+              subscription_tier: planId.includes("expert") ? "expert" : "pro",
+              subscription_status: "active",
+            })
+            .eq("id", user.id)
+
           const planNames: Record<string, string> = {
             pro: "Pro Access",
             expert: "Expert Access",
             master: "Master Grower",
           }
 
-          await sendEmail({
-            to: session.customer_email!,
-            subject: "Order Confirmation - Crowe Logic",
-            html: getOrderConfirmationEmailHTML({
-              name: session.customer_details?.name || "Valued Customer",
-              productName: planNames[planId] || planId,
-              amount: `$${(session.amount_total! / 100).toFixed(2)}`,
-              orderId: session.id,
-            }),
+          try {
+            await sendEmail({
+              to: customerEmail,
+              subject: "Order Confirmation - Crowe Logic",
+              html: getOrderConfirmationEmailHTML({
+                name: customerName,
+                productName: planNames[planId] || planId,
+                amount: `$${(session.amount_total! / 100).toFixed(2)}`,
+                orderId: session.id,
+              }),
+            })
+            console.log("[CroweLogic] Subscription confirmation email sent")
+          } catch (emailError) {
+            console.error("[CroweLogic] Failed to send subscription email:", emailError)
+          }
+
+          console.log("[CroweLogic] Subscription created for user:", user.id)
+        } else {
+          // --- ONE-TIME PURCHASE FLOW (book/bundle via Payment Link) ---
+          const productName = session.metadata?.product_name || "The Mushroom Grower Bundle"
+          const amount = session.amount_total || 0
+
+          console.log("[CroweLogic] One-time purchase:", productName, "by", customerEmail)
+          console.log("[CONVERSION]", {
+            timestamp: new Date().toISOString(),
+            source: "stripe",
+            email: customerEmail,
+            product: productName,
+            amount: `$${(amount / 100).toFixed(2)}`,
           })
-          console.log("[CroweLogic] Order confirmation email sent")
-        } catch (emailError) {
-          console.error("[CroweLogic] Failed to send order confirmation email:", emailError)
+
+          try {
+            const licenseKey = await createLicenseKey({
+              email: customerEmail,
+              productName,
+              stripeSessionId: session.id,
+              amount: amount / 100,
+            })
+
+            await sendEmail({
+              to: customerEmail,
+              subject: "Your License Key — The Mushroom Grower",
+              html: getLicenseKeyEmailHTML({
+                name: customerName,
+                licenseKey,
+                productName,
+                amount: `$${(amount / 100).toFixed(2)}`,
+              }),
+            })
+            console.log("[CroweLogic] License key email sent:", licenseKey)
+          } catch (licenseError) {
+            console.error("[CroweLogic] License key generation/email failed:", licenseError)
+            // Still send a basic confirmation even if license fails
+            try {
+              await sendEmail({
+                to: customerEmail,
+                subject: "Order Confirmed — The Mushroom Grower",
+                html: getOrderConfirmationEmailHTML({
+                  name: customerName,
+                  productName,
+                  amount: `$${(amount / 100).toFixed(2)}`,
+                  orderId: session.id,
+                }),
+              })
+            } catch (fallbackError) {
+              console.error("[CroweLogic] Even fallback email failed:", fallbackError)
+            }
+          }
         }
 
-        console.log("[CroweLogic] Subscription created for user:", user.id)
         break
       }
 

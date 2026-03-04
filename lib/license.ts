@@ -1,5 +1,6 @@
 import { cookies } from "next/headers"
 import crypto from "crypto"
+import { verifySupabaseLicenseKey } from "@/lib/license-keys"
 
 const LICENSE_COOKIE = "crowelm_license"
 const LICENSE_SECRET = process.env.LICENSE_SECRET
@@ -49,6 +50,16 @@ export async function verifyLicenseKey(licenseKey: string): Promise<{
     return { valid: true, email: "admin@southwestmushrooms.com", product: "Master Access" }
   }
 
+  // Check Supabase first (Stripe-generated keys)
+  try {
+    const supabaseResult = await verifySupabaseLicenseKey(key)
+    if (supabaseResult?.valid) {
+      return supabaseResult
+    }
+  } catch (e) {
+    console.error("[License] Supabase verify error:", e)
+  }
+
   // If no product links configured, accept any non-empty key in dev mode
   if (VALID_PRODUCT_LINKS.length === 0) {
     if (process.env.NODE_ENV === "development") {
@@ -58,7 +69,7 @@ export async function verifyLicenseKey(licenseKey: string): Promise<{
     return { valid: false, error: "License verification is not configured" }
   }
 
-  // Try each product link — the key could belong to any product
+  // Try each Payhip product link — the key could belong to any product
   for (const productLink of VALID_PRODUCT_LINKS) {
     try {
       const response = await fetch("https://payhip.com/api/v1/license/verify", {
