@@ -18,42 +18,25 @@ interface SearchResult {
 function SearchContent() {
   const searchParams = useSearchParams()
   const query = searchParams.get("q") || ""
-  const [results, setResults] = useState<SearchResult[]>([])
+  const [results, setResults] = useState<SearchResult[] | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     if (query) {
-      // Simulate search - in production this would call a real search API
-      setTimeout(() => {
-        const mockResults: SearchResult[] = [
-          {
-            id: "1",
-            title: "Contamination Identification Guide",
-            description: "Complete guide to identifying and treating common mushroom cultivation contaminations",
-            type: "doc",
-            url: "/docs/contamination-guide",
-            relevance: 95,
-          },
-          {
-            id: "2",
-            title: "Pleurotus ostreatus (Oyster Mushroom)",
-            description: "Species profile, cultivation parameters, and growth characteristics",
-            type: "species",
-            url: "/species/pleurotus-ostreatus",
-            relevance: 88,
-          },
-          {
-            id: "3",
-            title: "Substrate Sterilization SOP",
-            description: "Standard operating procedure for pressure cooking and sterilizing substrates",
-            type: "sop",
-            url: "/sops/substrate-sterilization",
-            relevance: 82,
-          },
-        ]
-        setResults(mockResults)
-        setLoading(false)
-      }, 500)
+      setLoading(true)
+      fetch(`/api/search?q=${encodeURIComponent(query)}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setResults(data)
+          setLoading(false)
+        })
+        .catch(() => {
+          setResults([])
+          setLoading(false)
+        })
+    } else if (results !== null) {
+      setResults([])
+      setLoading(false)
     }
   }, [query])
 
@@ -91,13 +74,15 @@ function SearchContent() {
             <Search className="w-8 h-8" />
             <h1 className="text-3xl font-black">Search Results</h1>
           </div>
-          <p className="text-muted-foreground">
-            Found {results.length} results for <span className="font-semibold text-foreground">"{query}"</span>
-          </p>
+          {results !== null && (
+            <p className="text-muted-foreground">
+              Found {results.length} results for <span className="font-semibold text-foreground">"{query}"</span>
+            </p>
+          )}
         </div>
 
         {/* Results */}
-        {loading ? (
+        {loading || results === null ? (
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
               <Card key={i} className="glass-card animate-pulse">

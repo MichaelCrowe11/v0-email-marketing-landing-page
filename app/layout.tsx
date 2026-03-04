@@ -110,7 +110,7 @@ export const metadata: Metadata = {
     ],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Crowe Logic AI by Michael Crowe",
     description:
       "AI-powered mushroom cultivation platform — 18+ years of expertise from Southwest Mushrooms.",
