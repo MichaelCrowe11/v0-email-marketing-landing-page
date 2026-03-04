@@ -62,6 +62,27 @@ const PRODUCTS_QUERY = `{
   }
 }`
 
+/** Only surface digital products (books, guides, SOPs, courses) on the platform */
+function isDigitalProduct(p: ShopifyProduct): boolean {
+  const t = p.title.toLowerCase()
+  const pt = p.productType.toLowerCase()
+  return (
+    pt === "e-books" ||
+    t.includes("guide") ||
+    t.includes("ebook") ||
+    t.includes("audiobook") ||
+    t.includes("playbook") ||
+    t.includes("blueprint") ||
+    t.includes("sop") ||
+    t.includes("checklist") ||
+    t.includes("manual") ||
+    t.includes("protocols") ||
+    t.includes("quickstart") ||
+    t.includes("course") ||
+    t.includes("the mushroom grower")
+  )
+}
+
 function normalizeProduct(node: any): ShopifyProduct {
   return {
     id: node.id,
@@ -127,16 +148,21 @@ export function ShopifyProvider({ children }: { children: ReactNode }) {
     return () => { cancelled = true }
   }, [])
 
-  const featuredProducts = useMemo(
-    () => products.filter((p) => p.tags.includes("featured")),
+  const digitalProducts = useMemo(
+    () => products.filter(isDigitalProduct),
     [products]
+  )
+
+  const featuredProducts = useMemo(
+    () => digitalProducts.filter((p) => p.tags.includes("featured")),
+    [digitalProducts]
   )
 
   const searchProducts = useCallback(
     (query: string): ShopifyProduct[] => {
       if (!query.trim()) return []
       const q = query.toLowerCase()
-      return products
+      return digitalProducts
         .filter(
           (p) =>
             p.title.toLowerCase().includes(q) ||
@@ -146,7 +172,7 @@ export function ShopifyProvider({ children }: { children: ReactNode }) {
         )
         .slice(0, 10)
     },
-    [products]
+    [digitalProducts]
   )
 
   const createCheckout = useCallback(async (variantId: string) => {

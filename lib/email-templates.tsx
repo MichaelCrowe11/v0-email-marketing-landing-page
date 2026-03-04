@@ -107,12 +107,12 @@ export function getWelcomeEmailHTML({ name }: { name: string }) {
             </div>
 
             <div class="section">
-              <h3>Shop &amp; Resources</h3>
+              <h3>Books &amp; Digital Guides</h3>
               <ul>
-                <li><strong>Premium Liquid Cultures</strong> — Lion's Mane, Pink Oyster, Shiitake, Reishi, Cordyceps &amp; more</li>
-                <li><strong>Grow Kits</strong> — Blue Oyster, Lion's Mane, Pink Oyster, Shiitake</li>
-                <li><strong>Books &amp; Guides</strong> — The Mushroom Grower Vol 1 &amp; 2, SOPs, Business Blueprint</li>
-                <li><strong>Supplements</strong> — Tinctures, nootropic blends, dried mushrooms</li>
+                <li><strong>The Mushroom Grower Vol 1 &amp; 2</strong> — Over 2,000 pages of commercial cultivation knowledge</li>
+                <li><strong>SOP Playbook</strong> — 632 pages of standard operating procedures</li>
+                <li><strong>Business Blueprint</strong> — Start and scale your mushroom operation</li>
+                <li><strong>Quickstart Guides</strong> — Species-specific grow protocols</li>
               </ul>
             </div>
 
@@ -191,7 +191,7 @@ export function getOrderConfirmationEmailHTML({
 
             <div class="upsell">
               <strong style="color: ${BRAND.accent};">Level up your grow</strong>
-              <p style="margin: 8px 0 0; font-size: 14px;">Explore our full catalog — premium liquid cultures, grow kits, SOPs, The Mushroom Grower book series, and AI-powered cultivation tools.</p>
+              <p style="margin: 8px 0 0; font-size: 14px;">Explore our full catalog — The Mushroom Grower book series, SOP Playbook, cultivation guides, and AI-powered growing tools.</p>
             </div>
 
             <div style="text-align: center;">
