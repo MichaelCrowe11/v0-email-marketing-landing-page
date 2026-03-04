@@ -6,7 +6,8 @@ import { ShoppingCart, ChevronDown } from "lucide-react"
 import { useShopify } from "@/hooks/use-shopify"
 import type { ShopifyProduct } from "@/lib/shopify-types"
 
-const CATEGORY_ORDER = ["Cultures", "Books & Guides", "Grow Kits", "Supplements", "Apparel", "Other"]
+// Only show digital products
+const CATEGORY_ORDER = ["Books & Guides"]
 
 function categorize(product: ShopifyProduct): string {
   const t = product.title.toLowerCase()
@@ -62,7 +63,7 @@ function ProductRow({ product, createCheckout }: { product: ShopifyProduct; crea
 
 export function SidebarProducts() {
   const { featuredProducts, loading, createCheckout } = useShopify()
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set(["Cultures", "Books & Guides"]))
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set(["Books & Guides"]))
 
   const toggleCategory = (cat: string) => {
     setExpandedCategories((prev) => {
