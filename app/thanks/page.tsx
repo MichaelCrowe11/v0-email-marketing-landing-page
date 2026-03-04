@@ -89,7 +89,7 @@ export default function ThanksPage() {
         <div className="rounded-2xl border border-border bg-card p-6 text-center">
           <p className="mb-3 text-sm font-semibold text-foreground">Know someone who should be growing mushrooms?</p>
           <Button variant="outline" className="rounded-xl border-border font-bold" asChild>
-            <a href="https://buy.southwestmushrooms.com/b/00w6oHgjW63O6MO0haejK02" target="_blank" rel="noopener noreferrer">
+            <a href="https://themushroomgrower.com" target="_blank" rel="noopener noreferrer">
               Share The Mushroom Grower
             </a>
           </Button>

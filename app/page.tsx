@@ -101,7 +101,7 @@ export default function Home() {
             </a>
             <span className="text-border/50">|</span>
             <a
-              href="https://shop.southwestmushrooms.com"
+              href="https://themushroomgrower.com"
               target="_blank"
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-primary transition-colors"

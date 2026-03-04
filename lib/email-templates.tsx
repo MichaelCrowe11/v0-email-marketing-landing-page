@@ -9,7 +9,7 @@ const BRAND = {
   muted: '#6b7280',
   font: "'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
   siteUrl: 'https://ai.southwestmushrooms.com',
-  shopUrl: 'https://shop.southwestmushrooms.com',
+  shopUrl: 'https://themushroomgrower.com',
   skool: 'https://www.skool.com/southwestmushrooms',
 }
 

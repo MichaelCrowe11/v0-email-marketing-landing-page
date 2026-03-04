@@ -153,7 +153,7 @@ export function SidebarNav() {
               </a>
             </Button>
             <a
-              href="https://shop.southwestmushrooms.com"
+              href="https://themushroomgrower.com"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center w-full h-9 text-xs font-semibold rounded-lg transition-all hover:opacity-90"

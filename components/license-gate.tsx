@@ -170,7 +170,7 @@ export function LicenseGate({ onActivated }: LicenseGateProps) {
           <p className="text-xs" style={{ color: "#6b6560" }}>
             Don't have a license key?{" "}
             <a
-              href="https://shop.southwestmushrooms.com"
+              href="https://themushroomgrower.com"
               target="_blank"
               rel="noopener noreferrer"
               className="underline hover:opacity-80 transition-opacity"

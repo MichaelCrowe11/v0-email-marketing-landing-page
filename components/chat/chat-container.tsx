@@ -333,6 +333,17 @@ export function ChatContainer({ hasUnlimitedAccess = false, isLicensed = true, o
       })
 
       if (!response.ok) {
+        if (response.status === 403) {
+          setShowLicensePrompt(true)
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === assistantMessageId
+                ? { ...m, content: "Please activate your license key to use CroweLM AI." }
+                : m,
+            ),
+          )
+          return
+        }
         throw new Error(`Chat request failed: ${response.status}`)
       }
 
@@ -864,7 +875,7 @@ export function ChatContainer({ hasUnlimitedAccess = false, isLicensed = true, o
 
             <div className="mt-4 text-center space-y-2">
               <a
-                href="https://shop.southwestmushrooms.com"
+                href="https://themushroomgrower.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline"
